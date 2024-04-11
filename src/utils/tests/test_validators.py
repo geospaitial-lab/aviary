@@ -21,7 +21,7 @@ def test_raise_type_error() -> None:
         raise_type_error(
             param_name='param',
             expected_type=int,
-            actual_type=str
+            actual_type=str,
         )
 
     message = (
