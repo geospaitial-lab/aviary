@@ -48,3 +48,8 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         run: |
           ruff check src
+
+      - name: Check dependencies with pip-audit
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          pip-audit
