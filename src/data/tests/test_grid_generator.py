@@ -31,7 +31,9 @@ def test_compute_coordinates(
 ) -> None:
     tile_size = 256
     quantize = True
-    grid_generator.compute_coordinates(
+    expected = 'expected'
+    mocked_compute_coordinates.return_value = expected
+    coordinates = grid_generator.compute_coordinates(
         tile_size=tile_size,
         quantize=quantize,
     )
@@ -44,6 +46,7 @@ def test_compute_coordinates(
         y_max=grid_generator.y_max,
         quantize=quantize,
     )
+    assert coordinates == expected
 
 
 @patch('src.data.grid_generator.generate_grid')
@@ -53,7 +56,9 @@ def test_generate_grid(
 ) -> None:
     tile_size = 256
     quantize = True
-    grid_generator.generate_grid(
+    expected = 'expected'
+    mocked_generate_grid.return_value = expected
+    grid = grid_generator.generate_grid(
         tile_size=tile_size,
         quantize=quantize,
     )
@@ -67,3 +72,4 @@ def test_generate_grid(
         epsg_code=grid_generator.epsg_code,
         quantize=quantize,
     )
+    assert grid == expected
