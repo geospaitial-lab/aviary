@@ -31,7 +31,7 @@ jobs:
 
       - name: Install requirements
         run: |
-          python -m pip install --upgrade pip
+          python -m pip install --upgrade pip setuptools
           pip install -r dev/requirements.txt
 
       - name: Test with pytest
@@ -39,10 +39,17 @@ jobs:
           pytest --cov=./ --cov-report=xml
 
       - name: Upload coverage report to codecov
+        if: matrix.os == 'ubuntu-latest'
         uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
 
       - name: Lint with ruff
+        if: matrix.os == 'ubuntu-latest'
         run: |
           ruff check src
+
+      - name: Check dependencies with pip-audit
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          pip-audit
