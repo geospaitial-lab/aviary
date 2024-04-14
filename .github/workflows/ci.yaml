@@ -39,10 +39,12 @@ jobs:
           pytest --cov=./ --cov-report=xml
 
       - name: Upload coverage report to codecov
+        if: matrix.os == 'ubuntu-latest'
         uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
 
       - name: Lint with ruff
+        if: matrix.os == 'ubuntu-latest'
         run: |
           ruff check src
