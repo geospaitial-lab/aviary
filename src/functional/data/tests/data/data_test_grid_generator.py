@@ -1,6 +1,13 @@
 import numpy as np
 from shapely.geometry import box
 
+data_test_compute_coordinates = [
+    ((-128, -128, 128, 128),
+     128,
+     True,
+     np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32)),
+]
+
 data_test__generate_polygons = [
     (np.array([[0, 0]]),
      256,
