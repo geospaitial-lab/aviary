@@ -142,7 +142,7 @@ def test__validate_compute_coordinates(
     mocked__validate_quantize,
 ) -> None:
     bounding_box = (-128, -128, 128, 128)
-    tile_size = 256
+    tile_size = 128
     quantize = True
     _validate_compute_coordinates(
         bounding_box=bounding_box,
@@ -166,7 +166,7 @@ def test__validate_generate_grid(
     mocked__validate_quantize,
 ) -> None:
     bounding_box = (-128, -128, 128, 128)
-    tile_size = 256
+    tile_size = 128
     epsg_code = 25832
     quantize = True
     _validate_generate_grid(

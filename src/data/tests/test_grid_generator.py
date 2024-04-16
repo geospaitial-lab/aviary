@@ -29,7 +29,7 @@ def test_compute_coordinates(
     mocked_compute_coordinates,
     grid_generator: GridGenerator,
 ) -> None:
-    tile_size = 256
+    tile_size = 128
     quantize = True
     expected = 'expected'
     mocked_compute_coordinates.return_value = expected
@@ -51,7 +51,7 @@ def test_generate_grid(
     mocked_generate_grid,
     grid_generator: GridGenerator,
 ) -> None:
-    tile_size = 256
+    tile_size = 128
     quantize = True
     expected = 'expected'
     mocked_generate_grid.return_value = expected
