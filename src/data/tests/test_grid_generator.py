@@ -39,11 +39,8 @@ def test_compute_coordinates(
     )
 
     mocked_compute_coordinates.assert_called_once_with(
+        bounding_box=grid_generator.bounding_box,
         tile_size=tile_size,
-        x_min=grid_generator.x_min,
-        y_min=grid_generator.y_min,
-        x_max=grid_generator.x_max,
-        y_max=grid_generator.y_max,
         quantize=quantize,
     )
     assert coordinates == expected
@@ -64,11 +61,8 @@ def test_generate_grid(
     )
 
     assert mocked_generate_grid.called_once_with(
+        bounding_box=grid_generator.bounding_box,
         tile_size=tile_size,
-        x_min=grid_generator.x_min,
-        y_min=grid_generator.y_min,
-        x_max=grid_generator.x_max,
-        y_max=grid_generator.y_max,
         epsg_code=grid_generator.epsg_code,
         quantize=quantize,
     )

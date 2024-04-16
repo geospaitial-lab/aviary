@@ -7,9 +7,7 @@ from src.utils.types import (
     Coordinates,
     EPSGCode,
     TileSize,
-    XMax,
     XMin,
-    YMax,
     YMin,
 )
 from src.utils.validators import (
@@ -21,32 +19,25 @@ from src.utils.validators import (
 
 
 def compute_coordinates(
+    bounding_box: BoundingBox,
     tile_size: TileSize,
-    x_min: XMin,
-    y_min: YMin,
-    x_max: XMax,
-    y_max: YMax,
     quantize: bool = True,
 ) -> Coordinates:
     """
     | Computes the coordinates of the bottom left corner of each tile.
 
+    :param bounding_box: bounding box (x_min, y_min, x_max, y_max)
     :param tile_size: tile size in meters
-    :param x_min: minimum x coordinate of the bounding box
-    :param y_min: minimum y coordinate of the bounding box
-    :param x_max: maximum x coordinate of the bounding box
-    :param y_max: maximum y coordinate of the bounding box
     :param quantize: if True, the bounding box is quantized to tile_size
     :return: coordinates (x_min, y_min) of each tile
     """
     _validate_compute_coordinates(
+        bounding_box=bounding_box,
         tile_size=tile_size,
-        x_min=x_min,
-        y_min=y_min,
-        x_max=x_max,
-        y_max=y_max,
         quantize=quantize,
     )
+
+    x_min, y_min, x_max, y_max = bounding_box
 
     if quantize:
         x_min, y_min = _quantize_coordinates(
@@ -66,42 +57,30 @@ def compute_coordinates(
 
 
 def generate_grid(
+    bounding_box: BoundingBox,
     tile_size: TileSize,
-    x_min: XMin,
-    y_min: YMin,
-    x_max: XMax,
-    y_max: YMax,
     epsg_code: EPSGCode,
     quantize: bool = True,
 ) -> gpd.GeoDataFrame:
     """
     | Generates a geodataframe of the grid.
 
+    :param bounding_box: bounding box (x_min, y_min, x_max, y_max)
     :param tile_size: tile size in meters
-    :param x_min: minimum x coordinate of the bounding box
-    :param y_min: minimum y coordinate of the bounding box
-    :param x_max: maximum x coordinate of the bounding box
-    :param y_max: maximum y coordinate of the bounding box
     :param epsg_code: EPSG code
     :param quantize: if True, the bounding box is quantized to tile_size
     :return: grid
     """
     _validate_generate_grid(
+        bounding_box=bounding_box,
         tile_size=tile_size,
-        x_min=x_min,
-        y_min=y_min,
-        x_max=x_max,
-        y_max=y_max,
         epsg_code=epsg_code,
         quantize=quantize,
     )
 
     coordinates = compute_coordinates(
+        bounding_box=bounding_box,
         tile_size=tile_size,
-        x_min=x_min,
-        y_min=y_min,
-        x_max=x_max,
-        y_max=y_max,
         quantize=quantize,
     )
     polygons = _generate_polygons(
@@ -151,50 +130,38 @@ def _quantize_coordinates(
 
 
 def _validate_compute_coordinates(
+    bounding_box: BoundingBox,
     tile_size: TileSize,
-    x_min: XMin,
-    y_min: YMin,
-    x_max: XMax,
-    y_max: YMax,
     quantize: bool,
 ) -> None:
     """
     | Validates the input parameters of compute_coordinates.
 
+    :param bounding_box: bounding box (x_min, y_min, x_max, y_max)
     :param tile_size: tile size in meters
-    :param x_min: minimum x coordinate of the bounding box
-    :param y_min: minimum y coordinate of the bounding box
-    :param x_max: maximum x coordinate of the bounding box
-    :param y_max: maximum y coordinate of the bounding box
     :param quantize: if True, the bounding box is quantized to tile_size
     """
+    validate_bounding_box(bounding_box)
     validate_tile_size(tile_size)
-    validate_bounding_box((x_min, y_min, x_max, y_max))
     _validate_quantize(quantize)
 
 
 def _validate_generate_grid(
+    bounding_box: BoundingBox,
     tile_size: TileSize,
-    x_min: XMin,
-    y_min: YMin,
-    x_max: XMax,
-    y_max: YMax,
     epsg_code: EPSGCode,
     quantize: bool,
 ) -> None:
     """
     | Validates the input parameters of generate_grid.
 
+    :param bounding_box: bounding box (x_min, y_min, x_max, y_max)
     :param tile_size: tile size in meters
-    :param x_min: minimum x coordinate of the bounding box
-    :param y_min: minimum y coordinate of the bounding box
-    :param x_max: maximum x coordinate of the bounding box
-    :param y_max: maximum y coordinate of the bounding box
     :param epsg_code: EPSG code
     :param quantize: if True, the bounding box is quantized to tile_size
     """
+    validate_bounding_box(bounding_box)
     validate_tile_size(tile_size)
-    validate_bounding_box((x_min, y_min, x_max, y_max))
     validate_epsg_code(epsg_code)
     _validate_quantize(quantize)
 

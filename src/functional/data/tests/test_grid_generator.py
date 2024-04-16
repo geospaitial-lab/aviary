@@ -73,23 +73,17 @@ def test__validate_compute_coordinates(
     mocked_validate_bounding_box,
     mocked__validate_quantize,
 ) -> None:
+    bounding_box = (-128, -128, 128, 128)
     tile_size = 256
-    x_min = -128
-    y_min = -128
-    x_max = 128
-    y_max = 128
     quantize = True
     _validate_compute_coordinates(
+        bounding_box=bounding_box,
         tile_size=tile_size,
-        x_min=x_min,
-        y_min=y_min,
-        x_max=x_max,
-        y_max=y_max,
         quantize=quantize,
     )
 
     mocked_validate_tile_size.assert_called_once_with(tile_size)
-    mocked_validate_bounding_box.assert_called_once_with((x_min, y_min, x_max, y_max))
+    mocked_validate_bounding_box.assert_called_once_with(bounding_box)
     mocked__validate_quantize.assert_called_once_with(quantize)
 
 
@@ -103,25 +97,19 @@ def test__validate_generate_grid(
     mocked_validate_epsg_code,
     mocked__validate_quantize,
 ) -> None:
+    bounding_box = (-128, -128, 128, 128)
     tile_size = 256
-    x_min = -128
-    y_min = -128
-    x_max = 128
-    y_max = 128
     epsg_code = 25832
     quantize = True
     _validate_generate_grid(
+        bounding_box=bounding_box,
         tile_size=tile_size,
-        x_min=x_min,
-        y_min=y_min,
-        x_max=x_max,
-        y_max=y_max,
         epsg_code=epsg_code,
         quantize=quantize,
     )
 
     mocked_validate_tile_size.assert_called_once_with(tile_size)
-    mocked_validate_bounding_box.assert_called_once_with((x_min, y_min, x_max, y_max))
+    mocked_validate_bounding_box.assert_called_once_with(bounding_box)
     mocked_validate_epsg_code.assert_called_once_with(epsg_code)
     mocked__validate_quantize.assert_called_once_with(quantize)
 

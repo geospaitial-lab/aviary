@@ -87,11 +87,8 @@ class GridGenerator:
         :return: coordinates (x_min, y_min) of each tile
         """
         return compute_coordinates(
+            bounding_box=self.bounding_box,
             tile_size=tile_size,
-            x_min=self._x_min,
-            y_min=self._y_min,
-            x_max=self._x_max,
-            y_max=self._y_max,
             quantize=quantize,
         )
 
@@ -108,11 +105,8 @@ class GridGenerator:
         :return: grid
         """
         return generate_grid(
+            bounding_box=self.bounding_box,
             tile_size=tile_size,
-            x_min=self._x_min,
-            y_min=self._y_min,
-            x_max=self._x_max,
-            y_max=self._y_max,
             epsg_code=self.epsg_code,
             quantize=quantize,
         )
