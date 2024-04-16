@@ -1,9 +1,14 @@
 from unittest.mock import patch
 
+import geopandas as gpd
+import geopandas.testing
+import numpy as np
 import pytest
-from shapely.geometry import Polygon
+from shapely.geometry import box, Polygon
 
 from src.functional.data.grid_generator import (
+    compute_coordinates,
+    generate_grid,
     _generate_polygons,
     _quantize_coordinates,
     _validate_compute_coordinates,
@@ -12,11 +17,13 @@ from src.functional.data.grid_generator import (
     _validate_quantize,
 )
 from src.functional.data.tests.data.data_test_grid_generator import (
+    data_test_compute_coordinates,
     data_test__generate_polygons,
     data_test__quantize_coordinates,
     data_test__validate_quantize_type_error,
 )
 from src.utils.types import (
+    BoundingBox,
     Coordinates,
     TileSize,
     XMin,
@@ -24,14 +31,75 @@ from src.utils.types import (
 )
 
 
-@pytest.mark.skip(reason='Not implemented')
-def test_compute_coordinates() -> None:
-    pass
+@pytest.mark.parametrize('bounding_box, tile_size, quantize, expected', data_test_compute_coordinates)
+@patch('src.functional.data.grid_generator._validate_compute_coordinates')
+def test_compute_coordinates(
+    mocked__validate_compute_coordinates,
+    bounding_box: BoundingBox,
+    tile_size: TileSize,
+    quantize: bool,
+    expected: Coordinates,
+) -> None:
+    coordinates = compute_coordinates(
+        bounding_box=bounding_box,
+        tile_size=tile_size,
+        quantize=quantize,
+    )
+
+    mocked__validate_compute_coordinates.assert_called_once_with(
+        bounding_box=bounding_box,
+        tile_size=tile_size,
+        quantize=quantize,
+    )
+    np.testing.assert_array_equal(coordinates, expected)
 
 
-@pytest.mark.skip(reason='Not implemented')
-def test_generate_grid() -> None:
-    pass
+@patch('src.functional.data.grid_generator._generate_polygons')
+@patch('src.functional.data.grid_generator.compute_coordinates')
+@patch('src.functional.data.grid_generator._validate_generate_grid')
+def test_generate_grid(
+    mocked__validate_generate_grid,
+    mocked_compute_coordinates,
+    mocked__generate_polygons,
+) -> None:
+    bounding_box = (-128, -128, 128, 128)
+    tile_size = 128
+    epsg_code = 25832
+    quantize = True
+    expected_polygons = [
+        box(-128, -128, 0, 0),
+        box(0, -128, 128, 0),
+        box(-128, 0, 0, 128),
+        box(0, 0, 128, 128),
+    ]
+    mocked__generate_polygons.return_value = expected_polygons
+    expected = gpd.GeoDataFrame(
+        geometry=mocked__generate_polygons.return_value,
+        crs=f'EPSG:{epsg_code}',
+    )
+    grid = generate_grid(
+        bounding_box=bounding_box,
+        tile_size=tile_size,
+        epsg_code=epsg_code,
+        quantize=quantize,
+    )
+
+    mocked__validate_generate_grid.assert_called_once_with(
+        bounding_box=bounding_box,
+        tile_size=tile_size,
+        epsg_code=epsg_code,
+        quantize=quantize,
+    )
+    mocked_compute_coordinates.assert_called_once_with(
+        bounding_box=bounding_box,
+        tile_size=tile_size,
+        quantize=quantize,
+    )
+    mocked__generate_polygons.assert_called_once_with(
+        coordinates=mocked_compute_coordinates.return_value,
+        tile_size=tile_size,
+    )
+    gpd.testing.assert_geodataframe_equal(grid, expected)
 
 
 @pytest.mark.parametrize('coordinates, tile_size, expected', data_test__generate_polygons)
@@ -73,23 +141,17 @@ def test__validate_compute_coordinates(
     mocked_validate_bounding_box,
     mocked__validate_quantize,
 ) -> None:
-    tile_size = 256
-    x_min = -128
-    y_min = -128
-    x_max = 128
-    y_max = 128
+    bounding_box = (-128, -128, 128, 128)
+    tile_size = 128
     quantize = True
     _validate_compute_coordinates(
+        bounding_box=bounding_box,
         tile_size=tile_size,
-        x_min=x_min,
-        y_min=y_min,
-        x_max=x_max,
-        y_max=y_max,
         quantize=quantize,
     )
 
     mocked_validate_tile_size.assert_called_once_with(tile_size)
-    mocked_validate_bounding_box.assert_called_once_with((x_min, y_min, x_max, y_max))
+    mocked_validate_bounding_box.assert_called_once_with(bounding_box)
     mocked__validate_quantize.assert_called_once_with(quantize)
 
 
@@ -103,25 +165,19 @@ def test__validate_generate_grid(
     mocked_validate_epsg_code,
     mocked__validate_quantize,
 ) -> None:
-    tile_size = 256
-    x_min = -128
-    y_min = -128
-    x_max = 128
-    y_max = 128
+    bounding_box = (-128, -128, 128, 128)
+    tile_size = 128
     epsg_code = 25832
     quantize = True
     _validate_generate_grid(
+        bounding_box=bounding_box,
         tile_size=tile_size,
-        x_min=x_min,
-        y_min=y_min,
-        x_max=x_max,
-        y_max=y_max,
         epsg_code=epsg_code,
         quantize=quantize,
     )
 
     mocked_validate_tile_size.assert_called_once_with(tile_size)
-    mocked_validate_bounding_box.assert_called_once_with((x_min, y_min, x_max, y_max))
+    mocked_validate_bounding_box.assert_called_once_with(bounding_box)
     mocked_validate_epsg_code.assert_called_once_with(epsg_code)
     mocked__validate_quantize.assert_called_once_with(quantize)
 
