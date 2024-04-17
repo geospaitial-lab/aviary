@@ -1,8 +1,11 @@
+import numpy as np
 import pytest
 
 from src.utils.tests.data.data_test_validators import (
     data_test_validate_bounding_box_type_error,
     data_test_validate_bounding_box_value_error,
+    data_test_validate_coordinates_type_error,
+    data_test_validate_coordinates_value_error,
     data_test_validate_epsg_code_type_error,
     data_test_validate_epsg_code_value_error,
     data_test_validate_tile_size_type_error,
@@ -11,6 +14,7 @@ from src.utils.tests.data.data_test_validators import (
 from src.utils.validators import (
     raise_type_error,
     validate_bounding_box,
+    validate_coordinates,
     validate_epsg_code,
     validate_tile_size,
 )
@@ -54,6 +58,33 @@ def test_validate_bounding_box_value_error(
 ) -> None:
     with pytest.raises(ValueError) as e:
         validate_bounding_box(bounding_box)
+
+    assert str(e.value) == message
+
+
+def test_validate_coordinates() -> None:
+    coordinates = np.array([[0, 0], [128, 128]], dtype=np.int32)
+    validate_coordinates(coordinates)
+
+
+@pytest.mark.parametrize('coordinates, message', data_test_validate_coordinates_type_error)
+def test_validate_coordinates_type_error(
+    coordinates,
+    message: str,
+) -> None:
+    with pytest.raises(TypeError) as e:
+        validate_coordinates(coordinates)
+
+    assert str(e.value) == message
+
+
+@pytest.mark.parametrize('coordinates, message', data_test_validate_coordinates_value_error)
+def test_validate_coordinates_value_error(
+    coordinates,
+    message: str,
+) -> None:
+    with pytest.raises(ValueError) as e:
+        validate_coordinates(coordinates)
 
     assert str(e.value) == message
 
