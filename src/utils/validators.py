@@ -1,8 +1,10 @@
+import numpy as np
 from pyproj import CRS
 from pyproj.exceptions import CRSError
 
 from src.utils.types import (
     BoundingBox,
+    Coordinates,
     EPSGCode,
     TileSize,
 )
@@ -59,6 +61,32 @@ def validate_bounding_box(bounding_box: BoundingBox) -> None:
         message = (
             f'Invalid values for bounding_box. '
             f'Expected (x_min, y_min, x_max, y_max) where x_min < x_max and y_min < y_max, but got {bounding_box}.'
+        )
+        raise ValueError(message)
+
+
+def validate_coordinates(coordinates: Coordinates) -> None:
+    """
+    | Validates the coordinates.
+
+    :param coordinates: coordinates (x_min, y_min) of each tile
+    """
+    if not isinstance(coordinates, np.ndarray):
+        raise_type_error(
+            param_name='coordinates',
+            expected_type=np.ndarray,
+            actual_type=type(coordinates),
+        )
+
+    conditions = [
+        coordinates.dtype == np.int32,
+        coordinates.ndim == 2,
+        coordinates.shape[1] == 2,
+    ]
+    if not all(conditions):
+        message = (
+            f'Invalid array for coordinates. '
+            f'Expected an array of shape (n, 2) with dtype int32, but got {coordinates}.'
         )
         raise ValueError(message)
 
