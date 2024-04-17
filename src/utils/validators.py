@@ -86,7 +86,8 @@ def validate_coordinates(coordinates: Coordinates) -> None:
     if not all(conditions):
         message = (
             f'Invalid array for coordinates. '
-            f'Expected an array of shape (n, 2) with dtype int32, but got {coordinates}.'
+            f'Expected an array of shape (n, 2) with dtype int32, '
+            f'but got an array of shape {coordinates.shape} with dtype {coordinates.dtype}.'
         )
         raise ValueError(message)
 
