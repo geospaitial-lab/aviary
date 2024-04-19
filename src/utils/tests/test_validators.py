@@ -1,3 +1,5 @@
+import re
+
 import pytest
 
 from src.utils.tests.data.data_test_validators import (
@@ -48,7 +50,7 @@ def test_validate_bounding_box_value_error(
     bounding_box,
     message: str,
 ) -> None:
-    with pytest.raises(ValueError, match=message):
+    with pytest.raises(ValueError, match=re.escape(message)):
         validate_bounding_box(bounding_box)
 
 
