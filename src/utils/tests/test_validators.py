@@ -77,7 +77,7 @@ def test_validate_coordinates_value_error(
     coordinates,
     message: str,
 ) -> None:
-    with pytest.raises(ValueError, match=message):
+    with pytest.raises(ValueError, match=re.escape(message)):
         validate_coordinates(coordinates)
 
 
