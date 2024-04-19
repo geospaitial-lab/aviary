@@ -1,3 +1,5 @@
+import re
+
 import numpy as np
 import pytest
 
@@ -21,18 +23,16 @@ from src.utils.validators import (
 
 
 def test_raise_type_error() -> None:
-    with pytest.raises(TypeError) as e:
+    message = (
+        'Invalid type for param. '
+        'Expected <class \'int\'>, but got <class \'str\'>.'
+    )
+    with pytest.raises(TypeError, match=message):
         raise_type_error(
             param_name='param',
             expected_type=int,
             actual_type=str,
         )
-
-    message = (
-        'Invalid type for param. '
-        'Expected <class \'int\'>, but got <class \'str\'>.'
-    )
-    assert str(e.value) == message
 
 
 def test_validate_bounding_box() -> None:
@@ -45,10 +45,8 @@ def test_validate_bounding_box_type_error(
     bounding_box,
     message: str,
 ) -> None:
-    with pytest.raises(TypeError) as e:
+    with pytest.raises(TypeError, match=message):
         validate_bounding_box(bounding_box)
-
-    assert str(e.value) == message
 
 
 @pytest.mark.parametrize('bounding_box, message', data_test_validate_bounding_box_value_error)
@@ -56,10 +54,8 @@ def test_validate_bounding_box_value_error(
     bounding_box,
     message: str,
 ) -> None:
-    with pytest.raises(ValueError) as e:
+    with pytest.raises(ValueError, match=re.escape(message)):
         validate_bounding_box(bounding_box)
-
-    assert str(e.value) == message
 
 
 def test_validate_coordinates() -> None:
@@ -72,10 +68,8 @@ def test_validate_coordinates_type_error(
     coordinates,
     message: str,
 ) -> None:
-    with pytest.raises(TypeError) as e:
+    with pytest.raises(TypeError, match=message):
         validate_coordinates(coordinates)
-
-    assert str(e.value) == message
 
 
 @pytest.mark.parametrize('coordinates, message', data_test_validate_coordinates_value_error)
@@ -83,10 +77,8 @@ def test_validate_coordinates_value_error(
     coordinates,
     message: str,
 ) -> None:
-    with pytest.raises(ValueError) as e:
+    with pytest.raises(ValueError, match=message):
         validate_coordinates(coordinates)
-
-    assert str(e.value) == message
 
 
 def test_validate_epsg_code() -> None:
@@ -99,10 +91,8 @@ def test_validate_epsg_code_type_error(
     epsg_code,
     message: str,
 ) -> None:
-    with pytest.raises(TypeError) as e:
+    with pytest.raises(TypeError, match=message):
         validate_epsg_code(epsg_code)
-
-    assert str(e.value) == message
 
 
 @pytest.mark.parametrize('epsg_code, message', data_test_validate_epsg_code_value_error)
@@ -110,10 +100,8 @@ def test_validate_epsg_code_value_error(
     epsg_code,
     message: str,
 ) -> None:
-    with pytest.raises(ValueError) as e:
+    with pytest.raises(ValueError, match=message):
         validate_epsg_code(epsg_code)
-
-    assert str(e.value) == message
 
 
 def test_validate_tile_size() -> None:
@@ -126,10 +114,8 @@ def test_validate_tile_size_type_error(
     tile_size,
     message: str,
 ) -> None:
-    with pytest.raises(TypeError) as e:
+    with pytest.raises(TypeError, match=message):
         validate_tile_size(tile_size)
-
-    assert str(e.value) == message
 
 
 @pytest.mark.parametrize('tile_size, message', data_test_validate_tile_size_value_error)
@@ -137,7 +123,5 @@ def test_validate_tile_size_value_error(
     tile_size,
     message: str,
 ) -> None:
-    with pytest.raises(ValueError) as e:
+    with pytest.raises(ValueError, match=message):
         validate_tile_size(tile_size)
-
-    assert str(e.value) == message
