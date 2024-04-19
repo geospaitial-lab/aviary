@@ -205,11 +205,9 @@ def test__validate_quantize() -> None:
 
 
 @pytest.mark.parametrize('quantize, message', data_test__validate_quantize_type_error)
-def test__validate_bounding_box_type_error(
+def test__validate_quantize_type_error(
     quantize,
     message: str,
 ) -> None:
-    with pytest.raises(TypeError) as e:
+    with pytest.raises(TypeError, match=message):
         _validate_quantize(quantize)
-
-    assert str(e.value) == message
