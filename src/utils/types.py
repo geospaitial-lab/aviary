@@ -16,3 +16,9 @@ YMin = int
 class GeospatialFilterMode(Enum):
     DIFFERENCE = 'difference'
     INTERSECTION = 'intersection'
+
+
+class SetFilterMode(Enum):
+    DIFFERENCE = 'difference'
+    INTERSECTION = 'intersection'
+    UNION = 'union'
