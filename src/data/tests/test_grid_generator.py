@@ -3,8 +3,7 @@ from unittest.mock import patch
 from src.data import GridGenerator
 
 
-@patch('src.data.grid_generator.validate_grid_generator')
-def test_init(mocked_validate_grid_generator) -> None:
+def test_init() -> None:
     bounding_box = (-128, -128, 128, 128)
     epsg_code = 25832
     grid_generator = GridGenerator(
@@ -12,10 +11,6 @@ def test_init(mocked_validate_grid_generator) -> None:
         epsg_code=epsg_code,
     )
 
-    mocked_validate_grid_generator.assert_called_once_with(
-        bounding_box=bounding_box,
-        epsg_code=epsg_code,
-    )
     assert grid_generator.bounding_box == bounding_box
     assert grid_generator.epsg_code == epsg_code
     assert grid_generator.x_min == bounding_box[0]
