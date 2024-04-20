@@ -1,3 +1,5 @@
+from enum import Enum
+
 import numpy as np
 import numpy.typing as npt
 
@@ -9,3 +11,8 @@ XMax = int
 XMin = int
 YMax = int
 YMin = int
+
+
+class GeospatialFilterMode(Enum):
+    DIFFERENCE = 'difference'
+    INTERSECTION = 'intersection'
