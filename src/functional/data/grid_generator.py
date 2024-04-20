@@ -10,12 +10,6 @@ from src.utils.types import (
     XMin,
     YMin,
 )
-from src.utils.validators import (
-    raise_type_error,
-    validate_bounding_box,
-    validate_epsg_code,
-    validate_tile_size,
-)
 
 
 def compute_coordinates(
@@ -31,12 +25,6 @@ def compute_coordinates(
     :param quantize: if True, the bounding box is quantized to tile_size
     :return: coordinates (x_min, y_min) of each tile
     """
-    _validate_compute_coordinates(
-        bounding_box=bounding_box,
-        tile_size=tile_size,
-        quantize=quantize,
-    )
-
     x_min, y_min, x_max, y_max = bounding_box
 
     if quantize:
@@ -71,13 +59,6 @@ def generate_grid(
     :param quantize: if True, the bounding box is quantized to tile_size
     :return: grid
     """
-    _validate_generate_grid(
-        bounding_box=bounding_box,
-        tile_size=tile_size,
-        epsg_code=epsg_code,
-        quantize=quantize,
-    )
-
     coordinates = compute_coordinates(
         bounding_box=bounding_box,
         tile_size=tile_size,
@@ -127,68 +108,3 @@ def _quantize_coordinates(
     x_min = x_min - (x_min % tile_size)
     y_min = y_min - (y_min % tile_size)
     return x_min, y_min
-
-
-def _validate_compute_coordinates(
-    bounding_box: BoundingBox,
-    tile_size: TileSize,
-    quantize: bool,
-) -> None:
-    """
-    | Validates the input parameters of compute_coordinates.
-
-    :param bounding_box: bounding box (x_min, y_min, x_max, y_max)
-    :param tile_size: tile size in meters
-    :param quantize: if True, the bounding box is quantized to tile_size
-    """
-    validate_bounding_box(bounding_box)
-    validate_tile_size(tile_size)
-    _validate_quantize(quantize)
-
-
-def _validate_generate_grid(
-    bounding_box: BoundingBox,
-    tile_size: TileSize,
-    epsg_code: EPSGCode,
-    quantize: bool,
-) -> None:
-    """
-    | Validates the input parameters of generate_grid.
-
-    :param bounding_box: bounding box (x_min, y_min, x_max, y_max)
-    :param tile_size: tile size in meters
-    :param epsg_code: EPSG code
-    :param quantize: if True, the bounding box is quantized to tile_size
-    """
-    validate_bounding_box(bounding_box)
-    validate_tile_size(tile_size)
-    validate_epsg_code(epsg_code)
-    _validate_quantize(quantize)
-
-
-def validate_grid_generator(
-    bounding_box: BoundingBox,
-    epsg_code: EPSGCode,
-) -> None:
-    """
-    | Validates the input parameters of GridGenerator.
-
-    :param bounding_box: bounding box (x_min, y_min, x_max, y_max)
-    :param epsg_code: EPSG code
-    """
-    validate_bounding_box(bounding_box)
-    validate_epsg_code(epsg_code)
-
-
-def _validate_quantize(quantize: bool) -> None:
-    """
-    | Validates the quantize parameter.
-
-    :param quantize: if True, the bounding box is quantized to tile_size
-    """
-    if not isinstance(quantize, bool):
-        raise_type_error(
-            param_name='quantize',
-            expected_type=bool,
-            actual_type=type(quantize),
-        )

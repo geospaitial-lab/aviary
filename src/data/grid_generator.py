@@ -3,7 +3,6 @@ import geopandas as gpd
 from src.functional.data.grid_generator import (
     compute_coordinates,
     generate_grid,
-    validate_grid_generator,
 )
 from src.utils.types import (
     BoundingBox,
@@ -28,11 +27,6 @@ class GridGenerator:
         :param bounding_box: bounding box (x_min, y_min, x_max, y_max)
         :param epsg_code: EPSG code
         """
-        validate_grid_generator(
-            bounding_box=bounding_box,
-            epsg_code=epsg_code,
-        )
-
         self.bounding_box = bounding_box
         self.epsg_code = epsg_code
 
