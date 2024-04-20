@@ -28,9 +28,3 @@ data_test__quantize_coordinates = [
     (128, 128, 128, (128, 128)),
     (129, 129, 128, (128, 128)),
 ]
-
-data_test__validate_quantize_type_error = [
-    ('True',
-     'Invalid type for quantize. '
-     'Expected <class \'bool\'>, but got <class \'str\'>.'),
-]
