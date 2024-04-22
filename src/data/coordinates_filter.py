@@ -6,6 +6,7 @@ import numpy.typing as npt
 
 from src.functional.data.coordinates_filter import (
     composite_filter,
+    duplicates_filter,
     geospatial_filter,
     mask_filter,
     set_filter,
@@ -59,6 +60,23 @@ class CompositeFilter(CoordinatesFilter):
         return composite_filter(
             coordinates=coordinates,
             coordinates_filters=self.coordinates_filters,
+        )
+
+
+class DuplicatesFilter(CoordinatesFilter):
+
+    def filter_coordinates(
+        self,
+        coordinates: Coordinates,
+    ) -> Coordinates:
+        """
+        | Filters the coordinates by removing duplicates.
+
+        :param coordinates: coordinates (x_min, y_min) of each tile
+        :return: filtered coordinates (x_min, y_min) of each tile
+        """
+        return duplicates_filter(
+            coordinates=coordinates,
         )
 
 
