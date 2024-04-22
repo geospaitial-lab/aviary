@@ -1,6 +1,6 @@
 import pytest
 
-from src.data import GridGenerator
+from src.data.grid_generator import GridGenerator
 
 
 @pytest.fixture(scope='session')
