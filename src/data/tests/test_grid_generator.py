@@ -1,6 +1,6 @@
 from unittest.mock import patch
 
-from src.data import GridGenerator
+from src.data.grid_generator import GridGenerator
 
 
 def test_init() -> None:
