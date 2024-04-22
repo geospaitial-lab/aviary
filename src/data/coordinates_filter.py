@@ -12,6 +12,7 @@ from src.functional.data.coordinates_filter import (
 )
 from src.utils.types import (
     Coordinates,
+    EPSGCode,
     GeospatialFilterMode,
     SetFilterMode,
     TileSize,
@@ -66,15 +67,18 @@ class GeospatialFilter(CoordinatesFilter):
     def __init__(
         self,
         tile_size: TileSize,
+        epsg_code: EPSGCode,
         gdf: gpd.GeoDataFrame,
         mode: GeospatialFilterMode,
     ) -> None:
         """
         :param tile_size: tile size in meters
+        :param epsg_code: EPSG code
         :param gdf: geodataframe
         :param mode: geospatial filter mode (GeospatialFilterMode.DIFFERENCE or GeospatialFilterMode.INTERSECTION)
         """
         self.tile_size = tile_size
+        self.epsg_code = epsg_code
         self.gdf = gdf
         self.mode = mode
 
@@ -91,6 +95,7 @@ class GeospatialFilter(CoordinatesFilter):
         return geospatial_filter(
             coordinates=coordinates,
             tile_size=self.tile_size,
+            epsg_code=self.epsg_code,
             gdf=self.gdf,
             mode=self.mode,
         )
