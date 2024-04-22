@@ -34,6 +34,18 @@ def composite_filter(
     return coordinates
 
 
+def duplicates_filter(
+    coordinates: Coordinates,
+) -> Coordinates:
+    """
+    | Filters the coordinates by removing duplicates.
+
+    :param coordinates: coordinates (x_min, y_min) of each tile
+    :return: filtered coordinates (x_min, y_min) of each tile
+    """
+    return np.unique(coordinates, axis=0)
+
+
 def geospatial_filter(
     coordinates: Coordinates,
     tile_size: TileSize,
