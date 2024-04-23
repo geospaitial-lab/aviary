@@ -30,7 +30,7 @@ def composite_filter(
     :return: filtered coordinates (x_min, y_min) of each tile
     """
     for coordinates_filter in coordinates_filters:
-        coordinates = coordinates_filter.filter_coordinates(coordinates)
+        coordinates = coordinates_filter(coordinates)
     return coordinates
 
 
