@@ -23,7 +23,7 @@ from src.utils.types import (
 class CoordinatesFilter(ABC):
 
     @abstractmethod
-    def filter_coordinates(
+    def __call__(
         self,
         coordinates: Coordinates,
     ) -> Coordinates:
@@ -47,7 +47,7 @@ class CompositeFilter(CoordinatesFilter):
         """
         self.coordinates_filters = coordinates_filters
 
-    def filter_coordinates(
+    def __call__(
         self,
         coordinates: Coordinates,
     ) -> Coordinates:
@@ -65,7 +65,7 @@ class CompositeFilter(CoordinatesFilter):
 
 class DuplicatesFilter(CoordinatesFilter):
 
-    def filter_coordinates(
+    def __call__(
         self,
         coordinates: Coordinates,
     ) -> Coordinates:
@@ -100,7 +100,7 @@ class GeospatialFilter(CoordinatesFilter):
         self.gdf = gdf
         self.mode = mode
 
-    def filter_coordinates(
+    def __call__(
         self,
         coordinates: Coordinates,
     ) -> Coordinates:
@@ -130,7 +130,7 @@ class MaskFilter(CoordinatesFilter):
         """
         self.mask = mask
 
-    def filter_coordinates(
+    def __call__(
         self,
         coordinates: Coordinates,
     ) -> Coordinates:
@@ -160,7 +160,7 @@ class SetFilter(CoordinatesFilter):
         self.additional_coordinates = additional_coordinates
         self.mode = mode
 
-    def filter_coordinates(
+    def __call__(
         self,
         coordinates: Coordinates,
     ) -> Coordinates:
