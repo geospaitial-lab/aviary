@@ -216,7 +216,8 @@ def _set_filter_difference(
     :param additional_coordinates: additional coordinates (x_min, y_min) of each tile
     :return: filtered coordinates (x_min, y_min) of each tile
     """
-    mask = np.isin(coordinates, additional_coordinates, invert=True).all(axis=-1)
+    # noinspection PyUnresolvedReferences
+    mask = ~(coordinates[:, np.newaxis] == additional_coordinates).all(axis=-1).any(axis=-1)
     return coordinates[mask]
 
 
@@ -232,7 +233,8 @@ def _set_filter_intersection(
     :param additional_coordinates: additional coordinates (x_min, y_min) of each tile
     :return: filtered coordinates (x_min, y_min) of each tile
     """
-    mask = np.isin(coordinates, additional_coordinates).all(axis=-1)
+    # noinspection PyUnresolvedReferences
+    mask = (coordinates[:, np.newaxis] == additional_coordinates).all(axis=-1).any(axis=-1)
     return coordinates[mask]
 
 
