@@ -43,7 +43,8 @@ def duplicates_filter(
     :param coordinates: coordinates (x_min, y_min) of each tile
     :return: filtered coordinates (x_min, y_min) of each tile
     """
-    return np.unique(coordinates, axis=0)
+    _, index = np.unique(coordinates, axis=0, return_index=True)
+    return coordinates[np.sort(index)]
 
 
 def geospatial_filter(
@@ -248,5 +249,5 @@ def _set_filter_union(
     :return: filtered coordinates (x_min, y_min) of each tile
     """
     coordinates = np.concatenate([coordinates, additional_coordinates], axis=0)
-    coordinates = np.unique(coordinates, axis=0)
+    coordinates = duplicates_filter(coordinates)
     return coordinates
