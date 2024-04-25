@@ -19,14 +19,23 @@ data_test_compute_coordinates = [
 ]
 
 data_test__quantize_coordinates = [
+    # test case 1: x_min < 0 and y_min < 0, x_min and y_min are not divisible by tile_size
     (-129, -129, 128, (-256, -256)),
+    # test case 2: x_min < 0 and y_min < 0, x_min and y_min are divisible by tile_size
     (-128, -128, 128, (-128, -128)),
+    # test case 3: x_min < 0 and y_min < 0, x_min and y_min are not divisible by tile_size
     (-127, -127, 128, (-128, -128)),
+    # test case 4: x_min < 0 and y_min < 0, x_min and y_min are not divisible by tile_size
     (-1, -1, 128, (-128, -128)),
+    # test case 5: x_min = 0 and y_min = 0, x_min and y_min are divisible by tile_size
     (0, 0, 128, (0, 0)),
+    # test case 6: x_min > 0 and y_min > 0, x_min and y_min are not divisible by tile_size
     (1, 1, 128, (0, 0)),
+    # test case 7: x_min > 0 and y_min > 0, x_min and y_min are not divisible by tile_size
     (127, 127, 128, (0, 0)),
+    # test case 8: x_min > 0 and y_min > 0, x_min and y_min are divisible by tile_size
     (128, 128, 128, (128, 128)),
+    # test case 9: x_min > 0 and y_min > 0, x_min and y_min are not divisible by tile_size
     (129, 129, 128, (128, 128)),
 ]
 
