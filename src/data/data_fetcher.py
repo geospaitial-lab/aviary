@@ -28,7 +28,7 @@ class DataFetcher(Protocol):
 
         :param x_min: minimum x coordinate
         :param y_min: minimum y coordinate
-        :return: fetched data
+        :return: data
         """
         ...
 
@@ -70,7 +70,7 @@ class VRTDataFetcher:
 
         :param x_min: minimum x coordinate
         :param y_min: minimum y coordinate
-        :return: fetched data
+        :return: data
         """
         return vrt_data_fetcher(
             x_min=x_min,
