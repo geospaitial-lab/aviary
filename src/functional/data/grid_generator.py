@@ -82,29 +82,29 @@ def generate_grid(
         tile_size=tile_size,
         quantize=quantize,
     )
-    polygons = _generate_polygons(
+    tiles = _generate_tiles(
         coordinates=coordinates,
         tile_size=tile_size,
     )
     return gpd.GeoDataFrame(
-        geometry=polygons,
+        geometry=tiles,
         crs=f'EPSG:{epsg_code}',
     )
 
 
-def _generate_polygons(
+def _generate_tiles(
     coordinates: Coordinates,
     tile_size: TileSize,
 ) -> list[Polygon]:
     """
-    | Generates a list of polygons from the coordinates.
+    | Generates a list of tiles from the coordinates.
 
     :param coordinates: coordinates (x_min, y_min) of each tile
     :param tile_size: tile size in meters
-    :return: list of polygons
+    :return: list of tiles
     """
-    polygons = [
+    tiles = [
         box(x_min, y_min, x_min + tile_size, y_min + tile_size)
         for x_min, y_min in coordinates
     ]
-    return polygons
+    return tiles
