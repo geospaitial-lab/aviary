@@ -55,7 +55,7 @@ def test_generate_grid(
         quantize=quantize,
     )
 
-    assert mocked_generate_grid.called_once_with(
+    mocked_generate_grid.assert_called_once_with(
         bounding_box=grid_generator.bounding_box,
         tile_size=tile_size,
         epsg_code=grid_generator.epsg_code,
