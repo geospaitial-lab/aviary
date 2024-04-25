@@ -9,12 +9,12 @@ from shapely.geometry import box, Polygon
 from src.functional.data.grid_generator import (
     compute_coordinates,
     generate_grid,
-    _generate_polygons,
+    _generate_tiles,
     _quantize_coordinates,
 )
 from src.functional.data.tests.data.data_test_grid_generator import (
     data_test_compute_coordinates,
-    data_test__generate_polygons,
+    data_test__generate_tiles,
     data_test__quantize_coordinates,
 )
 from src.utils.types import (
@@ -59,25 +59,25 @@ def test__quantize_coordinates(
     assert quantized_y_min == expected[1]
 
 
-@patch('src.functional.data.grid_generator._generate_polygons')
+@patch('src.functional.data.grid_generator._generate_tiles')
 @patch('src.functional.data.grid_generator.compute_coordinates')
 def test_generate_grid(
     mocked_compute_coordinates,
-    mocked__generate_polygons,
+    mocked__generate_tiles,
 ) -> None:
     bounding_box = (-128, -128, 128, 128)
     tile_size = 128
     epsg_code = 25832
     quantize = True
-    expected_polygons = [
+    expected_tiles = [
         box(-128, -128, 0, 0),
         box(0, -128, 128, 0),
         box(-128, 0, 0, 128),
         box(0, 0, 128, 128),
     ]
-    mocked__generate_polygons.return_value = expected_polygons
+    mocked__generate_tiles.return_value = expected_tiles
     expected = gpd.GeoDataFrame(
-        geometry=mocked__generate_polygons.return_value,
+        geometry=mocked__generate_tiles.return_value,
         crs=f'EPSG:{epsg_code}',
     )
     grid = generate_grid(
@@ -92,22 +92,22 @@ def test_generate_grid(
         tile_size=tile_size,
         quantize=quantize,
     )
-    mocked__generate_polygons.assert_called_once_with(
+    mocked__generate_tiles.assert_called_once_with(
         coordinates=mocked_compute_coordinates.return_value,
         tile_size=tile_size,
     )
     gpd.testing.assert_geodataframe_equal(grid, expected)
 
 
-@pytest.mark.parametrize('coordinates, tile_size, expected', data_test__generate_polygons)
-def test__generate_polygons(
+@pytest.mark.parametrize('coordinates, tile_size, expected', data_test__generate_tiles)
+def test__generate_tiles(
     coordinates: Coordinates,
     tile_size: TileSize,
     expected: list[Polygon],
 ) -> None:
-    polygons = _generate_polygons(
+    tiles = _generate_tiles(
         coordinates=coordinates,
         tile_size=tile_size,
     )
 
-    assert all(polygon.equals(expected[i]) for i, polygon in enumerate(polygons))
+    assert all(polygon.equals(expected[i]) for i, polygon in enumerate(tiles))

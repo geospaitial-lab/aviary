@@ -39,7 +39,7 @@ data_test__quantize_coordinates = [
     (129, 129, 128, (128, 128)),
 ]
 
-data_test__generate_polygons = [
+data_test__generate_tiles = [
     (
         np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32),
         128,

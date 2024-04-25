@@ -8,7 +8,7 @@ from numpy import typing as npt
 
 if TYPE_CHECKING:
     from src.data.coordinates_filter import CoordinatesFilter
-from src.functional.data.grid_generator import _generate_polygons
+from src.functional.data.grid_generator import _generate_tiles
 from src.utils.types import (
     Coordinates,
     EPSGCode,
@@ -100,12 +100,12 @@ def _generate_grid(
     :param epsg_code: EPSG code
     :return: grid
     """
-    polygons = _generate_polygons(
+    tiles = _generate_tiles(
         coordinates=coordinates,
         tile_size=tile_size,
     )
     return gpd.GeoDataFrame(
-        geometry=polygons,
+        geometry=tiles,
         crs=f'EPSG:{epsg_code}',
     )
 
