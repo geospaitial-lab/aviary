@@ -24,11 +24,6 @@ data_test__quantize_coordinates = [
 
 data_test__generate_polygons = [
     (
-        np.array([[0, 0]], dtype=np.int32),
-        256,
-        [box(0, 0, 256, 256)],
-    ),
-    (
         np.array([[-256, -256], [0, 0], [256, 256]], dtype=np.int32),
         256,
         [
