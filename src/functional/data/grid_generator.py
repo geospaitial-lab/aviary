@@ -44,6 +44,24 @@ def compute_coordinates(
     return coordinates
 
 
+def _quantize_coordinates(
+    x_min: XMin,
+    y_min: YMin,
+    tile_size: TileSize,
+) -> tuple[XMin, YMin]:
+    """
+    | Quantizes the coordinates of the bottom left corner of the bounding box to the tile size.
+
+    :param x_min: minimum x coordinate
+    :param y_min: minimum y coordinate
+    :param tile_size: tile size in meters
+    :return: quantized coordinates (x_min, y_min) of the bounding box
+    """
+    x_min = x_min - (x_min % tile_size)
+    y_min = y_min - (y_min % tile_size)
+    return x_min, y_min
+
+
 def generate_grid(
     bounding_box: BoundingBox,
     tile_size: TileSize,
@@ -90,21 +108,3 @@ def _generate_polygons(
         for x_min, y_min in coordinates
     ]
     return polygons
-
-
-def _quantize_coordinates(
-    x_min: XMin,
-    y_min: YMin,
-    tile_size: TileSize,
-) -> tuple[XMin, YMin]:
-    """
-    | Quantizes the coordinates of the bottom left corner of the bounding box to the tile size.
-
-    :param x_min: minimum x coordinate
-    :param y_min: minimum y coordinate
-    :param tile_size: tile size in meters
-    :return: quantized coordinates (x_min, y_min) of the bounding box
-    """
-    x_min = x_min - (x_min % tile_size)
-    y_min = y_min - (y_min % tile_size)
-    return x_min, y_min

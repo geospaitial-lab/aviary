@@ -42,6 +42,23 @@ def test_compute_coordinates(
     np.testing.assert_array_equal(coordinates, expected)
 
 
+@pytest.mark.parametrize('x_min, y_min, tile_size, expected', data_test__quantize_coordinates)
+def test__quantize_coordinates(
+    x_min: XMin,
+    y_min: YMin,
+    tile_size: TileSize,
+    expected: tuple[XMin, YMin],
+) -> None:
+    quantized_x_min, quantized_y_min = _quantize_coordinates(
+        x_min=x_min,
+        y_min=y_min,
+        tile_size=tile_size,
+    )
+
+    assert quantized_x_min == expected[0]
+    assert quantized_y_min == expected[1]
+
+
 @patch('src.functional.data.grid_generator._generate_polygons')
 @patch('src.functional.data.grid_generator.compute_coordinates')
 def test_generate_grid(
@@ -94,20 +111,3 @@ def test__generate_polygons(
     )
 
     assert all(polygon.equals(expected[i]) for i, polygon in enumerate(polygons))
-
-
-@pytest.mark.parametrize('x_min, y_min, tile_size, expected', data_test__quantize_coordinates)
-def test__quantize_coordinates(
-    x_min: XMin,
-    y_min: YMin,
-    tile_size: TileSize,
-    expected: tuple[XMin, YMin],
-) -> None:
-    quantized_x_min, quantized_y_min = _quantize_coordinates(
-        x_min=x_min,
-        y_min=y_min,
-        tile_size=tile_size,
-    )
-
-    assert quantized_x_min == expected[0]
-    assert quantized_y_min == expected[1]
