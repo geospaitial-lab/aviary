@@ -2,8 +2,16 @@ import numpy as np
 from shapely.geometry import box
 
 data_test_compute_coordinates = [
+    # test case 1: bounding_box is not quantized
     (
-        (-128, -128, 128, 128),
+        (-127, -127, 128, 128),
+        128,
+        False,
+        np.array([[-127, -127], [1, -127], [-127, 1], [1, 1]], dtype=np.int32),
+    ),
+    # test case 2: bounding_box is quantized
+    (
+        (-127, -127, 128, 128),
         128,
         True,
         np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32),
