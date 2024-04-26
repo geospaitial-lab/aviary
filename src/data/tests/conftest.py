@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import geopandas as gpd
 import numpy as np
 import pytest
@@ -9,9 +11,13 @@ from src.data.coordinates_filter import (
     MaskFilter,
     SetFilter,
 )
+from src.data.data_fetcher import (
+    VRTDataFetcher,
+)
 from src.data.grid_generator import GridGenerator
 from src.utils.types import (
     GeospatialFilterMode,
+    InterpolationMode,
     SetFilterMode,
 )
 
@@ -77,4 +83,22 @@ def set_filter() -> SetFilter:
     return SetFilter(
         additional_coordinates=additional_coordinates,
         mode=mode,
+    )
+
+
+@pytest.fixture(scope='session')
+def vrt_data_fetcher() -> VRTDataFetcher:
+    path = Path('test/test.vrt')
+    tile_size = 128
+    ground_sampling_distance = .2
+    interpolation_mode = InterpolationMode.BILINEAR
+    buffer_size = None
+    drop_channels = None
+    return VRTDataFetcher(
+        path=path,
+        tile_size=tile_size,
+        ground_sampling_distance=ground_sampling_distance,
+        interpolation_mode=interpolation_mode,
+        buffer_size=buffer_size,
+        drop_channels=drop_channels,
     )

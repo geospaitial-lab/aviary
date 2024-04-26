@@ -6,14 +6,20 @@ from .coordinates_filter import (
     MaskFilter,
     SetFilter,
 )
+from .data_fetcher import (
+    DataFetcher,
+    VRTDataFetcher,
+)
 from .grid_generator import GridGenerator
 
 __all__ = [
     'CompositeFilter',
     'CoordinatesFilter',
+    'DataFetcher',
     'DuplicatesFilter',
     'GeospatialFilter',
     'GridGenerator',
     'MaskFilter',
     'SetFilter',
+    'VRTDataFetcher',
 ]
