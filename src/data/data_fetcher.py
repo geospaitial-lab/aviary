@@ -66,7 +66,7 @@ class VRTDataFetcher:
         y_min: YMin,
     ) -> npt.NDArray:
         """
-        | Fetches the data.
+        | Fetches the data from the VRT file.
 
         :param x_min: minimum x coordinate
         :param y_min: minimum y coordinate
