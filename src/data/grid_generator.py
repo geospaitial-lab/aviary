@@ -9,10 +9,6 @@ from src.utils.types import (
     Coordinates,
     EPSGCode,
     TileSize,
-    XMax,
-    XMin,
-    YMax,
-    YMin,
 )
 
 
@@ -29,44 +25,6 @@ class GridGenerator:
         """
         self.bounding_box = bounding_box
         self.epsg_code = epsg_code
-
-        self._x_min, self._y_min, self._x_max, self._y_max = self.bounding_box
-
-    @property
-    def x_min(self) -> XMin:
-        """
-        | Minimum x coordinate of the bounding box.
-
-        :return: x_min
-        """
-        return self._x_min
-
-    @property
-    def y_min(self) -> YMin:
-        """
-        | Minimum y coordinate of the bounding box.
-
-        :return: y_min
-        """
-        return self._y_min
-
-    @property
-    def x_max(self) -> XMax:
-        """
-        | Maximum x coordinate of the bounding box.
-
-        :return: x_max
-        """
-        return self._x_max
-
-    @property
-    def y_max(self) -> YMax:
-        """
-        | Maximum y coordinate of the bounding box.
-
-        :return: y_max
-        """
-        return self._y_max
 
     def compute_coordinates(
         self,

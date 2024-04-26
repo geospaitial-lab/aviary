@@ -13,10 +13,6 @@ def test_init() -> None:
 
     assert grid_generator.bounding_box == bounding_box
     assert grid_generator.epsg_code == epsg_code
-    assert grid_generator.x_min == bounding_box[0]
-    assert grid_generator.y_min == bounding_box[1]
-    assert grid_generator.x_max == bounding_box[2]
-    assert grid_generator.y_max == bounding_box[3]
 
 
 @patch('src.data.grid_generator.compute_coordinates')
