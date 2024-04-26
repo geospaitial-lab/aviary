@@ -5,9 +5,13 @@ import numpy.typing as npt
 
 from src.functional.data.data_fetcher import (
     vrt_data_fetcher,
+    vrt_data_fetcher_info,
 )
 from src.utils.types import (
+    BoundingBox,
     BufferSize,
+    DType,
+    EPSGCode,
     GroundSamplingDistance,
     InterpolationMode,
     TileSize,
@@ -59,6 +63,55 @@ class VRTDataFetcher:
         self.interpolation_mode = interpolation_mode
         self.buffer_size = buffer_size
         self.drop_channels = drop_channels
+
+        self._data_fetcher_info = vrt_data_fetcher_info(
+            path=self.path,
+        )
+
+    @property
+    def src_bounding_box(self) -> BoundingBox:
+        """
+        | Bounding box of the VRT file.
+
+        :return: bounding box (x_min, y_min, x_max, y_max)
+        """
+        return self._data_fetcher_info.bounding_box
+
+    @property
+    def src_dtype(self) -> list[DType]:
+        """
+        | Data type of each channel of the VRT file.
+
+        :return: data type of each channel
+        """
+        return self._data_fetcher_info.dtype
+
+    @property
+    def src_epsg_code(self) -> EPSGCode:
+        """
+        | EPSG code of the VRT file.
+
+        :return: EPSG code
+        """
+        return self._data_fetcher_info.epsg_code
+
+    @property
+    def src_ground_sampling_distance(self) -> GroundSamplingDistance:
+        """
+        | Ground sampling distance of the VRT file.
+
+        :return: ground sampling distance
+        """
+        return self._data_fetcher_info.ground_sampling_distance
+
+    @property
+    def src_num_channels(self) -> int:
+        """
+        | Number of channels of the VRT file.
+
+        :return: number of channels
+        """
+        return self._data_fetcher_info.num_channels
 
     def __call__(
         self,

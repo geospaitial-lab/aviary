@@ -1,4 +1,5 @@
 from pathlib import Path
+from unittest.mock import patch
 
 import geopandas as gpd
 import numpy as np
@@ -87,7 +88,10 @@ def set_filter() -> SetFilter:
 
 
 @pytest.fixture(scope='session')
-def vrt_data_fetcher() -> VRTDataFetcher:
+@patch('src.data.data_fetcher.vrt_data_fetcher_info')
+def vrt_data_fetcher(
+    _mocked_vrt_data_fetcher_info,
+) -> VRTDataFetcher:
     path = Path('test/test.vrt')
     tile_size = 128
     ground_sampling_distance = .2
