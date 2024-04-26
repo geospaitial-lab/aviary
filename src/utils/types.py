@@ -22,7 +22,7 @@ YMin = int
 @dataclass
 class DataFetcherInfo:
     bounding_box: BoundingBox
-    dtype: DType
+    dtype: list[DType]
     epsg_code: EPSGCode
     ground_sampling_distance: GroundSamplingDistance
     num_channels: int
