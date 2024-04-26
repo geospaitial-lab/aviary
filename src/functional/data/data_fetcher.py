@@ -1,3 +1,4 @@
+from math import ceil, floor
 from pathlib import Path
 
 import numpy as np
@@ -8,6 +9,8 @@ import rasterio.windows
 from src.utils.types import (
     BoundingBox,
     BufferSize,
+    DataFetcherInfo,
+    DType,
     GroundSamplingDistance,
     InterpolationMode,
     TileSize,
@@ -156,3 +159,33 @@ def _permute_data(
     :return: data
     """
     return np.transpose(data, (1, 2, 0))
+
+
+def vrt_data_fetcher_info(
+    path: Path,
+) -> DataFetcherInfo:
+    """
+    | Information about the VRT file.
+
+    :param path: path to the VRT file
+    :return: data fetcher information
+    """
+    with rio.open(path) as src:
+        bounding_box = (
+            floor(src.bounds.left),
+            floor(src.bounds.bottom),
+            ceil(src.bounds.right),
+            ceil(src.bounds.top),
+        )
+        dtype = [DType.from_rio(dtype) for dtype in src.dtypes]
+        epsg_code = src.crs.to_epsg()
+        ground_sampling_distance, _ = src.res
+        num_channels = src.count
+
+    return DataFetcherInfo(
+        bounding_box=bounding_box,
+        dtype=dtype,
+        epsg_code=epsg_code,
+        ground_sampling_distance=ground_sampling_distance,
+        num_channels=num_channels,
+    )
