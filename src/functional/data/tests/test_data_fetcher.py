@@ -113,12 +113,17 @@ def test_vrt_data_fetcher_info(
     mocked_src.res = (.5, .5)
     mocked_src.count = 3
     mocked_rio_open.return_value.__enter__.return_value = mocked_src
+    expected_bounding_box = (-128, -128, 128, 128)
+    expected_dtype = [DType.UINT8, DType.UINT8, DType.UINT8]
+    expected_epsg_code = 25832
+    expected_ground_sampling_distance = .5
+    expected_num_channels = 3
     expected = DataFetcherInfo(
-        bounding_box=(-128, -128, 128, 128),
-        dtype=[DType.UINT8, DType.UINT8, DType.UINT8],
-        epsg_code=25832,
-        ground_sampling_distance=.5,
-        num_channels=3,
+        bounding_box=expected_bounding_box,
+        dtype=expected_dtype,
+        epsg_code=expected_epsg_code,
+        ground_sampling_distance=expected_ground_sampling_distance,
+        num_channels=expected_num_channels,
     )
     vrt_data_fetcher_info_ = vrt_data_fetcher_info(
         path=path,
