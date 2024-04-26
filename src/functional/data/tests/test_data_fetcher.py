@@ -1,3 +1,6 @@
+from pathlib import Path
+from unittest.mock import MagicMock, patch
+
 import numpy as np
 import numpy.typing as npt
 import pytest
@@ -7,6 +10,7 @@ from src.functional.data.data_fetcher import (
     _compute_tile_size_pixels,
     _drop_channels,
     _permute_data,
+    vrt_data_fetcher_info,
 )
 from src.functional.data.tests.data.data_test_data_fetcher import (
     data_test__compute_bounding_box,
@@ -17,6 +21,8 @@ from src.functional.data.tests.data.data_test_data_fetcher import (
 from src.utils.types import (
     BoundingBox,
     BufferSize,
+    DataFetcherInfo,
+    DType,
     GroundSamplingDistance,
     TileSize,
     XMin,
@@ -90,3 +96,32 @@ def test__permute_data(
     )
 
     np.testing.assert_array_equal(data, expected)
+
+
+@patch('src.functional.data.data_fetcher.rio.open')
+def test_vrt_data_fetcher_info(
+    mocked_rio_open,
+) -> None:
+    path = Path('test/test.vrt')
+    mocked_src = MagicMock()
+    mocked_src.bounds.left = -127.9
+    mocked_src.bounds.bottom = -127.9
+    mocked_src.bounds.right = 127.9
+    mocked_src.bounds.top = 127.9
+    mocked_src.dtypes = ['uint8', 'uint8', 'uint8']
+    mocked_src.crs.to_epsg.return_value = 25832
+    mocked_src.res = (.5, .5)
+    mocked_src.count = 3
+    mocked_rio_open.return_value.__enter__.return_value = mocked_src
+    expected = DataFetcherInfo(
+        bounding_box=(-128, -128, 128, 128),
+        dtype=[DType.UINT8, DType.UINT8, DType.UINT8],
+        epsg_code=25832,
+        ground_sampling_distance=.5,
+        num_channels=3,
+    )
+    vrt_data_fetcher_info_ = vrt_data_fetcher_info(
+        path=path,
+    )
+
+    assert vrt_data_fetcher_info_ == expected
