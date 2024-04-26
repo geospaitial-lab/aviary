@@ -96,7 +96,7 @@ class VRTDataFetcher:
         return self._data_fetcher_info.epsg_code
 
     @property
-    def src_ground_sampling_distance_(self) -> GroundSamplingDistance:
+    def src_ground_sampling_distance(self) -> GroundSamplingDistance:
         """
         | Ground sampling distance of the VRT file.
 
