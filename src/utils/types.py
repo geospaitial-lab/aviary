@@ -16,6 +16,11 @@ YMax = int
 YMin = int
 
 
+class GeospatialFilterMode(Enum):
+    DIFFERENCE = 'difference'
+    INTERSECTION = 'intersection'
+
+
 class InterpolationMode(Enum):
     BILINEAR = 'bilinear'
     NEAREST = 'nearest'
@@ -31,11 +36,6 @@ class InterpolationMode(Enum):
             InterpolationMode.NEAREST: rio.enums.Resampling.nearest,
         }
         return mapping[self]
-
-
-class GeospatialFilterMode(Enum):
-    DIFFERENCE = 'difference'
-    INTERSECTION = 'intersection'
 
 
 class SetFilterMode(Enum):
