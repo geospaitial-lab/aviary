@@ -61,7 +61,7 @@ class InterpolationMode(Enum):
     BILINEAR = 'bilinear'
     NEAREST = 'nearest'
 
-    def to_rio(self):
+    def to_rio(self) -> rio.enums.Resampling:
         """
         | Converts the interpolation mode to the rasterio resampling mode.
 
