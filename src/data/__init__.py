@@ -17,6 +17,7 @@ from .data_preprocessor import (
     StandardizePreprocessor,
     ToTensorPreprocessor,
 )
+from .dataset import Dataset
 from .grid_generator import GridGenerator
 
 __all__ = [
@@ -25,6 +26,7 @@ __all__ = [
     'CoordinatesFilter',
     'DataFetcher',
     'DataPreprocessor',
+    'Dataset',
     'DuplicatesFilter',
     'GeospatialFilter',
     'GridGenerator',
