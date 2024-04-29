@@ -16,6 +16,13 @@ from src.data.coordinates_filter import (
 from src.data.data_fetcher import (
     VRTDataFetcher,
 )
+from src.data.data_preprocessor import (
+    CompositePreprocessor,
+    DataPreprocessor,
+    NormalizePreprocessor,
+    StandardizePreprocessor,
+    ToTensorPreprocessor,
+)
 from src.data.grid_generator import GridGenerator
 from src.utils.types import (
     GeospatialFilterMode,
@@ -33,6 +40,18 @@ def composite_filter() -> CompositeFilter:
     ]
     return CompositeFilter(
         coordinates_filters=coordinates_filters,
+    )
+
+
+@pytest.fixture(scope='session')
+def composite_preprocessor() -> CompositePreprocessor:
+    data_preprocessors = [
+        MagicMock(spec=DataPreprocessor),
+        MagicMock(spec=DataPreprocessor),
+        MagicMock(spec=DataPreprocessor),
+    ]
+    return CompositePreprocessor(
+        data_preprocessors=data_preprocessors,
     )
 
 
@@ -77,6 +96,16 @@ def mask_filter() -> MaskFilter:
 
 
 @pytest.fixture(scope='session')
+def normalize_preprocessor() -> NormalizePreprocessor:
+    min_values = [0.] * 3
+    max_values = [255.] * 3
+    return NormalizePreprocessor(
+        min_values=min_values,
+        max_values=max_values,
+    )
+
+
+@pytest.fixture(scope='session')
 def set_filter() -> SetFilter:
     additional_coordinates = np.array([[-128, 0], [0, 0]], dtype=np.int32)
     mode = SetFilterMode.DIFFERENCE
@@ -84,6 +113,21 @@ def set_filter() -> SetFilter:
         additional_coordinates=additional_coordinates,
         mode=mode,
     )
+
+
+@pytest.fixture(scope='session')
+def standardize_preprocessor() -> StandardizePreprocessor:
+    mean_values = [0.] * 3
+    std_values = [1.] * 3
+    return StandardizePreprocessor(
+        mean_values=mean_values,
+        std_values=std_values,
+    )
+
+
+@pytest.fixture(scope='session')
+def to_tensor_preprocessor() -> ToTensorPreprocessor:
+    return ToTensorPreprocessor()
 
 
 @pytest.fixture(scope='session')
