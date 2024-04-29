@@ -102,7 +102,7 @@ class StandardizePreprocessor(DataPreprocessor):
 
     def __call__(
         self,
-        data: npt.NDArray[np.float32],
+        data: npt.NDArray,
     ) -> npt.NDArray[np.float32]:
         """
         | Preprocesses the data by applying standardization.
