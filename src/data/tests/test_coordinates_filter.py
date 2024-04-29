@@ -1,4 +1,4 @@
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 import geopandas as gpd
 import geopandas.testing
@@ -6,6 +6,7 @@ import numpy as np
 
 from src.data.coordinates_filter import (
     CompositeFilter,
+    CoordinatesFilter,
     DuplicatesFilter,
     GeospatialFilter,
     MaskFilter,
@@ -18,12 +19,10 @@ from src.utils.types import (
 
 
 def test_init_composite_filter() -> None:
-    mask = np.array([0, 1, 0, 1], dtype=np.bool_)
     coordinates_filters = [
-        DuplicatesFilter(),
-        MaskFilter(
-            mask=mask,
-        ),
+        MagicMock(spec=CoordinatesFilter),
+        MagicMock(spec=CoordinatesFilter),
+        MagicMock(spec=CoordinatesFilter),
     ]
     composite_filter = CompositeFilter(
         coordinates_filters=coordinates_filters,
