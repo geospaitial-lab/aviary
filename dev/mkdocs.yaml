@@ -1,0 +1,14 @@
+site_name: aviary
+docs_dir: ../docs
+theme:
+  name: material
+  language: en
+  features:
+    - navigation.instant
+extra:
+  generator: false
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/geospaitial-lab
+copyright:
+  © 2024 geospaitial lab

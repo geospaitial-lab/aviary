@@ -1,5 +1,6 @@
 -r ../requirements.txt
 
+mkdocs-material==9.5.20
 pip-audit==2.7.2
 pre-commit==3.7.0
 pytest==8.2.0
