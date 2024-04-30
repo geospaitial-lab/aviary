@@ -6,7 +6,7 @@ import numpy as np
 import numpy.typing as npt
 import pytest
 
-from src.functional.data.coordinates_filter import (
+from src.functional.geodata.coordinates_filter import (
     duplicates_filter,
     _geospatial_filter_difference,
     _geospatial_filter_intersection,
@@ -16,7 +16,7 @@ from src.functional.data.coordinates_filter import (
     _set_filter_intersection,
     _set_filter_union,
 )
-from src.functional.data.tests.data.data_test_coordinates_filter import (
+from src.functional.geodata.tests.data.data_test_coordinates_filter import (
     data_test_duplicates_filter,
     data_test__geospatial_filter_difference,
     data_test__geospatial_filter_intersection,
@@ -104,9 +104,9 @@ def test_mask_filter(
     np.testing.assert_array_equal(filtered_coordinates, expected)
 
 
-@patch('src.functional.data.coordinates_filter._set_filter_union')
-@patch('src.functional.data.coordinates_filter._set_filter_intersection')
-@patch('src.functional.data.coordinates_filter._set_filter_difference')
+@patch('src.functional.geodata.coordinates_filter._set_filter_union')
+@patch('src.functional.geodata.coordinates_filter._set_filter_intersection')
+@patch('src.functional.geodata.coordinates_filter._set_filter_difference')
 def test_set_filter(
     mocked_set_filter_difference,
     mocked_set_filter_intersection,
