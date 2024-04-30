@@ -10,14 +10,12 @@ from .data_preprocessor import (
     ToTensorPreprocessor,
 )
 from .dataset import Dataset
-from .grid_generator import GridGenerator
 
 __all__ = [
     'CompositePreprocessor',
     'DataFetcher',
     'DataPreprocessor',
     'Dataset',
-    'GridGenerator',
     'NormalizePreprocessor',
     'StandardizePreprocessor',
     'ToTensorPreprocessor',

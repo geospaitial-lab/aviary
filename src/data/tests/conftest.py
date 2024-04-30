@@ -16,7 +16,6 @@ from src.data.data_preprocessor import (
     ToTensorPreprocessor,
 )
 from src.data.dataset import Dataset
-from src.data.grid_generator import GridGenerator
 from src.utils.types import (
     InterpolationMode,
 )
@@ -43,16 +42,6 @@ def dataset() -> Dataset:
         data_fetcher=data_fetcher,
         data_preprocessor=data_preprocessor,
         coordinates=coordinates,
-    )
-
-
-@pytest.fixture(scope='session')
-def grid_generator() -> GridGenerator:
-    bounding_box = (-128, -128, 128, 128)
-    epsg_code = 25832
-    return GridGenerator(
-        bounding_box=bounding_box,
-        epsg_code=epsg_code,
     )
 
 

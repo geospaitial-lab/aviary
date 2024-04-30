@@ -6,12 +6,14 @@ from .coordinates_filter import (
     MaskFilter,
     SetFilter,
 )
+from .grid_generator import GridGenerator
 
 __all__ = [
     'CompositeFilter',
     'CoordinatesFilter',
     'DuplicatesFilter',
     'GeospatialFilter',
+    'GridGenerator',
     'MaskFilter',
     'SetFilter',
 ]

@@ -12,6 +12,7 @@ from src.geodata.coordinates_filter import (
     MaskFilter,
     SetFilter,
 )
+from src.geodata.grid_generator import GridGenerator
 from src.utils.types import (
     GeospatialFilterMode,
     SetFilterMode,
@@ -49,6 +50,16 @@ def geospatial_filter() -> GeospatialFilter:
         epsg_code=epsg_code,
         gdf=gdf,
         mode=mode,
+    )
+
+
+@pytest.fixture(scope='session')
+def grid_generator() -> GridGenerator:
+    bounding_box = (-128, -128, 128, 128)
+    epsg_code = 25832
+    return GridGenerator(
+        bounding_box=bounding_box,
+        epsg_code=epsg_code,
     )
 
 
