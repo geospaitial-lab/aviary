@@ -6,13 +6,13 @@ import numpy as np
 import pytest
 from shapely.geometry import box, Polygon
 
-from src.functional.data.grid_generator import (
+from src.functional.geodata.grid_generator import (
     compute_coordinates,
     generate_grid,
     _generate_tiles,
     _quantize_coordinates,
 )
-from src.functional.data.tests.data.data_test_grid_generator import (
+from src.functional.geodata.tests.data.data_test_grid_generator import (
     data_test_compute_coordinates,
     data_test__generate_tiles,
     data_test__quantize_coordinates,
@@ -59,8 +59,8 @@ def test__quantize_coordinates(
     assert quantized_y_min == expected[1]
 
 
-@patch('src.functional.data.grid_generator._generate_tiles')
-@patch('src.functional.data.grid_generator.compute_coordinates')
+@patch('src.functional.geodata.grid_generator._generate_tiles')
+@patch('src.functional.geodata.grid_generator.compute_coordinates')
 def test_generate_grid(
     mocked_compute_coordinates,
     mocked__generate_tiles,
