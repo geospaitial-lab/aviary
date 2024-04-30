@@ -36,4 +36,4 @@ jobs:
         run: |
           python -m pip install --upgrade pip setuptools
           pip install mkdocs-material
-          mkdocs gh-deploy --force
+          mkdocs gh-deploy -f dev/mkdocs.yaml --force
