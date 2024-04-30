@@ -63,6 +63,18 @@ data_test__drop_channels = [
             dtype=np.uint8,
         ),
     ),
+    # test case 4: drop_channels contains a negative index
+    (
+        data,
+        [0, -1],
+        np.array(
+            [
+                [[127], [0]],
+                [[255], [127]],
+            ],
+            dtype=np.uint8,
+        ),
+    ),
 ]
 
 data_test__permute_data = [
