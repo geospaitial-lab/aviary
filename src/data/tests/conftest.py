@@ -14,6 +14,7 @@ from src.data.coordinates_filter import (
     SetFilter,
 )
 from src.data.data_fetcher import (
+    DataFetcher,
     VRTDataFetcher,
 )
 from src.data.data_preprocessor import (
@@ -23,6 +24,7 @@ from src.data.data_preprocessor import (
     StandardizePreprocessor,
     ToTensorPreprocessor,
 )
+from src.data.dataset import Dataset
 from src.data.grid_generator import GridGenerator
 from src.utils.types import (
     GeospatialFilterMode,
@@ -52,6 +54,18 @@ def composite_preprocessor() -> CompositePreprocessor:
     ]
     return CompositePreprocessor(
         data_preprocessors=data_preprocessors,
+    )
+
+
+@pytest.fixture(scope='session')
+def dataset() -> Dataset:
+    data_fetcher = MagicMock(spec=DataFetcher)
+    data_preprocessor = MagicMock(spec=DataPreprocessor)
+    coordinates = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32)
+    return Dataset(
+        data_fetcher=data_fetcher,
+        data_preprocessor=data_preprocessor,
+        coordinates=coordinates,
     )
 
 
