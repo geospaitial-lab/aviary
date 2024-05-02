@@ -18,14 +18,16 @@ def get_item(
     coordinates: Coordinates,
     index: int,
 ) -> torch.Tensor:
-    """
-    | Returns the data.
+    """Fetches and preprocesses data given the index of the tile.
 
-    :param data_fetcher: data fetcher
-    :param data_preprocessor: data preprocessor
-    :param coordinates: coordinates (x_min, y_min) of each tile
-    :param index: index of the tile
-    :return: data
+    Parameters:
+        data_fetcher: data fetcher
+        data_preprocessor: data preprocessor
+        coordinates: coordinates (x_min, y_min) of each tile
+        index: index of the tile
+
+    Returns:
+        data
     """
     x_min, y_min = coordinates[index]
     data = data_fetcher(
@@ -41,10 +43,12 @@ def get_item(
 def get_length(
     coordinates: Coordinates,
 ) -> int:
-    """
-    | Returns the number of tiles.
+    """Computes the number of tiles.
 
-    :param coordinates: coordinates (x_min, y_min) of each tile
-    :return: number of tiles
+    Parameters:
+        coordinates: coordinates (x_min, y_min) of each tile
+
+    Returns:
+        number of tiles
     """
     return len(coordinates)
