@@ -75,7 +75,7 @@ class VRTDataFetcher:
             ground_sampling_distance: ground sampling distance in meters
             interpolation_mode: interpolation mode (`BILINEAR` or `NEAREST`)
             buffer_size: buffer size in meters (specifies the area around the tile that is additionally fetched)
-            drop_channels: channel indices to drop (supports negative indices)
+            drop_channels: channel indices to drop (supports negative indexing)
         """
         self.path = path
         self.tile_size = tile_size
