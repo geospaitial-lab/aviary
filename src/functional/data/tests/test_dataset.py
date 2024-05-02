@@ -18,19 +18,19 @@ from src.utils.types import (
 
 
 def test_get_item() -> None:
-    coordinates = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32)
-    index = 0
     data_fetcher = MagicMock(spec=DataFetcher)
     expected_data_fetcher = 'expected_data_fetcher'
     data_fetcher.return_value = expected_data_fetcher
     data_preprocessor = MagicMock(spec=DataPreprocessor)
     expected_data_preprocessor = 'expected_data_preprocessor'
     data_preprocessor.return_value = expected_data_preprocessor
+    coordinates = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32)
+    index = 0
     data = get_item(
-        coordinates=coordinates,
-        index=index,
         data_fetcher=data_fetcher,
         data_preprocessor=data_preprocessor,
+        coordinates=coordinates,
+        index=index,
     )
 
     data_fetcher.assert_called_once_with(

@@ -13,18 +13,18 @@ from src.utils.types import (
 
 
 def get_item(
-    coordinates: Coordinates,
-    index: int,
     data_fetcher: DataFetcher,
     data_preprocessor: DataPreprocessor,
+    coordinates: Coordinates,
+    index: int,
 ) -> torch.Tensor:
     """
     | Returns the data.
 
-    :param coordinates: coordinates (x_min, y_min) of each tile
-    :param index: index of the tile
     :param data_fetcher: data fetcher
     :param data_preprocessor: data preprocessor
+    :param coordinates: coordinates (x_min, y_min) of each tile
+    :param index: index of the tile
     :return: data
     """
     x_min, y_min = coordinates[index]
