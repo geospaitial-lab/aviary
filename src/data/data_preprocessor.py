@@ -13,29 +13,44 @@ from src.functional.data.data_preprocessor import (
 
 
 class DataPreprocessor(ABC):
+    """Abstract class for data preprocessors
+
+    Data preprocessors are callables that preprocess data.
+    The data preprocessor is used by the dataset to preprocess the fetched data for each tile.
+
+    Currently implemented data preprocessors:
+        - CompositePreprocessor: Composes multiple data preprocessors
+        - NormalizePreprocessor: Applies min-max normalization
+        - StandardizePreprocessor: Applies standardization
+        - ToTensorPreprocessor: Converts the data to a tensor
+    """
 
     @abstractmethod
     def __call__(
         self,
         data: npt.NDArray | torch.Tensor,
     ) -> npt.NDArray | torch.Tensor:
-        """
-        | Preprocesses the data.
+        """Preprocesses the data.
 
-        :param data: data
-        :return: preprocessed data
+        Parameters:
+            data: data
+
+        Returns:
+            preprocessed data
         """
         pass
 
 
 class CompositePreprocessor(DataPreprocessor):
+    """Data preprocessor that composes multiple data preprocessors"""
 
     def __init__(
         self,
         data_preprocessors: list[DataPreprocessor],
     ) -> None:
         """
-        :param data_preprocessors: data preprocessors
+        Parameters:
+            data_preprocessors: data preprocessors
         """
         self.data_preprocessors = data_preprocessors
 
@@ -43,11 +58,13 @@ class CompositePreprocessor(DataPreprocessor):
         self,
         data: npt.NDArray,
     ) -> npt.NDArray | torch.Tensor:
-        """
-        | Preprocesses the data with each data preprocessor.
+        """Preprocesses the data with each data preprocessor.
 
-        :param data: data
-        :return: preprocessed data
+        Parameters:
+            data: data
+
+        Returns:
+            preprocessed data
         """
         return composite_preprocessor(
             data=data,
@@ -56,6 +73,19 @@ class CompositePreprocessor(DataPreprocessor):
 
 
 class NormalizePreprocessor(DataPreprocessor):
+    """Data preprocessor that applies min-max normalization
+
+    Examples:
+        Assume the data is a 3-channel image of dtype uint8.
+
+        >>> min_values = [0.] * 3
+        >>> max_values = [255.] * 3
+        >>> normalize_preprocessor = NormalizePreprocessor(
+        ...     min_values=min_values,
+        ...     max_values=max_values,
+        ... )
+        >>> preprocessed_data = normalize_preprocessor(data)
+    """
 
     def __init__(
         self,
@@ -63,8 +93,9 @@ class NormalizePreprocessor(DataPreprocessor):
         max_values: list[float],
     ) -> None:
         """
-        :param min_values: minimum values of the data (per channel)
-        :param max_values: maximum values of the data (per channel)
+        Parameters:
+            min_values: minimum values of the data (per channel)
+            max_values: maximum values of the data (per channel)
         """
         self.min_values = min_values
         self.max_values = max_values
@@ -73,11 +104,13 @@ class NormalizePreprocessor(DataPreprocessor):
         self,
         data: npt.NDArray,
     ) -> npt.NDArray[np.float32]:
-        """
-        | Preprocesses the data by applying min-max normalization.
+        """Preprocesses the data by applying min-max normalization.
 
-        :param data: data
-        :return: preprocessed data
+        Parameters:
+            data: data
+
+        Returns:
+            preprocessed data
         """
         return normalize_preprocessor(
             data=data,
@@ -87,6 +120,20 @@ class NormalizePreprocessor(DataPreprocessor):
 
 
 class StandardizePreprocessor(DataPreprocessor):
+    """Data preprocessor that applies standardization
+
+    Examples:
+        Assume the data is a 3-channel image of dtype float32.
+        In this example the mean and standard deviation values from the ImageNet dataset are used.
+
+        >>> mean_values = [.485, .456, .406]
+        >>> std_values = [.229, .224, .225]
+        >>> standardize_preprocessor = StandardizePreprocessor(
+        ...     mean_values=mean_values,
+        ...     std_values=std_values,
+        ... )
+        >>> preprocessed_data = standardize_preprocessor(data)
+    """
 
     def __init__(
         self,
@@ -94,8 +141,9 @@ class StandardizePreprocessor(DataPreprocessor):
         std_values: list[float],
     ) -> None:
         """
-        :param mean_values: mean values of the data (per channel)
-        :param std_values: standard deviation values of the data (per channel)
+        Parameters:
+            mean_values: mean values of the data (per channel)
+            std_values: standard deviation values of the data (per channel)
         """
         self.mean_values = mean_values
         self.std_values = std_values
@@ -104,11 +152,13 @@ class StandardizePreprocessor(DataPreprocessor):
         self,
         data: npt.NDArray,
     ) -> npt.NDArray[np.float32]:
-        """
-        | Preprocesses the data by applying standardization.
+        """Preprocesses the data by applying standardization.
 
-        :param data: data
-        :return: preprocessed data
+        Parameters:
+            data: data
+
+        Returns:
+            preprocessed data
         """
         return standardize_preprocessor(
             data=data,
@@ -118,16 +168,19 @@ class StandardizePreprocessor(DataPreprocessor):
 
 
 class ToTensorPreprocessor(DataPreprocessor):
+    """Data preprocessor that converts the data to a tensor"""
 
     def __call__(
         self,
         data: npt.NDArray[np.float32],
     ) -> torch.Tensor:
-        """
-        | Converts the data to a tensor.
+        """Converts the data to a tensor.
 
-        :param data: data
-        :return: tensor
+        Parameters:
+            data: data
+
+        Returns:
+            tensor
         """
         return to_tensor_preprocessor(
             data=data,

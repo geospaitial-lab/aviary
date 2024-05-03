@@ -21,23 +21,42 @@ from src.utils.types import (
 
 
 class DataFetcher(Protocol):
+    """Protocol for data fetchers
+
+    Data fetchers are callables that fetch data from a source given a minimum x and y coordinate.
+    These coordinates correspond to the bottom left corner of a tile.
+    The data fetcher is used by the dataset to fetch data for each tile.
+
+    Currently implemented data fetchers:
+        - VRTDataFetcher: Fetches data from a virtual raster
+        - WMSDataFetcher: Fetches data from a web map service
+
+    Notes:
+        - Implementations must support concurrency (the data fetcher may be called concurrently by the dataloader)
+    """
 
     def __call__(
         self,
         x_min: XMin,
         y_min: YMin,
     ) -> npt.NDArray:
-        """
-        | Fetches the data.
+        """Fetches data from the source given a minimum x and y coordinate.
 
-        :param x_min: minimum x coordinate
-        :param y_min: minimum y coordinate
-        :return: data
+        Parameters:
+            x_min: minimum x coordinate
+            y_min: minimum y coordinate
+
+        Returns:
+            data
         """
         ...
 
 
 class VRTDataFetcher:
+    """Data fetcher for virtual rasters
+
+    Implements the DataFetcher protocol.
+    """
     _FILL_VALUE = 0
 
     def __init__(
@@ -50,12 +69,13 @@ class VRTDataFetcher:
         drop_channels: list[int] = None,
     ) -> None:
         """
-        :param path: path to the VRT file
-        :param tile_size: tile size in meters
-        :param ground_sampling_distance: ground sampling distance in meters
-        :param interpolation_mode: interpolation mode (InterpolationMode.BILINEAR or InterpolationMode.NEAREST)
-        :param buffer_size: buffer size in meters
-        :param drop_channels: channel indices to drop
+        Parameters:
+            path: path to the virtual raster (.vrt file)
+            tile_size: tile size in meters
+            ground_sampling_distance: ground sampling distance in meters
+            interpolation_mode: interpolation mode (`BILINEAR` or `NEAREST`)
+            buffer_size: buffer size in meters (specifies the area around the tile that is additionally fetched)
+            drop_channels: channel indices to drop (supports negative indexing)
         """
         self.path = path
         self.tile_size = tile_size
@@ -70,46 +90,46 @@ class VRTDataFetcher:
 
     @property
     def src_bounding_box(self) -> BoundingBox:
-        """
-        | Bounding box of the VRT file.
+        """Bounding box of the virtual raster
 
-        :return: bounding box (x_min, y_min, x_max, y_max)
+        Returns:
+            bounding box (x_min, y_min, x_max, y_max)
         """
         return self._data_fetcher_info.bounding_box
 
     @property
     def src_dtype(self) -> list[DType]:
-        """
-        | Data type of each channel of the VRT file.
+        """Data type of each channel of the virtual raster
 
-        :return: data type of each channel
+        Returns:
+            data type of each channel
         """
         return self._data_fetcher_info.dtype
 
     @property
     def src_epsg_code(self) -> EPSGCode:
-        """
-        | EPSG code of the VRT file.
+        """EPSG code of the virtual raster
 
-        :return: EPSG code
+        Returns:
+            EPSG code
         """
         return self._data_fetcher_info.epsg_code
 
     @property
     def src_ground_sampling_distance(self) -> GroundSamplingDistance:
-        """
-        | Ground sampling distance of the VRT file.
+        """Ground sampling distance of the virtual raster
 
-        :return: ground sampling distance
+        Returns:
+            ground sampling distance in meters
         """
         return self._data_fetcher_info.ground_sampling_distance
 
     @property
     def src_num_channels(self) -> int:
-        """
-        | Number of channels of the VRT file.
+        """Number of channels of the virtual raster
 
-        :return: number of channels
+        Returns:
+            number of channels
         """
         return self._data_fetcher_info.num_channels
 
@@ -118,12 +138,14 @@ class VRTDataFetcher:
         x_min: XMin,
         y_min: YMin,
     ) -> npt.NDArray:
-        """
-        | Fetches the data from the VRT file.
+        """Fetches data from the virtual raster given a minimum x and y coordinate.
 
-        :param x_min: minimum x coordinate
-        :param y_min: minimum y coordinate
-        :return: data
+        Parameters:
+            x_min: minimum x coordinate
+            y_min: minimum y coordinate
+
+        Returns:
+            data
         """
         return vrt_data_fetcher(
             x_min=x_min,

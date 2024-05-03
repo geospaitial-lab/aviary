@@ -30,19 +30,21 @@ def vrt_data_fetcher(
     drop_channels: list[int] = None,
     fill_value: int = 0,
 ) -> npt.NDArray:
-    """
-    | Fetches the data from the VRT file.
+    """Fetches data from the virtual raster given a minimum x and y coordinate.
 
-    :param x_min: minimum x coordinate
-    :param y_min: minimum y coordinate
-    :param path: path to the VRT file
-    :param tile_size: tile size in meters
-    :param ground_sampling_distance: ground sampling distance in meters
-    :param interpolation_mode: interpolation mode (InterpolationMode.BILINEAR or InterpolationMode.NEAREST)
-    :param buffer_size: buffer size in meters
-    :param drop_channels: channel indices to drop
-    :param fill_value: fill value of nodata pixels
-    :return: data
+    Parameters:
+        x_min: minimum x coordinate
+        y_min: minimum y coordinate
+        path: path to the virtual raster (.vrt file)
+        tile_size: tile size in meters
+        ground_sampling_distance: ground sampling distance in meters
+        interpolation_mode: interpolation mode (`BILINEAR` or `NEAREST`)
+        buffer_size: buffer size in meters (specifies the area around the tile that is additionally fetched)
+        drop_channels: channel indices to drop (supports negative indexing)
+        fill_value: fill value of nodata pixels
+
+    Returns:
+        data
     """
     x_min, y_min, x_max, y_max = _compute_bounding_box(
         x_min=x_min,
@@ -87,14 +89,16 @@ def _compute_bounding_box(
     tile_size: TileSize,
     buffer_size: BufferSize | None,
 ) -> BoundingBox:
-    """
-    | Computes the bounding box of the tile.
+    """Computes the bounding box of the tile.
 
-    :param x_min: minimum x coordinate
-    :param y_min: minimum y coordinate
-    :param tile_size: tile size in meters
-    :param buffer_size: buffer size in meters
-    :return: bounding box (x_min, y_min, x_max, y_max) of the tile
+    Parameters:
+        x_min: minimum x coordinate
+        y_min: minimum y coordinate
+        tile_size: tile size in meters
+        buffer_size: buffer size in meters (specifies the area around the tile that is additionally fetched)
+
+    Returns:
+        bounding box (x_min, y_min, x_max, y_max) of the tile
     """
     if buffer_size is None:
         return (
@@ -117,12 +121,14 @@ def _compute_tile_size_pixels(
     buffer_size: BufferSize | None,
     ground_sampling_distance: GroundSamplingDistance,
 ) -> int:
-    """
-    | Computes the tile size in pixels.
+    """Computes the tile size in pixels.
 
-    :param tile_size: tile size in meters
-    :param ground_sampling_distance: ground sampling distance in meters
-    :return: tile size in pixels
+    Parameters:
+        tile_size: tile size in meters
+        ground_sampling_distance: ground sampling distance in meters
+
+    Returns:
+        tile size in pixels
     """
     if buffer_size is None:
         return int(tile_size / ground_sampling_distance)
@@ -134,12 +140,14 @@ def _drop_channels(
     data: npt.NDArray,
     drop_channels: list[int] | None,
 ) -> npt.NDArray:
-    """
-    | Drops the specified channels from the data.
+    """Drops the specified channels from the data.
 
-    :param data: data
-    :param drop_channels: channel indices to drop
-    :return: data
+    Parameters:
+        data: data
+        drop_channels: channel indices to drop (supports negative indexing)
+
+    Returns:
+        data
     """
     if drop_channels is None:
         return data
@@ -152,11 +160,13 @@ def _drop_channels(
 def _permute_data(
     data: npt.NDArray,
 ) -> npt.NDArray:
-    """
-    | Permutes the data from channels-first to channels-last.
+    """Permutes the data from channels-first to channels-last.
 
-    :param data: data
-    :return: data
+    Parameters:
+        data: data
+
+    Returns:
+        data
     """
     return np.transpose(data, (1, 2, 0))
 
@@ -164,11 +174,13 @@ def _permute_data(
 def vrt_data_fetcher_info(
     path: Path,
 ) -> DataFetcherInfo:
-    """
-    | Information about the VRT file.
+    """Returns information about the data fetcher.
 
-    :param path: path to the VRT file
-    :return: data fetcher information
+    Parameters:
+        path: path to the virtual raster (.vrt file)
+
+    Returns:
+        data fetcher information
     """
     with rio.open(path) as src:
         bounding_box = (
