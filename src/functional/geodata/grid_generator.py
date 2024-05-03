@@ -17,13 +17,15 @@ def compute_coordinates(
     tile_size: TileSize,
     quantize: bool = True,
 ) -> Coordinates:
-    """
-    | Computes the coordinates of the bottom left corner of each tile.
+    """Computes the coordinates of the bottom left corner of each tile.
 
-    :param bounding_box: bounding box (x_min, y_min, x_max, y_max)
-    :param tile_size: tile size in meters
-    :param quantize: if True, the bounding box is quantized to tile_size
-    :return: coordinates (x_min, y_min) of each tile
+    Parameters:
+        bounding_box: bounding box (x_min, y_min, x_max, y_max)
+        tile_size: tile size in meters
+        quantize: if True, the bounding box is quantized to `tile_size`
+
+    Returns:
+        coordinates (x_min, y_min) of each tile
     """
     x_min, y_min, x_max, y_max = bounding_box
 
@@ -49,13 +51,15 @@ def _quantize_coordinates(
     y_min: YMin,
     tile_size: TileSize,
 ) -> tuple[XMin, YMin]:
-    """
-    | Quantizes the coordinates of the bottom left corner of the bounding box to the tile size.
+    """Quantizes the coordinates of the bottom left corner of the bounding box to the tile size.
 
-    :param x_min: minimum x coordinate
-    :param y_min: minimum y coordinate
-    :param tile_size: tile size in meters
-    :return: quantized coordinates (x_min, y_min) of the bounding box
+    Parameters:
+        x_min: minimum x coordinate
+        y_min: minimum y coordinate
+        tile_size: tile size in meters
+
+    Returns:
+        quantized coordinates (x_min, y_min) of the bounding box
     """
     x_min = x_min - (x_min % tile_size)
     y_min = y_min - (y_min % tile_size)
@@ -68,14 +72,16 @@ def generate_grid(
     epsg_code: EPSGCode,
     quantize: bool = True,
 ) -> gpd.GeoDataFrame:
-    """
-    | Generates a geodataframe of the grid.
+    """Generates a geodataframe of the grid.
 
-    :param bounding_box: bounding box (x_min, y_min, x_max, y_max)
-    :param tile_size: tile size in meters
-    :param epsg_code: EPSG code
-    :param quantize: if True, the bounding box is quantized to tile_size
-    :return: grid
+    Parameters:
+        bounding_box: bounding box (x_min, y_min, x_max, y_max)
+        tile_size: tile size in meters
+        epsg_code: EPSG code
+        quantize: if True, the bounding box is quantized to `tile_size`
+
+    Returns:
+        grid
     """
     coordinates = compute_coordinates(
         bounding_box=bounding_box,
@@ -96,12 +102,14 @@ def _generate_tiles(
     coordinates: Coordinates,
     tile_size: TileSize,
 ) -> list[Polygon]:
-    """
-    | Generates a list of tiles from the coordinates.
+    """Generates a list of tiles from the coordinates.
 
-    :param coordinates: coordinates (x_min, y_min) of each tile
-    :param tile_size: tile size in meters
-    :return: list of tiles
+    Parameters:
+        coordinates: coordinates (x_min, y_min) of each tile
+        tile_size: tile size in meters
+
+    Returns:
+        list of tiles
     """
     tiles = [
         box(x_min, y_min, x_min + tile_size, y_min + tile_size)
