@@ -69,6 +69,9 @@ def geospatial_filter(
 
     Returns:
         filtered coordinates (x_min, y_min) of each tile
+
+    Raises:
+        ValueError: Invalid geospatial filter mode
     """
     grid = _generate_grid(
         coordinates=coordinates,
@@ -90,7 +93,7 @@ def geospatial_filter(
             gdf=gdf,
         )
 
-    raise ValueError('Invalid GeospatialFilterMode!')
+    raise ValueError('Invalid geospatial filter mode!')
 
 
 def _generate_grid(
@@ -200,6 +203,9 @@ def set_filter(
 
     Returns:
         filtered coordinates (x_min, y_min) of each tile
+
+    Raises:
+        ValueError: Invalid set filter mode
     """
     if mode == SetFilterMode.DIFFERENCE:
         return _set_filter_difference(
@@ -219,7 +225,7 @@ def set_filter(
             additional_coordinates=additional_coordinates,
         )
 
-    raise ValueError('Invalid SetFilterMode!')
+    raise ValueError('Invalid set filter mode!')
 
 
 def _set_filter_difference(

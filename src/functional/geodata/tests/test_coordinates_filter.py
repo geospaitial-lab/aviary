@@ -178,7 +178,7 @@ def test_set_filter(
 
     mode = 'invalid_mode'
     mode = cast(SetFilterMode, mode)
-    with pytest.raises(ValueError, match='Invalid SetFilterMode!'):
+    with pytest.raises(ValueError, match='Invalid set filter mode!'):
         set_filter(
             coordinates=coordinates,
             additional_coordinates=additional_coordinates,
