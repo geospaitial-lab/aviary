@@ -21,29 +21,46 @@ from src.utils.types import (
 
 
 class CoordinatesFilter(ABC):
+    """Abstract class for coordinates filters
+
+    Coordinates filters are callables that filter coordinates.
+    The coordinates filter can be used to filter the coordinates of the bottom left corner of each tile.
+    E.g., to remove tiles that do not intersect with a region of interest or tiles that are already processed.
+
+    Currently implemented coordinates filters:
+        - CompositeFilter: Composes multiple coordinates filters
+        - DuplicatesFilter: Removes duplicates
+        - GeospatialFilter: Filters based on geospatial data
+        - MaskFilter: Filters based on a boolean mask
+        - SetFilter: Filters based on additional coordinates
+    """
 
     @abstractmethod
     def __call__(
         self,
         coordinates: Coordinates,
     ) -> Coordinates:
-        """
-        | Filters the coordinates.
+        """Filters the coordinates.
 
-        :param coordinates: coordinates (x_min, y_min) of each tile
-        :return: filtered coordinates (x_min, y_min) of each tile
+        Parameters:
+            coordinates: coordinates (x_min, y_min) of each tile
+
+        Returns:
+            filtered coordinates (x_min, y_min) of each tile
         """
         pass
 
 
 class CompositeFilter(CoordinatesFilter):
+    """Coordinates filter that composes multiple coordinates filters"""
 
     def __init__(
         self,
         coordinates_filters: list[CoordinatesFilter],
     ) -> None:
         """
-        :param coordinates_filters: coordinates filters
+        Parameters:
+            coordinates_filters: coordinates filters
         """
         self.coordinates_filters = coordinates_filters
 
@@ -51,11 +68,13 @@ class CompositeFilter(CoordinatesFilter):
         self,
         coordinates: Coordinates,
     ) -> Coordinates:
-        """
-        | Filters the coordinates with each coordinates filter.
+        """Filters the coordinates with each coordinates filter.
 
-        :param coordinates: coordinates (x_min, y_min) of each tile
-        :return: filtered coordinates (x_min, y_min) of each tile
+        Parameters:
+            coordinates: coordinates (x_min, y_min) of each tile
+
+        Returns:
+            filtered coordinates (x_min, y_min) of each tile
         """
         return composite_filter(
             coordinates=coordinates,
@@ -64,16 +83,19 @@ class CompositeFilter(CoordinatesFilter):
 
 
 class DuplicatesFilter(CoordinatesFilter):
+    """Coordinates filter that removes duplicates"""
 
     def __call__(
         self,
         coordinates: Coordinates,
     ) -> Coordinates:
-        """
-        | Filters the coordinates by removing duplicates.
+        """Filters the coordinates by removing duplicates.
 
-        :param coordinates: coordinates (x_min, y_min) of each tile
-        :return: filtered coordinates (x_min, y_min) of each tile
+        Parameters:
+            coordinates: coordinates (x_min, y_min) of each tile
+
+        Returns:
+            filtered coordinates (x_min, y_min) of each tile
         """
         return duplicates_filter(
             coordinates=coordinates,
@@ -81,6 +103,7 @@ class DuplicatesFilter(CoordinatesFilter):
 
 
 class GeospatialFilter(CoordinatesFilter):
+    """Coordinates filter that filters based on geospatial data"""
 
     def __init__(
         self,
@@ -90,10 +113,11 @@ class GeospatialFilter(CoordinatesFilter):
         mode: GeospatialFilterMode,
     ) -> None:
         """
-        :param tile_size: tile size in meters
-        :param epsg_code: EPSG code
-        :param gdf: geodataframe
-        :param mode: geospatial filter mode (GeospatialFilterMode.DIFFERENCE or GeospatialFilterMode.INTERSECTION)
+        Parameters:
+            tile_size: tile size in meters
+            epsg_code: EPSG code
+            gdf: geodataframe
+            mode: geospatial filter mode (`DIFFERENCE` or `INTERSECTION`)
         """
         self.tile_size = tile_size
         self.epsg_code = epsg_code
@@ -104,11 +128,13 @@ class GeospatialFilter(CoordinatesFilter):
         self,
         coordinates: Coordinates,
     ) -> Coordinates:
-        """
-        | Filters the coordinates based on the polygons in the geodataframe.
+        """Filters the coordinates based on the polygons in the geodataframe.
 
-        :param coordinates: coordinates (x_min, y_min) of each tile
-        :return: filtered coordinates (x_min, y_min) of each tile
+        Parameters:
+            coordinates: coordinates (x_min, y_min) of each tile
+
+        Returns:
+            filtered coordinates (x_min, y_min) of each tile
         """
         return geospatial_filter(
             coordinates=coordinates,
@@ -120,13 +146,15 @@ class GeospatialFilter(CoordinatesFilter):
 
 
 class MaskFilter(CoordinatesFilter):
+    """Coordinates filter that filters based on a boolean mask"""
 
     def __init__(
         self,
         mask: npt.NDArray[np.bool_],
     ) -> None:
         """
-        :param mask: boolean mask
+        Parameters:
+            mask: boolean mask
         """
         self.mask = mask
 
@@ -134,11 +162,13 @@ class MaskFilter(CoordinatesFilter):
         self,
         coordinates: Coordinates,
     ) -> Coordinates:
-        """
-        | Filters the coordinates based on the boolean mask.
+        """Filters the coordinates based on the boolean mask.
 
-        :param coordinates: coordinates (x_min, y_min) of each tile
-        :return: filtered coordinates (x_min, y_min) of each tile
+        Parameters:
+            coordinates: coordinates (x_min, y_min) of each tile
+
+        Returns:
+            filtered coordinates (x_min, y_min) of each tile
         """
         return mask_filter(
             coordinates=coordinates,
@@ -147,6 +177,7 @@ class MaskFilter(CoordinatesFilter):
 
 
 class SetFilter(CoordinatesFilter):
+    """Coordinates filter that filters based on additional coordinates"""
 
     def __init__(
         self,
@@ -154,8 +185,9 @@ class SetFilter(CoordinatesFilter):
         mode: SetFilterMode,
     ) -> None:
         """
-        :param additional_coordinates: additional coordinates (x_min, y_min) of each tile
-        :param mode: set filter mode (SetFilterMode.DIFFERENCE, SetFilterMode.INTERSECTION or SetFilterMode.UNION)
+        Parameters:
+            additional_coordinates: additional coordinates (x_min, y_min) of each tile
+            mode: set filter mode (`DIFFERENCE`, `INTERSECTION` or `UNION`)
         """
         self.additional_coordinates = additional_coordinates
         self.mode = mode
@@ -164,11 +196,13 @@ class SetFilter(CoordinatesFilter):
         self,
         coordinates: Coordinates,
     ) -> Coordinates:
-        """
-        | Filters the coordinates based on the additional coordinates.
+        """Filters the coordinates based on the additional coordinates.
 
-        :param coordinates: coordinates (x_min, y_min) of each tile
-        :return: filtered coordinates (x_min, y_min) of each tile
+        Parameters:
+            coordinates: coordinates (x_min, y_min) of each tile
+
+        Returns:
+            filtered coordinates (x_min, y_min) of each tile
         """
         return set_filter(
             coordinates=coordinates,
