@@ -103,7 +103,12 @@ class DuplicatesFilter(CoordinatesFilter):
 
 
 class GeospatialFilter(CoordinatesFilter):
-    """Coordinates filter that filters based on geospatial data"""
+    """Coordinates filter that filters based on geospatial data
+
+    Available modes:
+        - `DIFFERENCE`: Removes coordinates of tiles that are within the polygons in the geodataframe
+        - `INTERSECTION`: Removes coordinates of tiles that do not intersect with the polygons in the geodataframe
+    """
 
     def __init__(
         self,
@@ -177,7 +182,13 @@ class MaskFilter(CoordinatesFilter):
 
 
 class SetFilter(CoordinatesFilter):
-    """Coordinates filter that filters based on additional coordinates"""
+    """Coordinates filter that filters based on additional coordinates
+
+    Available modes:
+        - `DIFFERENCE`: Removes coordinates that are in the additional coordinates
+        - `INTERSECTION`: Removes coordinates that are not in the additional coordinates
+        - `UNION`: Combines the coordinates with the additional coordinates and removes duplicates
+    """
 
     def __init__(
         self,
