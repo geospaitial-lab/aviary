@@ -22,12 +22,14 @@ def composite_filter(
     coordinates: Coordinates,
     coordinates_filters: list[CoordinatesFilter],
 ) -> Coordinates:
-    """
-    | Filters the coordinates with each coordinates filter.
+    """Filters the coordinates with each coordinates filter.
 
-    :param coordinates: coordinates (x_min, y_min) of each tile
-    :param coordinates_filters: coordinates filters
-    :return: filtered coordinates (x_min, y_min) of each tile
+    Parameters:
+        coordinates: coordinates (x_min, y_min) of each tile
+        coordinates_filters: coordinates filters
+
+    Returns:
+        filtered coordinates (x_min, y_min) of each tile
     """
     for coordinates_filter in coordinates_filters:
         coordinates = coordinates_filter(coordinates)
@@ -37,11 +39,13 @@ def composite_filter(
 def duplicates_filter(
     coordinates: Coordinates,
 ) -> Coordinates:
-    """
-    | Filters the coordinates by removing duplicates.
+    """Filters the coordinates by removing duplicates.
 
-    :param coordinates: coordinates (x_min, y_min) of each tile
-    :return: filtered coordinates (x_min, y_min) of each tile
+    Parameters:
+        coordinates: coordinates (x_min, y_min) of each tile
+
+    Returns:
+        filtered coordinates (x_min, y_min) of each tile
     """
     _, index = np.unique(coordinates, axis=0, return_index=True)
     return coordinates[np.sort(index)]
@@ -54,15 +58,17 @@ def geospatial_filter(
     gdf: gpd.GeoDataFrame,
     mode: GeospatialFilterMode,
 ) -> Coordinates:
-    """
-    | Filters the coordinates based on the polygons in the geodataframe.
+    """Filters the coordinates based on the polygons in the geodataframe.
 
-    :param coordinates: coordinates (x_min, y_min) of each tile
-    :param tile_size: tile size in meters
-    :param epsg_code: EPSG code
-    :param gdf: geodataframe
-    :param mode: geospatial filter mode (GeospatialFilterMode.DIFFERENCE or GeospatialFilterMode.INTERSECTION)
-    :return: filtered coordinates (x_min, y_min) of each tile
+    Parameters:
+        coordinates: coordinates (x_min, y_min) of each tile
+        tile_size: tile size in meters
+        epsg_code: EPSG code
+        gdf: geodataframe
+        mode: geospatial filter mode (`DIFFERENCE` or `INTERSECTION`)
+
+    Returns:
+        filtered coordinates (x_min, y_min) of each tile
     """
     grid = _generate_grid(
         coordinates=coordinates,
@@ -92,13 +98,15 @@ def _generate_grid(
     tile_size: TileSize,
     epsg_code: EPSGCode,
 ) -> gpd.GeoDataFrame:
-    """
-    | Generates a geodataframe of the grid.
+    """Generates a geodataframe of the grid.
 
-    :param coordinates: coordinates (x_min, y_min) of each tile
-    :param tile_size: tile size in meters
-    :param epsg_code: EPSG code
-    :return: grid
+    Parameters:
+        coordinates: coordinates (x_min, y_min) of each tile
+        tile_size: tile size in meters
+        epsg_code: EPSG code
+
+    Returns:
+        grid
     """
     tiles = _generate_tiles(
         coordinates=coordinates,
@@ -115,14 +123,17 @@ def _geospatial_filter_difference(
     grid: gpd.GeoDataFrame,
     gdf: gpd.GeoDataFrame,
 ) -> Coordinates:
-    """
-    | Filters the coordinates based on the polygons in the geodataframe.
-    | The coordinates of tiles that are within the polygons are removed.
+    """Filters the coordinates based on the polygons in the geodataframe.
 
-    :param coordinates: coordinates (x_min, y_min) of each tile
-    :param grid: grid
-    :param gdf: geodataframe
-    :return: filtered coordinates (x_min, y_min) of each tile
+    The coordinates of tiles that are within the polygons are removed.
+
+    Parameters:
+        coordinates: coordinates (x_min, y_min) of each tile
+        grid: grid
+        gdf: geodataframe
+
+    Returns:
+        filtered coordinates (x_min, y_min) of each tile
     """
     invalid_tiles = gpd.sjoin(
         left_df=grid,
@@ -138,14 +149,17 @@ def _geospatial_filter_intersection(
     grid: gpd.GeoDataFrame,
     gdf: gpd.GeoDataFrame,
 ) -> Coordinates:
-    """
-    | Filters the coordinates based on the polygons in the geodataframe.
-    | The coordinates of tiles that do not intersect with the polygons are removed.
+    """Filters the coordinates based on the polygons in the geodataframe.
 
-    :param coordinates: coordinates (x_min, y_min) of each tile
-    :param grid: grid
-    :param gdf: geodataframe
-    :return: filtered coordinates (x_min, y_min) of each tile
+    The coordinates of tiles that do not intersect with the polygons are removed.
+
+    Parameters:
+        coordinates: coordinates (x_min, y_min) of each tile
+        grid: grid
+        gdf: geodataframe
+
+    Returns:
+        filtered coordinates (x_min, y_min) of each tile
     """
     valid_tiles = gpd.sjoin(
         left_df=grid,
@@ -160,12 +174,14 @@ def mask_filter(
     coordinates: Coordinates,
     mask: npt.NDArray[np.bool_],
 ) -> Coordinates:
-    """
-    | Filters the coordinates based on the boolean mask.
+    """Filters the coordinates based on the boolean mask.
 
-    :param coordinates: coordinates (x_min, y_min) of each tile
-    :param mask: boolean mask
-    :return: filtered coordinates (x_min, y_min) of each tile
+    Parameters:
+        coordinates: coordinates (x_min, y_min) of each tile
+        mask: boolean mask
+
+    Returns:
+        filtered coordinates (x_min, y_min) of each tile
     """
     return coordinates[mask]
 
@@ -175,13 +191,15 @@ def set_filter(
     additional_coordinates: Coordinates,
     mode: SetFilterMode,
 ) -> Coordinates:
-    """
-    | Filters the coordinates based on the additional coordinates.
+    """Filters the coordinates based on the additional coordinates.
 
-    :param coordinates: coordinates (x_min, y_min) of each tile
-    :param additional_coordinates: additional coordinates (x_min, y_min) of each tile
-    :param mode: set filter mode (SetFilterMode.DIFFERENCE, SetFilterMode.INTERSECTION or SetFilterMode.UNION)
-    :return: filtered coordinates (x_min, y_min) of each tile
+    Parameters:
+        coordinates: coordinates (x_min, y_min) of each tile
+        additional_coordinates: additional coordinates (x_min, y_min) of each tile
+        mode: set filter mode (`DIFFERENCE`, `INTERSECTION` or `UNION`)
+
+    Returns:
+        filtered coordinates (x_min, y_min) of each tile
     """
     if mode == SetFilterMode.DIFFERENCE:
         return _set_filter_difference(
@@ -208,13 +226,16 @@ def _set_filter_difference(
     coordinates: Coordinates,
     additional_coordinates: Coordinates,
 ) -> Coordinates:
-    """
-    | Filters the coordinates based on the additional coordinates.
-    | The coordinates that are in the additional coordinates are removed.
+    """Filters the coordinates based on the additional coordinates.
 
-    :param coordinates: coordinates (x_min, y_min) of each tile
-    :param additional_coordinates: additional coordinates (x_min, y_min) of each tile
-    :return: filtered coordinates (x_min, y_min) of each tile
+    The coordinates that are in the additional coordinates are removed.
+
+    Parameters:
+        coordinates: coordinates (x_min, y_min) of each tile
+        additional_coordinates: additional coordinates (x_min, y_min) of each tile
+
+    Returns:
+        filtered coordinates (x_min, y_min) of each tile
     """
     # noinspection PyUnresolvedReferences
     mask = ~(coordinates[:, np.newaxis] == additional_coordinates).all(axis=-1).any(axis=-1)
@@ -225,13 +246,16 @@ def _set_filter_intersection(
     coordinates: Coordinates,
     additional_coordinates: Coordinates,
 ) -> Coordinates:
-    """
-    | Filters the coordinates based on the additional coordinates.
-    | The coordinates that are not in the additional coordinates are removed.
+    """Filters the coordinates based on the additional coordinates.
 
-    :param coordinates: coordinates (x_min, y_min) of each tile
-    :param additional_coordinates: additional coordinates (x_min, y_min) of each tile
-    :return: filtered coordinates (x_min, y_min) of each tile
+    The coordinates that are not in the additional coordinates are removed.
+
+    Parameters:
+        coordinates: coordinates (x_min, y_min) of each tile
+        additional_coordinates: additional coordinates (x_min, y_min) of each tile
+
+    Returns:
+        filtered coordinates (x_min, y_min) of each tile
     """
     # noinspection PyUnresolvedReferences
     mask = (coordinates[:, np.newaxis] == additional_coordinates).all(axis=-1).any(axis=-1)
@@ -242,13 +266,16 @@ def _set_filter_union(
     coordinates: Coordinates,
     additional_coordinates: Coordinates,
 ) -> Coordinates:
-    """
-    | Filters the coordinates based on the additional coordinates.
-    | The coordinates are combined with the additional coordinates and duplicates are removed.
+    """Filters the coordinates based on the additional coordinates.
 
-    :param coordinates: coordinates (x_min, y_min) of each tile
-    :param additional_coordinates: additional coordinates (x_min, y_min) of each tile
-    :return: filtered coordinates (x_min, y_min) of each tile
+    The coordinates are combined with the additional coordinates and duplicates are removed.
+
+    Parameters:
+        coordinates: coordinates (x_min, y_min) of each tile
+        additional_coordinates: additional coordinates (x_min, y_min) of each tile
+
+    Returns:
+        filtered coordinates (x_min, y_min) of each tile
     """
     coordinates = np.concatenate([coordinates, additional_coordinates], axis=0)
     coordinates = duplicates_filter(coordinates)
