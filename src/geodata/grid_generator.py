@@ -13,6 +13,12 @@ from src.utils.types import (
 
 
 class GridGenerator:
+    """Grid generator
+
+    A grid generator generates a grid of tiles.
+    The grid generator can be used to compute the coordinates of the bottom left corner of each tile
+    or to generate a geodataframe of the grid for aggregation.
+    """
 
     def __init__(
         self,
@@ -20,8 +26,9 @@ class GridGenerator:
         epsg_code: EPSGCode,
     ) -> None:
         """
-        :param bounding_box: bounding box (x_min, y_min, x_max, y_max)
-        :param epsg_code: EPSG code
+        Parameters:
+            bounding_box: bounding box (x_min, y_min, x_max, y_max)
+            epsg_code: EPSG code
         """
         self.bounding_box = bounding_box
         self.epsg_code = epsg_code
@@ -31,12 +38,14 @@ class GridGenerator:
         tile_size: TileSize,
         quantize: bool = True,
     ) -> Coordinates:
-        """
-        | Computes the coordinates of the bottom left corner of each tile.
+        """Computes the coordinates of the bottom left corner of each tile.
 
-        :param tile_size: tile size in meters
-        :param quantize: if True, the bounding box is quantized to tile_size
-        :return: coordinates (x_min, y_min) of each tile
+        Parameters:
+            tile_size: tile size in meters
+            quantize: if True, the bounding box is quantized to `tile_size`
+
+        Returns:
+            coordinates (x_min, y_min) of each tile
         """
         return compute_coordinates(
             bounding_box=self.bounding_box,
@@ -49,12 +58,14 @@ class GridGenerator:
         tile_size: TileSize,
         quantize: bool = True,
     ) -> gpd.GeoDataFrame:
-        """
-        | Generates a geodataframe of the grid.
+        """Generates a geodataframe of the grid.
 
-        :param tile_size: tile size in meters
-        :param quantize: if True, the bounding box is quantized to tile_size
-        :return: grid
+        Parameters:
+            tile_size: tile size in meters
+            quantize: if True, the bounding box is quantized to `tile_size`
+
+        Returns:
+            grid
         """
         return generate_grid(
             bounding_box=self.bounding_box,
