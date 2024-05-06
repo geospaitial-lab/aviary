@@ -40,7 +40,7 @@ def test_get_item() -> None:
     data_preprocessor.assert_called_once_with(
         data=expected_data_fetcher,
     )
-    assert data == expected_data_preprocessor
+    assert data == (expected_data_preprocessor, -128, -128)
 
 
 @pytest.mark.parametrize('coordinates, expected', data_test_get_length)
