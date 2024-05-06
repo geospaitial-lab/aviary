@@ -9,6 +9,8 @@ if TYPE_CHECKING:
     from src.data.data_preprocessor import DataPreprocessor
 from src.utils.types import (
     Coordinates,
+    XMin,
+    YMin,
 )
 
 
@@ -17,7 +19,7 @@ def get_item(
     data_preprocessor: DataPreprocessor,
     coordinates: Coordinates,
     index: int,
-) -> torch.Tensor:
+) -> tuple[torch.Tensor, XMin, YMin]:
     """Fetches and preprocesses data given the index of the tile.
 
     Parameters:
@@ -27,7 +29,7 @@ def get_item(
         index: index of the tile
 
     Returns:
-        data
+        data and coordinates (x_min, y_min) of the tile
     """
     x_min, y_min = coordinates[index]
     data = data_fetcher(
@@ -37,7 +39,7 @@ def get_item(
     data = data_preprocessor(
         data=data,
     )
-    return data
+    return data, x_min, y_min
 
 
 def get_length(
