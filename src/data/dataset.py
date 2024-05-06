@@ -8,6 +8,8 @@ from src.functional.data.dataset import (
 )
 from src.utils.types import (
     Coordinates,
+    XMin,
+    YMin,
 )
 
 
@@ -47,14 +49,14 @@ class Dataset(torch.utils.data.Dataset):
     def __getitem__(
         self,
         index: int,
-    ) -> torch.Tensor:
+    ) -> tuple[torch.Tensor, XMin, YMin]:
         """Fetches and preprocesses data given the index of the tile.
 
         Parameters:
             index: index of the tile
 
         Returns:
-            data
+            data and coordinates (x_min, y_min) of the tile
         """
         return get_item(
             coordinates=self.coordinates,
