@@ -1,3 +1,4 @@
+dask==2024.5.0
 geopandas==0.14.4
 numpy==1.26.4
 pyproj==3.6.1
