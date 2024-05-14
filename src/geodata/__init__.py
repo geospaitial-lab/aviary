@@ -7,6 +7,7 @@ from .coordinates_filter import (
     SetFilter,
 )
 from .grid_generator import GridGenerator
+from .vectorizer import Vectorizer
 
 __all__ = [
     'CompositeFilter',
@@ -16,4 +17,5 @@ __all__ = [
     'GridGenerator',
     'MaskFilter',
     'SetFilter',
+    'Vectorizer',
 ]
