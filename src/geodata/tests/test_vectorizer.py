@@ -35,7 +35,7 @@ def test_call(
     mocked_vectorizer,
     vectorizer: Vectorizer,
 ) -> None:
-    preds = np.ones(shape=(8, 640, 640), dtype=np.uint8)
+    preds = np.ones(shape=(4, 640, 640), dtype=np.uint8)
     coordinates = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32)
     vectorizer(
         preds=preds,
