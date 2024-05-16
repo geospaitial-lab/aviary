@@ -6,7 +6,7 @@ import numpy.typing as npt
 import rasterio as rio
 import rasterio.windows
 
-from src.utils.types import (
+from ...utils.types import (
     BoundingBox,
     BufferSize,
     DataFetcherInfo,

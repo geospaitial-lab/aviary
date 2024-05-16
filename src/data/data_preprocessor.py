@@ -4,7 +4,7 @@ import numpy as np
 import numpy.typing as npt
 import torch
 
-from src.functional.data.data_preprocessor import (
+from ..functional.data.data_preprocessor import (
     composite_preprocessor,
     normalize_preprocessor,
     standardize_preprocessor,

@@ -3,16 +3,18 @@ from unittest.mock import MagicMock
 import numpy as np
 import pytest
 
-from src.data.data_fetcher import DataFetcher
-from src.data.data_preprocessor import DataPreprocessor
-from src.functional.data.dataset import (
+from ....data import (
+    DataFetcher,
+    DataPreprocessor
+)
+from ..dataset import (
     get_item,
     get_length,
 )
-from src.functional.data.tests.data.data_test_dataset import (
+from .data.data_test_dataset import (
     data_test_get_length,
 )
-from src.utils.types import (
+from ....utils.types import (
     Coordinates,
 )
 

@@ -5,9 +5,11 @@ from typing import TYPE_CHECKING
 import torch
 
 if TYPE_CHECKING:
-    from src.data.data_fetcher import DataFetcher
-    from src.data.data_preprocessor import DataPreprocessor
-from src.utils.types import (
+    from ...data import (
+        DataFetcher,
+        DataPreprocessor,
+    )
+from ...utils.types import (
     Coordinates,
     XMin,
     YMin,

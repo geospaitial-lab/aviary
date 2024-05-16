@@ -6,7 +6,7 @@ import numpy as np
 import numpy.typing as npt
 import pytest
 
-from src.functional.geodata.coordinates_filter import (
+from ..coordinates_filter import (
     duplicates_filter,
     _geospatial_filter_difference,
     _geospatial_filter_intersection,
@@ -16,7 +16,7 @@ from src.functional.geodata.coordinates_filter import (
     _set_filter_intersection,
     _set_filter_union,
 )
-from src.functional.geodata.tests.data.data_test_coordinates_filter import (
+from .data.data_test_coordinates_filter import (
     data_test_duplicates_filter,
     data_test__geospatial_filter_difference,
     data_test__geospatial_filter_intersection,
@@ -25,7 +25,7 @@ from src.functional.geodata.tests.data.data_test_coordinates_filter import (
     data_test__set_filter_intersection,
     data_test__set_filter_union,
 )
-from src.utils.types import (
+from ....utils.types import (
     Coordinates,
     SetFilterMode,
 )

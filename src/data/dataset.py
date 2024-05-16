@@ -1,12 +1,14 @@
 import torch.utils.data
 
-from src.data.data_fetcher import DataFetcher
-from src.data.data_preprocessor import DataPreprocessor
-from src.functional.data.dataset import (
+from ..data import (
+    DataFetcher,
+    DataPreprocessor,
+)
+from ..functional.data.dataset import (
     get_item,
     get_length,
 )
-from src.utils.types import (
+from ..utils.types import (
     Coordinates,
     XMin,
     YMin,

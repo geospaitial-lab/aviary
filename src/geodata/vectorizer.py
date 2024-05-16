@@ -3,8 +3,8 @@ from pathlib import Path
 import numpy as np
 import numpy.typing as npt
 
-from src.functional.geodata.vectorizer import vectorizer
-from src.utils.types import (
+from ..functional.geodata.vectorizer import vectorizer
+from ..utils.types import (
     Coordinates,
     EPSGCode,
     GroundSamplingDistance,

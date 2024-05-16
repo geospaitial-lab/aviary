@@ -6,18 +6,18 @@ import numpy as np
 import pytest
 from shapely.geometry import box, Polygon
 
-from src.functional.geodata.grid_generator import (
+from ..grid_generator import (
     compute_coordinates,
     generate_grid,
     _generate_tiles,
     _quantize_coordinates,
 )
-from src.functional.geodata.tests.data.data_test_grid_generator import (
+from .data.data_test_grid_generator import (
     data_test_compute_coordinates,
     data_test__generate_tiles,
     data_test__quantize_coordinates,
 )
-from src.utils.types import (
+from ....utils.types import (
     BoundingBox,
     Coordinates,
     TileSize,

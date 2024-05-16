@@ -5,17 +5,17 @@ import geopandas as gpd
 import numpy as np
 import pytest
 
-from src.geodata.coordinates_filter import (
+from ...geodata import (
     CompositeFilter,
     CoordinatesFilter,
     DuplicatesFilter,
     GeospatialFilter,
+    GridGenerator,
     MaskFilter,
     SetFilter,
+    Vectorizer,
 )
-from src.geodata.grid_generator import GridGenerator
-from src.geodata.vectorizer import Vectorizer
-from src.utils.types import (
+from ...utils.types import (
     GeospatialFilterMode,
     SetFilterMode,
 )

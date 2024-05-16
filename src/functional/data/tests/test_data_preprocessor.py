@@ -4,12 +4,12 @@ import pytest
 import torch
 
 
-from src.functional.data.data_preprocessor import (
+from ..data_preprocessor import (
     normalize_preprocessor,
     standardize_preprocessor,
     to_tensor_preprocessor,
 )
-from src.functional.data.tests.data.data_test_data_preprocessor import (
+from .data.data_test_data_preprocessor import (
     data_test_normalize_preprocessor,
     data_test_standardize_preprocessor,
     data_test_to_tensor_preprocessor,

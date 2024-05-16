@@ -4,7 +4,7 @@ import geopandas as gpd
 import geopandas.testing
 import numpy as np
 
-from src.geodata.coordinates_filter import (
+from ...geodata import (
     CompositeFilter,
     CoordinatesFilter,
     DuplicatesFilter,
@@ -12,7 +12,7 @@ from src.geodata.coordinates_filter import (
     MaskFilter,
     SetFilter,
 )
-from src.utils.types import (
+from ...utils.types import (
     GeospatialFilterMode,
     SetFilterMode,
 )

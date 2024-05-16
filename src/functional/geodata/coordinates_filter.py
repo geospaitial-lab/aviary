@@ -7,9 +7,9 @@ import numpy as np
 from numpy import typing as npt
 
 if TYPE_CHECKING:
-    from src.geodata.coordinates_filter import CoordinatesFilter
-from src.functional.geodata.grid_generator import _generate_tiles
-from src.utils.types import (
+    from ...geodata import CoordinatesFilter
+from .grid_generator import _generate_tiles
+from ...utils.types import (
     Coordinates,
     EPSGCode,
     GeospatialFilterMode,

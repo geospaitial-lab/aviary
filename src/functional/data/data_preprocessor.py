@@ -7,7 +7,7 @@ import numpy.typing as npt
 import torch
 
 if TYPE_CHECKING:
-    from src.data.data_preprocessor import DataPreprocessor
+    from ...data import DataPreprocessor
 
 
 def composite_preprocessor(
