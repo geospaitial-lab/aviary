@@ -4,7 +4,7 @@ from ..data import (
     DataFetcher,
     DataPreprocessor,
 )
-from ..functional.data.dataset import (
+from .._functional.data.dataset import (
     get_item,
     get_length,
 )

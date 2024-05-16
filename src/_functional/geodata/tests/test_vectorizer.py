@@ -15,8 +15,8 @@ def test_vectorizer() -> None:
     pass
 
 
-@patch('src.functional.geodata.vectorizer._export_gdf')
-@patch('src.functional.geodata.vectorizer._vectorize_preds')
+@patch('src._functional.geodata.vectorizer._export_gdf')
+@patch('src._functional.geodata.vectorizer._vectorize_preds')
 def test__vectorizer_element(
     mocked__vectorize_preds,
     mocked__export_gdf,
