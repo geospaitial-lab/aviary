@@ -62,3 +62,13 @@ def test__vectorizer_element(
         y_min=y_min,
         path=path,
     )
+
+
+@pytest.mark.skip(reason='Not implemented')
+def test__export_gdf() -> None:
+    pass
+
+
+@pytest.mark.skip(reason='Not implemented')
+def test__vectorize_preds() -> None:
+    pass
