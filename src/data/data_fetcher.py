@@ -3,7 +3,7 @@ from typing import Protocol
 
 import numpy.typing as npt
 
-from ..functional.data.data_fetcher import (
+from .._functional.data.data_fetcher import (
     vrt_data_fetcher,
     vrt_data_fetcher_info,
 )

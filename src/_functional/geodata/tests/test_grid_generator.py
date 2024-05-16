@@ -59,8 +59,8 @@ def test__quantize_coordinates(
     assert quantized_y_min == expected[1]
 
 
-@patch('src.functional.geodata.grid_generator._generate_tiles')
-@patch('src.functional.geodata.grid_generator.compute_coordinates')
+@patch('src._functional.geodata.grid_generator._generate_tiles')
+@patch('src._functional.geodata.grid_generator.compute_coordinates')
 def test_generate_grid(
     mocked_compute_coordinates,
     mocked__generate_tiles,

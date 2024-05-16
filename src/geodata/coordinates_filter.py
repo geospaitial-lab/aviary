@@ -4,7 +4,7 @@ import geopandas as gpd
 import numpy as np
 import numpy.typing as npt
 
-from ..functional.geodata.coordinates_filter import (
+from .._functional.geodata.coordinates_filter import (
     composite_filter,
     duplicates_filter,
     geospatial_filter,

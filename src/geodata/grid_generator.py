@@ -1,6 +1,6 @@
 import geopandas as gpd
 
-from ..functional.geodata.grid_generator import (
+from .._functional.geodata.grid_generator import (
     compute_coordinates,
     generate_grid,
 )
