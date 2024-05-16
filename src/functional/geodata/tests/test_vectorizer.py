@@ -5,7 +5,7 @@ import dask
 import numpy as np
 import pytest
 
-from src.functional.geodata.vectorizer import (
+from ..vectorizer import (
     _vectorizer_element,
 )
 

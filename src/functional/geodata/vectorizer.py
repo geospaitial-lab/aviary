@@ -7,7 +7,7 @@ import numpy.typing as npt
 import rasterio as rio
 import rasterio.features
 
-from src.utils.types import (
+from ...utils.types import (
     Coordinates,
     EPSGCode,
     GroundSamplingDistance,

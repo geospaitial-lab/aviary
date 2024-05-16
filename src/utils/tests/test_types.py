@@ -1,6 +1,6 @@
 import rasterio as rio
 
-from src.utils.types import (
+from ..types import (
     DType,
     InterpolationMode,
 )

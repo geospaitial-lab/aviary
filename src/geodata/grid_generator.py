@@ -1,10 +1,10 @@
 import geopandas as gpd
 
-from src.functional.geodata.grid_generator import (
+from ..functional.geodata.grid_generator import (
     compute_coordinates,
     generate_grid,
 )
-from src.utils.types import (
+from ..utils.types import (
     BoundingBox,
     Coordinates,
     EPSGCode,

@@ -2,9 +2,11 @@ from unittest.mock import MagicMock, patch
 
 import numpy as np
 
-from src.data.data_fetcher import DataFetcher
-from src.data.data_preprocessor import DataPreprocessor
-from src.data.dataset import Dataset
+from ...data import (
+    DataFetcher,
+    DataPreprocessor,
+    Dataset,
+)
 
 
 def test_init() -> None:

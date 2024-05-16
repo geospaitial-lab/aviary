@@ -4,14 +4,14 @@ import geopandas as gpd
 import numpy as np
 import numpy.typing as npt
 
-from src.functional.geodata.coordinates_filter import (
+from ..functional.geodata.coordinates_filter import (
     composite_filter,
     duplicates_filter,
     geospatial_filter,
     mask_filter,
     set_filter,
 )
-from src.utils.types import (
+from ..utils.types import (
     Coordinates,
     EPSGCode,
     GeospatialFilterMode,

@@ -2,7 +2,7 @@ from unittest.mock import MagicMock, patch
 
 import numpy as np
 
-from src.data.data_preprocessor import (
+from ...data import (
     CompositePreprocessor,
     DataPreprocessor,
     NormalizePreprocessor,

@@ -3,7 +3,7 @@ from unittest.mock import patch
 
 import numpy as np
 
-from src.geodata.vectorizer import Vectorizer
+from ...geodata import Vectorizer
 
 
 def test_init() -> None:

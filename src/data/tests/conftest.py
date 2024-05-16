@@ -4,19 +4,17 @@ from unittest.mock import MagicMock, patch
 import numpy as np
 import pytest
 
-from src.data.data_fetcher import (
-    DataFetcher,
-    VRTDataFetcher,
-)
-from src.data.data_preprocessor import (
+from ...data import (
     CompositePreprocessor,
+    DataFetcher,
     DataPreprocessor,
+    Dataset,
     NormalizePreprocessor,
     StandardizePreprocessor,
     ToTensorPreprocessor,
+    VRTDataFetcher,
 )
-from src.data.dataset import Dataset
-from src.utils.types import (
+from ...utils.types import (
     InterpolationMode,
 )
 

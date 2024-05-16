@@ -1,10 +1,10 @@
 from pathlib import Path
 from unittest.mock import patch
 
-from src.data.data_fetcher import (
+from ...data import (
     VRTDataFetcher,
 )
-from src.utils.types import (
+from ...utils.types import (
     DataFetcherInfo,
     DType,
     InterpolationMode,

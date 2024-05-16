@@ -1,6 +1,6 @@
 from unittest.mock import patch
 
-from src.geodata.grid_generator import GridGenerator
+from ...geodata import GridGenerator
 
 
 def test_init() -> None:

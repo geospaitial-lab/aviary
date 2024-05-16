@@ -3,11 +3,11 @@ from typing import Protocol
 
 import numpy.typing as npt
 
-from src.functional.data.data_fetcher import (
+from ..functional.data.data_fetcher import (
     vrt_data_fetcher,
     vrt_data_fetcher_info,
 )
-from src.utils.types import (
+from ..utils.types import (
     BoundingBox,
     BufferSize,
     DType,
