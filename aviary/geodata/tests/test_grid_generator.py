@@ -15,7 +15,7 @@ def test_init() -> None:
     assert grid_generator.epsg_code == epsg_code
 
 
-@patch('src.geodata.grid_generator.compute_coordinates')
+@patch('aviary.geodata.grid_generator.compute_coordinates')
 def test_compute_coordinates(
     mocked_compute_coordinates,
     grid_generator: GridGenerator,
@@ -37,7 +37,7 @@ def test_compute_coordinates(
     assert coordinates == expected
 
 
-@patch('src.geodata.grid_generator.generate_grid')
+@patch('aviary.geodata.grid_generator.generate_grid')
 def test_generate_grid(
     mocked_generate_grid,
     grid_generator: GridGenerator,

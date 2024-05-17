@@ -1,21 +1,21 @@
-::: src.geodata.CoordinatesFilter
+::: aviary.geodata.CoordinatesFilter
 
 ---
 
-::: src.geodata.CompositeFilter
+::: aviary.geodata.CompositeFilter
 
 ---
 
-::: src.geodata.DuplicatesFilter
+::: aviary.geodata.DuplicatesFilter
 
 ---
 
-::: src.geodata.GeospatialFilter
+::: aviary.geodata.GeospatialFilter
 
 ---
 
-::: src.geodata.MaskFilter
+::: aviary.geodata.MaskFilter
 
 ---
 
-::: src.geodata.SetFilter
+::: aviary.geodata.SetFilter

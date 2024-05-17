@@ -1,1 +1,1 @@
-::: src.geodata.GridGenerator
+::: aviary.geodata.GridGenerator

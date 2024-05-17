@@ -24,7 +24,7 @@ def test_init() -> None:
     np.testing.assert_array_equal(dataset.coordinates, coordinates)
 
 
-@patch('src.data.dataset.get_item')
+@patch('aviary.data.dataset.get_item')
 def test_getitem(
     mocked_get_item,
     dataset: Dataset,
@@ -43,7 +43,7 @@ def test_getitem(
     assert item == expected
 
 
-@patch('src.data.dataset.get_length')
+@patch('aviary.data.dataset.get_length')
 def test_len(
     mocked_get_length,
     dataset: Dataset,

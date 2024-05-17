@@ -1,1 +1,1 @@
-::: src.geodata.Vectorizer
+::: aviary.geodata.Vectorizer

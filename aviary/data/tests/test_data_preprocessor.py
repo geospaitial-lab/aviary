@@ -24,7 +24,7 @@ def test_init_composite_preprocessor() -> None:
     assert composite_preprocessor.data_preprocessors == data_preprocessors
 
 
-@patch('src.data.data_preprocessor.composite_preprocessor')
+@patch('aviary.data.data_preprocessor.composite_preprocessor')
 def test_call_composite_preprocessor(
     mocked_composite_preprocessor,
     composite_preprocessor: CompositePreprocessor,
@@ -61,7 +61,7 @@ def test_init_normalize_preprocessor() -> None:
     assert normalize_preprocessor.max_values == max_values
 
 
-@patch('src.data.data_preprocessor.normalize_preprocessor')
+@patch('aviary.data.data_preprocessor.normalize_preprocessor')
 def test_call_normalize_preprocessor(
     mocked_normalize_preprocessor,
     normalize_preprocessor: NormalizePreprocessor,
@@ -99,7 +99,7 @@ def test_init_standardize_preprocessor() -> None:
     assert standardize_preprocessor.std_values == std_values
 
 
-@patch('src.data.data_preprocessor.standardize_preprocessor')
+@patch('aviary.data.data_preprocessor.standardize_preprocessor')
 def test_call_standardize_preprocessor(
     mocked_standardize_preprocessor,
     standardize_preprocessor: StandardizePreprocessor,
@@ -129,7 +129,7 @@ def test_init_to_tensor_preprocessor() -> None:
     _ = ToTensorPreprocessor()
 
 
-@patch('src.data.data_preprocessor.to_tensor_preprocessor')
+@patch('aviary.data.data_preprocessor.to_tensor_preprocessor')
 def test_call_to_tensor_preprocessor(
     mocked_to_tensor_preprocessor,
     to_tensor_preprocessor: ToTensorPreprocessor,

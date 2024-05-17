@@ -104,9 +104,9 @@ def test_mask_filter(
     np.testing.assert_array_equal(filtered_coordinates, expected)
 
 
-@patch('src._functional.geodata.coordinates_filter._set_filter_union')
-@patch('src._functional.geodata.coordinates_filter._set_filter_intersection')
-@patch('src._functional.geodata.coordinates_filter._set_filter_difference')
+@patch('aviary._functional.geodata.coordinates_filter._set_filter_union')
+@patch('aviary._functional.geodata.coordinates_filter._set_filter_intersection')
+@patch('aviary._functional.geodata.coordinates_filter._set_filter_difference')
 def test_set_filter(
     mocked_set_filter_difference,
     mocked_set_filter_intersection,

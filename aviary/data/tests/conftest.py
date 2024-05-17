@@ -69,7 +69,7 @@ def to_tensor_preprocessor() -> ToTensorPreprocessor:
 
 
 @pytest.fixture(scope='session')
-@patch('src.data.data_fetcher.vrt_data_fetcher_info')
+@patch('aviary.data.data_fetcher.vrt_data_fetcher_info')
 def vrt_data_fetcher(
     _mocked_vrt_data_fetcher_info,
 ) -> VRTDataFetcher:
