@@ -11,7 +11,7 @@ from ...utils.types import (
 )
 
 
-@patch('src.data.data_fetcher.vrt_data_fetcher_info')
+@patch('aviary.data.data_fetcher.vrt_data_fetcher_info')
 def test_init_vrt_data_fetcher(
     mocked_vrt_data_fetcher_info,
 ) -> None:
@@ -59,7 +59,7 @@ def test_init_vrt_data_fetcher(
     assert vrt_data_fetcher.src_num_channels == expected_num_channels
 
 
-@patch('src.data.data_fetcher.vrt_data_fetcher')
+@patch('aviary.data.data_fetcher.vrt_data_fetcher')
 def test_call_vrt_data_fetcher(
     mocked_vrt_data_fetcher,
     vrt_data_fetcher: VRTDataFetcher,

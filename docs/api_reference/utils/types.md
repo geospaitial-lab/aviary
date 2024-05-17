@@ -1,59 +1,59 @@
-::: src.utils.types.BoundingBox
+::: aviary.utils.types.BoundingBox
     options:
       heading_level: 3
 
-::: src.utils.types.BufferSize
+::: aviary.utils.types.BufferSize
     options:
       heading_level: 3
 
-::: src.utils.types.Coordinates
+::: aviary.utils.types.Coordinates
     options:
       heading_level: 3
 
-::: src.utils.types.EPSGCode
+::: aviary.utils.types.EPSGCode
     options:
       heading_level: 3
 
-::: src.utils.types.GroundSamplingDistance
+::: aviary.utils.types.GroundSamplingDistance
     options:
       heading_level: 3
 
-::: src.utils.types.TileSize
+::: aviary.utils.types.TileSize
     options:
       heading_level: 3
 
-::: src.utils.types.XMax
+::: aviary.utils.types.XMax
     options:
       heading_level: 3
 
-::: src.utils.types.XMin
+::: aviary.utils.types.XMin
     options:
       heading_level: 3
 
-::: src.utils.types.YMax
+::: aviary.utils.types.YMax
     options:
       heading_level: 3
 
-::: src.utils.types.YMin
+::: aviary.utils.types.YMin
     options:
       heading_level: 3
 
 ---
 
-::: src.utils.types.DataFetcherInfo
+::: aviary.utils.types.DataFetcherInfo
 
 ---
 
-::: src.utils.types.DType
+::: aviary.utils.types.DType
 
 ---
 
-::: src.utils.types.GeospatialFilterMode
+::: aviary.utils.types.GeospatialFilterMode
 
 ---
 
-::: src.utils.types.InterpolationMode
+::: aviary.utils.types.InterpolationMode
 
 ---
 
-::: src.utils.types.SetFilterMode
+::: aviary.utils.types.SetFilterMode

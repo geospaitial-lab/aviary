@@ -1,17 +1,17 @@
-::: src.data.DataPreprocessor
+::: aviary.data.DataPreprocessor
 
 ---
 
-::: src.data.CompositePreprocessor
+::: aviary.data.CompositePreprocessor
 
 ---
 
-::: src.data.NormalizePreprocessor
+::: aviary.data.NormalizePreprocessor
 
 ---
 
-::: src.data.StandardizePreprocessor
+::: aviary.data.StandardizePreprocessor
 
 ---
 
-::: src.data.ToTensorPreprocessor
+::: aviary.data.ToTensorPreprocessor

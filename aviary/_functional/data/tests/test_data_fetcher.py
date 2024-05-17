@@ -98,7 +98,7 @@ def test__permute_data(
     np.testing.assert_array_equal(data, expected)
 
 
-@patch('src._functional.data.data_fetcher.rio.open')
+@patch('aviary._functional.data.data_fetcher.rio.open')
 def test_vrt_data_fetcher_info(
     mocked_rio_open,
 ) -> None:

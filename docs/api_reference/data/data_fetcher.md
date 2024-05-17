@@ -1,5 +1,5 @@
-::: src.data.DataFetcher
+::: aviary.data.DataFetcher
 
 ---
 
-::: src.data.VRTDataFetcher
+::: aviary.data.VRTDataFetcher

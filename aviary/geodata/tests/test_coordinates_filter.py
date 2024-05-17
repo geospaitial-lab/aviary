@@ -31,7 +31,7 @@ def test_init_composite_filter() -> None:
     assert composite_filter.coordinates_filters == coordinates_filters
 
 
-@patch('src.geodata.coordinates_filter.composite_filter')
+@patch('aviary.geodata.coordinates_filter.composite_filter')
 def test_call_composite_filter(
     mocked_composite_filter,
     composite_filter: CompositeFilter,
@@ -54,7 +54,7 @@ def test_init_duplicates_filter() -> None:
     _ = DuplicatesFilter()
 
 
-@patch('src.geodata.coordinates_filter.duplicates_filter')
+@patch('aviary.geodata.coordinates_filter.duplicates_filter')
 def test_call_duplicates_filter(
     mocked_duplicates_filter,
     duplicates_filter: DuplicatesFilter,
@@ -93,7 +93,7 @@ def test_init_geospatial_filter() -> None:
     assert geospatial_filter.mode == mode
 
 
-@patch('src.geodata.coordinates_filter.geospatial_filter')
+@patch('aviary.geodata.coordinates_filter.geospatial_filter')
 def test_call_geospatial_filter(
     mocked_geospatial_filter,
     geospatial_filter: GeospatialFilter,
@@ -124,7 +124,7 @@ def test_init_mask_filter() -> None:
     np.testing.assert_array_equal(mask_filter.mask, mask)
 
 
-@patch('src.geodata.coordinates_filter.mask_filter')
+@patch('aviary.geodata.coordinates_filter.mask_filter')
 def test_call_mask_filter(
     mocked_mask_filter,
     mask_filter: MaskFilter,
@@ -155,7 +155,7 @@ def test_init_set_filter() -> None:
     assert set_filter.mode == mode
 
 
-@patch('src.geodata.coordinates_filter.set_filter')
+@patch('aviary.geodata.coordinates_filter.set_filter')
 def test_call_set_filter(
     mocked_set_filter,
     set_filter: SetFilter,

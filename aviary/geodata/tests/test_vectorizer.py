@@ -30,7 +30,7 @@ def test_init() -> None:
     assert vectorizer.num_workers == num_workers
 
 
-@patch('src.geodata.vectorizer.vectorizer')
+@patch('aviary.geodata.vectorizer.vectorizer')
 def test_call(
     mocked_vectorizer,
     vectorizer: Vectorizer,
