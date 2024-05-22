@@ -1,4 +1,4 @@
-dask==2024.5.0
+dask==2024.5.1
 geopandas==0.14.4
 numpy==1.26.4
 pyarrow==16.0.0
