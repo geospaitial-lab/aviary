@@ -154,11 +154,11 @@ def vrt_data_fetcher_info(
         data fetcher information
     """
     with rio.open(path) as src:
-        bounding_box = (
-            floor(src.bounds.left),
-            floor(src.bounds.bottom),
-            ceil(src.bounds.right),
-            ceil(src.bounds.top),
+        bounding_box = BoundingBox(
+            x_min=floor(src.bounds.left),
+            y_min=floor(src.bounds.bottom),
+            x_max=ceil(src.bounds.right),
+            y_max=ceil(src.bounds.top),
         )
         dtype = [DType.from_rio(dtype) for dtype in src.dtypes]
         epsg_code = src.crs.to_epsg()
