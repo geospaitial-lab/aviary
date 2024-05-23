@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, fields
 from enum import Enum
+from math import ceil, floor
 from typing import Iterable, Iterator
 
 import geopandas as gpd
@@ -34,6 +35,27 @@ class BoundingBox(Iterable[int]):
     y_min: YMin
     x_max: XMax
     y_max: YMax
+
+    @classmethod
+    def from_gdf(
+        cls,
+        gdf: gpd.GeoDataFrame,
+    ) -> 'BoundingBox':
+        """Creates a bounding box from a geodataframe.
+
+        Parameters:
+            gdf: geodataframe
+
+        Returns:
+            bounding box
+        """
+        x_min, y_min, x_max, y_max = gdf.total_bounds
+        return BoundingBox(
+            x_min=floor(x_min),
+            y_min=floor(y_min),
+            x_max=ceil(x_max),
+            y_max=ceil(y_max),
+        )
 
     def __post_init__(self) -> None:
         """Validates the bounding box.
