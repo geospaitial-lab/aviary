@@ -87,6 +87,36 @@ class BoundingBox(Iterable[int]):
         for field in fields(self):
             yield getattr(self, field.name)
 
+    def buffer(
+        self,
+        buffer_size: BufferSize,
+        inplace: bool = False,
+    ) -> BoundingBox:
+        """Buffers the bounding box.
+
+        Parameters:
+            buffer_size: buffer size in meters
+            inplace: if True, the bounding box is buffered inplace
+
+        Returns:
+            buffered bounding box
+        """
+        x_min = self.x_min - buffer_size
+        y_min = self.y_min - buffer_size
+        x_max = self.x_max + buffer_size
+        y_max = self.y_max + buffer_size
+
+        if inplace:
+            self.x_min, self.y_min, self.x_max, self.y_max = x_min, y_min, x_max, y_max
+            return self
+        else:
+            return BoundingBox(
+                x_min=x_min,
+                y_min=y_min,
+                x_max=x_max,
+                y_max=y_max,
+            )
+
     def quantize(
         self,
         value: int,
