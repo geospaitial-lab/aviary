@@ -46,11 +46,15 @@ def vrt_data_fetcher(
     Returns:
         data
     """
-    x_min, y_min, x_max, y_max = _compute_bounding_box(
+    bounding_box = BoundingBox(
         x_min=x_min,
         y_min=y_min,
-        tile_size=tile_size,
+        x_max=x_min + tile_size,
+        y_max=y_min + tile_size,
+    )
+    bounding_box = bounding_box.buffer(
         buffer_size=buffer_size,
+        inplace=False,
     )
     tile_size_pixels = _compute_tile_size_pixels(
         tile_size=tile_size,
@@ -60,10 +64,10 @@ def vrt_data_fetcher(
 
     with rio.open(path) as src:
         window = rio.windows.from_bounds(
-            left=x_min,
-            bottom=y_min,
-            right=x_max,
-            top=y_max,
+            left=bounding_box.x_min,
+            bottom=bounding_box.y_min,
+            right=bounding_box.x_max,
+            top=bounding_box.y_max,
             transform=src.transform,
         )
         data = src.read(
@@ -81,39 +85,6 @@ def vrt_data_fetcher(
         drop_channels=drop_channels,
     )
     return data
-
-
-def _compute_bounding_box(
-    x_min: XMin,
-    y_min: YMin,
-    tile_size: TileSize,
-    buffer_size: BufferSize | None,
-) -> BoundingBox:
-    """Computes the bounding box of the tile.
-
-    Parameters:
-        x_min: minimum x coordinate
-        y_min: minimum y coordinate
-        tile_size: tile size in meters
-        buffer_size: buffer size in meters (specifies the area around the tile that is additionally fetched)
-
-    Returns:
-        bounding box (x_min, y_min, x_max, y_max) of the tile
-    """
-    if buffer_size is None:
-        return (
-            x_min,
-            y_min,
-            x_min + tile_size,
-            y_min + tile_size,
-        )
-
-    return (
-        x_min - buffer_size,
-        y_min - buffer_size,
-        x_min + tile_size + buffer_size,
-        y_min + tile_size + buffer_size,
-    )
 
 
 def _compute_tile_size_pixels(
