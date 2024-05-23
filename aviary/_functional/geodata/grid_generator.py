@@ -7,8 +7,6 @@ from ...utils.types import (
     Coordinates,
     EPSGCode,
     TileSize,
-    XMin,
-    YMin,
 )
 
 
@@ -27,43 +25,20 @@ def compute_coordinates(
     Returns:
         coordinates (x_min, y_min) of each tile
     """
-    x_min, y_min, x_max, y_max = bounding_box
-
     if quantize:
-        x_min, y_min = _quantize_coordinates(
-            x_min=x_min,
-            y_min=y_min,
-            tile_size=tile_size,
+        bounding_box = bounding_box.quantize(
+            value=tile_size,
+            inplace=False,
         )
 
-    coordinates_range_x = np.arange(x_min, x_max, tile_size)
-    coordinates_range_y = np.arange(y_min, y_max, tile_size)
+    coordinates_range_x = np.arange(bounding_box.x_min, bounding_box.x_max, tile_size)
+    coordinates_range_y = np.arange(bounding_box.y_min, bounding_box.y_max, tile_size)
     coordinates_x, coordinates_y = np.meshgrid(coordinates_range_x, coordinates_range_y)
 
     coordinates_x = coordinates_x.reshape(-1)[..., np.newaxis]
     coordinates_y = coordinates_y.reshape(-1)[..., np.newaxis]
     coordinates = np.concatenate((coordinates_x, coordinates_y), axis=-1).astype(np.int32)
     return coordinates
-
-
-def _quantize_coordinates(
-    x_min: XMin,
-    y_min: YMin,
-    tile_size: TileSize,
-) -> tuple[XMin, YMin]:
-    """Quantizes the coordinates of the bottom left corner of the bounding box to the tile size.
-
-    Parameters:
-        x_min: minimum x coordinate
-        y_min: minimum y coordinate
-        tile_size: tile size in meters
-
-    Returns:
-        quantized coordinates (x_min, y_min) of the bounding box
-    """
-    x_min = x_min - (x_min % tile_size)
-    y_min = y_min - (y_min % tile_size)
-    return x_min, y_min
 
 
 def generate_grid(
