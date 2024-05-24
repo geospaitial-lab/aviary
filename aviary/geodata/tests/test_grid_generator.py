@@ -1,10 +1,16 @@
 from unittest.mock import patch
 
 from ...geodata import GridGenerator
+from ...utils.types import BoundingBox
 
 
 def test_init() -> None:
-    bounding_box = (-128, -128, 128, 128)
+    bounding_box = BoundingBox(
+        x_min=-128,
+        y_min=-128,
+        x_max=128,
+        y_max=128,
+    )
     epsg_code = 25832
     grid_generator = GridGenerator(
         bounding_box=bounding_box,
