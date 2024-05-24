@@ -155,8 +155,8 @@ class BoundingBox(Iterable[int]):
         """
         x_min = self.x_min - self.x_min % value
         y_min = self.y_min - self.y_min % value
-        x_max = self.x_max + value - self.x_max % value
-        y_max = self.y_max + value - self.y_max % value
+        x_max = self.x_max + (value - self.x_max % value) % value
+        y_max = self.y_max + (value - self.y_max % value) % value
 
         if inplace:
             self.x_min, self.y_min, self.x_max, self.y_max = x_min, y_min, x_max, y_max
