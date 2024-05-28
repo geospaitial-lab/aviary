@@ -36,6 +36,113 @@ class BoundingBox(Iterable[int]):
     x_max: XMax
     y_max: YMax
 
+    def __init__(
+        self,
+        x_min: XMin,
+        y_min: YMin,
+        x_max: XMax,
+        y_max: YMax,
+    ) -> None:
+        """
+        Parameters:
+            x_min: minimum x coordinate
+            y_min: minimum y coordinate
+            x_max: maximum x coordinate
+            y_max: maximum y coordinate
+        """
+        self._x_min = x_min
+        self._y_min = y_min
+        self._x_max = x_max
+        self._y_max = y_max
+
+    def __post_init__(self) -> None:
+        """Validates the bounding box.
+
+        Raises:
+            ValueError: Invalid bounding box (x_min >= x_max or y_min >= y_max)
+        """
+        if self._x_min >= self._x_max:
+            message = (
+                'Invalid bounding box! '
+                'x_min must be less than x_max.'
+            )
+            raise ValueError(message)
+
+        if self._y_min >= self._y_max:
+            message = (
+                'Invalid bounding box! '
+                'y_min must be less than y_max.'
+            )
+            raise ValueError(message)
+
+    @property
+    def x_min(self) -> XMin:
+        return self._x_min
+
+    @x_min.setter
+    def x_min(
+        self,
+        value: XMin,
+    ) -> None:
+        if value >= self._x_max:
+            message = (
+                'Invalid bounding box! '
+                'x_min must be less than x_max.'
+            )
+            raise ValueError(message)
+        self._x_min = value
+
+    @property
+    def y_min(self) -> YMin:
+        return self._y_min
+
+    @y_min.setter
+    def y_min(
+        self,
+        value: YMin,
+    ) -> None:
+        if value >= self._y_max:
+            message = (
+                'Invalid bounding box! '
+                'y_min must be less than y_max.'
+            )
+            raise ValueError(message)
+        self._y_min = value
+
+    @property
+    def x_max(self) -> XMax:
+        return self._x_max
+
+    @x_max.setter
+    def x_max(
+        self,
+        value: XMax,
+    ) -> None:
+        if value <= self._x_min:
+            message = (
+                'Invalid bounding box! '
+                'x_min must be less than x_max.'
+            )
+            raise ValueError(message)
+        self._x_max = value
+
+    @property
+    def y_max(self) -> YMax:
+        return self._y_max
+
+    @y_max.setter
+    def y_max(
+        self,
+        value: YMax,
+    ) -> None:
+        if value <= self._y_min:
+            message = (
+                'Invalid bounding box! '
+                'y_min must be less than y_max.'
+            )
+            raise ValueError(message)
+        self._y_max = value
+
     @classmethod
     def from_gdf(
         cls,
@@ -56,26 +163,6 @@ class BoundingBox(Iterable[int]):
             x_max=ceil(x_max),
             y_max=ceil(y_max),
         )
-
-    def __post_init__(self) -> None:
-        """Validates the bounding box.
-
-        Raises:
-            ValueError: Invalid bounding box (x_min >= x_max or y_min >= y_max)
-        """
-        if self.x_min >= self.x_max:
-            message = (
-                'Invalid bounding box! '
-                'x_min must be less than x_max.'
-            )
-            raise ValueError(message)
-
-        if self.y_min >= self.y_max:
-            message = (
-                'Invalid bounding box! '
-                'y_min must be less than y_max.'
-            )
-            raise ValueError(message)
 
     def __len__(self) -> int:
         """Computes the number of coordinates.
