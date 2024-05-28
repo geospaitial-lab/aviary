@@ -240,6 +240,8 @@ class BoundingBox(Iterable[int]):
         Returns:
             quantized bounding box
         """
+        value = abs(value)
+
         x_min = self.x_min - self.x_min % value
         y_min = self.y_min - self.y_min % value
         x_max = self.x_max + (value - self.x_max % value) % value
