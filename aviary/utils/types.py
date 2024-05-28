@@ -59,7 +59,7 @@ class BoundingBox(Iterable[int]):
         """Validates the bounding box.
 
         Raises:
-            ValueError: Invalid bounding box (x_min >= x_max or y_min >= y_max)
+            ValueError: Invalid bounding box (`x_min` >= `x_max` or `y_min` >= `y_max`)
         """
         if self._x_min >= self._x_max:
             message = (
@@ -209,6 +209,9 @@ class BoundingBox(Iterable[int]):
 
         Returns:
             buffered bounding box
+
+        Raises:
+            ValueError: Invalid buffer size (abs(`buffer_size`) >= half the width or height of the bounding box)
         """
         conditions = [
             buffer_size < 0,
@@ -254,7 +257,7 @@ class BoundingBox(Iterable[int]):
             quantized bounding box
 
         Raises:
-            ValueError: Invalid value (value <= 0)
+            ValueError: Invalid value (`value` <= 0)
         """
         if value <= 0:
             message = (
