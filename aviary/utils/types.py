@@ -240,7 +240,12 @@ class BoundingBox(Iterable[int]):
         Returns:
             quantized bounding box
         """
-        value = abs(value)
+        if value <= 0:
+            message = (
+                'Invalid value! '
+                'value must be positive.'
+            )
+            raise ValueError(message)
 
         x_min = self.x_min - self.x_min % value
         y_min = self.y_min - self.y_min % value
