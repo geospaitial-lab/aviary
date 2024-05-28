@@ -5,6 +5,7 @@ from ...data import (
     VRTDataFetcher,
 )
 from ...utils.types import (
+    BoundingBox,
     DataFetcherInfo,
     DType,
     InterpolationMode,
@@ -21,7 +22,12 @@ def test_init_vrt_data_fetcher(
     interpolation_mode = InterpolationMode.BILINEAR
     buffer_size = None
     drop_channels = None
-    expected_bounding_box = (-128, -128, 128, 128)
+    expected_bounding_box = BoundingBox(
+        x_min=-128,
+        y_min=-128,
+        x_max=128,
+        y_max=128,
+    )
     expected_dtype = [DType.UINT8, DType.UINT8, DType.UINT8]
     expected_epsg_code = 25832
     expected_ground_sampling_distance = .5
