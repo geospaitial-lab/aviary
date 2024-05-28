@@ -210,6 +210,19 @@ class BoundingBox(Iterable[int]):
         Returns:
             buffered bounding box
         """
+        conditions = [
+            buffer_size < 0,
+            abs(buffer_size) >= (self.x_max - self.x_min) / 2 or
+            abs(buffer_size) >= (self.y_max - self.y_min) / 2,
+        ]
+
+        if all(conditions):
+            message = (
+                'Invalid buffer size! '
+                'buffer_size must be less than half the width or height of the bounding box.'
+            )
+            raise ValueError(message)
+
         x_min = self.x_min - buffer_size
         y_min = self.y_min - buffer_size
         x_max = self.x_max + buffer_size
