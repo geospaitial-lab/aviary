@@ -77,6 +77,10 @@ class BoundingBox(Iterable[int]):
 
     @property
     def x_min(self) -> XMin:
+        """
+        Returns:
+            minimum x coordinate
+        """
         return self._x_min
 
     @x_min.setter
@@ -84,6 +88,10 @@ class BoundingBox(Iterable[int]):
         self,
         value: XMin,
     ) -> None:
+        """
+        Parameters:
+            value: minimum x coordinate
+        """
         if value >= self._x_max:
             message = (
                 'Invalid bounding box! '
@@ -94,6 +102,10 @@ class BoundingBox(Iterable[int]):
 
     @property
     def y_min(self) -> YMin:
+        """
+        Returns:
+            minimum y coordinate
+        """
         return self._y_min
 
     @y_min.setter
@@ -101,6 +113,10 @@ class BoundingBox(Iterable[int]):
         self,
         value: YMin,
     ) -> None:
+        """
+        Parameters:
+            value: minimum y coordinate
+        """
         if value >= self._y_max:
             message = (
                 'Invalid bounding box! '
@@ -111,6 +127,10 @@ class BoundingBox(Iterable[int]):
 
     @property
     def x_max(self) -> XMax:
+        """
+        Returns:
+            maximum x coordinate
+        """
         return self._x_max
 
     @x_max.setter
@@ -118,6 +138,10 @@ class BoundingBox(Iterable[int]):
         self,
         value: XMax,
     ) -> None:
+        """
+        Parameters:
+            value: maximum x coordinate
+        """
         if value <= self._x_min:
             message = (
                 'Invalid bounding box! '
@@ -128,6 +152,10 @@ class BoundingBox(Iterable[int]):
 
     @property
     def y_max(self) -> YMax:
+        """
+        Returns:
+            maximum y coordinate
+        """
         return self._y_max
 
     @y_max.setter
@@ -135,6 +163,10 @@ class BoundingBox(Iterable[int]):
         self,
         value: YMax,
     ) -> None:
+        """
+        Parameters:
+            value: maximum y coordinate
+        """
         if value <= self._y_min:
             message = (
                 'Invalid bounding box! '
