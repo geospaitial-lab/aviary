@@ -239,6 +239,9 @@ class BoundingBox(Iterable[int]):
 
         Returns:
             quantized bounding box
+
+        Raises:
+            ValueError: Invalid value (value <= 0)
         """
         if value <= 0:
             message = (
