@@ -11,7 +11,7 @@ from ...data import (
 )
 
 
-def test_init_composite_preprocessor() -> None:
+def test_composite_preprocessor_init() -> None:
     data_preprocessors = [
         MagicMock(spec=DataPreprocessor),
         MagicMock(spec=DataPreprocessor),
@@ -25,7 +25,7 @@ def test_init_composite_preprocessor() -> None:
 
 
 @patch('aviary.data.data_preprocessor.composite_preprocessor')
-def test_call_composite_preprocessor(
+def test_composite_preprocessor_call(
     mocked_composite_preprocessor,
     composite_preprocessor: CompositePreprocessor,
 ) -> None:
@@ -49,7 +49,7 @@ def test_call_composite_preprocessor(
     assert preprocessed_data == expected
 
 
-def test_init_normalize_preprocessor() -> None:
+def test_normalize_preprocessor_init() -> None:
     min_values = [0.] * 3
     max_values = [255.] * 3
     normalize_preprocessor = NormalizePreprocessor(
@@ -62,7 +62,7 @@ def test_init_normalize_preprocessor() -> None:
 
 
 @patch('aviary.data.data_preprocessor.normalize_preprocessor')
-def test_call_normalize_preprocessor(
+def test_normalize_preprocessor_call(
     mocked_normalize_preprocessor,
     normalize_preprocessor: NormalizePreprocessor,
 ) -> None:
@@ -87,7 +87,7 @@ def test_call_normalize_preprocessor(
     assert preprocessed_data == expected
 
 
-def test_init_standardize_preprocessor() -> None:
+def test_standardize_preprocessor_init() -> None:
     mean_values = [0.] * 3
     std_values = [1.] * 3
     standardize_preprocessor = StandardizePreprocessor(
@@ -100,7 +100,7 @@ def test_init_standardize_preprocessor() -> None:
 
 
 @patch('aviary.data.data_preprocessor.standardize_preprocessor')
-def test_call_standardize_preprocessor(
+def test_standardize_preprocessor_call(
     mocked_standardize_preprocessor,
     standardize_preprocessor: StandardizePreprocessor,
 ) -> None:
@@ -125,12 +125,12 @@ def test_call_standardize_preprocessor(
     assert preprocessed_data == expected
 
 
-def test_init_to_tensor_preprocessor() -> None:
+def test_to_tensor_preprocessor_init() -> None:
     _ = ToTensorPreprocessor()
 
 
 @patch('aviary.data.data_preprocessor.to_tensor_preprocessor')
-def test_call_to_tensor_preprocessor(
+def test_to_tensor_preprocessor_call(
     mocked_to_tensor_preprocessor,
     to_tensor_preprocessor: ToTensorPreprocessor,
 ) -> None:

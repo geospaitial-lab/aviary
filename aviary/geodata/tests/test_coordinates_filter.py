@@ -18,7 +18,7 @@ from ..._utils.types import (
 )
 
 
-def test_init_composite_filter() -> None:
+def test_composite_filter_init() -> None:
     coordinates_filters = [
         MagicMock(spec=CoordinatesFilter),
         MagicMock(spec=CoordinatesFilter),
@@ -32,7 +32,7 @@ def test_init_composite_filter() -> None:
 
 
 @patch('aviary.geodata.coordinates_filter.composite_filter')
-def test_call_composite_filter(
+def test_composite_filter_call(
     mocked_composite_filter,
     composite_filter: CompositeFilter,
 ) -> None:
@@ -50,12 +50,12 @@ def test_call_composite_filter(
     assert filtered_coordinates == expected
 
 
-def test_init_duplicates_filter() -> None:
+def test_duplicates_filter_init() -> None:
     _ = DuplicatesFilter()
 
 
 @patch('aviary.geodata.coordinates_filter.duplicates_filter')
-def test_call_duplicates_filter(
+def test_duplicates_filter_call(
     mocked_duplicates_filter,
     duplicates_filter: DuplicatesFilter,
 ) -> None:
@@ -72,7 +72,7 @@ def test_call_duplicates_filter(
     assert filtered_coordinates == expected
 
 
-def test_init_geospatial_filter() -> None:
+def test_geospatial_filter_init() -> None:
     tile_size = 128
     epsg_code = 25832
     gdf = gpd.GeoDataFrame(
@@ -94,7 +94,7 @@ def test_init_geospatial_filter() -> None:
 
 
 @patch('aviary.geodata.coordinates_filter.geospatial_filter')
-def test_call_geospatial_filter(
+def test_geospatial_filter_call(
     mocked_geospatial_filter,
     geospatial_filter: GeospatialFilter,
 ) -> None:
@@ -115,7 +115,7 @@ def test_call_geospatial_filter(
     assert filtered_coordinates == expected
 
 
-def test_init_mask_filter() -> None:
+def test_mask_filter_init() -> None:
     mask = np.array([0, 1, 0, 1], dtype=np.bool_)
     mask_filter = MaskFilter(
         mask=mask,
@@ -125,7 +125,7 @@ def test_init_mask_filter() -> None:
 
 
 @patch('aviary.geodata.coordinates_filter.mask_filter')
-def test_call_mask_filter(
+def test_mask_filter_call(
     mocked_mask_filter,
     mask_filter: MaskFilter,
 ) -> None:
@@ -143,7 +143,7 @@ def test_call_mask_filter(
     assert filtered_coordinates == expected
 
 
-def test_init_set_filter() -> None:
+def test_set_filter_init() -> None:
     additional_coordinates = np.array([[-128, 0], [0, 0]], dtype=np.int32)
     mode = SetFilterMode.DIFFERENCE
     set_filter = SetFilter(
@@ -156,7 +156,7 @@ def test_init_set_filter() -> None:
 
 
 @patch('aviary.geodata.coordinates_filter.set_filter')
-def test_call_set_filter(
+def test_set_filter_call(
     mocked_set_filter,
     set_filter: SetFilter,
 ) -> None:
