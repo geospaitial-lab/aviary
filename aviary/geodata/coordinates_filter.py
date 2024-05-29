@@ -11,7 +11,7 @@ from .._functional.geodata.coordinates_filter import (
     mask_filter,
     set_filter,
 )
-from ..utils.types import (
+from .._utils.types import (
     Coordinates,
     EPSGCode,
     GeospatialFilterMode,

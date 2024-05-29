@@ -9,7 +9,7 @@ from numpy import typing as npt
 if TYPE_CHECKING:
     from ...geodata import CoordinatesFilter
 from .grid_generator import _generate_tiles
-from ...utils.types import (
+from ..._utils.types import (
     Coordinates,
     EPSGCode,
     GeospatialFilterMode,

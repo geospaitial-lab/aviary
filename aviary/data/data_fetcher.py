@@ -7,7 +7,7 @@ from .._functional.data.data_fetcher import (
     vrt_data_fetcher,
     vrt_data_fetcher_info,
 )
-from ..utils.types import (
+from .._utils.types import (
     BoundingBox,
     BufferSize,
     DType,

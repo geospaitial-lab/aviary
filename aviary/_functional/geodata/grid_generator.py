@@ -2,7 +2,7 @@ import geopandas as gpd
 import numpy as np
 from shapely.geometry import box, Polygon
 
-from ...utils.types import (
+from ..._utils.types import (
     BoundingBox,
     Coordinates,
     EPSGCode,

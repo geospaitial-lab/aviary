@@ -16,7 +16,7 @@ from .data.data_test_data_fetcher import (
     data_test__drop_channels,
     data_test__permute_data,
 )
-from ....utils.types import (
+from ...._utils.types import (
     BoundingBox,
     BufferSize,
     DataFetcherInfo,

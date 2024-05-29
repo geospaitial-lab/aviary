@@ -15,7 +15,7 @@ from ...geodata import (
     SetFilter,
     Vectorizer,
 )
-from ...utils.types import (
+from ..._utils.types import (
     BoundingBox,
     GeospatialFilterMode,
     SetFilterMode,

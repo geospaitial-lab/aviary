@@ -1,7 +1,7 @@
 import numpy as np
 from shapely.geometry import box
 
-from .....utils.types import BoundingBox
+from ....._utils.types import BoundingBox
 
 data_test_compute_coordinates = [
     # test case 1: bounding_box is not quantized

@@ -25,7 +25,7 @@ from .data.data_test_coordinates_filter import (
     data_test__set_filter_intersection,
     data_test__set_filter_union,
 )
-from ....utils.types import (
+from ...._utils.types import (
     Coordinates,
     SetFilterMode,
 )
