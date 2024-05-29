@@ -244,8 +244,8 @@ class BoundingBox(Iterable[int]):
         """
         conditions = [
             buffer_size < 0,
-            abs(buffer_size) >= (self.x_max - self.x_min) / 2 or
-            abs(buffer_size) >= (self.y_max - self.y_min) / 2,
+            abs(buffer_size) >= (self._x_max - self._x_min) / 2 or
+            abs(buffer_size) >= (self._y_max - self._y_min) / 2,
         ]
 
         if all(conditions):
@@ -255,10 +255,10 @@ class BoundingBox(Iterable[int]):
             )
             raise ValueError(message)
 
-        x_min = self.x_min - buffer_size
-        y_min = self.y_min - buffer_size
-        x_max = self.x_max + buffer_size
-        y_max = self.y_max + buffer_size
+        x_min = self._x_min - buffer_size
+        y_min = self._y_min - buffer_size
+        x_max = self._x_max + buffer_size
+        y_max = self._y_max + buffer_size
 
         if inplace:
             self.x_min, self.y_min, self.x_max, self.y_max = x_min, y_min, x_max, y_max
@@ -295,10 +295,10 @@ class BoundingBox(Iterable[int]):
             )
             raise ValueError(message)
 
-        x_min = self.x_min - self.x_min % value
-        y_min = self.y_min - self.y_min % value
-        x_max = self.x_max + (value - self.x_max % value) % value
-        y_max = self.y_max + (value - self.y_max % value) % value
+        x_min = self._x_min - self._x_min % value
+        y_min = self._y_min - self._y_min % value
+        x_max = self._x_max + (value - self._x_max % value) % value
+        y_max = self._y_max + (value - self._y_max % value) % value
 
         if inplace:
             self.x_min, self.y_min, self.x_max, self.y_max = x_min, y_min, x_max, y_max
@@ -324,7 +324,7 @@ class BoundingBox(Iterable[int]):
             bounding box
         """
         return gpd.GeoDataFrame(
-            geometry=[box(self.x_min, self.y_min, self.x_max, self.y_max)],
+            geometry=[box(self._x_min, self._y_min, self._x_max, self._y_max)],
             crs=f'EPSG:{epsg_code}',
         )
 
