@@ -49,18 +49,15 @@ class BoundingBox(Iterable[int]):
             y_min: minimum y coordinate
             x_max: maximum x coordinate
             y_max: maximum y coordinate
+
+        Raises:
+            ValueError: Invalid bounding box (`x_min` >= `x_max` or `y_min` >= `y_max`)
         """
         self._x_min = x_min
         self._y_min = y_min
         self._x_max = x_max
         self._y_max = y_max
 
-    def __post_init__(self) -> None:
-        """Validates the bounding box.
-
-        Raises:
-            ValueError: Invalid bounding box (`x_min` >= `x_max` or `y_min` >= `y_max`)
-        """
         if self._x_min >= self._x_max:
             message = (
                 'Invalid bounding box! '
