@@ -15,7 +15,7 @@ from .data.data_test_grid_generator import (
     data_test_compute_coordinates,
     data_test__generate_tiles,
 )
-from ....utils.types import (
+from ...._utils.types import (
     BoundingBox,
     Coordinates,
     TileSize,

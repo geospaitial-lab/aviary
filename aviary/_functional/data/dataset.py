@@ -9,7 +9,7 @@ if TYPE_CHECKING:
         DataFetcher,
         DataPreprocessor,
     )
-from ...utils.types import (
+from ..._utils.types import (
     Coordinates,
     XMin,
     YMin,

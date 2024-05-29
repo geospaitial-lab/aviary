@@ -8,7 +8,7 @@ from .._functional.data.dataset import (
     get_item,
     get_length,
 )
-from ..utils.types import (
+from .._utils.types import (
     Coordinates,
     XMin,
     YMin,

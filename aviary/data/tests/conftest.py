@@ -14,7 +14,7 @@ from ...data import (
     ToTensorPreprocessor,
     VRTDataFetcher,
 )
-from ...utils.types import (
+from ..._utils.types import (
     InterpolationMode,
 )
 

@@ -4,7 +4,7 @@ from .._functional.geodata.grid_generator import (
     compute_coordinates,
     generate_grid,
 )
-from ..utils.types import (
+from .._utils.types import (
     BoundingBox,
     Coordinates,
     EPSGCode,

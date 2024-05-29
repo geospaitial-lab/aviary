@@ -4,7 +4,7 @@ import numpy as np
 import numpy.typing as npt
 
 from .._functional.geodata.vectorizer import vectorizer
-from ..utils.types import (
+from .._utils.types import (
     Coordinates,
     EPSGCode,
     GroundSamplingDistance,

@@ -15,8 +15,6 @@ nav:
         - CoordinatesFilter: api_reference/geodata/coordinates_filter.md
         - GridGenerator: api_reference/geodata/grid_generator.md
         - Vectorizer: api_reference/geodata/vectorizer.md
-      - aviary.utils:
-        - utils: api_reference/utils/types.md
 
 theme:
   name: material

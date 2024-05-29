@@ -14,7 +14,7 @@ from ..dataset import (
 from .data.data_test_dataset import (
     data_test_get_length,
 )
-from ....utils.types import (
+from ...._utils.types import (
     Coordinates,
 )
 

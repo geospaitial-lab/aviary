@@ -12,7 +12,7 @@ from ...geodata import (
     MaskFilter,
     SetFilter,
 )
-from ...utils.types import (
+from ..._utils.types import (
     GeospatialFilterMode,
     SetFilterMode,
 )

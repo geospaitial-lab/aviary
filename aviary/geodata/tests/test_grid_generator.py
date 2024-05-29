@@ -1,7 +1,7 @@
 from unittest.mock import patch
 
 from ...geodata import GridGenerator
-from ...utils.types import BoundingBox
+from ..._utils.types import BoundingBox
 
 
 def test_init() -> None:

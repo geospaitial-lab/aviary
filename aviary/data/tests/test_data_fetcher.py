@@ -4,7 +4,7 @@ from unittest.mock import patch
 from ...data import (
     VRTDataFetcher,
 )
-from ...utils.types import (
+from ..._utils.types import (
     BoundingBox,
     DataFetcherInfo,
     DType,
