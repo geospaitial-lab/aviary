@@ -13,7 +13,7 @@ from ..._utils.types import (
 
 
 @patch('aviary.data.data_fetcher.vrt_data_fetcher_info')
-def test_init_vrt_data_fetcher(
+def test_vrt_data_fetcher_init(
     mocked_vrt_data_fetcher_info,
 ) -> None:
     path = Path('test/test.vrt')
@@ -66,7 +66,7 @@ def test_init_vrt_data_fetcher(
 
 
 @patch('aviary.data.data_fetcher.vrt_data_fetcher')
-def test_call_vrt_data_fetcher(
+def test_vrt_data_fetcher_call(
     mocked_vrt_data_fetcher,
     vrt_data_fetcher: VRTDataFetcher,
 ) -> None:
