@@ -1,7 +1,3 @@
-::: aviary.utils.types.BoundingBox
-    options:
-      heading_level: 3
-
 ::: aviary.utils.types.BufferSize
     options:
       heading_level: 3
@@ -37,6 +33,10 @@
 ::: aviary.utils.types.YMin
     options:
       heading_level: 3
+
+---
+
+::: aviary.utils.types.BoundingBox
 
 ---
 

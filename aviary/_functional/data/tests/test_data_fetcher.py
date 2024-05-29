@@ -6,14 +6,12 @@ import numpy.typing as npt
 import pytest
 
 from ..data_fetcher import (
-    _compute_bounding_box,
     _compute_tile_size_pixels,
     _drop_channels,
     _permute_data,
     vrt_data_fetcher_info,
 )
 from .data.data_test_data_fetcher import (
-    data_test__compute_bounding_box,
     data_test__compute_tile_size_pixels,
     data_test__drop_channels,
     data_test__permute_data,
@@ -25,32 +23,12 @@ from ....utils.types import (
     DType,
     GroundSamplingDistance,
     TileSize,
-    XMin,
-    YMin,
 )
 
 
 @pytest.mark.skip(reason='Not implemented')
 def test_vrt_data_fetcher() -> None:
     pass
-
-
-@pytest.mark.parametrize('x_min, y_min, tile_size, buffer_size, expected', data_test__compute_bounding_box)
-def test__compute_bounding_box(
-    x_min: XMin,
-    y_min: YMin,
-    tile_size: TileSize,
-    buffer_size: BufferSize | None,
-    expected: BoundingBox,
-) -> None:
-    bounding_box = _compute_bounding_box(
-        x_min=x_min,
-        y_min=y_min,
-        tile_size=tile_size,
-        buffer_size=buffer_size,
-    )
-
-    assert bounding_box == expected
 
 
 @pytest.mark.parametrize(
@@ -113,7 +91,12 @@ def test_vrt_data_fetcher_info(
     mocked_src.res = (.5, .5)
     mocked_src.count = 3
     mocked_rio_open.return_value.__enter__.return_value = mocked_src
-    expected_bounding_box = (-128, -128, 128, 128)
+    expected_bounding_box = BoundingBox(
+        x_min=-128,
+        y_min=-128,
+        x_max=128,
+        y_max=128,
+    )
     expected_dtype = [DType.UINT8, DType.UINT8, DType.UINT8]
     expected_epsg_code = 25832
     expected_ground_sampling_distance = .5
