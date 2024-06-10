@@ -4,6 +4,6 @@ mkdocs-material==9.5.25
 mkdocstrings-python==1.10.3
 pip-audit==2.7.3
 pre-commit==3.7.1
-pytest==8.2.1
+pytest==8.2.2
 pytest-cov==5.0.0
 ruff==0.4.5
