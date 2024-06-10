@@ -1,7 +1,7 @@
 site_name: aviary
-site_url: https://mrsmrynk.github.io/aviary
+site_url: https://geospaitial-lab.github.io/aviary
 repo_name: geospaitial-lab/aviary
-repo_url: https://github.com/mrsmrynk/aviary
+repo_url: https://github.com/geospaitial-lab/aviary
 docs_dir: ../docs
 
 nav:
