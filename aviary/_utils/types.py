@@ -3,7 +3,11 @@ from __future__ import annotations
 from dataclasses import dataclass, fields
 from enum import Enum
 from math import ceil, floor
-from typing import Iterable, Iterator
+from typing import (
+    Iterable,
+    Iterator,
+    TypeAlias,
+)
 
 import geopandas as gpd
 import numpy as np
@@ -11,15 +15,15 @@ import numpy.typing as npt
 import rasterio as rio
 from shapely.geometry import box
 
-BufferSize = int
-Coordinates = npt.NDArray[np.int32]
-EPSGCode = int
-GroundSamplingDistance = float
-TileSize = int
-XMax = int
-XMin = int
-YMax = int
-YMin = int
+BufferSize: TypeAlias = int
+Coordinates: TypeAlias = npt.NDArray[np.int32]
+EPSGCode: TypeAlias = int
+GroundSamplingDistance: TypeAlias = float
+TileSize: TypeAlias = int
+XMax: TypeAlias = int
+XMin: TypeAlias = int
+YMax: TypeAlias = int
+YMin: TypeAlias = int
 
 
 @dataclass
