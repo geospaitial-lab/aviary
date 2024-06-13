@@ -100,6 +100,9 @@ class BoundingBox(Iterable[int]):
         """
         Parameters:
             value: minimum x coordinate
+
+        Raises:
+            AviaryUserError: Invalid bounding box (`x_min` >= `x_max`)
         """
         if value >= self._x_max:
             message = (
@@ -125,6 +128,9 @@ class BoundingBox(Iterable[int]):
         """
         Parameters:
             value: minimum y coordinate
+
+        Raises:
+            AviaryUserError: Invalid bounding box (`y_min` >= `y_max`)
         """
         if value >= self._y_max:
             message = (
@@ -150,6 +156,9 @@ class BoundingBox(Iterable[int]):
         """
         Parameters:
             value: maximum x coordinate
+
+        Raises:
+            AviaryUserError: Invalid bounding box (`x_min` >= `x_max`)
         """
         if value <= self._x_min:
             message = (
@@ -175,6 +184,9 @@ class BoundingBox(Iterable[int]):
         """
         Parameters:
             value: maximum y coordinate
+
+        Raises:
+            AviaryUserError: Invalid bounding box (`y_min` >= `y_max`)
         """
         if value <= self._y_min:
             message = (
