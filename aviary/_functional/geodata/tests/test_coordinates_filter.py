@@ -6,6 +6,11 @@ import numpy as np
 import numpy.typing as npt
 import pytest
 
+from ...._utils.exceptions import AviaryUserError
+from ...._utils.types import (
+    Coordinates,
+    SetFilterMode,
+)
 from ..coordinates_filter import (
     duplicates_filter,
     _geospatial_filter_difference,
@@ -24,10 +29,6 @@ from .data.data_test_coordinates_filter import (
     data_test__set_filter_difference,
     data_test__set_filter_intersection,
     data_test__set_filter_union,
-)
-from ...._utils.types import (
-    Coordinates,
-    SetFilterMode,
 )
 
 
@@ -178,7 +179,7 @@ def test_set_filter(
 
     mode = 'invalid_mode'
     mode = cast(SetFilterMode, mode)
-    with pytest.raises(ValueError, match='Invalid set filter mode!'):
+    with pytest.raises(AviaryUserError, match='Invalid set filter mode!'):
         set_filter(
             coordinates=coordinates,
             additional_coordinates=additional_coordinates,

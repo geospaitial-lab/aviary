@@ -5,6 +5,7 @@ import pytest
 import rasterio as rio
 from shapely.geometry import box
 
+from ..exceptions import AviaryUserError
 from .data.data_test_types import (
     data_test_bounding_box_buffer,
     data_test_bounding_box_buffer_exceptions,
@@ -55,7 +56,7 @@ def test_bounding_box_init_exceptions(
     y_max: YMax,
     message: str,
 ) -> None:
-    with pytest.raises(ValueError, match=message):
+    with pytest.raises(AviaryUserError, match=message):
         _ = BoundingBox(
             x_min=x_min,
             y_min=y_min,
@@ -89,7 +90,7 @@ def test_bounding_box_properties_exceptions(
     message: str,
     bounding_box: BoundingBox,
 ) -> None:
-    with pytest.raises(ValueError, match=message):
+    with pytest.raises(AviaryUserError, match=message):
         setattr(bounding_box, property_, value)
 
 
@@ -178,7 +179,7 @@ def test_bounding_box_buffer_exceptions(
     message: str,
     bounding_box: BoundingBox,
 ) -> None:
-    with pytest.raises(ValueError, match=message):
+    with pytest.raises(AviaryUserError, match=message):
         _ = bounding_box.buffer(buffer_size)
 
 
@@ -210,7 +211,7 @@ def test_bounding_box_quantize_exceptions(
     message: str,
     bounding_box: BoundingBox,
 ) -> None:
-    with pytest.raises(ValueError, match=message):
+    with pytest.raises(AviaryUserError, match=message):
         _ = bounding_box.quantize(value)
 
 
@@ -253,7 +254,7 @@ def test_process_area_init_exceptions(
     coordinates: Coordinates,
     message: str,
 ) -> None:
-    with pytest.raises(ValueError, match=message):
+    with pytest.raises(AviaryUserError, match=message):
         _ = ProcessArea(
             coordinates=coordinates,
         )
@@ -275,7 +276,7 @@ def test_process_area_properties_exceptions(
     message: str,
     process_area: ProcessArea,
 ) -> None:
-    with pytest.raises(ValueError, match=message):
+    with pytest.raises(AviaryUserError, match=message):
         setattr(process_area, property_, value)
 
 
