@@ -402,11 +402,32 @@ def test_process_area_filter() -> None:
     pass
 
 
-@pytest.mark.skip(reason='Not implemented')
-def test_process_area_to_gdf() -> None:
-    pass
+def test_process_area_to_gdf(
+    process_area: ProcessArea,
+) -> None:
+    gdf = process_area.to_gdf(
+        epsg_code=25832,
+        tile_size=128,
+    )
+    expected_geometry = [
+        box(-128, -128, 0, 0),
+        box(0, -128, 128, 0),
+        box(-128, 0, 0, 128),
+        box(0, 0, 128, 128),
+    ]
+    expected_epsg_code = 25832
+    expected = gpd.GeoDataFrame(
+        geometry=expected_geometry,
+        crs=f'EPSG:{expected_epsg_code}',
+    )
+
+    gpd.testing.assert_geodataframe_equal(gdf, expected)
 
 
-@pytest.mark.skip(reason='Not implemented')
-def test_process_area_to_json() -> None:
-    pass
+def test_process_area_to_json(
+    process_area: ProcessArea,
+) -> None:
+    json_string = process_area.to_json()
+    expected = '[[-128, -128], [0, -128], [-128, 0], [0, 0]]'
+
+    assert json_string == expected
