@@ -6,6 +6,7 @@ import geopandas as gpd
 import numpy as np
 from numpy import typing as npt
 
+from ..._utils.exceptions import AviaryUserError
 if TYPE_CHECKING:
     from ..._utils.types import (
         Coordinates,
@@ -71,7 +72,7 @@ def geospatial_filter(
         filtered coordinates (x_min, y_min) of each tile
 
     Raises:
-        ValueError: Invalid geospatial filter mode
+        AviaryUserError: Invalid geospatial filter mode
     """
     grid = _generate_grid(
         coordinates=coordinates,
@@ -93,7 +94,7 @@ def geospatial_filter(
             gdf=gdf,
         )
 
-    raise ValueError('Invalid geospatial filter mode!')
+    raise AviaryUserError('Invalid geospatial filter mode!')
 
 
 def _generate_grid(
@@ -205,7 +206,7 @@ def set_filter(
         filtered coordinates (x_min, y_min) of each tile
 
     Raises:
-        ValueError: Invalid set filter mode
+        AviaryUserError: Invalid set filter mode
     """
     from ..._utils.types import SetFilterMode
 
@@ -227,7 +228,7 @@ def set_filter(
             additional_coordinates=additional_coordinates,
         )
 
-    raise ValueError('Invalid set filter mode!')
+    raise AviaryUserError('Invalid set filter mode!')
 
 
 def _set_filter_difference(

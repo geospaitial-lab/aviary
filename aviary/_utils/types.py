@@ -19,6 +19,7 @@ from shapely.geometry import box
 
 from .._functional.geodata.coordinates_filter import set_filter
 from .._functional.geodata.grid_generator import compute_coordinates
+from .._utils.exceptions import AviaryUserError
 if TYPE_CHECKING:
     from ..geodata.coordinates_filter import CoordinatesFilter
 
@@ -62,7 +63,7 @@ class BoundingBox(Iterable[int]):
             y_max: maximum y coordinate
 
         Raises:
-            ValueError: Invalid bounding box (`x_min` >= `x_max` or `y_min` >= `y_max`)
+            AviaryUserError: Invalid bounding box (`x_min` >= `x_max` or `y_min` >= `y_max`)
         """
         self._x_min = x_min
         self._y_min = y_min
@@ -74,14 +75,14 @@ class BoundingBox(Iterable[int]):
                 'Invalid bounding box! '
                 'x_min must be less than x_max.'
             )
-            raise ValueError(message)
+            raise AviaryUserError(message)
 
         if self._y_min >= self._y_max:
             message = (
                 'Invalid bounding box! '
                 'y_min must be less than y_max.'
             )
-            raise ValueError(message)
+            raise AviaryUserError(message)
 
     @property
     def x_min(self) -> XMin:
@@ -99,13 +100,16 @@ class BoundingBox(Iterable[int]):
         """
         Parameters:
             value: minimum x coordinate
+
+        Raises:
+            AviaryUserError: Invalid bounding box (`x_min` >= `x_max`)
         """
         if value >= self._x_max:
             message = (
                 'Invalid bounding box! '
                 'x_min must be less than x_max.'
             )
-            raise ValueError(message)
+            raise AviaryUserError(message)
         self._x_min = value
 
     @property
@@ -124,13 +128,16 @@ class BoundingBox(Iterable[int]):
         """
         Parameters:
             value: minimum y coordinate
+
+        Raises:
+            AviaryUserError: Invalid bounding box (`y_min` >= `y_max`)
         """
         if value >= self._y_max:
             message = (
                 'Invalid bounding box! '
                 'y_min must be less than y_max.'
             )
-            raise ValueError(message)
+            raise AviaryUserError(message)
         self._y_min = value
 
     @property
@@ -149,13 +156,16 @@ class BoundingBox(Iterable[int]):
         """
         Parameters:
             value: maximum x coordinate
+
+        Raises:
+            AviaryUserError: Invalid bounding box (`x_min` >= `x_max`)
         """
         if value <= self._x_min:
             message = (
                 'Invalid bounding box! '
                 'x_min must be less than x_max.'
             )
-            raise ValueError(message)
+            raise AviaryUserError(message)
         self._x_max = value
 
     @property
@@ -174,13 +184,16 @@ class BoundingBox(Iterable[int]):
         """
         Parameters:
             value: maximum y coordinate
+
+        Raises:
+            AviaryUserError: Invalid bounding box (`y_min` >= `y_max`)
         """
         if value <= self._y_min:
             message = (
                 'Invalid bounding box! '
                 'y_min must be less than y_max.'
             )
-            raise ValueError(message)
+            raise AviaryUserError(message)
         self._y_max = value
 
     @classmethod
@@ -251,7 +264,7 @@ class BoundingBox(Iterable[int]):
             buffered bounding box
 
         Raises:
-            ValueError: Invalid buffer size (abs(`buffer_size`) >= half the width or height of the bounding box)
+            AviaryUserError: Invalid buffer size (abs(`buffer_size`) >= half the width or height of the bounding box)
         """
         conditions = [
             buffer_size < 0,
@@ -264,7 +277,7 @@ class BoundingBox(Iterable[int]):
                 'Invalid buffer size! '
                 'buffer_size must be less than half the width or height of the bounding box.'
             )
-            raise ValueError(message)
+            raise AviaryUserError(message)
 
         x_min = self._x_min - buffer_size
         y_min = self._y_min - buffer_size
@@ -297,14 +310,14 @@ class BoundingBox(Iterable[int]):
             quantized bounding box
 
         Raises:
-            ValueError: Invalid value (`value` <= 0)
+            AviaryUserError: Invalid value (`value` <= 0)
         """
         if value <= 0:
             message = (
                 'Invalid value! '
                 'value must be positive.'
             )
-            raise ValueError(message)
+            raise AviaryUserError(message)
 
         x_min = self._x_min - self._x_min % value
         y_min = self._y_min - self._y_min % value
@@ -433,7 +446,7 @@ class ProcessArea(Iterable[tuple[int, int]]):
             coordinates: coordinates (x_min, y_min) of each tile
 
         Raises:
-            ValueError: Invalid coordinates (`coordinates` is not an array of shape (n, 2) with data type int32)
+            AviaryUserError: Invalid coordinates (`coordinates` is not an array of shape (n, 2) with data type int32)
         """
         self._coordinates = coordinates
 
@@ -448,7 +461,7 @@ class ProcessArea(Iterable[tuple[int, int]]):
                 'Invalid coordinates! '
                 'coordinates must be an array of shape (n, 2) with data type int32.'
             )
-            raise ValueError(message)
+            raise AviaryUserError(message)
 
     @property
     def coordinates(self) -> Coordinates:
@@ -468,7 +481,7 @@ class ProcessArea(Iterable[tuple[int, int]]):
             value: coordinates (x_min, y_min) of each tile
 
         Raises:
-            ValueError: Invalid coordinates (`coordinates` is not an array of shape (n, 2) with data type int32)
+            AviaryUserError: Invalid coordinates (`coordinates` is not an array of shape (n, 2) with data type int32)
         """
         conditions = [
             value.ndim != 2,
@@ -481,7 +494,7 @@ class ProcessArea(Iterable[tuple[int, int]]):
                 'Invalid coordinates! '
                 'coordinates must be an array of shape (n, 2) with data type int32.'
             )
-            raise ValueError(message)
+            raise AviaryUserError(message)
 
         self._coordinates = value
 
@@ -694,14 +707,14 @@ class ProcessArea(Iterable[tuple[int, int]]):
             geodataframe
 
         Raises:
-            ValueError: Invalid tile size (`tile_size` <= 0)
+            AviaryUserError: Invalid tile size (`tile_size` <= 0)
         """
         if tile_size <= 0:
             message = (
                 'Invalid tile size! '
                 'tile_size must be positive.'
             )
-            raise ValueError(message)
+            raise AviaryUserError(message)
 
         geometry = [
             box(x_min, y_min, x_min + tile_size, y_min + tile_size)

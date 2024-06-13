@@ -1,0 +1,6 @@
+class AviaryUserError(Exception):
+    ...
+
+
+class AviaryUserWarning(Warning):
+    ...
