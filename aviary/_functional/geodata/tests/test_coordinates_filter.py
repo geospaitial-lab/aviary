@@ -179,7 +179,8 @@ def test_set_filter(
 
     mode = 'invalid_mode'
     mode = cast(SetFilterMode, mode)
-    with pytest.raises(AviaryUserError, match='Invalid set filter mode!'):
+    message = 'Invalid set filter mode!'
+    with pytest.raises(AviaryUserError, match=message):
         set_filter(
             coordinates=coordinates,
             additional_coordinates=additional_coordinates,
