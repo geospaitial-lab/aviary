@@ -214,7 +214,7 @@ class BoundingBox(Iterable[int]):
             bounding box
         """
         x_min, y_min, x_max, y_max = gdf.total_bounds
-        return BoundingBox(
+        return cls(
             x_min=floor(x_min),
             y_min=floor(y_min),
             x_max=ceil(x_max),
