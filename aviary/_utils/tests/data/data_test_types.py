@@ -1,3 +1,7 @@
+import re
+
+import numpy as np
+
 from ...types import (
     BoundingBox,
 )
@@ -90,4 +94,43 @@ data_test_bounding_box_quantize_exceptions = [
     (0, 'Invalid value! value must be positive.'),
     # test case 2: value is negative
     (-128, 'Invalid value! value must be positive.'),
+]
+
+data_test_process_area_init_exceptions = [
+    # test case 1: coordinates has not 2 dimensions
+    (
+        np.ones(shape=(4, 2, 1), dtype=np.int32),
+        re.escape('Invalid coordinates! coordinates must be an array of shape (n, 2) with data type int32.'),
+    ),
+    # test case 2: coordinates has not 2 values in the second dimension
+    (
+        np.ones(shape=(4, 4), dtype=np.int32),
+        re.escape('Invalid coordinates! coordinates must be an array of shape (n, 2) with data type int32.'),
+    ),
+    # test case 3: coordinates is not of data type int32
+    (
+        np.ones(shape=(4, 2), dtype=np.float32),
+        re.escape('Invalid coordinates! coordinates must be an array of shape (n, 2) with data type int32.'),
+    ),
+]
+
+data_test_process_area_properties_exceptions = [
+    # test case 1: coordinates has not 2 dimensions
+    (
+        'coordinates',
+        np.ones(shape=(4, 2, 1), dtype=np.int32),
+        re.escape('Invalid coordinates! coordinates must be an array of shape (n, 2) with data type int32.'),
+    ),
+    # test case 2: coordinates has not 2 values in the second dimension
+    (
+        'coordinates',
+        np.ones(shape=(4, 4), dtype=np.int32),
+        re.escape('Invalid coordinates! coordinates must be an array of shape (n, 2) with data type int32.'),
+    ),
+    # test case 3: coordinates is not of data type int32
+    (
+        'coordinates',
+        np.ones(shape=(4, 2), dtype=np.float32),
+        re.escape('Invalid coordinates! coordinates must be an array of shape (n, 2) with data type int32.'),
+    ),
 ]

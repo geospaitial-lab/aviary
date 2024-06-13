@@ -1,11 +1,13 @@
 from __future__ import annotations
 
+import json
 from dataclasses import dataclass, fields
 from enum import Enum
 from math import ceil, floor
 from typing import (
     Iterable,
     Iterator,
+    TYPE_CHECKING,
     TypeAlias,
 )
 
@@ -14,6 +16,11 @@ import numpy as np
 import numpy.typing as npt
 import rasterio as rio
 from shapely.geometry import box
+
+from .._functional.geodata.coordinates_filter import set_filter
+from .._functional.geodata.grid_generator import compute_coordinates
+if TYPE_CHECKING:
+    from ..geodata.coordinates_filter import CoordinatesFilter
 
 BufferSize: TypeAlias = int
 Coordinates: TypeAlias = npt.NDArray[np.int32]
@@ -407,6 +414,311 @@ class InterpolationMode(Enum):
             InterpolationMode.NEAREST: rio.enums.Resampling.nearest,
         }
         return mapping[self]
+
+
+@dataclass
+class ProcessArea(Iterable[tuple[int, int]]):
+    """
+    Attributes:
+        coordinates: coordinates (x_min, y_min) of each tile
+    """
+    coordinates: Coordinates
+
+    def __init__(
+        self,
+        coordinates: Coordinates,
+    ) -> None:
+        """
+        Parameters:
+            coordinates: coordinates (x_min, y_min) of each tile
+
+        Raises:
+            ValueError: Invalid coordinates (`coordinates` is not an array of shape (n, 2) with data type int32)
+        """
+        self._coordinates = coordinates
+
+        conditions = [
+            self._coordinates.ndim != 2,
+            self._coordinates.shape[1] != 2,
+            self._coordinates.dtype != np.int32,
+        ]
+
+        if any(conditions):
+            message = (
+                'Invalid coordinates! '
+                'coordinates must be an array of shape (n, 2) with data type int32.'
+            )
+            raise ValueError(message)
+
+    @property
+    def coordinates(self) -> Coordinates:
+        """
+        Returns:
+            coordinates (x_min, y_min) of each tile
+        """
+        return self._coordinates
+
+    @coordinates.setter
+    def coordinates(
+        self,
+        value: Coordinates,
+    ) -> None:
+        """
+        Parameters:
+            value: coordinates (x_min, y_min) of each tile
+
+        Raises:
+            ValueError: Invalid coordinates (`coordinates` is not an array of shape (n, 2) with data type int32)
+        """
+        conditions = [
+            value.ndim != 2,
+            value.shape[1] != 2,
+            value.dtype != np.int32,
+        ]
+
+        if any(conditions):
+            message = (
+                'Invalid coordinates! '
+                'coordinates must be an array of shape (n, 2) with data type int32.'
+            )
+            raise ValueError(message)
+
+        self._coordinates = value
+
+    @classmethod
+    def from_bounding_box(
+        cls,
+        bounding_box: BoundingBox,
+        tile_size: TileSize,
+        quantize: bool = True,
+    ) -> 'ProcessArea':
+        """Creates a process area from a bounding box.
+
+        Parameters:
+            bounding_box: bounding box
+            tile_size: tile size in meters
+            quantize: if True, the bounding box is quantized to `tile_size`
+
+        Returns:
+            process area
+        """
+        coordinates = compute_coordinates(
+            bounding_box=bounding_box,
+            tile_size=tile_size,
+            quantize=quantize,
+        )
+        return cls(
+            coordinates=coordinates,
+        )
+
+    @classmethod
+    def from_gdf(
+        cls,
+        gdf: gpd.GeoDataFrame,
+        tile_size: TileSize,
+        quantize: bool = True,
+    ) -> 'ProcessArea':
+        """Creates a process area from a geodataframe.
+
+        Parameters:
+            gdf: geodataframe
+            tile_size: tile size in meters
+            quantize: if True, the bounding box is quantized to `tile_size`
+
+        Returns:
+            process area
+        """
+        bounding_box = BoundingBox.from_gdf(gdf)
+        return cls.from_bounding_box(
+            bounding_box=bounding_box,
+            tile_size=tile_size,
+            quantize=quantize,
+        )
+
+    @classmethod
+    def from_json(
+        cls,
+        json_string: str,
+    ) -> 'ProcessArea':
+        """Creates a process area from a JSON string.
+
+        Parameters:
+            json_string: JSON string
+
+        Returns:
+            process area
+        """
+        coordinates = np.array(json.loads(json_string), dtype=np.int32)
+        return cls(
+            coordinates=coordinates,
+        )
+
+    def __len__(self) -> int:
+        """Computes the number of coordinates.
+
+        Returns:
+            number of coordinates
+        """
+        return len(self._coordinates)
+
+    def __getitem__(
+        self,
+        index: int,
+    ) -> tuple[int, int]:
+        """Returns the coordinates given the index.
+
+        Parameters:
+            index: index of the coordinates
+
+        Returns:
+            coordinates
+        """
+        x_min, y_min = self._coordinates[index]
+        return x_min, y_min
+
+    def __iter__(self) -> Iterator[tuple[int, int]]:
+        """Iterates over the coordinates.
+
+        Yields:
+            coordinates
+        """
+        for x_min, y_min in self._coordinates:
+            yield x_min, y_min
+
+    def __add__(
+        self,
+        other: ProcessArea,
+    ) -> ProcessArea:
+        """Adds the coordinates.
+
+        Notes:
+            - This method is equivalent to applying the set filter with the `UNION` set filter mode
+              to the coordinates
+
+        Parameters:
+            other: other process area
+
+        Returns:
+            union of the process areas
+        """
+        coordinates = set_filter(
+            coordinates=self._coordinates,
+            additional_coordinates=other.coordinates,
+            mode=SetFilterMode.UNION,
+        )
+        return ProcessArea(
+            coordinates=coordinates,
+        )
+
+    def __sub__(
+        self,
+        other: ProcessArea,
+    ) -> ProcessArea:
+        """Subtracts the coordinates.
+
+        Notes:
+            - This method is equivalent to applying the set filter with the `DIFFERENCE` set filter mode
+              to the coordinates
+
+        Parameters:
+            other: other process area
+
+        Returns:
+            difference of the process areas
+        """
+        coordinates = set_filter(
+            coordinates=self._coordinates,
+            additional_coordinates=other.coordinates,
+            mode=SetFilterMode.DIFFERENCE,
+        )
+        return ProcessArea(
+            coordinates=coordinates,
+        )
+
+    def chunk(
+        self,
+        num_chunks: int,
+    ) -> list[ProcessArea]:
+        """Chunks the coordinates.
+
+        Parameters:
+            num_chunks: number of chunks
+
+        Returns:
+            list of process areas
+        """
+        return [
+            ProcessArea(
+                coordinates=coordinates,
+            )
+            for coordinates
+            in np.array_split(self._coordinates, indices_or_sections=num_chunks)
+        ]
+
+    def filter(
+        self,
+        coordinates_filter: CoordinatesFilter,
+        inplace: bool = False,
+    ) -> ProcessArea:
+        """Filters the coordinates.
+
+        Parameters:
+            coordinates_filter: coordinates filter
+            inplace: if True, the coordinates are filtered inplace
+
+        Returns:
+            filtered process area
+        """
+        coordinates = coordinates_filter(self._coordinates)
+
+        if inplace:
+            self.coordinates = coordinates
+            return self
+        else:
+            return ProcessArea(
+                coordinates=coordinates,
+            )
+
+    def to_gdf(
+        self,
+        epsg_code: EPSGCode,
+        tile_size: TileSize,
+    ) -> gpd.GeoDataFrame:
+        """Converts the coordinates to a geodataframe.
+
+        Parameters:
+            epsg_code: EPSG code
+            tile_size: tile size in meters
+
+        Returns:
+            geodataframe
+
+        Raises:
+            ValueError: Invalid tile size (`tile_size` <= 0)
+        """
+        if tile_size <= 0:
+            message = (
+                'Invalid tile size! '
+                'tile_size must be positive.'
+            )
+            raise ValueError(message)
+
+        geometry = [
+            box(x_min, y_min, x_min + tile_size, y_min + tile_size)
+            for x_min, y_min in self._coordinates
+        ]
+        return gpd.GeoDataFrame(
+            geometry=geometry,
+            crs=f'EPSG:{epsg_code}',
+        )
+
+    def to_json(self) -> str:
+        """Converts the coordinates to a JSON string.
+
+        Returns:
+            JSON string
+        """
+        return str(self._coordinates.tolist())
 
 
 class SetFilterMode(Enum):

@@ -1,13 +1,18 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 import geopandas as gpd
 import numpy as np
 from shapely.geometry import box, Polygon
 
-from ..._utils.types import (
-    BoundingBox,
-    Coordinates,
-    EPSGCode,
-    TileSize,
-)
+if TYPE_CHECKING:
+    from ..._utils.types import (
+        BoundingBox,
+        Coordinates,
+        EPSGCode,
+        TileSize,
+    )
 
 
 def compute_coordinates(

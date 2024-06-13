@@ -7,15 +7,15 @@ import numpy as np
 from numpy import typing as npt
 
 if TYPE_CHECKING:
+    from ..._utils.types import (
+        Coordinates,
+        EPSGCode,
+        GeospatialFilterMode,
+        SetFilterMode,
+        TileSize,
+    )
     from ...geodata import CoordinatesFilter
 from .grid_generator import _generate_tiles
-from ..._utils.types import (
-    Coordinates,
-    EPSGCode,
-    GeospatialFilterMode,
-    SetFilterMode,
-    TileSize,
-)
 
 
 def composite_filter(
@@ -207,6 +207,8 @@ def set_filter(
     Raises:
         ValueError: Invalid set filter mode
     """
+    from ..._utils.types import SetFilterMode
+
     if mode == SetFilterMode.DIFFERENCE:
         return _set_filter_difference(
             coordinates=coordinates,

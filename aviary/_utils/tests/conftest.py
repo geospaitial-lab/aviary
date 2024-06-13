@@ -1,7 +1,9 @@
+import numpy as np
 import pytest
 
 from ..types import (
     BoundingBox,
+    ProcessArea,
 )
 
 
@@ -16,4 +18,12 @@ def bounding_box() -> BoundingBox:
         y_min=y_min,
         x_max=x_max,
         y_max=y_max,
+    )
+
+
+@pytest.fixture(scope='function')
+def process_area() -> ProcessArea:
+    coordinates = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32)
+    return ProcessArea(
+        coordinates=coordinates,
     )
