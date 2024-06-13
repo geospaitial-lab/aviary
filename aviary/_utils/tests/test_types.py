@@ -1,5 +1,6 @@
 import geopandas as gpd
 import geopandas.testing
+import numpy as np
 import pytest
 import rasterio as rio
 from shapely.geometry import box
@@ -11,12 +12,16 @@ from .data.data_test_types import (
     data_test_bounding_box_properties_exceptions,
     data_test_bounding_box_quantize,
     data_test_bounding_box_quantize_exceptions,
+    data_test_process_area_init_exceptions,
+    data_test_process_area_properties_exceptions,
 )
 from ..types import (
     BoundingBox,
     BufferSize,
+    Coordinates,
     DType,
     InterpolationMode,
+    ProcessArea,
     XMax,
     XMin,
     YMax,
@@ -232,3 +237,176 @@ def test_dtype_from_rio() -> None:
 def test_interpolation_mode_to_rio() -> None:
     assert InterpolationMode.BILINEAR.to_rio() == rio.enums.Resampling.bilinear
     assert InterpolationMode.NEAREST.to_rio() == rio.enums.Resampling.nearest
+
+
+def test_process_area_init() -> None:
+    coordinates = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32)
+    process_area = ProcessArea(
+        coordinates=coordinates,
+    )
+
+    np.testing.assert_array_equal(process_area.coordinates, coordinates)
+
+
+@pytest.mark.parametrize('coordinates, message', data_test_process_area_init_exceptions)
+def test_process_area_init_exceptions(
+    coordinates: Coordinates,
+    message: str,
+) -> None:
+    with pytest.raises(ValueError, match=message):
+        _ = ProcessArea(
+            coordinates=coordinates,
+        )
+
+
+def test_process_area_properties(
+    process_area: ProcessArea,
+) -> None:
+    coordinates = np.array([[128, -128], [128, 0]], dtype=np.int32)
+    process_area.coordinates = coordinates
+
+    np.testing.assert_array_equal(process_area.coordinates, coordinates)
+
+
+@pytest.mark.parametrize('property_, value, message', data_test_process_area_properties_exceptions)
+def test_process_area_properties_exceptions(
+    property_: str,
+    value: Coordinates,
+    message: str,
+    process_area: ProcessArea,
+) -> None:
+    with pytest.raises(ValueError, match=message):
+        setattr(process_area, property_, value)
+
+
+def test_process_area_from_bounding_box() -> None:
+    x_min = -128
+    y_min = -128
+    x_max = 128
+    y_max = 128
+    bounding_box = BoundingBox(
+        x_min=x_min,
+        y_min=y_min,
+        x_max=x_max,
+        y_max=y_max,
+    )
+    tile_size = 128
+    quantize = True
+    process_area = ProcessArea.from_bounding_box(
+        bounding_box=bounding_box,
+        tile_size=tile_size,
+        quantize=quantize,
+    )
+    expected = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32)
+
+    np.testing.assert_array_equal(process_area.coordinates, expected)
+
+
+def test_process_area_from_gdf() -> None:
+    geometry = [box(-128, -128, 128, 128)]
+    epsg_code = 25832
+    gdf = gpd.GeoDataFrame(
+        geometry=geometry,
+        crs=f'EPSG:{epsg_code}',
+    )
+    tile_size = 128
+    quantize = True
+    process_area = ProcessArea.from_gdf(
+        gdf=gdf,
+        tile_size=tile_size,
+        quantize=quantize,
+    )
+    expected = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32)
+
+    np.testing.assert_array_equal(process_area.coordinates, expected)
+
+
+def test_process_area_from_json() -> None:
+    json_string = '[[-128, -128], [0, -128], [-128, 0], [0, 0]]'
+    process_area = ProcessArea.from_json(
+        json_string=json_string,
+    )
+    expected = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32)
+
+    np.testing.assert_array_equal(process_area.coordinates, expected)
+
+
+def test_process_area_len(
+    process_area: ProcessArea,
+) -> None:
+    expected = 4
+
+    assert len(process_area) == expected
+
+
+def test_process_area_getitem(
+    process_area: ProcessArea,
+) -> None:
+    expected_coordinates_1 = (-128, -128)
+    expected_coordinates_2 = (0, -128)
+    expected_coordinates_3 = (-128, 0)
+    expected_coordinates_4 = (0, 0)
+
+    assert process_area[0] == expected_coordinates_1
+    assert process_area[1] == expected_coordinates_2
+    assert process_area[2] == expected_coordinates_3
+    assert process_area[3] == expected_coordinates_4
+
+
+def test_process_area_iter(
+    process_area: ProcessArea,
+) -> None:
+    expected = [
+        (-128, -128),
+        (0, -128),
+        (-128, 0),
+        (0, 0),
+    ]
+
+    assert list(process_area) == expected
+
+
+def test_process_area_add(
+    process_area: ProcessArea,
+) -> None:
+    other_coordinates = np.array([[128, -128], [128, 0]], dtype=np.int32)
+    other_process_area = ProcessArea(
+        coordinates=other_coordinates,
+    )
+    process_area = process_area + other_process_area
+    expected = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0], [128, -128], [128, 0]], dtype=np.int32)
+
+    np.testing.assert_array_equal(process_area.coordinates, expected)
+
+
+def test_process_area_sub(
+    process_area: ProcessArea,
+) -> None:
+    other_coordinates = np.array([[-128, 0], [0, 0]], dtype=np.int32)
+    other_process_area = ProcessArea(
+        coordinates=other_coordinates,
+    )
+    process_area = process_area - other_process_area
+    expected = np.array([[-128, -128], [0, -128]], dtype=np.int32)
+
+    np.testing.assert_array_equal(process_area.coordinates, expected)
+
+
+@pytest.mark.skip(reason='Not implemented')
+def test_process_area_chunk() -> None:
+    pass
+
+
+@pytest.mark.skip(reason='Not implemented')
+def test_process_area_filter() -> None:
+    pass
+
+
+@pytest.mark.skip(reason='Not implemented')
+def test_process_area_to_gdf() -> None:
+    pass
+
+
+@pytest.mark.skip(reason='Not implemented')
+def test_process_area_to_json() -> None:
+    pass
