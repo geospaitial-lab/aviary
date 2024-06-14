@@ -218,7 +218,8 @@ def test_bounding_box_quantize_exceptions(
 def test_bounding_box_to_gdf(
     bounding_box: BoundingBox,
 ) -> None:
-    gdf = bounding_box.to_gdf(epsg_code=25832)
+    epsg_code = 25832
+    gdf = bounding_box.to_gdf(epsg_code=epsg_code)
     expected_geometry = [box(-128, -128, 128, 128)]
     expected_epsg_code = 25832
     expected = gpd.GeoDataFrame(
@@ -406,9 +407,11 @@ def test_process_area_filter() -> None:
 def test_process_area_to_gdf(
     process_area: ProcessArea,
 ) -> None:
+    epsg_code = 25832
+    tile_size = 128
     gdf = process_area.to_gdf(
-        epsg_code=25832,
-        tile_size=128,
+        epsg_code=epsg_code,
+        tile_size=tile_size,
     )
     expected_geometry = [
         box(-128, -128, 0, 0),
