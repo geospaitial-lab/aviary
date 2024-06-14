@@ -25,7 +25,7 @@ class CoordinatesFilter(ABC):
 
     Coordinates filters are callables that filter coordinates.
     The coordinates filter can be used to filter the coordinates of the bottom left corner of each tile.
-    E.g., to remove tiles that do not intersect with a region of interest or tiles that are already processed.
+    E.g., to remove tiles that do not intersect with an area of interest or tiles that are already processed.
 
     Currently implemented coordinates filters:
         - CompositeFilter: Composes multiple coordinates filters

@@ -93,7 +93,7 @@ class VRTDataFetcher:
         """Bounding box of the virtual raster
 
         Returns:
-            bounding box (x_min, y_min, x_max, y_max)
+            bounding box
         """
         return self._data_fetcher_info.bounding_box
 
