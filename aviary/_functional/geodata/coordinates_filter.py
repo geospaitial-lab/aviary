@@ -192,14 +192,14 @@ def mask_filter(
 
 def set_filter(
     coordinates: Coordinates,
-    additional_coordinates: Coordinates,
+    other: Coordinates,
     mode: SetFilterMode,
 ) -> Coordinates:
-    """Filters the coordinates based on the additional coordinates.
+    """Filters the coordinates based on the other coordinates.
 
     Parameters:
         coordinates: coordinates (x_min, y_min) of each tile
-        additional_coordinates: additional coordinates (x_min, y_min) of each tile
+        other: other coordinates (x_min, y_min) of each tile
         mode: set filter mode (`DIFFERENCE`, `INTERSECTION` or `UNION`)
 
     Returns:
@@ -213,19 +213,19 @@ def set_filter(
     if mode == SetFilterMode.DIFFERENCE:
         return _set_filter_difference(
             coordinates=coordinates,
-            additional_coordinates=additional_coordinates,
+            other=other,
         )
 
     if mode == SetFilterMode.INTERSECTION:
         return _set_filter_intersection(
             coordinates=coordinates,
-            additional_coordinates=additional_coordinates,
+            other=other,
         )
 
     if mode == SetFilterMode.UNION:
         return _set_filter_union(
             coordinates=coordinates,
-            additional_coordinates=additional_coordinates,
+            other=other,
         )
 
     raise AviaryUserError('Invalid set filter mode!')
@@ -233,59 +233,59 @@ def set_filter(
 
 def _set_filter_difference(
     coordinates: Coordinates,
-    additional_coordinates: Coordinates,
+    other: Coordinates,
 ) -> Coordinates:
-    """Filters the coordinates based on the additional coordinates.
+    """Filters the coordinates based on the other coordinates.
 
-    The coordinates that are in the additional coordinates are removed.
+    The coordinates that are in the other coordinates are removed.
 
     Parameters:
         coordinates: coordinates (x_min, y_min) of each tile
-        additional_coordinates: additional coordinates (x_min, y_min) of each tile
+        other: other coordinates (x_min, y_min) of each tile
 
     Returns:
         filtered coordinates (x_min, y_min) of each tile
     """
     # noinspection PyUnresolvedReferences
-    mask = ~(coordinates[:, np.newaxis] == additional_coordinates).all(axis=-1).any(axis=-1)
+    mask = ~(coordinates[:, np.newaxis] == other).all(axis=-1).any(axis=-1)
     return coordinates[mask]
 
 
 def _set_filter_intersection(
     coordinates: Coordinates,
-    additional_coordinates: Coordinates,
+    other: Coordinates,
 ) -> Coordinates:
-    """Filters the coordinates based on the additional coordinates.
+    """Filters the coordinates based on the other coordinates.
 
-    The coordinates that are not in the additional coordinates are removed.
+    The coordinates that are not in the other coordinates are removed.
 
     Parameters:
         coordinates: coordinates (x_min, y_min) of each tile
-        additional_coordinates: additional coordinates (x_min, y_min) of each tile
+        other: other coordinates (x_min, y_min) of each tile
 
     Returns:
         filtered coordinates (x_min, y_min) of each tile
     """
     # noinspection PyUnresolvedReferences
-    mask = (coordinates[:, np.newaxis] == additional_coordinates).all(axis=-1).any(axis=-1)
+    mask = (coordinates[:, np.newaxis] == other).all(axis=-1).any(axis=-1)
     return coordinates[mask]
 
 
 def _set_filter_union(
     coordinates: Coordinates,
-    additional_coordinates: Coordinates,
+    other: Coordinates,
 ) -> Coordinates:
-    """Filters the coordinates based on the additional coordinates.
+    """Filters the coordinates based on the other coordinates.
 
-    The coordinates are combined with the additional coordinates and duplicates are removed.
+    The coordinates are combined with the other coordinates and duplicates are removed.
 
     Parameters:
         coordinates: coordinates (x_min, y_min) of each tile
-        additional_coordinates: additional coordinates (x_min, y_min) of each tile
+        other: other coordinates (x_min, y_min) of each tile
 
     Returns:
         filtered coordinates (x_min, y_min) of each tile
     """
-    coordinates = np.concatenate([coordinates, additional_coordinates], axis=0)
+    coordinates = np.concatenate([coordinates, other], axis=0)
     coordinates = duplicates_filter(coordinates)
     return coordinates

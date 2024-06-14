@@ -81,10 +81,10 @@ def mask_filter() -> MaskFilter:
 
 @pytest.fixture(scope='session')
 def set_filter() -> SetFilter:
-    additional_coordinates = np.array([[-128, 0], [0, 0]], dtype=np.int32)
+    other = np.array([[-128, 0], [0, 0]], dtype=np.int32)
     mode = SetFilterMode.DIFFERENCE
     return SetFilter(
-        additional_coordinates=additional_coordinates,
+        other=other,
         mode=mode,
     )
 

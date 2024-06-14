@@ -114,20 +114,20 @@ def test_set_filter(
     mocked_set_filter_union,
 ) -> None:
     coordinates = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32)
-    additional_coordinates = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32)
+    other = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32)
     expected = 'expected'
 
     mode = SetFilterMode.DIFFERENCE
     mocked_set_filter_difference.return_value = expected
     filtered_coordinates = set_filter(
         coordinates=coordinates,
-        additional_coordinates=additional_coordinates,
+        other=other,
         mode=mode,
     )
 
     mocked_set_filter_difference.assert_called_once_with(
         coordinates=coordinates,
-        additional_coordinates=additional_coordinates,
+        other=other,
     )
     mocked_set_filter_intersection.assert_not_called()
     mocked_set_filter_union.assert_not_called()
@@ -141,13 +141,13 @@ def test_set_filter(
     mocked_set_filter_intersection.return_value = expected
     filtered_coordinates = set_filter(
         coordinates=coordinates,
-        additional_coordinates=additional_coordinates,
+        other=other,
         mode=mode,
     )
 
     mocked_set_filter_intersection.assert_called_once_with(
         coordinates=coordinates,
-        additional_coordinates=additional_coordinates,
+        other=other,
     )
     mocked_set_filter_difference.assert_not_called()
     mocked_set_filter_union.assert_not_called()
@@ -161,13 +161,13 @@ def test_set_filter(
     mocked_set_filter_union.return_value = expected
     filtered_coordinates = set_filter(
         coordinates=coordinates,
-        additional_coordinates=additional_coordinates,
+        other=other,
         mode=mode,
     )
 
     mocked_set_filter_union.assert_called_once_with(
         coordinates=coordinates,
-        additional_coordinates=additional_coordinates,
+        other=other,
     )
     mocked_set_filter_difference.assert_not_called()
     mocked_set_filter_intersection.assert_not_called()
@@ -183,48 +183,48 @@ def test_set_filter(
     with pytest.raises(AviaryUserError, match=message):
         set_filter(
             coordinates=coordinates,
-            additional_coordinates=additional_coordinates,
+            other=other,
             mode=mode,
         )
 
 
-@pytest.mark.parametrize('coordinates, additional_coordinates, expected', data_test__set_filter_difference)
+@pytest.mark.parametrize('coordinates, other, expected', data_test__set_filter_difference)
 def test__set_filter_difference(
     coordinates: Coordinates,
-    additional_coordinates: Coordinates,
+    other: Coordinates,
     expected: Coordinates,
 ) -> None:
     filtered_coordinates = _set_filter_difference(
         coordinates=coordinates,
-        additional_coordinates=additional_coordinates,
+        other=other,
     )
 
     np.testing.assert_array_equal(filtered_coordinates, expected)
 
 
-@pytest.mark.parametrize('coordinates, additional_coordinates, expected', data_test__set_filter_intersection)
+@pytest.mark.parametrize('coordinates, other, expected', data_test__set_filter_intersection)
 def test__set_filter_intersection(
     coordinates: Coordinates,
-    additional_coordinates: Coordinates,
+    other: Coordinates,
     expected: Coordinates,
 ) -> None:
     filtered_coordinates = _set_filter_intersection(
         coordinates=coordinates,
-        additional_coordinates=additional_coordinates,
+        other=other,
     )
 
     np.testing.assert_array_equal(filtered_coordinates, expected)
 
 
-@pytest.mark.parametrize('coordinates, additional_coordinates, expected', data_test__set_filter_union)
+@pytest.mark.parametrize('coordinates, other, expected', data_test__set_filter_union)
 def test__set_filter_union(
     coordinates: Coordinates,
-    additional_coordinates: Coordinates,
+    other: Coordinates,
     expected: Coordinates,
 ) -> None:
     filtered_coordinates = _set_filter_union(
         coordinates=coordinates,
-        additional_coordinates=additional_coordinates,
+        other=other,
     )
 
     np.testing.assert_array_equal(filtered_coordinates, expected)

@@ -144,14 +144,14 @@ def test_mask_filter_call(
 
 
 def test_set_filter_init() -> None:
-    additional_coordinates = np.array([[-128, 0], [0, 0]], dtype=np.int32)
+    other = np.array([[-128, 0], [0, 0]], dtype=np.int32)
     mode = SetFilterMode.DIFFERENCE
     set_filter = SetFilter(
-        additional_coordinates=additional_coordinates,
+        other=other,
         mode=mode,
     )
 
-    np.testing.assert_array_equal(set_filter.additional_coordinates, additional_coordinates)
+    np.testing.assert_array_equal(set_filter.other, other)
     assert set_filter.mode == mode
 
 
@@ -169,7 +169,7 @@ def test_set_filter_call(
 
     mocked_set_filter.assert_called_once_with(
         coordinates=coordinates,
-        additional_coordinates=set_filter.additional_coordinates,
+        other=set_filter.other,
         mode=set_filter.mode,
     )
     assert filtered_coordinates == expected
