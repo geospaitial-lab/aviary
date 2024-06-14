@@ -9,9 +9,8 @@ from .._functional.data.dataset import (
     get_length,
 )
 from .._utils.types import (
+    Coordinate,
     Coordinates,
-    XMin,
-    YMin,
 )
 
 
@@ -51,7 +50,7 @@ class Dataset(torch.utils.data.Dataset):
     def __getitem__(
         self,
         index: int,
-    ) -> tuple[torch.Tensor, XMin, YMin]:
+    ) -> tuple[torch.Tensor, Coordinate, Coordinate]:
         """Fetches and preprocesses data given the index of the tile.
 
         Parameters:

@@ -9,19 +9,18 @@ import rasterio.windows
 from ..._utils.types import (
     BoundingBox,
     BufferSize,
+    Coordinate,
     DataFetcherInfo,
     DType,
     GroundSamplingDistance,
     InterpolationMode,
     TileSize,
-    XMin,
-    YMin,
 )
 
 
 def vrt_data_fetcher(
-    x_min: XMin,
-    y_min: YMin,
+    x_min: Coordinate,
+    y_min: Coordinate,
     path: Path,
     tile_size: TileSize,
     ground_sampling_distance: GroundSamplingDistance,

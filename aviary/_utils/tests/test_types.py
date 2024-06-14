@@ -19,14 +19,11 @@ from .data.data_test_types import (
 from ..types import (
     BoundingBox,
     BufferSize,
+    Coordinate,
     Coordinates,
     DType,
     InterpolationMode,
     ProcessArea,
-    XMax,
-    XMin,
-    YMax,
-    YMin,
 )
 
 
@@ -50,10 +47,10 @@ def test_bounding_box_init() -> None:
 
 @pytest.mark.parametrize('x_min, y_min, x_max, y_max, message', data_test_bounding_box_init_exceptions)
 def test_bounding_box_init_exceptions(
-    x_min: XMin,
-    y_min: YMin,
-    x_max: XMax,
-    y_max: YMax,
+    x_min: Coordinate,
+    y_min: Coordinate,
+    x_max: Coordinate,
+    y_max: Coordinate,
     message: str,
 ) -> None:
     with pytest.raises(AviaryUserError, match=message):
@@ -86,7 +83,7 @@ def test_bounding_box_properties(
 @pytest.mark.parametrize('property_, value, message', data_test_bounding_box_properties_exceptions)
 def test_bounding_box_properties_exceptions(
     property_: str,
-    value: int,
+    value: Coordinate,
     message: str,
     bounding_box: BoundingBox,
 ) -> None:
