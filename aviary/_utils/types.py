@@ -620,7 +620,7 @@ class ProcessArea(Iterable[tuple[int, int]]):
         """
         coordinates = set_filter(
             coordinates=self._coordinates,
-            additional_coordinates=other.coordinates,
+            other=other.coordinates,
             mode=SetFilterMode.UNION,
         )
         return ProcessArea(
@@ -645,7 +645,7 @@ class ProcessArea(Iterable[tuple[int, int]]):
         """
         coordinates = set_filter(
             coordinates=self._coordinates,
-            additional_coordinates=other.coordinates,
+            other=other.coordinates,
             mode=SetFilterMode.DIFFERENCE,
         )
         return ProcessArea(

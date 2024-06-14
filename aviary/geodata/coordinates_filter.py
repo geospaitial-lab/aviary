@@ -195,7 +195,7 @@ class SetFilter(CoordinatesFilter):
 
     def __init__(
         self,
-        additional_coordinates: Coordinates,
+        other: Coordinates,
         mode: SetFilterMode,
     ) -> None:
         """
@@ -203,7 +203,7 @@ class SetFilter(CoordinatesFilter):
             additional_coordinates: additional coordinates (x_min, y_min) of each tile
             mode: set filter mode (`DIFFERENCE`, `INTERSECTION` or `UNION`)
         """
-        self.additional_coordinates = additional_coordinates
+        self.other = other
         self.mode = mode
 
     def __call__(
@@ -223,6 +223,6 @@ class SetFilter(CoordinatesFilter):
         """
         return set_filter(
             coordinates=coordinates,
-            additional_coordinates=self.additional_coordinates,
+            other=self.other,
             mode=self.mode,
         )
