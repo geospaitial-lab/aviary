@@ -24,14 +24,11 @@ if TYPE_CHECKING:
     from ..geodata.coordinates_filter import CoordinatesFilter
 
 BufferSize: TypeAlias = int
+Coordinate: TypeAlias = int
 Coordinates: TypeAlias = npt.NDArray[np.int32]
 EPSGCode: TypeAlias = int
 GroundSamplingDistance: TypeAlias = float
 TileSize: TypeAlias = int
-XMax: TypeAlias = int
-XMin: TypeAlias = int
-YMax: TypeAlias = int
-YMin: TypeAlias = int
 
 
 @dataclass
@@ -43,17 +40,17 @@ class BoundingBox(Iterable[int]):
         x_max: maximum x coordinate
         y_max: maximum y coordinate
     """
-    x_min: XMin
-    y_min: YMin
-    x_max: XMax
-    y_max: YMax
+    x_min: Coordinate
+    y_min: Coordinate
+    x_max: Coordinate
+    y_max: Coordinate
 
     def __init__(
         self,
-        x_min: XMin,
-        y_min: YMin,
-        x_max: XMax,
-        y_max: YMax,
+        x_min: Coordinate,
+        y_min: Coordinate,
+        x_max: Coordinate,
+        y_max: Coordinate,
     ) -> None:
         """
         Parameters:
@@ -85,7 +82,7 @@ class BoundingBox(Iterable[int]):
             raise AviaryUserError(message)
 
     @property
-    def x_min(self) -> XMin:
+    def x_min(self) -> Coordinate:
         """
         Returns:
             minimum x coordinate
@@ -95,7 +92,7 @@ class BoundingBox(Iterable[int]):
     @x_min.setter
     def x_min(
         self,
-        value: XMin,
+        value: Coordinate,
     ) -> None:
         """
         Parameters:
@@ -114,7 +111,7 @@ class BoundingBox(Iterable[int]):
         self._x_min = value
 
     @property
-    def y_min(self) -> YMin:
+    def y_min(self) -> Coordinate:
         """
         Returns:
             minimum y coordinate
@@ -124,7 +121,7 @@ class BoundingBox(Iterable[int]):
     @y_min.setter
     def y_min(
         self,
-        value: YMin,
+        value: Coordinate,
     ) -> None:
         """
         Parameters:
@@ -143,7 +140,7 @@ class BoundingBox(Iterable[int]):
         self._y_min = value
 
     @property
-    def x_max(self) -> XMax:
+    def x_max(self) -> Coordinate:
         """
         Returns:
             maximum x coordinate
@@ -153,7 +150,7 @@ class BoundingBox(Iterable[int]):
     @x_max.setter
     def x_max(
         self,
-        value: XMax,
+        value: Coordinate,
     ) -> None:
         """
         Parameters:
@@ -172,7 +169,7 @@ class BoundingBox(Iterable[int]):
         self._x_max = value
 
     @property
-    def y_max(self) -> YMax:
+    def y_max(self) -> Coordinate:
         """
         Returns:
             maximum y coordinate
@@ -182,7 +179,7 @@ class BoundingBox(Iterable[int]):
     @y_max.setter
     def y_max(
         self,
-        value: YMax,
+        value: Coordinate,
     ) -> None:
         """
         Parameters:

@@ -8,12 +8,11 @@ import rasterio as rio
 import rasterio.features
 
 from ..._utils.types import (
+    Coordinate,
     Coordinates,
     EPSGCode,
     GroundSamplingDistance,
     TileSize,
-    XMin,
-    YMin,
 )
 
 
@@ -62,8 +61,8 @@ def vectorizer(
 @dask.delayed
 def _vectorizer_element(
     preds: npt.NDArray[np.uint8],
-    x_min: XMin,
-    y_min: YMin,
+    x_min: Coordinate,
+    y_min: Coordinate,
     path: Path,
     tile_size: TileSize,
     ground_sampling_distance: GroundSamplingDistance,
@@ -107,8 +106,8 @@ def _vectorizer_element(
 
 def _export_gdf(
     gdf: gpd.GeoDataFrame | None,
-    x_min: XMin,
-    y_min: YMin,
+    x_min: Coordinate,
+    y_min: Coordinate,
     path: Path,
 ) -> None:
     """Exports the geodataframe to the output directory.
@@ -132,8 +131,8 @@ def _export_gdf(
 
 def _vectorize_preds(
     preds: npt.NDArray[np.uint8],
-    x_min: XMin,
-    y_min: YMin,
+    x_min: Coordinate,
+    y_min: Coordinate,
     tile_size: TileSize,
     ground_sampling_distance: GroundSamplingDistance,
     epsg_code: EPSGCode,

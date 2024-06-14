@@ -10,13 +10,12 @@ from .._functional.data.data_fetcher import (
 from .._utils.types import (
     BoundingBox,
     BufferSize,
+    Coordinate,
     DType,
     EPSGCode,
     GroundSamplingDistance,
     InterpolationMode,
     TileSize,
-    XMin,
-    YMin,
 )
 
 
@@ -37,8 +36,8 @@ class DataFetcher(Protocol):
 
     def __call__(
         self,
-        x_min: XMin,
-        y_min: YMin,
+        x_min: Coordinate,
+        y_min: Coordinate,
     ) -> npt.NDArray:
         """Fetches data from the source given a minimum x and y coordinate.
 
@@ -135,8 +134,8 @@ class VRTDataFetcher:
 
     def __call__(
         self,
-        x_min: XMin,
-        y_min: YMin,
+        x_min: Coordinate,
+        y_min: Coordinate,
     ) -> npt.NDArray:
         """Fetches data from the virtual raster given a minimum x and y coordinate.
 
