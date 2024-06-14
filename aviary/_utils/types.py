@@ -361,7 +361,7 @@ class BoundingBox(Iterable[int]):
 class DataFetcherInfo:
     """
     Attributes:
-        bounding_box: bounding box (x_min, y_min, x_max, y_max)
+        bounding_box: bounding box
         dtype: data type of each channel
         epsg_code: EPSG code
         ground_sampling_distance: ground sampling distance in meters

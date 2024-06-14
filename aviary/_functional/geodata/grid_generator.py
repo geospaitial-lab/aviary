@@ -23,7 +23,7 @@ def compute_coordinates(
     """Computes the coordinates of the bottom left corner of each tile.
 
     Parameters:
-        bounding_box: bounding box (x_min, y_min, x_max, y_max)
+        bounding_box: bounding box
         tile_size: tile size in meters
         quantize: if True, the bounding box is quantized to `tile_size`
 
@@ -55,7 +55,7 @@ def generate_grid(
     """Generates a geodataframe of the grid.
 
     Parameters:
-        bounding_box: bounding box (x_min, y_min, x_max, y_max)
+        bounding_box: bounding box
         tile_size: tile size in meters
         epsg_code: EPSG code
         quantize: if True, the bounding box is quantized to `tile_size`

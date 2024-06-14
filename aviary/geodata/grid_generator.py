@@ -27,7 +27,7 @@ class GridGenerator:
     ) -> None:
         """
         Parameters:
-            bounding_box: bounding box (x_min, y_min, x_max, y_max)
+            bounding_box: bounding box
             epsg_code: EPSG code
         """
         self.bounding_box = bounding_box
