@@ -110,6 +110,7 @@ class BoundingBox(Iterable[int]):
                 'x_min must be less than x_max.'
             )
             raise AviaryUserError(message)
+
         self._x_min = value
 
     @property
@@ -138,6 +139,7 @@ class BoundingBox(Iterable[int]):
                 'y_min must be less than y_max.'
             )
             raise AviaryUserError(message)
+
         self._y_min = value
 
     @property
@@ -166,6 +168,7 @@ class BoundingBox(Iterable[int]):
                 'x_min must be less than x_max.'
             )
             raise AviaryUserError(message)
+
         self._x_max = value
 
     @property
@@ -194,6 +197,7 @@ class BoundingBox(Iterable[int]):
                 'y_min must be less than y_max.'
             )
             raise AviaryUserError(message)
+
         self._y_max = value
 
     @classmethod
@@ -210,7 +214,7 @@ class BoundingBox(Iterable[int]):
             bounding box
         """
         x_min, y_min, x_max, y_max = gdf.total_bounds
-        return BoundingBox(
+        return cls(
             x_min=floor(x_min),
             y_min=floor(y_min),
             x_max=ceil(x_max),
