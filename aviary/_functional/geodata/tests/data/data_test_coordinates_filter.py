@@ -182,25 +182,25 @@ data_test_mask_filter = [
 ]
 
 data_test__set_filter_difference = [
-    # test case 1: additional_coordinates contains no coordinates
+    # test case 1: other contains no coordinates
     (
         coordinates,
         np.empty(shape=(0, 2), dtype=np.int32),
         coordinates,
     ),
-    # test case 2: additional_coordinates contains no coordinates of coordinates
+    # test case 2: other contains no coordinates of coordinates
     (
         coordinates,
         np.array([[128, -128], [128, 0]], dtype=np.int32),
         coordinates,
     ),
-    # test case 3: additional_coordinates contains coordinates of coordinates
+    # test case 3: other contains coordinates of coordinates
     (
         coordinates,
         np.array([[-128, 0], [0, 0]], dtype=np.int32),
         np.array([[-128, -128], [0, -128]], dtype=np.int32),
     ),
-    # test case 4: additional_coordinates contains all coordinates of coordinates
+    # test case 4: other contains all coordinates of coordinates
     (
         coordinates,
         coordinates,
@@ -209,25 +209,25 @@ data_test__set_filter_difference = [
 ]
 
 data_test__set_filter_intersection = [
-    # test case 1: additional_coordinates contains no coordinates
+    # test case 1: other contains no coordinates
     (
         coordinates,
         np.empty(shape=(0, 2), dtype=np.int32),
         np.empty(shape=(0, 2), dtype=np.int32),
     ),
-    # test case 2: additional_coordinates contains no coordinates of coordinates
+    # test case 2: other contains no coordinates of coordinates
     (
         coordinates,
         np.array([[128, -128], [128, 0]], dtype=np.int32),
         np.empty(shape=(0, 2), dtype=np.int32),
     ),
-    # test case 3: additional_coordinates contains coordinates of coordinates
+    # test case 3: other contains coordinates of coordinates
     (
         coordinates,
         np.array([[-128, 0], [0, 0]], dtype=np.int32),
         np.array([[-128, 0], [0, 0]], dtype=np.int32),
     ),
-    # test case 4: additional_coordinates contains all coordinates of coordinates
+    # test case 4: other contains all coordinates of coordinates
     (
         coordinates,
         coordinates,
@@ -236,25 +236,25 @@ data_test__set_filter_intersection = [
 ]
 
 data_test__set_filter_union = [
-    # test case 1: additional_coordinates contains no coordinates
+    # test case 1: other contains no coordinates
     (
         coordinates,
         np.empty(shape=(0, 2), dtype=np.int32),
         coordinates,
     ),
-    # test case 2: additional_coordinates contains no coordinates of coordinates
+    # test case 2: other contains no coordinates of coordinates
     (
         coordinates,
         np.array([[128, -128], [128, 0]], dtype=np.int32),
         np.array([[-128, -128], [0, -128], [-128, 0], [0, 0], [128, -128], [128, 0]], dtype=np.int32),
     ),
-    # test case 3: additional_coordinates contains coordinates of coordinates
+    # test case 3: other contains coordinates of coordinates
     (
         coordinates,
         np.array([[-128, 0], [0, 0]], dtype=np.int32),
         coordinates,
     ),
-    # test case 4: additional_coordinates contains all coordinates of coordinates
+    # test case 4: other contains all coordinates of coordinates
     (
         coordinates,
         coordinates,
