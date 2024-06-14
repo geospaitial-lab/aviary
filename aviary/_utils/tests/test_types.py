@@ -391,6 +391,32 @@ def test_process_area_sub(
     np.testing.assert_array_equal(process_area.coordinates, expected)
 
 
+def test_process_area_append(
+    process_area: ProcessArea,
+) -> None:
+    other_coordinates = (128, -128)
+    process_area = process_area.append(other_coordinates)
+    expected_coordinates = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0], [128, -128]], dtype=np.int32)
+    expected = ProcessArea(
+        coordinates=expected_coordinates,
+    )
+
+    np.testing.assert_array_equal(process_area.coordinates, expected.coordinates)
+
+
+def test_process_area_append_inplace(
+    process_area: ProcessArea,
+) -> None:
+    other_coordinates = (128, -128)
+    process_area.append(other_coordinates, inplace=True)
+    expected_coordinates = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0], [128, -128]], dtype=np.int32)
+    expected = ProcessArea(
+        coordinates=expected_coordinates,
+    )
+
+    np.testing.assert_array_equal(process_area.coordinates, expected.coordinates)
+
+
 @pytest.mark.skip(reason='Not implemented')
 def test_process_area_chunk() -> None:
     pass
