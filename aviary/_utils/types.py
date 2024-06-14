@@ -17,7 +17,10 @@ import numpy.typing as npt
 import rasterio as rio
 from shapely.geometry import box
 
-from .._functional.geodata.coordinates_filter import set_filter
+from .._functional.geodata.coordinates_filter import (
+    duplicates_filter,
+    set_filter,
+)
 from .._functional.geodata.grid_generator import compute_coordinates
 from .._utils.exceptions import AviaryUserError
 if TYPE_CHECKING:
@@ -648,6 +651,32 @@ class ProcessArea(Iterable[tuple[int, int]]):
         return ProcessArea(
             coordinates=coordinates,
         )
+
+    def append(
+        self,
+        other: tuple[Coordinate, Coordinate],
+        inplace: bool = False,
+    ) -> ProcessArea:
+        """Appends the coordinates.
+
+        Parameters:
+            other: other coordinates
+            inplace: if True, the coordinates are appended inplace
+
+        Returns:
+            process area
+        """
+        other = np.array([other], dtype=np.int32)
+        coordinates = np.concatenate([self._coordinates, other], axis=0)
+        coordinates = duplicates_filter(coordinates)
+
+        if inplace:
+            self.coordinates = coordinates
+            return self
+        else:
+            return ProcessArea(
+                coordinates=coordinates,
+            )
 
     def chunk(
         self,
