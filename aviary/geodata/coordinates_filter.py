@@ -32,7 +32,7 @@ class CoordinatesFilter(ABC):
         - DuplicatesFilter: Removes duplicates
         - GeospatialFilter: Filters based on geospatial data
         - MaskFilter: Filters based on a boolean mask
-        - SetFilter: Filters based on additional coordinates
+        - SetFilter: Filters based on other coordinates
     """
 
     @abstractmethod
@@ -185,12 +185,12 @@ class MaskFilter(CoordinatesFilter):
 
 
 class SetFilter(CoordinatesFilter):
-    """Coordinates filter that filters based on additional coordinates
+    """Coordinates filter that filters based on other coordinates
 
     Available modes:
-        - `DIFFERENCE`: Removes coordinates that are in the additional coordinates
-        - `INTERSECTION`: Removes coordinates that are not in the additional coordinates
-        - `UNION`: Combines the coordinates with the additional coordinates and removes duplicates
+        - `DIFFERENCE`: Removes coordinates that are in the other coordinates
+        - `INTERSECTION`: Removes coordinates that are not in the other coordinates
+        - `UNION`: Combines the coordinates with the other coordinates and removes duplicates
     """
 
     def __init__(
@@ -200,7 +200,7 @@ class SetFilter(CoordinatesFilter):
     ) -> None:
         """
         Parameters:
-            additional_coordinates: additional coordinates (x_min, y_min) of each tile
+            other: other coordinates (x_min, y_min) of each tile
             mode: set filter mode (`DIFFERENCE`, `INTERSECTION` or `UNION`)
         """
         self.other = other
@@ -210,7 +210,7 @@ class SetFilter(CoordinatesFilter):
         self,
         coordinates: Coordinates,
     ) -> Coordinates:
-        """Filters the coordinates based on the additional coordinates.
+        """Filters the coordinates based on the other coordinates.
 
         Parameters:
             coordinates: coordinates (x_min, y_min) of each tile

@@ -195,11 +195,11 @@ def set_filter(
     other: Coordinates,
     mode: SetFilterMode,
 ) -> Coordinates:
-    """Filters the coordinates based on the additional coordinates.
+    """Filters the coordinates based on the other coordinates.
 
     Parameters:
         coordinates: coordinates (x_min, y_min) of each tile
-        additional_coordinates: additional coordinates (x_min, y_min) of each tile
+        other: other coordinates (x_min, y_min) of each tile
         mode: set filter mode (`DIFFERENCE`, `INTERSECTION` or `UNION`)
 
     Returns:
@@ -235,13 +235,13 @@ def _set_filter_difference(
     coordinates: Coordinates,
     other: Coordinates,
 ) -> Coordinates:
-    """Filters the coordinates based on the additional coordinates.
+    """Filters the coordinates based on the other coordinates.
 
-    The coordinates that are in the additional coordinates are removed.
+    The coordinates that are in the other coordinates are removed.
 
     Parameters:
         coordinates: coordinates (x_min, y_min) of each tile
-        additional_coordinates: additional coordinates (x_min, y_min) of each tile
+        other: other coordinates (x_min, y_min) of each tile
 
     Returns:
         filtered coordinates (x_min, y_min) of each tile
@@ -255,13 +255,13 @@ def _set_filter_intersection(
     coordinates: Coordinates,
     other: Coordinates,
 ) -> Coordinates:
-    """Filters the coordinates based on the additional coordinates.
+    """Filters the coordinates based on the other coordinates.
 
-    The coordinates that are not in the additional coordinates are removed.
+    The coordinates that are not in the other coordinates are removed.
 
     Parameters:
         coordinates: coordinates (x_min, y_min) of each tile
-        additional_coordinates: additional coordinates (x_min, y_min) of each tile
+        other: other coordinates (x_min, y_min) of each tile
 
     Returns:
         filtered coordinates (x_min, y_min) of each tile
@@ -275,13 +275,13 @@ def _set_filter_union(
     coordinates: Coordinates,
     other: Coordinates,
 ) -> Coordinates:
-    """Filters the coordinates based on the additional coordinates.
+    """Filters the coordinates based on the other coordinates.
 
-    The coordinates are combined with the additional coordinates and duplicates are removed.
+    The coordinates are combined with the other coordinates and duplicates are removed.
 
     Parameters:
         coordinates: coordinates (x_min, y_min) of each tile
-        additional_coordinates: additional coordinates (x_min, y_min) of each tile
+        other: other coordinates (x_min, y_min) of each tile
 
     Returns:
         filtered coordinates (x_min, y_min) of each tile
