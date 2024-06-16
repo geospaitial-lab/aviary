@@ -6,7 +6,7 @@ from .._functional.geodata.grid_generator import (
 )
 from .._utils.types import (
     BoundingBox,
-    Coordinates,
+    CoordinatesSet,
     EPSGCode,
     TileSize,
 )
@@ -37,7 +37,7 @@ class GridGenerator:
         self,
         tile_size: TileSize,
         quantize: bool = True,
-    ) -> Coordinates:
+    ) -> CoordinatesSet:
         """Computes the coordinates of the bottom left corner of each tile.
 
         Parameters:

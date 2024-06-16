@@ -12,7 +12,7 @@ from .._functional.geodata.coordinates_filter import (
     set_filter,
 )
 from .._utils.types import (
-    Coordinates,
+    CoordinatesSet,
     EPSGCode,
     GeospatialFilterMode,
     SetFilterMode,
@@ -38,8 +38,8 @@ class CoordinatesFilter(ABC):
     @abstractmethod
     def __call__(
         self,
-        coordinates: Coordinates,
-    ) -> Coordinates:
+        coordinates: CoordinatesSet,
+    ) -> CoordinatesSet:
         """Filters the coordinates.
 
         Parameters:
@@ -66,8 +66,8 @@ class CompositeFilter(CoordinatesFilter):
 
     def __call__(
         self,
-        coordinates: Coordinates,
-    ) -> Coordinates:
+        coordinates: CoordinatesSet,
+    ) -> CoordinatesSet:
         """Filters the coordinates with each coordinates filter.
 
         Parameters:
@@ -87,8 +87,8 @@ class DuplicatesFilter(CoordinatesFilter):
 
     def __call__(
         self,
-        coordinates: Coordinates,
-    ) -> Coordinates:
+        coordinates: CoordinatesSet,
+    ) -> CoordinatesSet:
         """Filters the coordinates by removing duplicates.
 
         Parameters:
@@ -131,8 +131,8 @@ class GeospatialFilter(CoordinatesFilter):
 
     def __call__(
         self,
-        coordinates: Coordinates,
-    ) -> Coordinates:
+        coordinates: CoordinatesSet,
+    ) -> CoordinatesSet:
         """Filters the coordinates based on the polygons in the geodataframe.
 
         Parameters:
@@ -168,8 +168,8 @@ class MaskFilter(CoordinatesFilter):
 
     def __call__(
         self,
-        coordinates: Coordinates,
-    ) -> Coordinates:
+        coordinates: CoordinatesSet,
+    ) -> CoordinatesSet:
         """Filters the coordinates based on the boolean mask.
 
         Parameters:
@@ -195,7 +195,7 @@ class SetFilter(CoordinatesFilter):
 
     def __init__(
         self,
-        other: Coordinates,
+        other: CoordinatesSet,
         mode: SetFilterMode,
     ) -> None:
         """
@@ -208,8 +208,8 @@ class SetFilter(CoordinatesFilter):
 
     def __call__(
         self,
-        coordinates: Coordinates,
-    ) -> Coordinates:
+        coordinates: CoordinatesSet,
+    ) -> CoordinatesSet:
         """Filters the coordinates based on the other coordinates.
 
         Parameters:

@@ -28,14 +28,15 @@ if TYPE_CHECKING:
 
 BufferSize: TypeAlias = int
 Coordinate: TypeAlias = int
-Coordinates: TypeAlias = npt.NDArray[np.int32]
+Coordinates: TypeAlias = tuple[Coordinate, Coordinate]
+CoordinatesSet: TypeAlias = npt.NDArray[np.int32]
 EPSGCode: TypeAlias = int
 GroundSamplingDistance: TypeAlias = float
 TileSize: TypeAlias = int
 
 
 @dataclass
-class BoundingBox(Iterable[int]):
+class BoundingBox(Iterable[Coordinate]):
     """
     Attributes:
         x_min: minimum x coordinate
@@ -232,7 +233,7 @@ class BoundingBox(Iterable[int]):
     def __getitem__(
         self,
         index: int,
-    ) -> int:
+    ) -> Coordinate:
         """Returns the coordinate given the index.
 
         Parameters:
@@ -244,7 +245,7 @@ class BoundingBox(Iterable[int]):
         field = fields(self)[index]
         return getattr(self, field.name)
 
-    def __iter__(self) -> Iterator[int]:
+    def __iter__(self) -> Iterator[Coordinate]:
         """Iterates over the coordinates.
 
         Yields:
@@ -434,16 +435,16 @@ class InterpolationMode(Enum):
 
 
 @dataclass
-class ProcessArea(Iterable[tuple[int, int]]):
+class ProcessArea(Iterable[Coordinates]):
     """
     Attributes:
         coordinates: coordinates (x_min, y_min) of each tile
     """
-    coordinates: Coordinates
+    coordinates: CoordinatesSet
 
     def __init__(
         self,
-        coordinates: Coordinates,
+        coordinates: CoordinatesSet,
     ) -> None:
         """
         Parameters:
@@ -468,7 +469,7 @@ class ProcessArea(Iterable[tuple[int, int]]):
             raise AviaryUserError(message)
 
     @property
-    def coordinates(self) -> Coordinates:
+    def coordinates(self) -> CoordinatesSet:
         """
         Returns:
             coordinates (x_min, y_min) of each tile
@@ -478,7 +479,7 @@ class ProcessArea(Iterable[tuple[int, int]]):
     @coordinates.setter
     def coordinates(
         self,
-        value: Coordinates,
+        value: CoordinatesSet,
     ) -> None:
         """
         Parameters:
@@ -581,7 +582,7 @@ class ProcessArea(Iterable[tuple[int, int]]):
     def __getitem__(
         self,
         index: int,
-    ) -> tuple[int, int]:
+    ) -> Coordinates:
         """Returns the coordinates given the index.
 
         Parameters:
@@ -593,7 +594,7 @@ class ProcessArea(Iterable[tuple[int, int]]):
         x_min, y_min = self._coordinates[index]
         return x_min, y_min
 
-    def __iter__(self) -> Iterator[tuple[int, int]]:
+    def __iter__(self) -> Iterator[Coordinates]:
         """Iterates over the coordinates.
 
         Yields:
@@ -654,7 +655,7 @@ class ProcessArea(Iterable[tuple[int, int]]):
 
     def append(
         self,
-        other: tuple[Coordinate, Coordinate],
+        other: Coordinates,
         inplace: bool = False,
     ) -> ProcessArea:
         """Appends the coordinates.

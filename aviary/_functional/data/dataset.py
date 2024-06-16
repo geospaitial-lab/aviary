@@ -11,14 +11,14 @@ if TYPE_CHECKING:
     )
 from ..._utils.types import (
     Coordinate,
-    Coordinates,
+    CoordinatesSet,
 )
 
 
 def get_item(
     data_fetcher: DataFetcher,
     data_preprocessor: DataPreprocessor,
-    coordinates: Coordinates,
+    coordinates: CoordinatesSet,
     index: int,
 ) -> tuple[torch.Tensor, Coordinate, Coordinate]:
     """Fetches and preprocesses data given the index of the tile.
@@ -44,7 +44,7 @@ def get_item(
 
 
 def get_length(
-    coordinates: Coordinates,
+    coordinates: CoordinatesSet,
 ) -> int:
     """Computes the number of tiles.
 

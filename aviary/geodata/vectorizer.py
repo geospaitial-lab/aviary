@@ -5,7 +5,7 @@ import numpy.typing as npt
 
 from .._functional.geodata.vectorizer import vectorizer
 from .._utils.types import (
-    Coordinates,
+    CoordinatesSet,
     EPSGCode,
     GroundSamplingDistance,
     TileSize,
@@ -55,7 +55,7 @@ class Vectorizer:
     def __call__(
         self,
         preds: npt.NDArray[np.uint8],
-        coordinates: Coordinates,
+        coordinates: CoordinatesSet,
     ) -> None:
         """Vectorizes the predictions and exports the geodataframe to the output directory.
 
