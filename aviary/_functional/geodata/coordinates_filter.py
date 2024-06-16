@@ -9,7 +9,7 @@ from numpy import typing as npt
 from ..._utils.exceptions import AviaryUserError
 if TYPE_CHECKING:
     from ..._utils.types import (
-        Coordinates,
+        CoordinatesSet,
         EPSGCode,
         GeospatialFilterMode,
         SetFilterMode,
@@ -20,9 +20,9 @@ from .grid_generator import _generate_tiles
 
 
 def composite_filter(
-    coordinates: Coordinates,
+    coordinates: CoordinatesSet,
     coordinates_filters: list[CoordinatesFilter],
-) -> Coordinates:
+) -> CoordinatesSet:
     """Filters the coordinates with each coordinates filter.
 
     Parameters:
@@ -38,8 +38,8 @@ def composite_filter(
 
 
 def duplicates_filter(
-    coordinates: Coordinates,
-) -> Coordinates:
+    coordinates: CoordinatesSet,
+) -> CoordinatesSet:
     """Filters the coordinates by removing duplicates.
 
     Parameters:
@@ -53,12 +53,12 @@ def duplicates_filter(
 
 
 def geospatial_filter(
-    coordinates: Coordinates,
+    coordinates: CoordinatesSet,
     tile_size: TileSize,
     epsg_code: EPSGCode,
     gdf: gpd.GeoDataFrame,
     mode: GeospatialFilterMode,
-) -> Coordinates:
+) -> CoordinatesSet:
     """Filters the coordinates based on the polygons in the geodataframe.
 
     Parameters:
@@ -98,7 +98,7 @@ def geospatial_filter(
 
 
 def _generate_grid(
-    coordinates: Coordinates,
+    coordinates: CoordinatesSet,
     tile_size: TileSize,
     epsg_code: EPSGCode,
 ) -> gpd.GeoDataFrame:
@@ -123,10 +123,10 @@ def _generate_grid(
 
 
 def _geospatial_filter_difference(
-    coordinates: Coordinates,
+    coordinates: CoordinatesSet,
     grid: gpd.GeoDataFrame,
     gdf: gpd.GeoDataFrame,
-) -> Coordinates:
+) -> CoordinatesSet:
     """Filters the coordinates based on the polygons in the geodataframe.
 
     The coordinates of tiles that are within the polygons are removed.
@@ -149,10 +149,10 @@ def _geospatial_filter_difference(
 
 
 def _geospatial_filter_intersection(
-    coordinates: Coordinates,
+    coordinates: CoordinatesSet,
     grid: gpd.GeoDataFrame,
     gdf: gpd.GeoDataFrame,
-) -> Coordinates:
+) -> CoordinatesSet:
     """Filters the coordinates based on the polygons in the geodataframe.
 
     The coordinates of tiles that do not intersect with the polygons are removed.
@@ -175,9 +175,9 @@ def _geospatial_filter_intersection(
 
 
 def mask_filter(
-    coordinates: Coordinates,
+    coordinates: CoordinatesSet,
     mask: npt.NDArray[np.bool_],
-) -> Coordinates:
+) -> CoordinatesSet:
     """Filters the coordinates based on the boolean mask.
 
     Parameters:
@@ -191,10 +191,10 @@ def mask_filter(
 
 
 def set_filter(
-    coordinates: Coordinates,
-    other: Coordinates,
+    coordinates: CoordinatesSet,
+    other: CoordinatesSet,
     mode: SetFilterMode,
-) -> Coordinates:
+) -> CoordinatesSet:
     """Filters the coordinates based on the other coordinates.
 
     Parameters:
@@ -232,9 +232,9 @@ def set_filter(
 
 
 def _set_filter_difference(
-    coordinates: Coordinates,
-    other: Coordinates,
-) -> Coordinates:
+    coordinates: CoordinatesSet,
+    other: CoordinatesSet,
+) -> CoordinatesSet:
     """Filters the coordinates based on the other coordinates.
 
     The coordinates that are in the other coordinates are removed.
@@ -252,9 +252,9 @@ def _set_filter_difference(
 
 
 def _set_filter_intersection(
-    coordinates: Coordinates,
-    other: Coordinates,
-) -> Coordinates:
+    coordinates: CoordinatesSet,
+    other: CoordinatesSet,
+) -> CoordinatesSet:
     """Filters the coordinates based on the other coordinates.
 
     The coordinates that are not in the other coordinates are removed.
@@ -272,9 +272,9 @@ def _set_filter_intersection(
 
 
 def _set_filter_union(
-    coordinates: Coordinates,
-    other: Coordinates,
-) -> Coordinates:
+    coordinates: CoordinatesSet,
+    other: CoordinatesSet,
+) -> CoordinatesSet:
     """Filters the coordinates based on the other coordinates.
 
     The coordinates are combined with the other coordinates and duplicates are removed.

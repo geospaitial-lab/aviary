@@ -15,7 +15,7 @@ from .data.data_test_dataset import (
     data_test_get_length,
 )
 from ...._utils.types import (
-    Coordinates,
+    CoordinatesSet,
 )
 
 
@@ -47,7 +47,7 @@ def test_get_item() -> None:
 
 @pytest.mark.parametrize('coordinates, expected', data_test_get_length)
 def test_get_length(
-    coordinates: Coordinates,
+    coordinates: CoordinatesSet,
     expected: int,
 ) -> None:
     length = get_length(

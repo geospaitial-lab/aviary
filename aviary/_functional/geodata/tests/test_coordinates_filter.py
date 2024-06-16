@@ -8,7 +8,7 @@ import pytest
 
 from ...._utils.exceptions import AviaryUserError
 from ...._utils.types import (
-    Coordinates,
+    CoordinatesSet,
     SetFilterMode,
 )
 from ..coordinates_filter import (
@@ -39,8 +39,8 @@ def test_composite_filter() -> None:
 
 @pytest.mark.parametrize('coordinates, expected', data_test_duplicates_filter)
 def test_duplicates_filter(
-    coordinates: Coordinates,
-    expected: Coordinates,
+    coordinates: CoordinatesSet,
+    expected: CoordinatesSet,
 ) -> None:
     filtered_coordinates = duplicates_filter(
         coordinates=coordinates,
@@ -61,10 +61,10 @@ def test__generate_grid() -> None:
 
 @pytest.mark.parametrize('coordinates, grid, gdf, expected', data_test__geospatial_filter_difference)
 def test__geospatial_filter_difference(
-    coordinates: Coordinates,
+    coordinates: CoordinatesSet,
     grid: gpd.GeoDataFrame,
     gdf: gpd.GeoDataFrame,
-    expected: Coordinates,
+    expected: CoordinatesSet,
 ) -> None:
     filtered_coordinates = _geospatial_filter_difference(
         coordinates=coordinates,
@@ -77,10 +77,10 @@ def test__geospatial_filter_difference(
 
 @pytest.mark.parametrize('coordinates, grid, gdf, expected', data_test__geospatial_filter_intersection)
 def test__geospatial_filter_intersection(
-    coordinates: Coordinates,
+    coordinates: CoordinatesSet,
     grid: gpd.GeoDataFrame,
     gdf: gpd.GeoDataFrame,
-    expected: Coordinates,
+    expected: CoordinatesSet,
 ) -> None:
     filtered_coordinates = _geospatial_filter_intersection(
         coordinates=coordinates,
@@ -93,9 +93,9 @@ def test__geospatial_filter_intersection(
 
 @pytest.mark.parametrize('coordinates, mask, expected', data_test_mask_filter)
 def test_mask_filter(
-    coordinates: Coordinates,
+    coordinates: CoordinatesSet,
     mask: npt.NDArray[np.bool_],
-    expected: Coordinates,
+    expected: CoordinatesSet,
 ) -> None:
     filtered_coordinates = mask_filter(
         coordinates=coordinates,
@@ -190,9 +190,9 @@ def test_set_filter(
 
 @pytest.mark.parametrize('coordinates, other, expected', data_test__set_filter_difference)
 def test__set_filter_difference(
-    coordinates: Coordinates,
-    other: Coordinates,
-    expected: Coordinates,
+    coordinates: CoordinatesSet,
+    other: CoordinatesSet,
+    expected: CoordinatesSet,
 ) -> None:
     filtered_coordinates = _set_filter_difference(
         coordinates=coordinates,
@@ -204,9 +204,9 @@ def test__set_filter_difference(
 
 @pytest.mark.parametrize('coordinates, other, expected', data_test__set_filter_intersection)
 def test__set_filter_intersection(
-    coordinates: Coordinates,
-    other: Coordinates,
-    expected: Coordinates,
+    coordinates: CoordinatesSet,
+    other: CoordinatesSet,
+    expected: CoordinatesSet,
 ) -> None:
     filtered_coordinates = _set_filter_intersection(
         coordinates=coordinates,
@@ -218,9 +218,9 @@ def test__set_filter_intersection(
 
 @pytest.mark.parametrize('coordinates, other, expected', data_test__set_filter_union)
 def test__set_filter_union(
-    coordinates: Coordinates,
-    other: Coordinates,
-    expected: Coordinates,
+    coordinates: CoordinatesSet,
+    other: CoordinatesSet,
+    expected: CoordinatesSet,
 ) -> None:
     filtered_coordinates = _set_filter_union(
         coordinates=coordinates,

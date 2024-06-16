@@ -9,7 +9,7 @@ import rasterio.features
 
 from ..._utils.types import (
     Coordinate,
-    Coordinates,
+    CoordinatesSet,
     EPSGCode,
     GroundSamplingDistance,
     TileSize,
@@ -18,7 +18,7 @@ from ..._utils.types import (
 
 def vectorizer(
     preds: npt.NDArray[np.uint8],
-    coordinates: Coordinates,
+    coordinates: CoordinatesSet,
     path: Path,
     tile_size: TileSize,
     ground_sampling_distance: GroundSamplingDistance,

@@ -10,7 +10,7 @@ from .._functional.data.dataset import (
 )
 from .._utils.types import (
     Coordinate,
-    Coordinates,
+    CoordinatesSet,
 )
 
 
@@ -25,7 +25,7 @@ class Dataset(torch.utils.data.Dataset):
         self,
         data_fetcher: DataFetcher,
         data_preprocessor: DataPreprocessor,
-        coordinates: Coordinates,
+        coordinates: CoordinatesSet,
     ) -> None:
         """
         Parameters:

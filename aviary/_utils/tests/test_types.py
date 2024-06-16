@@ -20,7 +20,7 @@ from ..types import (
     BoundingBox,
     BufferSize,
     Coordinate,
-    Coordinates,
+    CoordinatesSet,
     DType,
     InterpolationMode,
     ProcessArea,
@@ -249,7 +249,7 @@ def test_process_area_init() -> None:
 
 @pytest.mark.parametrize('coordinates, message', data_test_process_area_init_exceptions)
 def test_process_area_init_exceptions(
-    coordinates: Coordinates,
+    coordinates: CoordinatesSet,
     message: str,
 ) -> None:
     with pytest.raises(AviaryUserError, match=message):
@@ -270,7 +270,7 @@ def test_process_area_properties(
 @pytest.mark.parametrize('property_, value, message', data_test_process_area_properties_exceptions)
 def test_process_area_properties_exceptions(
     property_: str,
-    value: Coordinates,
+    value: CoordinatesSet,
     message: str,
     process_area: ProcessArea,
 ) -> None:

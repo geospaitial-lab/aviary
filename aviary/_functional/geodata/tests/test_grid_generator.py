@@ -17,7 +17,7 @@ from .data.data_test_grid_generator import (
 )
 from ...._utils.types import (
     BoundingBox,
-    Coordinates,
+    CoordinatesSet,
     TileSize,
 )
 
@@ -27,7 +27,7 @@ def test_compute_coordinates(
     bounding_box: BoundingBox,
     tile_size: TileSize,
     quantize: bool,
-    expected: Coordinates,
+    expected: CoordinatesSet,
 ) -> None:
     coordinates = compute_coordinates(
         bounding_box=bounding_box,
@@ -85,7 +85,7 @@ def test_generate_grid(
 
 @pytest.mark.parametrize('coordinates, tile_size, expected', data_test__generate_tiles)
 def test__generate_tiles(
-    coordinates: Coordinates,
+    coordinates: CoordinatesSet,
     tile_size: TileSize,
     expected: list[Polygon],
 ) -> None:

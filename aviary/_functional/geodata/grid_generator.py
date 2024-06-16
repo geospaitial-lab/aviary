@@ -9,7 +9,7 @@ from shapely.geometry import box, Polygon
 if TYPE_CHECKING:
     from ..._utils.types import (
         BoundingBox,
-        Coordinates,
+        CoordinatesSet,
         EPSGCode,
         TileSize,
     )
@@ -19,7 +19,7 @@ def compute_coordinates(
     bounding_box: BoundingBox,
     tile_size: TileSize,
     quantize: bool = True,
-) -> Coordinates:
+) -> CoordinatesSet:
     """Computes the coordinates of the bottom left corner of each tile.
 
     Parameters:
@@ -79,7 +79,7 @@ def generate_grid(
 
 
 def _generate_tiles(
-    coordinates: Coordinates,
+    coordinates: CoordinatesSet,
     tile_size: TileSize,
 ) -> list[Polygon]:
     """Generates a list of tiles from the coordinates.
