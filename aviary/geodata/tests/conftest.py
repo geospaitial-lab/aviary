@@ -92,8 +92,9 @@ def fill_postprocessor() -> FillPostprocessor:
 def geospatial_filter() -> GeospatialFilter:
     tile_size = 128
     epsg_code = 25832
+    geometry = []
     gdf = gpd.GeoDataFrame(
-        geometry=[],
+        geometry=geometry,
         crs=f'EPSG:{epsg_code}',
     )
     mode = GeospatialFilterMode.DIFFERENCE

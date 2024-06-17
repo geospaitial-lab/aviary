@@ -75,8 +75,9 @@ def test_duplicates_filter_call(
 def test_geospatial_filter_init() -> None:
     tile_size = 128
     epsg_code = 25832
+    geometry = []
     gdf = gpd.GeoDataFrame(
-        geometry=[],
+        geometry=geometry,
         crs=f'EPSG:{epsg_code}',
     )
     mode = GeospatialFilterMode.DIFFERENCE
