@@ -23,6 +23,9 @@ def clip_postprocessor(
     Returns:
         postprocessed geodataframe
     """
+    if gdf.empty:
+        return gdf
+
     gdf = gpd.clip(
         gdf=gdf,
         mask=mask,
@@ -48,6 +51,9 @@ def composite_postprocessor(
     Returns:
         postprocessed geodataframe
     """
+    if gdf.empty:
+        return gdf
+
     for geodata_postprocessor in geodata_postprocessors:
         gdf = geodata_postprocessor(gdf)
     return gdf
@@ -82,6 +88,9 @@ def fill_postprocessor(
     Returns:
         postprocessed geodataframe
     """
+    if gdf.empty:
+        return gdf
+
     gdf = gdf.copy()
     gdf.geometry = gdf.apply(
         lambda row: _fill_polygon(
@@ -133,6 +142,9 @@ def sieve_postprocessor(
     Returns:
         postprocessed geodataframe
     """
+    if gdf.empty:
+        return gdf
+
     if min_area == 0:
         return gdf
 
@@ -157,6 +169,9 @@ def simplify_postprocessor(
     Returns:
         postprocessed geodataframe
     """
+    if gdf.empty:
+        return gdf
+
     topo = tp.Topology(gdf)
     topo.toposimplify(
         epsilon=tolerance,
@@ -184,6 +199,9 @@ def value_postprocessor(
     Returns:
         postprocessed geodataframe
     """
+    if gdf.empty:
+        return gdf
+
     gdf = gdf.copy()
     gdf[field_name] = gdf[field_name].map(mapping)
     return gdf
