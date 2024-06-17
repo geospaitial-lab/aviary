@@ -83,7 +83,7 @@ def fill_postprocessor(
 
     Parameters:
         gdf: geodataframe
-        max_area: maximum area of the holes to fill in square meters
+        max_area: maximum area of the holes to retain in square meters
 
     Returns:
         postprocessed geodataframe
@@ -110,7 +110,7 @@ def _fill_polygon(
 
     Parameters:
         polygon: polygon
-        max_area: maximum area of the holes to fill in square meters
+        max_area: maximum area of the holes to retain in square meters
 
     Returns:
         filled polygon

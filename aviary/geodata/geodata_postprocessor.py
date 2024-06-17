@@ -148,7 +148,7 @@ class FillPostprocessor(GeodataPostprocessor):
     ) -> None:
         """
         Parameters:
-            max_area: maximum area of the holes to fill in square meters
+            max_area: maximum area of the holes to retain in square meters
         """
         self.max_area = max_area
 
