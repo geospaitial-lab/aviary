@@ -210,7 +210,7 @@ class SimplifyPostprocessor(GeodataPostprocessor):
     ) -> None:
         """
         Parameters:
-            tolerance: tolerance of the Douglas-Peucker algorithm
+            tolerance: tolerance of the Douglas-Peucker algorithm in meters
         """
         self.tolerance = tolerance
 
