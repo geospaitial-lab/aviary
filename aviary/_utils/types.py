@@ -455,7 +455,7 @@ class ProcessArea(Iterable[Coordinates]):
             coordinates: coordinates (x_min, y_min) of each tile
 
         Raises:
-            AviaryUserError: Invalid coordinates (`coordinates` is not an array of shape (n, 2) with data type int32)
+            AviaryUserError: Invalid coordinates (`coordinates` is not an array of shape (n, 2) and data type int32)
         """
         self._coordinates = coordinates
 
@@ -468,7 +468,7 @@ class ProcessArea(Iterable[Coordinates]):
         if any(conditions):
             message = (
                 'Invalid coordinates! '
-                'coordinates must be an array of shape (n, 2) with data type int32.'
+                'coordinates must be an array of shape (n, 2) and data type int32.'
             )
             raise AviaryUserError(message)
 
@@ -490,7 +490,7 @@ class ProcessArea(Iterable[Coordinates]):
             value: coordinates (x_min, y_min) of each tile
 
         Raises:
-            AviaryUserError: Invalid coordinates (`coordinates` is not an array of shape (n, 2) with data type int32)
+            AviaryUserError: Invalid coordinates (`coordinates` is not an array of shape (n, 2) and data type int32)
         """
         conditions = [
             value.ndim != 2,
@@ -501,7 +501,7 @@ class ProcessArea(Iterable[Coordinates]):
         if any(conditions):
             message = (
                 'Invalid coordinates! '
-                'coordinates must be an array of shape (n, 2) with data type int32.'
+                'coordinates must be an array of shape (n, 2) and data type int32.'
             )
             raise AviaryUserError(message)
 
