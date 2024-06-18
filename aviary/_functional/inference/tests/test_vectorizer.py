@@ -5,7 +5,7 @@ import dask
 import numpy as np
 import pytest
 
-from aviary._functional.geodata.vectorizer import _vectorizer_element
+from aviary._functional.inference.vectorizer import _vectorizer_element
 
 
 @pytest.mark.skip(reason='Not implemented')
@@ -13,8 +13,8 @@ def test_vectorizer() -> None:
     pass
 
 
-@patch('aviary._functional.geodata.vectorizer._export_gdf')
-@patch('aviary._functional.geodata.vectorizer._vectorize_preds')
+@patch('aviary._functional.inference.vectorizer._export_gdf')
+@patch('aviary._functional.inference.vectorizer._vectorize_preds')
 def test__vectorizer_element(
     mocked__vectorize_preds,
     mocked__export_gdf,

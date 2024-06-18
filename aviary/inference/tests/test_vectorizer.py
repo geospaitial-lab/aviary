@@ -3,7 +3,7 @@ from unittest.mock import patch
 
 import numpy as np
 
-from aviary.geodata.vectorizer import Vectorizer
+from aviary.inference.vectorizer import Vectorizer
 
 
 def test_init() -> None:
@@ -30,7 +30,7 @@ def test_init() -> None:
     assert vectorizer.num_workers == num_workers
 
 
-@patch('aviary.geodata.vectorizer.vectorizer')
+@patch('aviary.inference.vectorizer.vectorizer')
 def test_call(
     mocked_vectorizer,
     vectorizer: Vectorizer,

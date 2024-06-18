@@ -1,4 +1,3 @@
-from pathlib import Path
 from unittest.mock import MagicMock
 
 import geopandas as gpd
@@ -30,7 +29,6 @@ from aviary.geodata.geodata_postprocessor import (
     ValuePostprocessor,
 )
 from aviary.geodata.grid_generator import GridGenerator
-from aviary.geodata.vectorizer import Vectorizer
 
 
 @pytest.fixture(scope='session')
@@ -165,22 +163,4 @@ def value_postprocessor() -> ValuePostprocessor:
     return ValuePostprocessor(
         mapping=mapping,
         field_name=field_name,
-    )
-
-
-@pytest.fixture(scope='session')
-def vectorizer() -> Vectorizer:
-    path = Path('test')
-    tile_size = 128
-    ground_sampling_distance = .2
-    epsg_code = 25832
-    field_name = 'class'
-    num_workers = 1
-    return Vectorizer(
-        path=path,
-        tile_size=tile_size,
-        ground_sampling_distance=ground_sampling_distance,
-        epsg_code=epsg_code,
-        field_name=field_name,
-        num_workers=num_workers,
     )
