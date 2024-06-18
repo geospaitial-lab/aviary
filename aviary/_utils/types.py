@@ -22,6 +22,7 @@ from aviary._functional.geodata.coordinates_filter import (
     duplicates_filter,
     set_filter,
 )
+
 # noinspection PyProtectedMember
 from aviary._functional.geodata.grid_generator import compute_coordinates
 from aviary._utils.exceptions import AviaryUserError

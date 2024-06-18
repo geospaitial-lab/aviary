@@ -8,6 +8,7 @@ from aviary._functional.data.data_fetcher import (
     vrt_data_fetcher,
     vrt_data_fetcher_info,
 )
+
 # noinspection PyProtectedMember
 from aviary._utils.types import (
     BoundingBox,

@@ -6,13 +6,6 @@ import numpy as np
 import numpy.typing as npt
 import pytest
 
-# noinspection PyProtectedMember
-from aviary._utils.exceptions import AviaryUserError
-# noinspection PyProtectedMember
-from aviary._utils.types import (
-    CoordinatesSet,
-    SetFilterMode,
-)
 from aviary._functional.geodata.coordinates_filter import (
     _geospatial_filter_difference,
     _geospatial_filter_intersection,
@@ -31,6 +24,15 @@ from aviary._functional.geodata.tests.data.data_test_coordinates_filter import (
     data_test__set_filter_union,
     data_test_duplicates_filter,
     data_test_mask_filter,
+)
+
+# noinspection PyProtectedMember
+from aviary._utils.exceptions import AviaryUserError
+
+# noinspection PyProtectedMember
+from aviary._utils.types import (
+    CoordinatesSet,
+    SetFilterMode,
 )
 
 

@@ -9,7 +9,6 @@ from aviary._utils.types import (
     GeospatialFilterMode,
     SetFilterMode,
 )
-
 from aviary.geodata.coordinates_filter import (
     CompositeFilter,
     CoordinatesFilter,

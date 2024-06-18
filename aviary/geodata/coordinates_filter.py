@@ -12,6 +12,7 @@ from aviary._functional.geodata.coordinates_filter import (
     mask_filter,
     set_filter,
 )
+
 # noinspection PyProtectedMember
 from aviary._utils.types import (
     CoordinatesSet,

@@ -6,15 +6,6 @@ import rasterio as rio
 from shapely.geometry import box
 
 from aviary._utils.exceptions import AviaryUserError
-from aviary._utils.types import (
-    BoundingBox,
-    BufferSize,
-    Coordinate,
-    CoordinatesSet,
-    DType,
-    InterpolationMode,
-    ProcessArea,
-)
 from aviary._utils.tests.data.data_test_types import (
     data_test_bounding_box_buffer,
     data_test_bounding_box_buffer_exceptions,
@@ -24,6 +15,15 @@ from aviary._utils.tests.data.data_test_types import (
     data_test_bounding_box_quantize_exceptions,
     data_test_process_area_init_exceptions,
     data_test_process_area_properties_exceptions,
+)
+from aviary._utils.types import (
+    BoundingBox,
+    BufferSize,
+    Coordinate,
+    CoordinatesSet,
+    DType,
+    InterpolationMode,
+    ProcessArea,
 )
 
 
