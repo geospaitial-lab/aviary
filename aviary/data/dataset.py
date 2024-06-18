@@ -1,17 +1,17 @@
 import torch.utils.data
 
-from .._functional.data.dataset import (
+# noinspection PyProtectedMember
+from aviary._functional.data.dataset import (
     get_item,
     get_length,
 )
-from .._utils.types import (
+# noinspection PyProtectedMember
+from aviary._utils.types import (
     Coordinate,
     CoordinatesSet,
 )
-from ..data import (
-    DataFetcher,
-    DataPreprocessor,
-)
+from aviary.data.data_fetcher import DataFetcher
+from aviary.data.data_preprocessor import DataPreprocessor
 
 
 class Dataset(torch.utils.data.Dataset):

@@ -4,15 +4,15 @@ from typing import TYPE_CHECKING
 
 import torch
 
-if TYPE_CHECKING:
-    from ...data import (
-        DataFetcher,
-        DataPreprocessor,
-    )
-from ..._utils.types import (
+# noinspection PyProtectedMember
+from aviary._utils.types import (
     Coordinate,
     CoordinatesSet,
 )
+
+if TYPE_CHECKING:
+    from aviary.data.data_fetcher import DataFetcher
+    from aviary.data.data_preprocessor import DataPreprocessor
 
 
 def get_item(

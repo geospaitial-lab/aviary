@@ -4,11 +4,13 @@ import geopandas as gpd
 import geopandas.testing
 import numpy as np
 
-from ..._utils.types import (
+# noinspection PyProtectedMember
+from aviary._utils.types import (
     GeospatialFilterMode,
     SetFilterMode,
 )
-from ...geodata import (
+
+from aviary.geodata.coordinates_filter import (
     CompositeFilter,
     CoordinatesFilter,
     DuplicatesFilter,

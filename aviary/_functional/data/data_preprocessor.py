@@ -7,7 +7,7 @@ import numpy.typing as npt
 import torch
 
 if TYPE_CHECKING:
-    from ...data import DataPreprocessor
+    from aviary.data.data_preprocessor import DataPreprocessor
 
 
 def composite_preprocessor(

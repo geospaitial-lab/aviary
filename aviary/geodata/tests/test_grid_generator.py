@@ -1,7 +1,8 @@
 from unittest.mock import patch
 
-from ..._utils.types import BoundingBox
-from ...geodata import GridGenerator
+# noinspection PyProtectedMember
+from aviary._utils.types import BoundingBox
+from aviary.geodata.grid_generator import GridGenerator
 
 
 def test_init() -> None:

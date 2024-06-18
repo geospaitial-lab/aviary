@@ -2,7 +2,8 @@ from abc import ABC, abstractmethod
 
 import geopandas as gpd
 
-from .._functional.geodata.geodata_postprocessor import (
+# noinspection PyProtectedMember
+from aviary._functional.geodata.geodata_postprocessor import (
     clip_postprocessor,
     composite_postprocessor,
     field_name_postprocessor,

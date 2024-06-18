@@ -3,8 +3,10 @@ from pathlib import Path
 import numpy as np
 import numpy.typing as npt
 
-from .._functional.geodata.vectorizer import vectorizer
-from .._utils.types import (
+# noinspection PyProtectedMember
+from aviary._functional.geodata.vectorizer import vectorizer
+# noinspection PyProtectedMember
+from aviary._utils.types import (
     CoordinatesSet,
     EPSGCode,
     GroundSamplingDistance,

@@ -7,7 +7,8 @@ import numpy.typing as npt
 import rasterio as rio
 import rasterio.features
 
-from ..._utils.types import (
+# noinspection PyProtectedMember
+from aviary._utils.types import (
     Coordinate,
     CoordinatesSet,
     EPSGCode,

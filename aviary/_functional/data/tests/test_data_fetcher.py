@@ -5,7 +5,8 @@ import numpy as np
 import numpy.typing as npt
 import pytest
 
-from ...._utils.types import (
+# noinspection PyProtectedMember
+from aviary._utils.types import (
     BoundingBox,
     BufferSize,
     DataFetcherInfo,
@@ -13,13 +14,13 @@ from ...._utils.types import (
     GroundSamplingDistance,
     TileSize,
 )
-from ..data_fetcher import (
+from aviary._functional.data.data_fetcher import (
     _compute_tile_size_pixels,
     _drop_channels,
     _permute_data,
     vrt_data_fetcher_info,
 )
-from .data.data_test_data_fetcher import (
+from aviary._functional.data.tests.data.data_test_data_fetcher import (
     data_test__compute_tile_size_pixels,
     data_test__drop_channels,
     data_test__permute_data,

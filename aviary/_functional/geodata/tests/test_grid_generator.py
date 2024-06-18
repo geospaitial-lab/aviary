@@ -6,17 +6,18 @@ import numpy as np
 import pytest
 from shapely.geometry import Polygon, box
 
-from ...._utils.types import (
+# noinspection PyProtectedMember
+from aviary._utils.types import (
     BoundingBox,
     CoordinatesSet,
     TileSize,
 )
-from ..grid_generator import (
+from aviary._functional.geodata.grid_generator import (
     _generate_tiles,
     compute_coordinates,
     generate_grid,
 )
-from .data.data_test_grid_generator import (
+from aviary._functional.geodata.tests.data.data_test_grid_generator import (
     data_test__generate_tiles,
     data_test_compute_coordinates,
 )

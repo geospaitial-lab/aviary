@@ -4,19 +4,20 @@ from unittest.mock import MagicMock, patch
 import numpy as np
 import pytest
 
-from ..._utils.types import (
-    InterpolationMode,
-)
-from ...data import (
-    CompositePreprocessor,
+# noinspection PyProtectedMember
+from aviary._utils.types import InterpolationMode
+from aviary.data.data_fetcher import (
     DataFetcher,
+    VRTDataFetcher,
+)
+from aviary.data.data_preprocessor import (
+    CompositePreprocessor,
     DataPreprocessor,
-    Dataset,
     NormalizePreprocessor,
     StandardizePreprocessor,
     ToTensorPreprocessor,
-    VRTDataFetcher,
 )
+from aviary.data.dataset import Dataset
 
 
 @pytest.fixture(scope='session')

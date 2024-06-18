@@ -5,29 +5,32 @@ import geopandas as gpd
 import numpy as np
 import pytest
 
-from ..._utils.types import (
+# noinspection PyProtectedMember
+from aviary._utils.types import (
     BoundingBox,
     GeospatialFilterMode,
     SetFilterMode,
 )
-from ...geodata import (
-    ClipPostprocessor,
+from aviary.geodata.coordinates_filter import (
     CompositeFilter,
-    CompositePostprocessor,
     CoordinatesFilter,
     DuplicatesFilter,
+    GeospatialFilter,
+    MaskFilter,
+    SetFilter,
+)
+from aviary.geodata.geodata_postprocessor import (
+    ClipPostprocessor,
+    CompositePostprocessor,
     FieldNamePostprocessor,
     FillPostprocessor,
     GeodataPostprocessor,
-    GeospatialFilter,
-    GridGenerator,
-    MaskFilter,
-    SetFilter,
     SievePostprocessor,
     SimplifyPostprocessor,
     ValuePostprocessor,
-    Vectorizer,
 )
+from aviary.geodata.grid_generator import GridGenerator
+from aviary.geodata.vectorizer import Vectorizer
 
 
 @pytest.fixture(scope='session')

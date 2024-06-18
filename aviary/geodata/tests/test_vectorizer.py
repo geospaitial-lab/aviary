@@ -3,7 +3,7 @@ from unittest.mock import patch
 
 import numpy as np
 
-from ...geodata import Vectorizer
+from aviary.geodata.vectorizer import Vectorizer
 
 
 def test_init() -> None:

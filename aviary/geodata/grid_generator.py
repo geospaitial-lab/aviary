@@ -1,10 +1,12 @@
 import geopandas as gpd
 
-from .._functional.geodata.grid_generator import (
+# noinspection PyProtectedMember
+from aviary._functional.geodata.grid_generator import (
     compute_coordinates,
     generate_grid,
 )
-from .._utils.types import (
+# noinspection PyProtectedMember
+from aviary._utils.types import (
     BoundingBox,
     CoordinatesSet,
     EPSGCode,

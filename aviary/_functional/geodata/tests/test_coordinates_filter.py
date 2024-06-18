@@ -6,12 +6,14 @@ import numpy as np
 import numpy.typing as npt
 import pytest
 
-from ...._utils.exceptions import AviaryUserError
-from ...._utils.types import (
+# noinspection PyProtectedMember
+from aviary._utils.exceptions import AviaryUserError
+# noinspection PyProtectedMember
+from aviary._utils.types import (
     CoordinatesSet,
     SetFilterMode,
 )
-from ..coordinates_filter import (
+from aviary._functional.geodata.coordinates_filter import (
     _geospatial_filter_difference,
     _geospatial_filter_intersection,
     _set_filter_difference,
@@ -21,7 +23,7 @@ from ..coordinates_filter import (
     mask_filter,
     set_filter,
 )
-from .data.data_test_coordinates_filter import (
+from aviary._functional.geodata.tests.data.data_test_coordinates_filter import (
     data_test__geospatial_filter_difference,
     data_test__geospatial_filter_intersection,
     data_test__set_filter_difference,
