@@ -1,6 +1,6 @@
 -r ../requirements.txt
 
-mkdocs-material==9.5.26
+mkdocs-material==9.5.27
 mkdocstrings-python==1.10.3
 pip-audit==2.7.3
 pre-commit==3.7.1
