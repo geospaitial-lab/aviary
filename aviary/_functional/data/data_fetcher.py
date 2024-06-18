@@ -72,6 +72,7 @@ def vrt_data_fetcher(
         data = src.read(
             window=window,
             out_shape=(src.count, tile_size_pixels, tile_size_pixels),
+            boundless=True,
             resampling=interpolation_mode.to_rio(),
             fill_value=fill_value,
         )
