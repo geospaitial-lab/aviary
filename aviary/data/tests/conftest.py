@@ -4,6 +4,9 @@ from unittest.mock import MagicMock, patch
 import numpy as np
 import pytest
 
+from ..._utils.types import (
+    InterpolationMode,
+)
 from ...data import (
     CompositePreprocessor,
     DataFetcher,
@@ -13,9 +16,6 @@ from ...data import (
     StandardizePreprocessor,
     ToTensorPreprocessor,
     VRTDataFetcher,
-)
-from ..._utils.types import (
-    InterpolationMode,
 )
 
 

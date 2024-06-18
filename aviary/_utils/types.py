@@ -5,9 +5,9 @@ from dataclasses import dataclass, fields
 from enum import Enum
 from math import ceil, floor
 from typing import (
+    TYPE_CHECKING,
     Iterable,
     Iterator,
-    TYPE_CHECKING,
     TypeAlias,
 )
 

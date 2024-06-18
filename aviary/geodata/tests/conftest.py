@@ -5,6 +5,11 @@ import geopandas as gpd
 import numpy as np
 import pytest
 
+from ..._utils.types import (
+    BoundingBox,
+    GeospatialFilterMode,
+    SetFilterMode,
+)
 from ...geodata import (
     ClipPostprocessor,
     CompositeFilter,
@@ -22,11 +27,6 @@ from ...geodata import (
     SimplifyPostprocessor,
     ValuePostprocessor,
     Vectorizer,
-)
-from ..._utils.types import (
-    BoundingBox,
-    GeospatialFilterMode,
-    SetFilterMode,
 )
 
 

@@ -1,14 +1,14 @@
 from pathlib import Path
 from unittest.mock import patch
 
-from ...data import (
-    VRTDataFetcher,
-)
 from ..._utils.types import (
     BoundingBox,
     DataFetcherInfo,
     DType,
     InterpolationMode,
+)
+from ...data import (
+    VRTDataFetcher,
 )
 
 

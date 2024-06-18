@@ -3,9 +3,12 @@ from unittest.mock import MagicMock
 import numpy as np
 import pytest
 
+from ...._utils.types import (
+    CoordinatesSet,
+)
 from ....data import (
     DataFetcher,
-    DataPreprocessor
+    DataPreprocessor,
 )
 from ..dataset import (
     get_item,
@@ -13,9 +16,6 @@ from ..dataset import (
 )
 from .data.data_test_dataset import (
     data_test_get_length,
-)
-from ...._utils.types import (
-    CoordinatesSet,
 )
 
 

@@ -3,7 +3,6 @@ import numpy.typing as npt
 import pytest
 import torch
 
-
 from ..data_preprocessor import (
     normalize_preprocessor,
     standardize_preprocessor,

@@ -12,23 +12,23 @@ from ...._utils.types import (
     SetFilterMode,
 )
 from ..coordinates_filter import (
-    duplicates_filter,
     _geospatial_filter_difference,
     _geospatial_filter_intersection,
-    mask_filter,
-    set_filter,
     _set_filter_difference,
     _set_filter_intersection,
     _set_filter_union,
+    duplicates_filter,
+    mask_filter,
+    set_filter,
 )
 from .data.data_test_coordinates_filter import (
-    data_test_duplicates_filter,
     data_test__geospatial_filter_difference,
     data_test__geospatial_filter_intersection,
-    data_test_mask_filter,
     data_test__set_filter_difference,
     data_test__set_filter_intersection,
     data_test__set_filter_union,
+    data_test_duplicates_filter,
+    data_test_mask_filter,
 )
 
 

@@ -4,19 +4,19 @@ import pytest
 import shapely.testing
 from shapely.geometry import Polygon
 
-from .data.data_test_geodata_postprocessor import (
-    data_test__fill_polygon,
-    data_test_field_name_postprocessor,
-    data_test_fill_postprocessor,
-    data_test_sieve_postprocessor,
-    data_test_value_postprocessor,
-)
 from ..geodata_postprocessor import (
     _fill_polygon,
     field_name_postprocessor,
     fill_postprocessor,
     sieve_postprocessor,
     value_postprocessor,
+)
+from .data.data_test_geodata_postprocessor import (
+    data_test__fill_polygon,
+    data_test_field_name_postprocessor,
+    data_test_fill_postprocessor,
+    data_test_sieve_postprocessor,
+    data_test_value_postprocessor,
 )
 
 

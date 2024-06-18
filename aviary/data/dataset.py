@@ -1,9 +1,5 @@
 import torch.utils.data
 
-from ..data import (
-    DataFetcher,
-    DataPreprocessor,
-)
 from .._functional.data.dataset import (
     get_item,
     get_length,
@@ -11,6 +7,10 @@ from .._functional.data.dataset import (
 from .._utils.types import (
     Coordinate,
     CoordinatesSet,
+)
+from ..data import (
+    DataFetcher,
+    DataPreprocessor,
 )
 
 

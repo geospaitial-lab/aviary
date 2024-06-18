@@ -5,6 +5,14 @@ import numpy as np
 import numpy.typing as npt
 import pytest
 
+from ...._utils.types import (
+    BoundingBox,
+    BufferSize,
+    DataFetcherInfo,
+    DType,
+    GroundSamplingDistance,
+    TileSize,
+)
 from ..data_fetcher import (
     _compute_tile_size_pixels,
     _drop_channels,
@@ -15,14 +23,6 @@ from .data.data_test_data_fetcher import (
     data_test__compute_tile_size_pixels,
     data_test__drop_channels,
     data_test__permute_data,
-)
-from ...._utils.types import (
-    BoundingBox,
-    BufferSize,
-    DataFetcherInfo,
-    DType,
-    GroundSamplingDistance,
-    TileSize,
 )
 
 

@@ -4,6 +4,10 @@ import geopandas as gpd
 import geopandas.testing
 import numpy as np
 
+from ..._utils.types import (
+    GeospatialFilterMode,
+    SetFilterMode,
+)
 from ...geodata import (
     CompositeFilter,
     CoordinatesFilter,
@@ -11,10 +15,6 @@ from ...geodata import (
     GeospatialFilter,
     MaskFilter,
     SetFilter,
-)
-from ..._utils.types import (
-    GeospatialFilterMode,
-    SetFilterMode,
 )
 
 

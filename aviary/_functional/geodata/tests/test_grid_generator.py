@@ -4,21 +4,21 @@ import geopandas as gpd
 import geopandas.testing
 import numpy as np
 import pytest
-from shapely.geometry import box, Polygon
+from shapely.geometry import Polygon, box
 
-from ..grid_generator import (
-    compute_coordinates,
-    generate_grid,
-    _generate_tiles,
-)
-from .data.data_test_grid_generator import (
-    data_test_compute_coordinates,
-    data_test__generate_tiles,
-)
 from ...._utils.types import (
     BoundingBox,
     CoordinatesSet,
     TileSize,
+)
+from ..grid_generator import (
+    _generate_tiles,
+    compute_coordinates,
+    generate_grid,
+)
+from .data.data_test_grid_generator import (
+    data_test__generate_tiles,
+    data_test_compute_coordinates,
 )
 
 
