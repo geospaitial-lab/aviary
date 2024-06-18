@@ -4,7 +4,7 @@ import numpy as np
 import numpy.typing as npt
 
 # noinspection PyProtectedMember
-from aviary._functional.geodata.vectorizer import vectorizer
+from aviary._functional.inference.vectorizer import vectorizer
 
 # noinspection PyProtectedMember
 from aviary._utils.types import (

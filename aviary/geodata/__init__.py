@@ -17,7 +17,6 @@ from .geodata_postprocessor import (
     ValuePostprocessor,
 )
 from .grid_generator import GridGenerator
-from .vectorizer import Vectorizer
 
 __all__ = [
     'ClipPostprocessor',
@@ -35,5 +34,4 @@ __all__ = [
     'SievePostprocessor',
     'SimplifyPostprocessor',
     'ValuePostprocessor',
-    'Vectorizer',
 ]
