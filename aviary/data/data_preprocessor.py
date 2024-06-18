@@ -77,7 +77,7 @@ class NormalizePreprocessor(DataPreprocessor):
     """Data preprocessor that applies min-max normalization
 
     Examples:
-        Assume the data is a 3-channel image of dtype uint8.
+        Assume the data is a 3-channel image of data type uint8.
 
         >>> min_values = [0.] * 3
         >>> max_values = [255.] * 3
@@ -124,7 +124,7 @@ class StandardizePreprocessor(DataPreprocessor):
     """Data preprocessor that applies standardization
 
     Examples:
-        Assume the data is a 3-channel image of dtype float32.
+        Assume the data is a 3-channel image of data type float32.
         In this example the mean and standard deviation values from the ImageNet dataset are used.
 
         >>> mean_values = [.485, .456, .406]
