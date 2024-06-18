@@ -7,7 +7,7 @@ import topojson as tp
 from shapely.geometry import Polygon
 
 if TYPE_CHECKING:
-    from ...geodata.geodata_postprocessor import GeodataPostprocessor
+    from aviary.geodata.geodata_postprocessor import GeodataPostprocessor
 
 
 def clip_postprocessor(

@@ -3,7 +3,7 @@ from unittest.mock import MagicMock, patch
 import geopandas as gpd
 import geopandas.testing
 
-from ...geodata import (
+from aviary.geodata.geodata_postprocessor import (
     ClipPostprocessor,
     CompositePostprocessor,
     FieldNamePostprocessor,

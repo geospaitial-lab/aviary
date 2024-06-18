@@ -4,7 +4,8 @@ import numpy as np
 import numpy.typing as npt
 import torch
 
-from .._functional.data.data_preprocessor import (
+# noinspection PyProtectedMember
+from aviary._functional.data.data_preprocessor import (
     composite_preprocessor,
     normalize_preprocessor,
     standardize_preprocessor,

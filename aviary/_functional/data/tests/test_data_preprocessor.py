@@ -3,13 +3,12 @@ import numpy.typing as npt
 import pytest
 import torch
 
-
-from ..data_preprocessor import (
+from aviary._functional.data.data_preprocessor import (
     normalize_preprocessor,
     standardize_preprocessor,
     to_tensor_preprocessor,
 )
-from .data.data_test_data_preprocessor import (
+from aviary._functional.data.tests.data.data_test_data_preprocessor import (
     data_test_normalize_preprocessor,
     data_test_standardize_preprocessor,
     data_test_to_tensor_preprocessor,

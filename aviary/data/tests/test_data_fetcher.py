@@ -1,15 +1,14 @@
 from pathlib import Path
 from unittest.mock import patch
 
-from ...data import (
-    VRTDataFetcher,
-)
-from ..._utils.types import (
+# noinspection PyProtectedMember
+from aviary._utils.types import (
     BoundingBox,
     DataFetcherInfo,
     DType,
     InterpolationMode,
 )
+from aviary.data.data_fetcher import VRTDataFetcher
 
 
 @patch('aviary.data.data_fetcher.vrt_data_fetcher_info')

@@ -4,18 +4,20 @@ import geopandas as gpd
 import geopandas.testing
 import numpy as np
 import pytest
-from shapely.geometry import box, Polygon
+from shapely.geometry import Polygon, box
 
-from ..grid_generator import (
+from aviary._functional.geodata.grid_generator import (
+    _generate_tiles,
     compute_coordinates,
     generate_grid,
-    _generate_tiles,
 )
-from .data.data_test_grid_generator import (
-    data_test_compute_coordinates,
+from aviary._functional.geodata.tests.data.data_test_grid_generator import (
     data_test__generate_tiles,
+    data_test_compute_coordinates,
 )
-from ...._utils.types import (
+
+# noinspection PyProtectedMember
+from aviary._utils.types import (
     BoundingBox,
     CoordinatesSet,
     TileSize,

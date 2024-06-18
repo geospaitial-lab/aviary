@@ -2,9 +2,7 @@ import re
 
 import numpy as np
 
-from ...types import (
-    BoundingBox,
-)
+from aviary._utils.types import BoundingBox
 
 data_test_bounding_box_buffer = [
     # test case 1: buffer_size is 0

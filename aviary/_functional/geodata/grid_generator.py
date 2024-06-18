@@ -4,10 +4,11 @@ from typing import TYPE_CHECKING
 
 import geopandas as gpd
 import numpy as np
-from shapely.geometry import box, Polygon
+from shapely.geometry import Polygon, box
 
 if TYPE_CHECKING:
-    from ..._utils.types import (
+    # noinspection PyProtectedMember
+    from aviary._utils.types import (
         BoundingBox,
         CoordinatesSet,
         EPSGCode,

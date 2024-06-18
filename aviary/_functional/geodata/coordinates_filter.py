@@ -6,17 +6,20 @@ import geopandas as gpd
 import numpy as np
 from numpy import typing as npt
 
-from ..._utils.exceptions import AviaryUserError
+# noinspection PyProtectedMember
+from aviary._utils.exceptions import AviaryUserError
+
 if TYPE_CHECKING:
-    from ..._utils.types import (
+    # noinspection PyProtectedMember
+    from aviary._utils.types import (
         CoordinatesSet,
         EPSGCode,
         GeospatialFilterMode,
         SetFilterMode,
         TileSize,
     )
-    from ...geodata import CoordinatesFilter
-from .grid_generator import _generate_tiles
+    from aviary.geodata.coordinates_filter import CoordinatesFilter
+from aviary._functional.geodata.grid_generator import _generate_tiles
 
 
 def composite_filter(
@@ -208,7 +211,8 @@ def set_filter(
     Raises:
         AviaryUserError: Invalid set filter mode
     """
-    from ..._utils.types import SetFilterMode
+    # noinspection PyProtectedMember
+    from aviary._utils.types import SetFilterMode
 
     if mode == SetFilterMode.DIFFERENCE:
         return _set_filter_difference(

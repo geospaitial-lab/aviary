@@ -6,7 +6,8 @@ import numpy.typing as npt
 import rasterio as rio
 import rasterio.windows
 
-from ..._utils.types import (
+# noinspection PyProtectedMember
+from aviary._utils.types import (
     BoundingBox,
     BufferSize,
     Coordinate,

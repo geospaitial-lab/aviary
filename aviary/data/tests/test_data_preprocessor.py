@@ -2,7 +2,7 @@ from unittest.mock import MagicMock, patch
 
 import numpy as np
 
-from ...data import (
+from aviary.data.data_preprocessor import (
     CompositePreprocessor,
     DataPreprocessor,
     NormalizePreprocessor,

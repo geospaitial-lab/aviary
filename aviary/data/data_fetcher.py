@@ -3,11 +3,14 @@ from typing import Protocol
 
 import numpy.typing as npt
 
-from .._functional.data.data_fetcher import (
+# noinspection PyProtectedMember
+from aviary._functional.data.data_fetcher import (
     vrt_data_fetcher,
     vrt_data_fetcher_info,
 )
-from .._utils.types import (
+
+# noinspection PyProtectedMember
+from aviary._utils.types import (
     BoundingBox,
     BufferSize,
     Coordinate,

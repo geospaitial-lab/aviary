@@ -5,9 +5,9 @@ from dataclasses import dataclass, fields
 from enum import Enum
 from math import ceil, floor
 from typing import (
+    TYPE_CHECKING,
     Iterable,
     Iterator,
-    TYPE_CHECKING,
     TypeAlias,
 )
 
@@ -17,14 +17,18 @@ import numpy.typing as npt
 import rasterio as rio
 from shapely.geometry import box
 
-from .._functional.geodata.coordinates_filter import (
+# noinspection PyProtectedMember
+from aviary._functional.geodata.coordinates_filter import (
     duplicates_filter,
     set_filter,
 )
-from .._functional.geodata.grid_generator import compute_coordinates
-from .._utils.exceptions import AviaryUserError
+
+# noinspection PyProtectedMember
+from aviary._functional.geodata.grid_generator import compute_coordinates
+from aviary._utils.exceptions import AviaryUserError
+
 if TYPE_CHECKING:
-    from ..geodata.coordinates_filter import CoordinatesFilter
+    from aviary.geodata.coordinates_filter import CoordinatesFilter
 
 BufferSize: TypeAlias = int
 Coordinate: TypeAlias = int

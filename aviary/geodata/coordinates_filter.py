@@ -4,14 +4,17 @@ import geopandas as gpd
 import numpy as np
 import numpy.typing as npt
 
-from .._functional.geodata.coordinates_filter import (
+# noinspection PyProtectedMember
+from aviary._functional.geodata.coordinates_filter import (
     composite_filter,
     duplicates_filter,
     geospatial_filter,
     mask_filter,
     set_filter,
 )
-from .._utils.types import (
+
+# noinspection PyProtectedMember
+from aviary._utils.types import (
     CoordinatesSet,
     EPSGCode,
     GeospatialFilterMode,

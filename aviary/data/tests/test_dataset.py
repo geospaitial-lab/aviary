@@ -2,11 +2,9 @@ from unittest.mock import MagicMock, patch
 
 import numpy as np
 
-from ...data import (
-    DataFetcher,
-    DataPreprocessor,
-    Dataset,
-)
+from aviary.data.data_fetcher import DataFetcher
+from aviary.data.data_preprocessor import DataPreprocessor
+from aviary.data.dataset import Dataset
 
 
 def test_init() -> None:

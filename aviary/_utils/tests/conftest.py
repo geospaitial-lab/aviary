@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from ..types import (
+from aviary._utils.types import (
     BoundingBox,
     ProcessArea,
 )

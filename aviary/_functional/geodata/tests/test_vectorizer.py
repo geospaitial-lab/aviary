@@ -5,9 +5,7 @@ import dask
 import numpy as np
 import pytest
 
-from ..vectorizer import (
-    _vectorizer_element,
-)
+from aviary._functional.geodata.vectorizer import _vectorizer_element
 
 
 @pytest.mark.skip(reason='Not implemented')
