@@ -4,7 +4,7 @@ import numpy as np
 import numpy.typing as npt
 
 # noinspection PyProtectedMember
-from aviary._functional.inference.vectorizer import vectorizer
+from aviary._functional.inference.exporter import segmentation_exporter
 
 # noinspection PyProtectedMember
 from aviary._utils.types import (
@@ -15,17 +15,17 @@ from aviary._utils.types import (
 )
 
 
-class Vectorizer:
-    """Vectorizer
+class SegmentationExporter:
+    """Exporter for segmentation predictions
 
-    A vectorizer is a callable that transforms predictions of the model (i.e. raster data) to
+    A segmentation exporter is a callable that transforms predictions of the model (i.e. raster data) to
     geospatial data (i.e. vector data).
-    The vectorizer is used by the pipeline to vectorize the batched predictions and export the geodataframe of
-    the polygons as a memory and time efficient feather file to the output directory.
+    The segmentation exporter is used by the pipeline to vectorize the batched predictions and export
+    the geodataframe of the polygons as a memory and time efficient feather file to the output directory.
     The geodataframe contains the geometry of the polygons and their class that is stored in the field `field_name`
     as the pixel value of the prediction.
 
-    For each processed tile, the vectorizer creates a subdirectory named `{x_min}_{y_min}`.
+    For each processed tile, the segmentation exporter creates a subdirectory named `{x_min}_{y_min}`.
     If the tile contains any polygons, it exports the geodataframe as a feather file named `{x_min}_{y_min}.feather`.
     """
     _IGNORE_BACKGROUND_CLASS = True
@@ -66,7 +66,7 @@ class Vectorizer:
             preds: batched predictions
             coordinates: coordinates (x_min, y_min) of each tile
         """
-        vectorizer(
+        segmentation_exporter(
             preds=preds,
             coordinates=coordinates,
             path=self.path,

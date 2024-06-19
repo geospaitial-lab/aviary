@@ -5,17 +5,17 @@ import dask
 import numpy as np
 import pytest
 
-from aviary._functional.inference.vectorizer import _vectorizer_element
+from aviary._functional.inference.exporter import _segmentation_exporter_element
 
 
 @pytest.mark.skip(reason='Not implemented')
-def test_vectorizer() -> None:
+def test_segmentation_exporter() -> None:
     pass
 
 
-@patch('aviary._functional.inference.vectorizer._export_gdf')
-@patch('aviary._functional.inference.vectorizer._vectorize_preds')
-def test__vectorizer_element(
+@patch('aviary._functional.inference.exporter._export_gdf')
+@patch('aviary._functional.inference.exporter._vectorize_preds')
+def test__segmentation_exporter_element(
     mocked__vectorize_preds,
     mocked__export_gdf,
 ) -> None:
@@ -31,7 +31,7 @@ def test__vectorizer_element(
     expected_gdf = 'expected_gdf'
     mocked__vectorize_preds.return_value = expected_gdf
     dask.compute(
-        _vectorizer_element(
+        _segmentation_exporter_element(
             preds=preds,
             x_min=x_min,
             y_min=y_min,

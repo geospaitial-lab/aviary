@@ -1,5 +1,7 @@
-from .vectorizer import Vectorizer
+from .exporter import (
+    SegmentationExporter,
+)
 
 __all__ = [
-    'Vectorizer',
+    'SegmentationExporter',
 ]

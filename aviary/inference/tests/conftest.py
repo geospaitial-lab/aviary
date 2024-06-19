@@ -2,18 +2,18 @@ from pathlib import Path
 
 import pytest
 
-from aviary.inference.vectorizer import Vectorizer
+from aviary.inference.exporter import SegmentationExporter
 
 
 @pytest.fixture(scope='session')
-def vectorizer() -> Vectorizer:
+def segmentation_exporter() -> SegmentationExporter:
     path = Path('test')
     tile_size = 128
     ground_sampling_distance = .2
     epsg_code = 25832
     field_name = 'class'
     num_workers = 1
-    return Vectorizer(
+    return SegmentationExporter(
         path=path,
         tile_size=tile_size,
         ground_sampling_distance=ground_sampling_distance,

@@ -16,7 +16,7 @@ nav:
         - GeodataPostprocessor: api_reference/geodata/geodata_postprocessor.md
         - GridGenerator: api_reference/geodata/grid_generator.md
       - aviary.inference:
-        - Vectorizer: api_reference/inference/vectorizer.md
+        - Exporter: api_reference/inference/exporter.md
 
 theme:
   name: material
