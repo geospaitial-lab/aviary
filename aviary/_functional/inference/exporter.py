@@ -17,7 +17,7 @@ from aviary._utils.types import (
 )
 
 
-def vectorizer(
+def segmentation_exporter(
     preds: npt.NDArray[np.uint8],
     coordinates: CoordinatesSet,
     path: Path,
@@ -42,7 +42,7 @@ def vectorizer(
         num_workers: number of workers
     """
     tasks = [
-        _vectorizer_element(
+        _segmentation_exporter_element(
             preds=preds_element,
             x_min=coordinates_element[0],
             y_min=coordinates_element[1],
@@ -60,7 +60,7 @@ def vectorizer(
 
 
 @dask.delayed
-def _vectorizer_element(
+def _segmentation_exporter_element(
     preds: npt.NDArray[np.uint8],
     x_min: Coordinate,
     y_min: Coordinate,
@@ -74,7 +74,7 @@ def _vectorizer_element(
     """Vectorizes the predictions and exports the geodataframe to the output directory.
 
     Notes:
-        - This function is called concurrently by the `vectorizer` function
+        - This function is called concurrently by the `segmentation_exporter` function
 
     Parameters:
         preds: predictions
