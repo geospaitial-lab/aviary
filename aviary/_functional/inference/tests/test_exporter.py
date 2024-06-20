@@ -1,11 +1,18 @@
 from pathlib import Path
-from unittest.mock import patch
+from typing import cast
+from unittest.mock import MagicMock, patch
 
 import dask
+import geopandas as gpd
 import numpy as np
 import pytest
 
-from aviary._functional.inference.exporter import _segmentation_exporter_task
+from aviary._functional.inference.exporter import (
+    _export_gdf,
+    _segmentation_exporter_task,
+)
+# noinspection PyProtectedMember
+from aviary._utils.exceptions import AviaryUserError
 # noinspection PyProtectedMember
 from aviary._utils.types import SegmentationExporterMode
 
@@ -70,9 +77,71 @@ def test__segmentation_exporter_task(
     )
 
 
-@pytest.mark.skip(reason='Not implemented')
-def test__export_gdf() -> None:
-    pass
+@patch('aviary._functional.inference.exporter._export_gdf_gpkg')
+@patch('aviary._functional.inference.exporter._export_gdf_feather')
+def test__export_gdf(
+    mocked__export_gdf_feather,
+    mocked__export_gdf_gpkg,
+) -> None:
+    gdf = MagicMock(spec=gpd.GeoDataFrame)
+    path = Path('test')
+    x_min = -128
+    y_min = -128
+    gpkg_name = 'output.gpkg'
+
+    mode = SegmentationExporterMode.FEATHER
+    _export_gdf(
+        gdf=gdf,
+        path=path,
+        x_min=x_min,
+        y_min=y_min,
+        gpkg_name=gpkg_name,
+        mode=mode,
+    )
+
+    mocked__export_gdf_feather.assert_called_once_with(
+        gdf=gdf,
+        path=path,
+        x_min=x_min,
+        y_min=y_min,
+    )
+    mocked__export_gdf_gpkg.assert_not_called()
+
+    mocked__export_gdf_feather.reset_mock()
+    mocked__export_gdf_gpkg.reset_mock()
+
+    mode = SegmentationExporterMode.GPKG
+    _export_gdf(
+        gdf=gdf,
+        path=path,
+        x_min=x_min,
+        y_min=y_min,
+        gpkg_name=gpkg_name,
+        mode=mode,
+    )
+
+    mocked__export_gdf_gpkg.assert_called_once_with(
+        gdf=gdf,
+        path=path,
+        gpkg_name=gpkg_name,
+    )
+    mocked__export_gdf_feather.assert_not_called()
+
+    mocked__export_gdf_feather.reset_mock()
+    mocked__export_gdf_gpkg.reset_mock()
+
+    mode = 'invalid mode'
+    mode = cast(SegmentationExporterMode, mode)
+    message = 'Invalid segmentation exporter mode!'
+    with pytest.raises(AviaryUserError, match=message):
+        _export_gdf(
+            gdf=gdf,
+            path=path,
+            x_min=x_min,
+            y_min=y_min,
+            gpkg_name=gpkg_name,
+            mode=mode,
+        )
 
 
 @pytest.mark.skip(reason='Not implemented')
