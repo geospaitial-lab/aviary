@@ -97,7 +97,8 @@ def geospatial_filter(
             gdf=gdf,
         )
 
-    raise AviaryUserError('Invalid geospatial filter mode!')
+    message = 'Invalid geospatial filter mode!'
+    raise AviaryUserError(message)
 
 
 def _generate_grid(
@@ -232,7 +233,8 @@ def set_filter(
             other=other,
         )
 
-    raise AviaryUserError('Invalid set filter mode!')
+    message = 'Invalid set filter mode!'
+    raise AviaryUserError(message)
 
 
 def _set_filter_difference(
