@@ -1,3 +1,4 @@
+from typing import Protocol
 from pathlib import Path
 
 import numpy as np
@@ -15,16 +16,38 @@ from aviary._utils.types import (
 )
 
 
+class Exporter(Protocol):
+    """Protocol for exporters
+
+    Exporters are callables that export predictions.
+    The exporter is used by the pipeline to export the batched output of the model's inference.
+
+    Currently implemented exporters:
+        - SegmentationExporter: Exports segmentation predictions
+    """
+
+    def __call__(
+        self,
+        preds: npt.NDArray[np.uint8],
+        coordinates: CoordinatesSet,
+    ) -> None:
+        """Exports the predictions.
+
+        Parameters:
+            preds: batched predictions
+            coordinates: coordinates (x_min, y_min) of each tile
+        """
+        ...
+
+
 class SegmentationExporter:
     """Exporter for segmentation predictions
 
-    A segmentation exporter is a callable that transforms predictions of the model (i.e. raster data) to
-    geospatial data (i.e. vector data).
-    The segmentation exporter is used by the pipeline to vectorize the batched predictions and export
-    the geodataframe of the polygons as a memory and time efficient feather file to the output directory.
-    The geodataframe contains the geometry of the polygons and their class that is stored in the field `field_name`
-    as the pixel value of the prediction.
+    Implements the Exporter protocol.
 
+    The predictions (i.e. raster data) are transformed to geospatial data (i.e. vector data).
+    The resulting geodataframe contains the geometry of the polygons and their class that is stored
+    in the field `field_name` as the pixel value of the prediction.
     For each processed tile, the segmentation exporter creates a subdirectory named `{x_min}_{y_min}`.
     If the tile contains any polygons, it exports the geodataframe as a feather file named `{x_min}_{y_min}.feather`.
     """
@@ -60,7 +83,7 @@ class SegmentationExporter:
         preds: npt.NDArray[np.uint8],
         coordinates: CoordinatesSet,
     ) -> None:
-        """Vectorizes the predictions and exports the geodataframe to the output directory.
+        """Exports the predictions.
 
         Parameters:
             preds: batched predictions
