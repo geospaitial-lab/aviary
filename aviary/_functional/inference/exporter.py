@@ -157,6 +157,7 @@ def _export_gdf(
             x_min=x_min,
             y_min=y_min,
         )
+        return
 
     if mode == SegmentationExporterMode.GPKG:
         _export_gdf_gpkg(
@@ -164,6 +165,7 @@ def _export_gdf(
             path=path,
             gpkg_name=gpkg_name,
         )
+        return
 
     message = 'Invalid segmentation exporter mode!'
     raise AviaryUserError(message)
