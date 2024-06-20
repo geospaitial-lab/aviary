@@ -769,6 +769,16 @@ class ProcessArea(Iterable[Coordinates]):
         return str(self._coordinates.tolist())
 
 
+class SegmentationExporterMode(Enum):
+    """
+    Attributes:
+        FEATHER: feather mode
+        GPKG: geopackage mode
+    """
+    FEATHER = 'feather'
+    GPKG = 'gpkg'
+
+
 class SetFilterMode(Enum):
     """
     Attributes:

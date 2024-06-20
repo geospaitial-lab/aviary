@@ -3,6 +3,8 @@ from unittest.mock import patch
 
 import numpy as np
 
+# noinspection PyProtectedMember
+from aviary._utils.types import SegmentationExporterMode
 from aviary.inference.exporter import SegmentationExporter
 
 
@@ -12,6 +14,7 @@ def test_init() -> None:
     ground_sampling_distance = .2
     epsg_code = 25832
     field_name = 'class'
+    mode = SegmentationExporterMode.GPKG
     num_workers = 1
     segmentation_exporter = SegmentationExporter(
         path=path,
@@ -19,6 +22,7 @@ def test_init() -> None:
         ground_sampling_distance=ground_sampling_distance,
         epsg_code=epsg_code,
         field_name=field_name,
+        mode=mode,
         num_workers=num_workers,
     )
 
@@ -27,6 +31,7 @@ def test_init() -> None:
     assert segmentation_exporter.ground_sampling_distance == ground_sampling_distance
     assert segmentation_exporter.epsg_code == epsg_code
     assert segmentation_exporter.field_name == field_name
+    assert segmentation_exporter.mode == mode
     assert segmentation_exporter.num_workers == num_workers
 
 
@@ -51,5 +56,7 @@ def test_call(
         epsg_code=segmentation_exporter.epsg_code,
         field_name=segmentation_exporter.field_name,
         ignore_background_class=segmentation_exporter._IGNORE_BACKGROUND_CLASS,
+        gpkg_name=segmentation_exporter._GPKG_NAME,
+        mode=segmentation_exporter.mode,
         num_workers=segmentation_exporter.num_workers,
     )
