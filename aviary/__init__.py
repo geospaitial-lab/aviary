@@ -3,6 +3,7 @@ from ._utils.types import (
     GeospatialFilterMode,
     InterpolationMode,
     ProcessArea,
+    SegmentationExporterMode,
     SetFilterMode,
 )
 
@@ -11,5 +12,6 @@ __all__ = [
     'GeospatialFilterMode',
     'InterpolationMode',
     'ProcessArea',
+    'SegmentationExporterMode',
     'SetFilterMode',
 ]
