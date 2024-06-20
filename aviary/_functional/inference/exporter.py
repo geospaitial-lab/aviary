@@ -42,7 +42,7 @@ def segmentation_exporter(
         num_workers: number of workers
     """
     tasks = [
-        _segmentation_exporter_element(
+        _segmentation_exporter_task(
             preds=preds_element,
             x_min=coordinates_element[0],
             y_min=coordinates_element[1],
@@ -60,7 +60,7 @@ def segmentation_exporter(
 
 
 @dask.delayed
-def _segmentation_exporter_element(
+def _segmentation_exporter_task(
     preds: npt.NDArray[np.uint8],
     x_min: Coordinate,
     y_min: Coordinate,
