@@ -34,7 +34,7 @@ class Type(Enum):
 
 
 @dataclass
-class Model:
+class ModelCard:
     """
     Attributes:
         name: name of the model
@@ -72,32 +72,32 @@ class Model:
 class Aviary:
     """
     Attributes:
-        models: models
+        model_cards: model cards
     """
-    models: list[Model]
+    model_cards: list[ModelCard]
 
     def __getitem__(
         self,
         name: str,
-    ) -> Model:
-        """Returns the model given its name.
+    ) -> ModelCard:
+        """Returns the model card given its name.
 
         Parameters:
             name: name of the model
 
         Returns:
-            model
+            model card
 
         Raises:
             AviaryUserError: Invalid name of the model
         """
-        for model in self.models:
-            if model.name == name:
-                return model
+        for model_card in self.model_cards:
+            if model_card.name == name:
+                return model_card
 
-        model_names = ', '.join([model.name for model in self.models])
+        model_names = ', '.join([model_card.name for model_card in self.model_cards])
         message = (
             'Invalid name of the model! '
-            f'Available models: {model_names}'
+            f'Available model cards: {model_names}'
         )
         raise AviaryUserError(message)
