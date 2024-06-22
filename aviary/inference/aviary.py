@@ -38,8 +38,8 @@ class ModelCard:
     """
     Attributes:
         name: name of the model
-        repo: repository (huggingface hub, e.g. 'user/repo')
-        path: path to the model (huggingface hub)
+        repo: repository (Hugging Face Hub, e.g. 'user/repo')
+        path: path to the model (Hugging Face Hub)
         framework: framework (`ONNX` or `TORCH`)
         type: type (`SEGMENTATION`)
         required_channels: required channels (`RGB`, `NIR`)
