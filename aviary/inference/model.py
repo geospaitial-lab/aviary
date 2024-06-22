@@ -145,8 +145,8 @@ class ONNXSegmentationModel(SegmentationModel):
         self._model = ort.InferenceSession(
             path_or_bytes=self.path,
             providers=self._providers)
-        self._model_input = self._model.get_inputs()[0].name
-        self._model_output = self._model.get_outputs()[0].name
+        self._model_input_name = self._model.get_inputs()[0].name
+        self._model_output_name = self._model.get_outputs()[0].name
 
     def __call__(
         self,
@@ -162,7 +162,7 @@ class ONNXSegmentationModel(SegmentationModel):
         """
         return onnx_segmentation_model(
             model=self._model,
-            model_input=self._model_input,
-            model_output=self._model_output,
+            model_input_name=self._model_input_name,
+            model_output_name=self._model_output_name,
             inputs=inputs,
         )
