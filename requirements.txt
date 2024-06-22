@@ -1,5 +1,6 @@
 dask==2024.6.0
 geopandas==0.14.4
+huggingface_hub==0.23.4
 numpy==1.26.4
 pyarrow==16.1.0
 pyproj==3.6.1
