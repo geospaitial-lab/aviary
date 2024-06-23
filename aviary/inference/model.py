@@ -117,6 +117,20 @@ class SegmentationModel:
             device=device,
         )
 
+    def __call__(
+        self,
+        inputs: npt.NDArray | torch.Tensor,
+    ) -> npt.NDArray:
+        """Runs the model.
+
+        Parameters:
+            inputs: inputs
+
+        Returns:
+            predictions
+        """
+        raise NotImplementedError
+
 
 class ONNXSegmentationModel(SegmentationModel):
     """ONNX model for segmentation
