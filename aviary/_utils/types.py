@@ -379,6 +379,16 @@ class DataFetcherInfo:
     num_channels: int
 
 
+class Device(Enum):
+    """
+    Attributes:
+        CPU: CPU device
+        CUDA: CUDA device
+    """
+    CPU = 'cpu'
+    CUDA = 'cuda'
+
+
 class DType(Enum):
     """
     Attributes:

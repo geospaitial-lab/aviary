@@ -1,5 +1,6 @@
 from ._utils.types import (
     BoundingBox,
+    Device,
     GeospatialFilterMode,
     InterpolationMode,
     ProcessArea,
@@ -9,6 +10,7 @@ from ._utils.types import (
 
 __all__ = [
     'BoundingBox',
+    'Device',
     'GeospatialFilterMode',
     'InterpolationMode',
     'ProcessArea',

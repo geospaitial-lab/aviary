@@ -17,6 +17,7 @@ nav:
         - GridGenerator: api_reference/geodata/grid_generator.md
       - aviary.inference:
         - Exporter: api_reference/inference/exporter.md
+        - Model: api_reference/inference/model.md
 
 theme:
   name: material
