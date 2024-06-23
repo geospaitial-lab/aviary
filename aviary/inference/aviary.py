@@ -101,3 +101,26 @@ class Aviary:
             f'Available model cards: {model_names}'
         )
         raise AviaryUserError(message)
+
+
+sparrow = ModelCard(
+    name='sparrow',
+    repo='geospaitial-lab/sparrow',
+    path='models/sparrow.onnx',
+    framework=Framework.ONNX,
+    type=Type.SEGMENTATION,
+    required_channels=[Channels.RGB, Channels.NIR],
+    num_channels=4,
+    ground_sampling_distance=.2,
+    num_classes=2,
+    min_values=[0.] * 4,
+    max_values=[255.] * 4,
+    description='Impervious surfaces',
+)  # pragma: no cover
+
+
+aviary = Aviary(
+    model_cards=[
+        sparrow,
+    ],
+)  # pragma: no cover
