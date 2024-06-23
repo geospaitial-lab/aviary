@@ -143,9 +143,6 @@ class GeospatialFilter(CoordinatesFilter):
 
         Returns:
             filtered coordinates (x_min, y_min) of each tile
-
-        Raises:
-            AviaryUserError: Invalid geospatial filter mode
         """
         return geospatial_filter(
             coordinates=coordinates,
@@ -220,9 +217,6 @@ class SetFilter(CoordinatesFilter):
 
         Returns:
             filtered coordinates (x_min, y_min) of each tile
-
-        Raises:
-            AviaryUserError: Invalid set filter mode
         """
         return set_filter(
             coordinates=coordinates,

@@ -50,9 +50,6 @@ def segmentation_exporter(
         gpkg_name: name of the geopackage (only used if `mode` is `GPKG`)
         mode: segmentation exporter mode (`FEATHER` or `GPKG`)
         num_workers: number of workers
-
-    Raises:
-        AviaryUserError: Invalid segmentation exporter mode
     """
     tasks = [
         _segmentation_exporter_task(
@@ -105,9 +102,6 @@ def _segmentation_exporter_task(
         ignore_background_class: if True, the background class is not additionally vectorized as a polygon of class 0
         gpkg_name: name of the geopackage (only used if `mode` is `GPKG`)
         mode: segmentation exporter mode (`FEATHER` or `GPKG`)
-
-    Raises:
-        AviaryUserError: Invalid segmentation exporter mode
     """
     gdf = _vectorize_preds(
         preds=preds,
