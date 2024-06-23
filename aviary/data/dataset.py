@@ -1,3 +1,4 @@
+import numpy.typing as npt
 import torch.utils.data
 
 # noinspection PyProtectedMember
@@ -51,7 +52,7 @@ class Dataset(torch.utils.data.Dataset):
     def __getitem__(
         self,
         index: int,
-    ) -> tuple[torch.Tensor, Coordinate, Coordinate]:
+    ) -> tuple[npt.NDArray | torch.Tensor, Coordinate, Coordinate]:
         """Fetches and preprocesses data given the index of the tile.
 
         Parameters:
