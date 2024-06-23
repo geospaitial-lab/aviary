@@ -57,7 +57,7 @@ class DataFetcher(Protocol):
 class VRTDataFetcher:
     """Data fetcher for virtual rasters
 
-    Implements the DataFetcher protocol.
+    Implements the `DataFetcher` protocol.
     """
     _FILL_VALUE = 0
 

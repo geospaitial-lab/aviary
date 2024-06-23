@@ -44,7 +44,7 @@ class Exporter(Protocol):
 class SegmentationExporter:
     """Exporter for segmentation predictions
 
-    Implements the Exporter protocol.
+    Implements the `Exporter` protocol.
 
     The predictions (i.e. raster data) are transformed to geospatial data (i.e. vector data).
     The resulting geodataframe contains the geometry of the polygons and their class that is stored
@@ -97,9 +97,6 @@ class SegmentationExporter:
         Parameters:
             preds: batched predictions
             coordinates: coordinates (x_min, y_min) of each tile
-
-        Raises:
-            AviaryUserError: Invalid segmentation exporter mode
         """
         segmentation_exporter(
             preds=preds,
