@@ -155,7 +155,7 @@ class ONNXSegmentationModel(SegmentationModel):
             buffer_size=buffer_size,
             device=device,
         )
-        self._providers = get_providers(device)
+        self._providers = get_providers(self.device)
         self._model = ort.InferenceSession(
             path_or_bytes=self.path,
             providers=self._providers)
