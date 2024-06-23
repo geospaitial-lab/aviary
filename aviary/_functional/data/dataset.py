@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+import numpy.typing as npt
 import torch
 
 # noinspection PyProtectedMember
@@ -20,7 +21,7 @@ def get_item(
     data_preprocessor: DataPreprocessor,
     coordinates: CoordinatesSet,
     index: int,
-) -> tuple[torch.Tensor, Coordinate, Coordinate]:
+) -> tuple[npt.NDArray | torch.Tensor, Coordinate, Coordinate]:
     """Fetches and preprocesses data given the index of the tile.
 
     Parameters:
