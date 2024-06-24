@@ -209,7 +209,7 @@ class BoundingBox(Iterable[Coordinate]):
     def from_gdf(
         cls,
         gdf: gpd.GeoDataFrame,
-    ) -> 'BoundingBox':
+    ) -> BoundingBox:
         """Creates a bounding box from a geodataframe.
 
         Parameters:
@@ -404,7 +404,7 @@ class DType(Enum):
     def from_rio(
         cls,
         dtype: str,
-    ) -> 'DType':
+    ) -> DType:
         """Converts the rasterio data type to the data type.
 
         Parameters:
@@ -523,7 +523,7 @@ class ProcessArea(Iterable[Coordinates]):
         bounding_box: BoundingBox,
         tile_size: TileSize,
         quantize: bool = True,
-    ) -> 'ProcessArea':
+    ) -> ProcessArea:
         """Creates a process area from a bounding box.
 
         Parameters:
@@ -549,7 +549,7 @@ class ProcessArea(Iterable[Coordinates]):
         gdf: gpd.GeoDataFrame,
         tile_size: TileSize,
         quantize: bool = True,
-    ) -> 'ProcessArea':
+    ) -> ProcessArea:
         """Creates a process area from a geodataframe.
 
         Parameters:
@@ -571,7 +571,7 @@ class ProcessArea(Iterable[Coordinates]):
     def from_json(
         cls,
         json_string: str,
-    ) -> 'ProcessArea':
+    ) -> ProcessArea:
         """Creates a process area from a JSON string.
 
         Parameters:

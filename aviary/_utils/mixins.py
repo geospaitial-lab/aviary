@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import pydantic
 
 
@@ -8,7 +10,7 @@ class FromConfigMixin:
     def from_config(
         cls,
         config: pydantic.BaseModel,
-    ) -> 'FromConfigMixin':
+    ) -> FromConfigMixin:
         """Creates an instance of the class from a configuration.
 
         Parameters:
