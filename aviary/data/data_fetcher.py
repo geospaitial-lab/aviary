@@ -2,12 +2,16 @@ from pathlib import Path
 from typing import Protocol
 
 import numpy.typing as npt
+import pydantic
 
 # noinspection PyProtectedMember
 from aviary._functional.data.data_fetcher import (
     vrt_data_fetcher,
     vrt_data_fetcher_info,
 )
+
+# noinspection PyProtectedMember
+from aviary._utils.mixins import FromConfigMixin
 
 # noinspection PyProtectedMember
 from aviary._utils.types import (
@@ -54,7 +58,7 @@ class DataFetcher(Protocol):
         ...
 
 
-class VRTDataFetcher:
+class VRTDataFetcher(FromConfigMixin):
     """Data fetcher for virtual rasters
 
     Implements the `DataFetcher` protocol.
@@ -160,3 +164,14 @@ class VRTDataFetcher:
             drop_channels=self.drop_channels,
             fill_value=self._FILL_VALUE,
         )
+
+
+class VRTDataFetcherConfig(pydantic.BaseModel):
+    """Configuration for the `FromConfigMixin` of `VRTDataFetcher`"""
+
+    path: Path
+    tile_size: TileSize
+    ground_sampling_distance: GroundSamplingDistance
+    interpolation_mode: InterpolationMode = InterpolationMode.BILINEAR
+    buffer_size: BufferSize = 0
+    drop_channels: list[int] | None = None
