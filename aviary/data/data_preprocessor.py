@@ -1,7 +1,10 @@
+from __future__ import annotations
+
 from abc import ABC, abstractmethod
 
 import numpy as np
 import numpy.typing as npt
+import pydantic
 import torch
 
 # noinspection PyProtectedMember
@@ -12,8 +15,11 @@ from aviary._functional.data.data_preprocessor import (
     to_tensor_preprocessor,
 )
 
+# noinspection PyProtectedMember
+from aviary._utils.mixins import FromConfigMixin
 
-class DataPreprocessor(ABC):
+
+class DataPreprocessor(ABC, FromConfigMixin):
     """Abstract class for data preprocessors
 
     Data preprocessors are callables that preprocess data.
@@ -73,6 +79,12 @@ class CompositePreprocessor(DataPreprocessor):
         )
 
 
+class CompositePreprocessorConfig(pydantic.BaseModel):
+    """Configuration for the `FromConfigMixin` of `CompositePreprocessor`"""
+
+    data_preprocessors: list[NormalizePreprocessorConfig | StandardizePreprocessorConfig | ToTensorPreprocessorConfig]
+
+
 class NormalizePreprocessor(DataPreprocessor):
     """Data preprocessor that applies min-max normalization
 
@@ -118,6 +130,13 @@ class NormalizePreprocessor(DataPreprocessor):
             min_values=self.min_values,
             max_values=self.max_values,
         )
+
+
+class NormalizePreprocessorConfig(pydantic.BaseModel):
+    """Configuration for the `FromConfigMixin` of `NormalizePreprocessor`"""
+
+    min_values: list[float]
+    max_values: list[float]
 
 
 class StandardizePreprocessor(DataPreprocessor):
@@ -168,6 +187,13 @@ class StandardizePreprocessor(DataPreprocessor):
         )
 
 
+class StandardizePreprocessorConfig(pydantic.BaseModel):
+    """Configuration for the `FromConfigMixin` of `StandardizePreprocessor`"""
+
+    mean_values: list[float]
+    std_values: list[float]
+
+
 class ToTensorPreprocessor(DataPreprocessor):
     """Data preprocessor that converts the data to a tensor"""
 
@@ -186,3 +212,9 @@ class ToTensorPreprocessor(DataPreprocessor):
         return to_tensor_preprocessor(
             data=data,
         )
+
+
+class ToTensorPreprocessorConfig(pydantic.BaseModel):
+    """Configuration for the `FromConfigMixin` of `ToTensorPreprocessor`"""
+
+    pass
