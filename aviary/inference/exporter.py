@@ -3,9 +3,13 @@ from pathlib import Path
 
 import numpy as np
 import numpy.typing as npt
+import pydantic
 
 # noinspection PyProtectedMember
 from aviary._functional.inference.exporter import segmentation_exporter
+
+# noinspection PyProtectedMember
+from aviary._utils.mixins import FromConfigMixin
 
 # noinspection PyProtectedMember
 from aviary._utils.types import (
@@ -41,7 +45,7 @@ class Exporter(Protocol):
         ...
 
 
-class SegmentationExporter:
+class SegmentationExporter(FromConfigMixin):
     """Exporter for segmentation predictions
 
     Implements the `Exporter` protocol.
@@ -111,3 +115,15 @@ class SegmentationExporter:
             mode=self.mode,
             num_workers=self.num_workers,
         )
+
+
+class SegmentationExporterConfig(pydantic.BaseModel):
+    """Configuration for the `FromConfigMixin` of `SegmentationExporter`"""
+
+    path: Path
+    tile_size: TileSize
+    ground_sampling_distance: GroundSamplingDistance
+    epsg_code: EPSGCode
+    field_name: str = 'class'
+    mode: SegmentationExporterMode = SegmentationExporterMode.GPKG
+    num_workers: int = 1
