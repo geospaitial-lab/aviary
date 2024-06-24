@@ -19,7 +19,7 @@ def test_vrt_data_fetcher_init(
     tile_size = 128
     ground_sampling_distance = .2
     interpolation_mode = InterpolationMode.BILINEAR
-    buffer_size = None
+    buffer_size = 0
     drop_channels = None
     expected_bounding_box = BoundingBox(
         x_min=-128,

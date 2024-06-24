@@ -67,7 +67,7 @@ class VRTDataFetcher:
         tile_size: TileSize,
         ground_sampling_distance: GroundSamplingDistance,
         interpolation_mode: InterpolationMode = InterpolationMode.BILINEAR,
-        buffer_size: BufferSize = None,
+        buffer_size: BufferSize = 0,
         drop_channels: list[int] = None,
     ) -> None:
         """

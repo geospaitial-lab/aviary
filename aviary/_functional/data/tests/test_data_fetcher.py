@@ -39,7 +39,7 @@ def test_vrt_data_fetcher() -> None:
 )
 def test__compute_tile_size_pixels(
     tile_size: TileSize,
-    buffer_size: BufferSize | None,
+    buffer_size: BufferSize,
     ground_sampling_distance: GroundSamplingDistance,
     expected: int,
 ) -> None:
