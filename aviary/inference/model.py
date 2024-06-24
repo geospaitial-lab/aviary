@@ -5,6 +5,7 @@ from typing import Protocol
 
 import numpy.typing as npt
 import onnxruntime as ort
+import pydantic
 import torch
 from huggingface_hub import hf_hub_download
 
@@ -13,11 +14,13 @@ from aviary._functional.inference.model import (
     get_providers,
     onnx_segmentation_model,
 )
+
 # noinspection PyProtectedMember
 from aviary._utils.types import (
     BufferSize,
     Device,
 )
+
 from aviary.inference.aviary import aviary
 
 
@@ -117,6 +120,41 @@ class SegmentationModel:
             device=device,
         )
 
+    @classmethod
+    def from_config(
+        cls,
+        config: SegmentationModelConfig,
+    ) -> SegmentationModel:
+        """Creates a segmentation model from the configuration.
+
+        Parameters:
+            config: configuration
+
+        Returns:
+            segmentation model
+        """
+        if config.name is not None:
+            return cls.from_aviary(
+                name=config.name,
+                buffer_size=config.buffer_size,
+                device=config.device,
+            )
+
+        if config.repo is not None and config.path is not None:
+            return cls.from_huggingface(
+                repo=config.repo,
+                path=str(config.path),
+                buffer_size=config.buffer_size,
+                device=config.device,
+            )
+
+        if config.path is not None:
+            return cls(
+                path=config.path,
+                buffer_size=config.buffer_size,
+                device=config.device,
+            )
+
     def __call__(
         self,
         inputs: npt.NDArray | torch.Tensor,
@@ -130,6 +168,35 @@ class SegmentationModel:
             batched predictions
         """
         raise NotImplementedError
+
+
+class SegmentationModelConfig(pydantic.BaseModel):
+    """Configuration for the `from_config` classmethod of `SegmentationModel`"""
+
+    path: Path | None = None
+    repo: str | None = None
+    name: str | None = None
+    buffer_size: BufferSize
+    device: Device = Device.CPU
+
+    @pydantic.model_validator(mode='after')
+    def validate(self) -> SegmentationModelConfig:
+        """Validates the configuration."""
+        conditions = [
+            self.name is not None,
+            self.repo is not None and self.path is not None,
+            self.path is not None,
+        ]
+
+        if any(conditions) is False:
+            message = (
+                'Invalid configuration! '
+                'config must have one of the following fields: '
+                'name, repo and path, path'
+            )
+            raise ValueError(message)
+
+        return self
 
 
 class ONNXSegmentationModel(SegmentationModel):
