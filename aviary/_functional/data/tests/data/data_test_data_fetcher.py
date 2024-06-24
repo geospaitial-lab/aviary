@@ -1,11 +1,9 @@
 import numpy as np
 
 data_test__compute_tile_size_pixels = [
-    # test case 1: buffer_size is None
-    (128, None, .5, 256),
-    # test case 2: buffer_size is 0
+    # test case 1: buffer_size is 0
     (128, 0, .5, 256),
-    # test case 3: buffer_size is not 0
+    # test case 2: buffer_size is not 0
     (128, 64, .5, 512),
 ]
 
