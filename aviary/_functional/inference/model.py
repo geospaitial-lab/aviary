@@ -44,10 +44,10 @@ def onnx_segmentation_model(
         model: ONNX model
         model_input_name: name of the model input
         model_output_name: name of the model output
-        inputs: inputs
+        inputs: batched inputs
 
     Returns:
-        predictions
+        batched predictions
     """
     preds = model.run([model_output_name], {model_input_name: inputs})
     preds = np.array(preds)

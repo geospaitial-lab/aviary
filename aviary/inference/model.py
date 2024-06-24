@@ -35,10 +35,10 @@ class Model(Protocol):
         """Runs the model.
 
         Parameters:
-            inputs: inputs
+            inputs: batched inputs
 
         Returns:
-            predictions
+            batched predictions
         """
         ...
 
@@ -124,10 +124,10 @@ class SegmentationModel:
         """Runs the model.
 
         Parameters:
-            inputs: inputs
+            inputs: batched inputs
 
         Returns:
-            predictions
+            batched predictions
         """
         raise NotImplementedError
 
@@ -169,10 +169,10 @@ class ONNXSegmentationModel(SegmentationModel):
         """Runs the model.
 
         Parameters:
-            inputs: inputs
+            inputs: batched inputs
 
         Returns:
-            predictions
+            batched predictions
         """
         return onnx_segmentation_model(
             model=self._model,
