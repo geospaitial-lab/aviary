@@ -1,5 +1,11 @@
-![aviary](docs/assets/aviary_logo_black.svg#gh-light-mode-only)
-![aviary](docs/assets/aviary_logo_white.svg#gh-dark-mode-only)
+<div align="center">
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/aviary_logo_white.svg">
+  <img alt="aviary" src="docs/assets/aviary_logo_black.svg" width="30%">
+</picture>
+
+</div>
 
 <div align="center">
 
