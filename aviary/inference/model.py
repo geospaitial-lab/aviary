@@ -35,10 +35,10 @@ class Model(Protocol):
         """Runs the model.
 
         Parameters:
-            inputs: inputs
+            inputs: batched inputs
 
         Returns:
-            predictions
+            batched predictions
         """
         ...
 
@@ -124,10 +124,10 @@ class SegmentationModel:
         """Runs the model.
 
         Parameters:
-            inputs: inputs
+            inputs: batched inputs
 
         Returns:
-            predictions
+            batched predictions
         """
         raise NotImplementedError
 
@@ -155,7 +155,7 @@ class ONNXSegmentationModel(SegmentationModel):
             buffer_size=buffer_size,
             device=device,
         )
-        self._providers = get_providers(device)
+        self._providers = get_providers(self.device)
         self._model = ort.InferenceSession(
             path_or_bytes=self.path,
             providers=self._providers)
@@ -169,14 +169,15 @@ class ONNXSegmentationModel(SegmentationModel):
         """Runs the model.
 
         Parameters:
-            inputs: inputs
+            inputs: batched inputs
 
         Returns:
-            predictions
+            batched predictions
         """
         return onnx_segmentation_model(
             model=self._model,
             model_input_name=self._model_input_name,
             model_output_name=self._model_output_name,
             inputs=inputs,
+            buffer_size=self.buffer_size,
         )
