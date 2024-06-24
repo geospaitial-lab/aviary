@@ -1,3 +1,6 @@
+![aviary](docs/assets/aviary_logo_black.svg#gh-light-mode-only)
+![aviary](docs/assets/aviary_logo_white.svg#gh-dark-mode-only)
+
 <div align="center">
 
 [![CI](https://img.shields.io/github/actions/workflow/status/geospaitial-lab/aviary/ci.yaml?branch=main&color=black&label=CI&logo=GitHub)](https://github.com/geospaitial-lab/aviary/actions/workflows/ci.yaml)
