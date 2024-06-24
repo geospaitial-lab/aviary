@@ -5,10 +5,13 @@ import numpy as np
 
 # noinspection PyProtectedMember
 from aviary._utils.types import SegmentationExporterMode
-from aviary.inference.exporter import SegmentationExporter
+from aviary.inference.exporter import (
+    SegmentationExporter,
+    SegmentationExporterConfig,
+)
 
 
-def test_init() -> None:
+def test_segmentation_exporter_init() -> None:
     path = Path('test')
     tile_size = 128
     ground_sampling_distance = .2
@@ -35,8 +38,36 @@ def test_init() -> None:
     assert segmentation_exporter.num_workers == num_workers
 
 
+def test_segmentation_exporter_from_config() -> None:
+    path = Path('test')
+    tile_size = 128
+    ground_sampling_distance = .2
+    epsg_code = 25832
+    field_name = 'class'
+    mode = SegmentationExporterMode.GPKG
+    num_workers = 1
+    segmentation_exporter_config = SegmentationExporterConfig(
+        path=path,
+        tile_size=tile_size,
+        ground_sampling_distance=ground_sampling_distance,
+        epsg_code=epsg_code,
+        field_name=field_name,
+        mode=mode,
+        num_workers=num_workers,
+    )
+    segmentation_exporter = SegmentationExporter.from_config(segmentation_exporter_config)
+
+    assert segmentation_exporter.path == path
+    assert segmentation_exporter.tile_size == tile_size
+    assert segmentation_exporter.ground_sampling_distance == ground_sampling_distance
+    assert segmentation_exporter.epsg_code == epsg_code
+    assert segmentation_exporter.field_name == field_name
+    assert segmentation_exporter.mode == mode
+    assert segmentation_exporter.num_workers == num_workers
+
+
 @patch('aviary.inference.exporter.segmentation_exporter')
-def test_call(
+def test_segmentation_exporter_call(
     mocked_segmentation_exporter,
     segmentation_exporter: SegmentationExporter,
 ) -> None:
