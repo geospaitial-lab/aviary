@@ -125,8 +125,8 @@ def _drop_channels(
         return data
 
     channels = np.arange(data.shape[-1])
-    keep_channels = np.delete(channels, drop_channels)
-    return data[..., keep_channels]
+    retain_channels = np.delete(channels, drop_channels)
+    return data[..., retain_channels]
 
 
 def _permute_data(
