@@ -179,4 +179,5 @@ class ONNXSegmentationModel(SegmentationModel):
             model_input_name=self._model_input_name,
             model_output_name=self._model_output_name,
             inputs=inputs,
+            buffer_size=self.buffer_size,
         )
