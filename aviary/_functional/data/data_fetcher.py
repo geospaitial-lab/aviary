@@ -26,7 +26,7 @@ def vrt_data_fetcher(
     tile_size: TileSize,
     ground_sampling_distance: GroundSamplingDistance,
     interpolation_mode: InterpolationMode = InterpolationMode.BILINEAR,
-    buffer_size: BufferSize = None,
+    buffer_size: BufferSize = 0,
     drop_channels: list[int] = None,
     fill_value: int = 0,
 ) -> npt.NDArray:
@@ -90,7 +90,7 @@ def vrt_data_fetcher(
 
 def _compute_tile_size_pixels(
     tile_size: TileSize,
-    buffer_size: BufferSize | None,
+    buffer_size: BufferSize,
     ground_sampling_distance: GroundSamplingDistance,
 ) -> int:
     """Computes the tile size in pixels.
@@ -102,7 +102,7 @@ def _compute_tile_size_pixels(
     Returns:
         tile size in pixels
     """
-    if buffer_size is None:
+    if buffer_size == 0:
         return int(tile_size / ground_sampling_distance)
 
     return int((tile_size + 2 * buffer_size) / ground_sampling_distance)
