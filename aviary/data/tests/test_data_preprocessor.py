@@ -1,13 +1,17 @@
 from unittest.mock import MagicMock, patch
 
 import numpy as np
+import pytest
 
 from aviary.data.data_preprocessor import (
     CompositePreprocessor,
     DataPreprocessor,
     NormalizePreprocessor,
+    NormalizePreprocessorConfig,
     StandardizePreprocessor,
+    StandardizePreprocessorConfig,
     ToTensorPreprocessor,
+    ToTensorPreprocessorConfig,
 )
 
 
@@ -22,6 +26,11 @@ def test_composite_preprocessor_init() -> None:
     )
 
     assert composite_preprocessor.data_preprocessors == data_preprocessors
+
+
+@pytest.mark.skip(reason='Not implemented')
+def test_composite_preprocessor_from_config() -> None:
+    pass
 
 
 @patch('aviary.data.data_preprocessor.composite_preprocessor')
@@ -56,6 +65,19 @@ def test_normalize_preprocessor_init() -> None:
         min_values=min_values,
         max_values=max_values,
     )
+
+    assert normalize_preprocessor.min_values == min_values
+    assert normalize_preprocessor.max_values == max_values
+
+
+def test_normalize_preprocessor_from_config() -> None:
+    min_values = [0.] * 3
+    max_values = [255.] * 3
+    normalize_preprocessor_config = NormalizePreprocessorConfig(
+        min_values=min_values,
+        max_values=max_values,
+    )
+    normalize_preprocessor = NormalizePreprocessor.from_config(normalize_preprocessor_config)
 
     assert normalize_preprocessor.min_values == min_values
     assert normalize_preprocessor.max_values == max_values
@@ -99,6 +121,19 @@ def test_standardize_preprocessor_init() -> None:
     assert standardize_preprocessor.std_values == std_values
 
 
+def test_standardize_preprocessor_from_config() -> None:
+    mean_values = [0.] * 3
+    std_values = [1.] * 3
+    standardize_preprocessor_config = StandardizePreprocessorConfig(
+        mean_values=mean_values,
+        std_values=std_values,
+    )
+    standardize_preprocessor = StandardizePreprocessor.from_config(standardize_preprocessor_config)
+
+    assert standardize_preprocessor.mean_values == mean_values
+    assert standardize_preprocessor.std_values == std_values
+
+
 @patch('aviary.data.data_preprocessor.standardize_preprocessor')
 def test_standardize_preprocessor_call(
     mocked_standardize_preprocessor,
@@ -127,6 +162,11 @@ def test_standardize_preprocessor_call(
 
 def test_to_tensor_preprocessor_init() -> None:
     _ = ToTensorPreprocessor()
+
+
+def test_to_tensor_preprocessor_from_config() -> None:
+    to_tensor_preprocessor_config = ToTensorPreprocessorConfig()
+    _ = ToTensorPreprocessor.from_config(to_tensor_preprocessor_config)
 
 
 @patch('aviary.data.data_preprocessor.to_tensor_preprocessor')
