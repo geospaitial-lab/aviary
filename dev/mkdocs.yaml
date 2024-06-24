@@ -22,8 +22,8 @@ nav:
 theme:
   name: material
   language: en
-  logo: assets/aviary_logo_black.svg
-  favicon: assets/aviary_logo_black.svg
+  logo: assets/aviary_logo_white.svg
+  favicon: assets/aviary_logo_white.svg
   icon:
     repo: fontawesome/brands/github
   font:
@@ -37,15 +37,15 @@ theme:
   palette:
     - media: '(prefers-color-scheme: light)'
       scheme: default
-      primary: yellow
-      accent: amber
+      primary: black
+      accent: blue
       toggle:
         icon: material/lightbulb
         name: Switch to dark mode
     - media: '(prefers-color-scheme: dark)'
       scheme: slate
-      primary: yellow
-      accent: amber
+      primary: black
+      accent: blue
       toggle:
         icon: material/lightbulb-outline
         name: Switch to light mode
