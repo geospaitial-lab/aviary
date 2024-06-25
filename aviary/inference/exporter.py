@@ -1,5 +1,5 @@
-from typing import Protocol
 from pathlib import Path
+from typing import Protocol
 
 import numpy as np
 import numpy.typing as npt

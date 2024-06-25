@@ -10,6 +10,7 @@ import rasterio.features
 
 # noinspection PyProtectedMember
 from aviary._utils.exceptions import AviaryUserError
+
 # noinspection PyProtectedMember
 from aviary._utils.types import (
     Coordinate,
