@@ -19,6 +19,6 @@ class FromConfigMixin:
         Returns:
             instance of the class
         """
-        config = config.dict()
+        config = config.model_dump()
         # noinspection PyArgumentList
         return cls(**config)
