@@ -20,7 +20,6 @@ from aviary._utils.types import (
     BufferSize,
     Device,
 )
-
 from aviary.inference.aviary import aviary
 
 

@@ -6,8 +6,8 @@ from aviary.inference.aviary import (
     Aviary,
     Channels,
     Framework,
-    Type,
     ModelCard,
+    Type,
 )
 
 

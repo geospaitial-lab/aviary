@@ -11,8 +11,10 @@ from aviary._functional.inference.exporter import (
     _export_gdf,
     _segmentation_exporter_task,
 )
+
 # noinspection PyProtectedMember
 from aviary._utils.exceptions import AviaryUserError
+
 # noinspection PyProtectedMember
 from aviary._utils.types import SegmentationExporterMode
 
