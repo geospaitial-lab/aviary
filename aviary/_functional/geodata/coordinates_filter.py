@@ -77,6 +77,9 @@ def geospatial_filter(
     Raises:
         AviaryUserError: Invalid geospatial filter mode
     """
+    # noinspection PyProtectedMember
+    from aviary._utils.types import GeospatialFilterMode
+
     grid = _generate_grid(
         coordinates=coordinates,
         tile_size=tile_size,
