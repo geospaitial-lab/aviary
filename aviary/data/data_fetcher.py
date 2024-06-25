@@ -167,8 +167,16 @@ class VRTDataFetcher(FromConfigMixin):
 
 
 class VRTDataFetcherConfig(pydantic.BaseModel):
-    """Configuration for the `FromConfigMixin` of `VRTDataFetcher`"""
+    """Configuration for the `from_config` classmethod of `VRTDataFetcher`
 
+    Attributes:
+        path: path to the virtual raster (.vrt file)
+        tile_size: tile size in meters
+        ground_sampling_distance: ground sampling distance in meters
+        interpolation_mode: interpolation mode ('bilinear' or 'nearest')
+        buffer_size: buffer size in meters (specifies the area around the tile that is additionally fetched)
+        drop_channels: channel indices to drop (supports negative indexing)
+    """
     path: Path
     tile_size: TileSize
     ground_sampling_distance: GroundSamplingDistance
