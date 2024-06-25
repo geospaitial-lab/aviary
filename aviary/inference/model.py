@@ -170,8 +170,20 @@ class SegmentationModel:
 
 
 class SegmentationModelConfig(pydantic.BaseModel):
-    """Configuration for the `from_config` classmethod of `SegmentationModel`"""
+    """Configuration for the `from_config` classmethod of `SegmentationModel`
 
+    The configuration must have one of the following field sets:
+        - `name`
+        - `repo` and `path`
+        - `path`
+
+    Attributes:
+        path: path to the model (local or Hugging Face Hub)
+        repo: repository (Hugging Face Hub, e.g. 'user/repo')
+        name: name of the model
+        buffer_size: buffer size in pixels (specifies the area around the tile that is additionally fetched)
+        device: device ('cpu' or 'cuda')
+    """
     path: Path | None = None
     repo: str | None = None
     name: str | None = None
@@ -190,7 +202,7 @@ class SegmentationModelConfig(pydantic.BaseModel):
         if any(conditions) is False:
             message = (
                 'Invalid configuration! '
-                'config must have one of the following fields: '
+                'config must have one of the following field sets: '
                 'name, repo and path, path'
             )
             raise ValueError(message)

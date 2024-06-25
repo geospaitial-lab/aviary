@@ -118,8 +118,17 @@ class SegmentationExporter(FromConfigMixin):
 
 
 class SegmentationExporterConfig(pydantic.BaseModel):
-    """Configuration for the `FromConfigMixin` of `SegmentationExporter`"""
+    """Configuration for the `from_config` classmethod of `SegmentationExporter`
 
+    Attributes:
+        path: path to the output directory
+        tile_size: tile size in meters
+        ground_sampling_distance: ground sampling distance in meters
+        epsg_code: EPSG code
+        field_name: name of the field in the geodataframe
+        mode: segmentation exporter mode ('feather' or 'gpkg')
+        num_workers: number of workers
+    """
     path: Path
     tile_size: TileSize
     ground_sampling_distance: GroundSamplingDistance

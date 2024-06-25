@@ -80,8 +80,11 @@ class CompositePreprocessor(DataPreprocessor):
 
 
 class CompositePreprocessorConfig(pydantic.BaseModel):
-    """Configuration for the `FromConfigMixin` of `CompositePreprocessor`"""
+    """Configuration for the `from_config` classmethod of `CompositePreprocessor`
 
+    Attributes:
+        data_preprocessors: configurations of the data preprocessors
+    """
     data_preprocessors: list[NormalizePreprocessorConfig | StandardizePreprocessorConfig | ToTensorPreprocessorConfig]
 
 
@@ -133,8 +136,12 @@ class NormalizePreprocessor(DataPreprocessor):
 
 
 class NormalizePreprocessorConfig(pydantic.BaseModel):
-    """Configuration for the `FromConfigMixin` of `NormalizePreprocessor`"""
+    """Configuration for the `from_config` classmethod of `NormalizePreprocessor`
 
+    Attributes:
+        min_values: minimum values of the data (per channel)
+        max_values: maximum values of the data (per channel)
+    """
     min_values: list[float]
     max_values: list[float]
 
@@ -188,8 +195,12 @@ class StandardizePreprocessor(DataPreprocessor):
 
 
 class StandardizePreprocessorConfig(pydantic.BaseModel):
-    """Configuration for the `FromConfigMixin` of `StandardizePreprocessor`"""
+    """Configuration for the `from_config` classmethod of `StandardizePreprocessor`
 
+    Attributes:
+        mean_values: mean values of the data (per channel)
+        std_values: standard deviation values of the data (per channel)
+    """
     mean_values: list[float]
     std_values: list[float]
 
@@ -215,6 +226,5 @@ class ToTensorPreprocessor(DataPreprocessor):
 
 
 class ToTensorPreprocessorConfig(pydantic.BaseModel):
-    """Configuration for the `FromConfigMixin` of `ToTensorPreprocessor`"""
-
+    """Configuration for the `from_config` classmethod of `ToTensorPreprocessor`"""
     pass
