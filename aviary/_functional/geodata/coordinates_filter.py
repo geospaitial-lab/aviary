@@ -58,7 +58,6 @@ def duplicates_filter(
 def geospatial_filter(
     coordinates: CoordinatesSet,
     tile_size: TileSize,
-    epsg_code: EPSGCode,
     gdf: gpd.GeoDataFrame,
     mode: GeospatialFilterMode,
 ) -> CoordinatesSet:
@@ -67,7 +66,6 @@ def geospatial_filter(
     Parameters:
         coordinates: coordinates (x_min, y_min) of each tile
         tile_size: tile size in meters
-        epsg_code: EPSG code
         gdf: geodataframe
         mode: geospatial filter mode (`DIFFERENCE` or `INTERSECTION`)
 
@@ -80,6 +78,7 @@ def geospatial_filter(
     # noinspection PyProtectedMember
     from aviary._utils.types import GeospatialFilterMode
 
+    epsg_code = gdf.crs.to_epsg()
     grid = _generate_grid(
         coordinates=coordinates,
         tile_size=tile_size,

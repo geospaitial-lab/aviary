@@ -573,7 +573,6 @@ class ProcessArea(Iterable[Coordinates]):
         coordinates = geospatial_filter(
             coordinates=coordinates,
             tile_size=tile_size,
-            epsg_code=gdf.crs.to_epsg(),
             gdf=gdf,
             mode=GeospatialFilterMode.INTERSECTION,
         )
