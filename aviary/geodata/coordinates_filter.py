@@ -16,7 +16,6 @@ from aviary._functional.geodata.coordinates_filter import (
 # noinspection PyProtectedMember
 from aviary._utils.types import (
     CoordinatesSet,
-    EPSGCode,
     GeospatialFilterMode,
     SetFilterMode,
     TileSize,
@@ -116,19 +115,16 @@ class GeospatialFilter(CoordinatesFilter):
     def __init__(
         self,
         tile_size: TileSize,
-        epsg_code: EPSGCode,
         gdf: gpd.GeoDataFrame,
         mode: GeospatialFilterMode,
     ) -> None:
         """
         Parameters:
             tile_size: tile size in meters
-            epsg_code: EPSG code
             gdf: geodataframe
             mode: geospatial filter mode (`DIFFERENCE` or `INTERSECTION`)
         """
         self.tile_size = tile_size
-        self.epsg_code = epsg_code
         self.gdf = gdf
         self.mode = mode
 
@@ -147,7 +143,6 @@ class GeospatialFilter(CoordinatesFilter):
         return geospatial_filter(
             coordinates=coordinates,
             tile_size=self.tile_size,
-            epsg_code=self.epsg_code,
             gdf=self.gdf,
             mode=self.mode,
         )

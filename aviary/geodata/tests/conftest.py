@@ -101,7 +101,6 @@ def geospatial_filter() -> GeospatialFilter:
     mode = GeospatialFilterMode.DIFFERENCE
     return GeospatialFilter(
         tile_size=tile_size,
-        epsg_code=epsg_code,
         gdf=gdf,
         mode=mode,
     )

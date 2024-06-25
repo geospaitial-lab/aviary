@@ -84,13 +84,11 @@ def test_geospatial_filter_init() -> None:
     mode = GeospatialFilterMode.DIFFERENCE
     geospatial_filter = GeospatialFilter(
         tile_size=tile_size,
-        epsg_code=epsg_code,
         gdf=gdf,
         mode=mode,
     )
 
     assert geospatial_filter.tile_size == tile_size
-    assert geospatial_filter.epsg_code == epsg_code
     gpd.testing.assert_geodataframe_equal(geospatial_filter.gdf, gdf)
     assert geospatial_filter.mode == mode
 
@@ -110,7 +108,6 @@ def test_geospatial_filter_call(
     mocked_geospatial_filter.assert_called_once_with(
         coordinates=coordinates,
         tile_size=geospatial_filter.tile_size,
-        epsg_code=geospatial_filter.epsg_code,
         gdf=geospatial_filter.gdf,
         mode=geospatial_filter.mode,
     )
