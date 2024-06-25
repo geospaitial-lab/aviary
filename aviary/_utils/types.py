@@ -4,16 +4,19 @@ import json
 from dataclasses import dataclass, fields
 from enum import Enum
 from math import ceil, floor
+from pathlib import Path
 from typing import (
     TYPE_CHECKING,
     Iterable,
     Iterator,
     TypeAlias,
+    cast,
 )
 
 import geopandas as gpd
 import numpy as np
 import numpy.typing as npt
+import pydantic
 import rasterio as rio
 from shapely.geometry import box
 
@@ -585,6 +588,38 @@ class ProcessArea(Iterable[Coordinates]):
             coordinates=coordinates,
         )
 
+    @classmethod
+    def from_config(
+        cls,
+        config: ProcessAreaConfig,
+    ) -> ProcessArea:
+        """Creates a process area from the configuration.
+
+        Parameters:
+            config: configuration
+
+        Returns:
+            process area
+        """
+        if config.json is not None:
+            return cls.from_json(
+                json_string=cast(str, config.json),
+            )
+
+        if config.gdf is not None:
+            return cls.from_gdf(
+                gdf=cast(gpd.GeoDataFrame, config.gdf),
+                tile_size=config.tile_size,
+                quantize=config.quantize,
+            )
+
+        if config.bounding_box is not None:
+            return cls.from_bounding_box(
+                bounding_box=cast(BoundingBox, config.bounding_box),
+                tile_size=config.tile_size,
+                quantize=config.quantize,
+            )
+
     def __len__(self) -> int:
         """Computes the number of coordinates.
 
@@ -777,6 +812,90 @@ class ProcessArea(Iterable[Coordinates]):
             JSON string
         """
         return str(self._coordinates.tolist())
+
+
+class ProcessAreaConfig(pydantic.BaseModel):
+    """Configuration for the `from_config` classmethod of `ProcessArea`
+
+    The configuration must have one of the following field sets:
+        - `json_string`
+        - `gdf` and `tile_size` (optional: `quantize`)
+        - `bounding_box` and `tile_size` (optional: `quantize`)
+
+    Attributes:
+        bounding_box: bounding box
+        gdf: path to the geodataframe
+        json_string: path to the JSON file
+        tile_size: tile size in meters
+        quantize: if True, the bounding box is quantized to `tile_size`
+    """
+    bounding_box: list[Coordinate] | None = None
+    gdf: Path | None = None
+    json_string: Path | None = None
+    tile_size: TileSize | None = None
+    quantize: bool = True
+
+    # noinspection PyNestedDecorators
+    @pydantic.field_validator('bounding_box')
+    @classmethod
+    def parse_bounding_box(
+        cls,
+        bounding_box: list[Coordinate],
+    ) -> BoundingBox:
+        """Parses the bounding box."""
+        if len(bounding_box) != 4:
+            message = (
+                'Invalid bounding box! '
+                'bounding_box must be a list of length 4.'
+            )
+            raise ValueError(message)
+
+        return BoundingBox(
+            x_min=bounding_box[0],
+            y_min=bounding_box[1],
+            x_max=bounding_box[2],
+            y_max=bounding_box[3],
+        )
+
+    # noinspection PyNestedDecorators
+    @pydantic.field_validator('gdf')
+    @classmethod
+    def parse_gdf(
+        cls,
+        gdf: Path,
+    ) -> gpd.GeoDataFrame:
+        """Parses the geodataframe."""
+        return gpd.read_file(gdf)
+
+    # noinspection PyNestedDecorators
+    @pydantic.field_validator('json_string')
+    @classmethod
+    def parse_json_string(
+        cls,
+        json_string: Path,
+    ) -> str:
+        """Parses the JSON string."""
+        with open(json_string, 'r') as file:
+            return file.read()
+
+    @pydantic.model_validator(mode='after')
+    def validate(self) -> ProcessAreaConfig:
+        """Validates the configuration."""
+        conditions = [
+            self.json_string is not None,
+            self.gdf is not None and self.tile_size is not None,
+            self.bounding_box is not None and self.tile_size is not None,
+        ]
+
+        if any(conditions) is False:
+            message = (
+                'Invalid configuration! '
+                'config must have one of the following field sets: '
+                'json_string, gdf and tile_size (optional: quantize), bounding_box and tile_size (optional: quantize)'
+            )
+            raise ValueError(message)
+
+        return self
 
 
 class SegmentationExporterMode(Enum):
