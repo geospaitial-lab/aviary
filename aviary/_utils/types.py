@@ -23,6 +23,7 @@ from shapely.geometry import box
 # noinspection PyProtectedMember
 from aviary._functional.geodata.coordinates_filter import (
     duplicates_filter,
+    geospatial_filter,
     set_filter,
 )
 
@@ -564,10 +565,20 @@ class ProcessArea(Iterable[Coordinates]):
             process area
         """
         bounding_box = BoundingBox.from_gdf(gdf)
-        return cls.from_bounding_box(
+        coordinates = compute_coordinates(
             bounding_box=bounding_box,
             tile_size=tile_size,
             quantize=quantize,
+        )
+        coordinates = geospatial_filter(
+            coordinates=coordinates,
+            tile_size=tile_size,
+            epsg_code=gdf.crs.to_epsg(),
+            gdf=gdf,
+            mode=GeospatialFilterMode.INTERSECTION,
+        )
+        return cls(
+            coordinates=coordinates,
         )
 
     @classmethod
