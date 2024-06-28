@@ -1,5 +1,6 @@
 -r ../requirements.txt
 
+build==1.2.1
 mkdocs-material==9.5.27
 mkdocstrings-python==1.10.5
 pip-audit==2.7.3
