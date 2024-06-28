@@ -31,6 +31,7 @@ theme:
     code: Noto Sans Mono
   features:
     - navigation.instant
+    - navigation.instant.progress
     - navigation.expand
     - navigation.tabs
     - navigation.top
