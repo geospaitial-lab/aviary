@@ -25,7 +25,7 @@ theme:
   logo: assets/aviary_logo_white.svg
   favicon: assets/aviary_logo_white.svg
   icon:
-    repo: fontawesome/brands/github
+    repo: simple/github
   font:
     text: Noto Sans
     code: Noto Sans Mono
@@ -71,8 +71,10 @@ plugins:
 extra:
   generator: false
   social:
-    - icon: fontawesome/brands/github
+    - icon: simple/github
       link: https://github.com/geospaitial-lab
+    - icon: simple/huggingface
+      link: https://huggingface.co/geospaitial-lab
 
 copyright:
   © 2024 geospaitial lab
