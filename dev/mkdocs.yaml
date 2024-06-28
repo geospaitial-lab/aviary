@@ -7,6 +7,11 @@ docs_dir: ../docs
 nav:
   - Get started: index.md
   - API Reference:
+      - aviary:
+        - BoundingBox: api_reference/bounding_box.md
+        - Enums: api_reference/enums.md
+        - ProcessArea: api_reference/process_area.md
+        - Types: api_reference/types.md
       - aviary.data:
         - DataFetcher: api_reference/data/data_fetcher.md
         - DataPreprocessor: api_reference/data/data_preprocessor.md
@@ -25,12 +30,13 @@ theme:
   logo: assets/aviary_logo_white.svg
   favicon: assets/aviary_logo_white.svg
   icon:
-    repo: fontawesome/brands/github
+    repo: simple/github
   font:
     text: Noto Sans
     code: Noto Sans Mono
   features:
     - navigation.instant
+    - navigation.instant.progress
     - navigation.expand
     - navigation.tabs
     - navigation.top
@@ -56,23 +62,27 @@ plugins:
       handlers:
         python:
           options:
-            annotations_path: source
-            docstring_section_style: spacy
-            docstring_style: google
-            member_order: source
-            merge_init_into_class: true
-            show_root_full_path: false
-            show_root_heading: true
-            show_signature: false
             show_source: false
+            show_root_heading: true
+            show_root_full_path: false
+            show_symbol_type_heading: true
+            show_symbol_type_toc: true
+            members_order: source
+            docstring_style: google
+            docstring_section_style: spacy
+            merge_init_into_class: true
+            annotations_path: source
+            show_signature: false
           paths:
             - ../
 
 extra:
   generator: false
   social:
-    - icon: fontawesome/brands/github
+    - icon: simple/github
       link: https://github.com/geospaitial-lab
+    - icon: simple/huggingface
+      link: https://huggingface.co/geospaitial-lab
 
 copyright:
   © 2024 geospaitial lab

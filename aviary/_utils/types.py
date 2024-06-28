@@ -436,6 +436,11 @@ class GeospatialFilterMode(Enum):
 
 
 class InterpolationMode(Enum):
+    """
+    Attributes:
+        BILINEAR: bilinear mode
+        NEAREST: nearest mode
+    """
     BILINEAR = 'bilinear'
     NEAREST = 'nearest'
 
