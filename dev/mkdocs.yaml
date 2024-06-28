@@ -57,15 +57,15 @@ plugins:
       handlers:
         python:
           options:
-            annotations_path: source
-            docstring_section_style: spacy
-            docstring_style: google
-            member_order: source
-            merge_init_into_class: true
-            show_root_full_path: false
-            show_root_heading: true
-            show_signature: false
             show_source: false
+            show_root_heading: true
+            show_root_full_path: false
+            members_order: source
+            docstring_style: google
+            docstring_section_style: spacy
+            merge_init_into_class: true
+            annotations_path: source
+            show_signature: false
           paths:
             - ../
 
