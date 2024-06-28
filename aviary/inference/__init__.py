@@ -1,11 +1,13 @@
 from .exporter import (
     Exporter,
     SegmentationExporter,
+    SegmentationExporterConfig,
 )
 from .model import (
     Model,
     ONNXSegmentationModel,
     SegmentationModel,
+    SegmentationModelConfig,
 )
 
 __all__ = [
@@ -13,5 +15,7 @@ __all__ = [
     'Model',
     'ONNXSegmentationModel',
     'SegmentationExporter',
+    'SegmentationExporterConfig',
     'SegmentationModel',
+    'SegmentationModelConfig',
 ]

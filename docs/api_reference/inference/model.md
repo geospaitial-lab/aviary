@@ -6,4 +6,13 @@
 
 ---
 
+::: aviary.inference.SegmentationModelConfig
+    options:
+      filters:
+      - "!validate"
+
+---
+
 ::: aviary.inference.ONNXSegmentationModel
+    options:
+        inherited_members: true
