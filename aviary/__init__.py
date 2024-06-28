@@ -1,9 +1,11 @@
 from ._utils.types import (
     BoundingBox,
     Device,
+    DType,
     GeospatialFilterMode,
     InterpolationMode,
     ProcessArea,
+    ProcessAreaConfig,
     SegmentationExporterMode,
     SetFilterMode,
 )
@@ -11,9 +13,11 @@ from ._utils.types import (
 __all__ = [
     'BoundingBox',
     'Device',
+    'DType',
     'GeospatialFilterMode',
     'InterpolationMode',
     'ProcessArea',
+    'ProcessAreaConfig',
     'SegmentationExporterMode',
     'SetFilterMode',
 ]
