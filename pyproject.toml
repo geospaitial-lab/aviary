@@ -1,3 +1,39 @@
+[build-system]
+requires = [
+    "setuptools",
+    "wheel",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "geospaitial-lab-aviary"
+description = "Composable inference and postprocessing pipeline for remote sensing data"
+authors = [
+    {name = "Marius Maryniak", email = "marius.maryniak@w-hs.de"},
+]
+maintainers = [
+    {name = "Marius Maryniak", email = "marius.maryniak@w-hs.de"},
+]
+license = {text = "GPL-3.0"}
+requires-python = ">=3.11"
+dynamic = [
+    "dependencies",
+    "optional-dependencies",
+    "version",
+]
+
+[project.urls]
+Homepage = "https://github.com/geospaitial-lab/aviary"
+Documentation = "https://geospaitial-lab.github.io/aviary"
+
+[tool.setuptools.dynamic]
+dependencies = {file = "requirements.txt"}
+optional-dependencies = {dev = {file = "dev/requirements.txt"}}
+version = {attr = "aviary.__version__"}
+
+[tool.setuptools.packages]
+find = {where = ["."], include = ["aviary*"]}
+
 [tool.coverage.report]
 exclude_also = [
     "def __repr__",
