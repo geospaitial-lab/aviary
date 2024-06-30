@@ -41,7 +41,7 @@ def onnx_segmentation_model(
     model_input_name: str,
     model_output_name: str,
     inputs: npt.NDArray,
-    buffer_size: BufferSize,
+    buffer_size: BufferSize = 0,
 ) -> npt.NDArray:
     """Runs the model.
 

@@ -51,7 +51,7 @@ class SegmentationModel:
     def __init__(
         self,
         path: Path,
-        buffer_size: BufferSize,
+        buffer_size: BufferSize = 0,
         device: Device = Device.CPU,
     ) -> None:
         """
@@ -69,7 +69,7 @@ class SegmentationModel:
         cls,
         repo: str,
         path: str,
-        buffer_size: BufferSize,
+        buffer_size: BufferSize = 0,
         device: Device = Device.CPU,
     ) -> SegmentationModel:
         """Creates a segmentation model from the Hugging Face Hub.
@@ -98,7 +98,7 @@ class SegmentationModel:
     def from_aviary(
         cls,
         name: str,
-        buffer_size: BufferSize,
+        buffer_size: BufferSize = 0,
         device: Device = Device.CPU,
     ) -> SegmentationModel:
         """Creates a segmentation model from the name of a model in aviary.
@@ -187,7 +187,7 @@ class SegmentationModelConfig(pydantic.BaseModel):
     path: Path | None = None
     repo: str | None = None
     name: str | None = None
-    buffer_size: BufferSize
+    buffer_size: BufferSize = 0
     device: Device = Device.CPU
 
     @pydantic.model_validator(mode='after')
@@ -219,7 +219,7 @@ class ONNXSegmentationModel(SegmentationModel):
     def __init__(
         self,
         path: Path,
-        buffer_size: BufferSize,
+        buffer_size: BufferSize = 0,
         device: Device = Device.CPU,
     ) -> None:
         """
