@@ -246,6 +246,17 @@ def test_process_area_init() -> None:
 
     np.testing.assert_array_equal(process_area.coordinates, coordinates)
 
+    coordinates = None
+    process_area = ProcessArea(
+        coordinates=coordinates,
+    )
+    expected = np.empty(
+        shape=(0, 2),
+        dtype=np.int32,
+    )
+
+    np.testing.assert_array_equal(process_area.coordinates, expected)
+
 
 @pytest.mark.parametrize('coordinates, message', data_test_process_area_init_exceptions)
 def test_process_area_init_exceptions(

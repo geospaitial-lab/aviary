@@ -467,7 +467,7 @@ class ProcessArea(Iterable[Coordinates]):
 
     def __init__(
         self,
-        coordinates: CoordinatesSet,
+        coordinates: CoordinatesSet = None,
     ) -> None:
         """
         Parameters:
@@ -477,6 +477,12 @@ class ProcessArea(Iterable[Coordinates]):
             AviaryUserError: Invalid coordinates (`coordinates` is not an array of shape (n, 2) and data type int32)
         """
         self._coordinates = coordinates
+
+        if self._coordinates is None:
+            self._coordinates = np.empty(
+                shape=(0, 2),
+                dtype=np.int32,
+            )
 
         conditions = [
             self._coordinates.ndim != 2,
