@@ -61,6 +61,30 @@ class CompositePreprocessor(DataPreprocessor):
         """
         self.data_preprocessors = data_preprocessors
 
+    @classmethod
+    def from_config(
+        cls,
+        config: CompositePreprocessorConfig,
+    ) -> CompositePreprocessor:
+        """Creates a composite preprocessor from the configuration.
+
+        Parameters:
+            config: configuration
+
+        Returns:
+            composite preprocessor
+        """
+        data_preprocessors = []
+
+        for data_preprocessor_config in config.data_preprocessors_configs:
+            data_preprocessor_class = globals()[data_preprocessor_config.name]
+            data_preprocessor = data_preprocessor_class.from_config(data_preprocessor_config.config)
+            data_preprocessors.append(data_preprocessor)
+
+        return cls(
+            data_preprocessors=data_preprocessors,
+        )
+
     def __call__(
         self,
         data: npt.NDArray,
@@ -83,9 +107,20 @@ class CompositePreprocessorConfig(pydantic.BaseModel):
     """Configuration for the `from_config` classmethod of `CompositePreprocessor`
 
     Attributes:
-        data_preprocessors: configurations of the data preprocessors
+        data_preprocessors_configs: configurations of the data preprocessors
     """
-    data_preprocessors: list[NormalizePreprocessorConfig | StandardizePreprocessorConfig | ToTensorPreprocessorConfig]
+    data_preprocessors_configs: list[DataPreprocessorConfig]
+
+
+class DataPreprocessorConfig(pydantic.BaseModel):
+    """Configuration for data preprocessors
+
+    Attributes:
+        name: name of the data preprocessor
+        config: configuration of the data preprocessor
+    """
+    name: str
+    config: NormalizePreprocessorConfig | StandardizePreprocessorConfig | ToTensorPreprocessorConfig
 
 
 class NormalizePreprocessor(DataPreprocessor):
