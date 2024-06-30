@@ -622,9 +622,9 @@ class ProcessArea(Iterable[Coordinates]):
         Returns:
             process area
         """
-        if config.json is not None:
+        if config.json_string is not None:
             return cls.from_json(
-                json_string=cast(str, config.json),
+                json_string=cast(str, config.json_string),
             )
 
         if config.gdf is not None:
