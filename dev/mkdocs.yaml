@@ -23,6 +23,8 @@ nav:
       - aviary.inference:
         - Exporter: api_reference/inference/exporter.md
         - Model: api_reference/inference/model.md
+      - aviary.pipeline:
+        - SegmentationPipeline: api_reference/pipeline/segmentation_pipeline.md
 
 theme:
   name: material
