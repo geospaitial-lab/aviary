@@ -11,14 +11,12 @@ from aviary._utils.types import (
     ProcessAreaConfig,
 )
 
-# noinspection PyUnresolvedReferences
 from aviary.data.data_fetcher import (
     DataFetcher,
     VRTDataFetcher,  # noqa: F401
     VRTDataFetcherConfig,
 )
 
-# noinspection PyUnresolvedReferences
 from aviary.data.data_preprocessor import (
     CompositePreprocessor,  # noqa: F401
     CompositePreprocessorConfig,
@@ -36,7 +34,6 @@ from aviary.inference.exporter import (
     SegmentationExporterConfig,
 )
 
-# noinspection PyUnresolvedReferences
 from aviary.inference.model import (
     ONNXSegmentationModel,  # noqa: F401
     SegmentationModel,
