@@ -26,6 +26,9 @@ dynamic = [
 Homepage = "https://github.com/geospaitial-lab/aviary"
 Documentation = "https://geospaitial-lab.github.io/aviary"
 
+[project.scripts]
+aviary = "aviary._cli.cli:app"
+
 [tool.setuptools.dynamic]
 dependencies = {file = "requirements.txt"}
 optional-dependencies = {dev = {file = "dev/requirements.txt"}}
@@ -33,6 +36,11 @@ version = {attr = "aviary.__version__"}
 
 [tool.setuptools.packages]
 find = {where = ["."], include = ["aviary*"]}
+
+[tool.coverage.run]
+omit = [
+    "aviary/_cli/*",
+]
 
 [tool.coverage.report]
 exclude_also = [

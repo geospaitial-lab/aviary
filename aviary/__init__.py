@@ -13,6 +13,7 @@ from ._utils.types import (
 )
 
 __all__ = [
+    '__version__',
     'BoundingBox',
     'Device',
     'DType',
