@@ -30,7 +30,7 @@ def segmentation_pipeline(
 @app.command()
 def version() -> None:
     """Show the version of the package."""
-    typer.echo(__version__)
+    print(__version__)
 
 
 if __name__ == "__main__":
