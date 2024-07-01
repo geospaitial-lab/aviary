@@ -53,6 +53,7 @@ class SegmentationExporter(FromConfigMixin):
     The predictions (i.e. raster data) are transformed to geospatial data (i.e. vector data).
     The resulting geodataframe contains the geometry of the polygons and their class that is stored
     in the field `field_name` as the pixel value of the prediction.
+    The coordinates of the processed tiles are exported dynamically to a JSON file named `processed_coordinates.json`.
 
     Available modes:
         - `FEATHER`: For each processed tile, the segmentation exporter creates a subdirectory named `{x_min}_{y_min}`
@@ -61,6 +62,7 @@ class SegmentationExporter(FromConfigMixin):
         - `GPKG`: The segmentation exporter creates a geopackage named `output.gpkg`
     """
     _GPKG_NAME = 'output.gpkg'
+    _JSON_NAME = 'processed_coordinates.json'
     _IGNORE_BACKGROUND_CLASS = True
 
     def __init__(
@@ -112,6 +114,7 @@ class SegmentationExporter(FromConfigMixin):
             field_name=self.field_name,
             ignore_background_class=self._IGNORE_BACKGROUND_CLASS,
             gpkg_name=self._GPKG_NAME,
+            json_name=self._JSON_NAME,
             mode=self.mode,
             num_workers=self.num_workers,
         )

@@ -1,3 +1,4 @@
+import json
 import multiprocessing
 from pathlib import Path
 
@@ -17,11 +18,13 @@ from aviary._utils.types import (
     CoordinatesSet,
     EPSGCode,
     GroundSamplingDistance,
+    ProcessArea,
     SegmentationExporterMode,
     TileSize,
 )
 
-_lock = multiprocessing.Lock()
+_lock_gpkg = multiprocessing.Lock()
+_lock_json = multiprocessing.Lock()
 
 
 def segmentation_exporter(
@@ -34,6 +37,7 @@ def segmentation_exporter(
     field_name: str = 'class',
     ignore_background_class: bool = True,
     gpkg_name: str = 'output.gpkg',
+    json_name: str = 'processed_coordinates.json',
     mode: SegmentationExporterMode = SegmentationExporterMode.GPKG,
     num_workers: int = 1,
 ) -> None:
@@ -49,6 +53,7 @@ def segmentation_exporter(
         field_name: name of the field in the geodataframe
         ignore_background_class: if True, the background class is not additionally vectorized as a polygon of class 0
         gpkg_name: name of the geopackage (only used if `mode` is `GPKG`)
+        json_name: name of the JSON file containing the coordinates of the processed tiles
         mode: segmentation exporter mode (`FEATHER` or `GPKG`)
         num_workers: number of workers
     """
@@ -64,6 +69,7 @@ def segmentation_exporter(
             field_name=field_name,
             ignore_background_class=ignore_background_class,
             gpkg_name=gpkg_name,
+            json_name=json_name,
             mode=mode,
         )
         for preds_element, coordinates_element
@@ -84,6 +90,7 @@ def _segmentation_exporter_task(
     field_name: str = 'class',
     ignore_background_class: bool = True,
     gpkg_name: str = 'output.gpkg',
+    json_name: str = 'processed_coordinates.json',
     mode: SegmentationExporterMode = SegmentationExporterMode.GPKG,
 ) -> None:
     """Exports the predictions.
@@ -102,6 +109,7 @@ def _segmentation_exporter_task(
         field_name: name of the field in the geodataframe
         ignore_background_class: if True, the background class is not additionally vectorized as a polygon of class 0
         gpkg_name: name of the geopackage (only used if `mode` is `GPKG`)
+        json_name: name of the JSON file containing the coordinates of the processed tiles
         mode: segmentation exporter mode (`FEATHER` or `GPKG`)
     """
     gdf = _vectorize_preds(
@@ -120,6 +128,7 @@ def _segmentation_exporter_task(
         x_min=x_min,
         y_min=y_min,
         gpkg_name=gpkg_name,
+        json_name=json_name,
         mode=mode,
     )
 
@@ -130,9 +139,10 @@ def _export_gdf(
     x_min: Coordinate,
     y_min: Coordinate,
     gpkg_name: str = 'output.gpkg',
+    json_name: str = 'processed_coordinates.json',
     mode: SegmentationExporterMode = SegmentationExporterMode.GPKG,
 ) -> None:
-    """Exports the geodataframe.
+    """Exports the geodataframe and the coordinates of the processed tiles.
 
     Parameters:
         gdf: geodataframe of the vectorized predictions
@@ -140,6 +150,7 @@ def _export_gdf(
         x_min: minimum x coordinate
         y_min: minimum y coordinate
         gpkg_name: name of the geopackage (only used if `mode` is `GPKG`)
+        json_name: name of the JSON file containing the coordinates of the processed tiles
         mode: segmentation exporter mode (`FEATHER` or `GPKG`)
 
     Raises:
@@ -152,6 +163,12 @@ def _export_gdf(
             x_min=x_min,
             y_min=y_min,
         )
+        _export_coordinates_json(
+            path=path,
+            x_min=x_min,
+            y_min=y_min,
+            json_name=json_name,
+        )
         return
 
     if mode == SegmentationExporterMode.GPKG:
@@ -159,6 +176,12 @@ def _export_gdf(
             gdf=gdf,
             path=path,
             gpkg_name=gpkg_name,
+        )
+        _export_coordinates_json(
+            path=path,
+            x_min=x_min,
+            y_min=y_min,
+            json_name=json_name,
         )
         return
 
@@ -209,11 +232,41 @@ def _export_gdf_gpkg(
         return
 
     gdf_path = path / gpkg_name
-    with _lock:
+    with _lock_gpkg:
         try:
             gdf.to_file(gdf_path, driver='GPKG', mode='a')
         except OSError:
             gdf.to_file(gdf_path, driver='GPKG')
+
+
+def _export_coordinates_json(
+    path: Path,
+    x_min: Coordinate,
+    y_min: Coordinate,
+    json_name: str = 'processed_coordinates.json',
+) -> None:
+    """Exports the coordinates of the processed tiles as a JSON file.
+
+    Parameters:
+        path: path to the output directory
+        x_min: minimum x coordinate
+        y_min: minimum y coordinate
+        json_name: name of the JSON file containing the coordinates of the processed tiles
+    """
+    coordinates = (x_min, y_min)
+    json_path = path / json_name
+    with _lock_json:
+        try:
+            with open(json_path, 'r') as file:
+                json_string = json.load(file)
+            process_area = ProcessArea.from_json(json_string)
+        except FileNotFoundError:
+            process_area = ProcessArea()
+
+        process_area = process_area.append(coordinates)
+        json_string = process_area.to_json()
+        with open(json_path, 'w') as file:
+            json.dump(json_string, file)
 
 
 def _vectorize_preds(
