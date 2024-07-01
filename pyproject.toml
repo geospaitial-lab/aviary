@@ -26,6 +26,9 @@ dynamic = [
 Homepage = "https://github.com/geospaitial-lab/aviary"
 Documentation = "https://geospaitial-lab.github.io/aviary"
 
+[project.scripts]
+aviary = "aviary._cli.cli:app"
+
 [tool.setuptools.dynamic]
 dependencies = {file = "requirements.txt"}
 optional-dependencies = {dev = {file = "dev/requirements.txt"}}
@@ -42,6 +45,7 @@ exclude_also = [
     "if TYPE_CHECKING:",
     "class .*\\bProtocol\\):",
     "@(abc\\.)?abstractmethod",
+    "aviary/_cli/*"
 ]
 
 [tool.ruff]
