@@ -37,6 +37,11 @@ version = {attr = "aviary.__version__"}
 [tool.setuptools.packages]
 find = {where = ["."], include = ["aviary*"]}
 
+[tool.coverage.run]
+omit = [
+    "aviary/_cli/*",
+]
+
 [tool.coverage.report]
 exclude_also = [
     "def __repr__",
@@ -45,7 +50,6 @@ exclude_also = [
     "if TYPE_CHECKING:",
     "class .*\\bProtocol\\):",
     "@(abc\\.)?abstractmethod",
-    "aviary/_cli/*"
 ]
 
 [tool.ruff]
