@@ -82,19 +82,19 @@ class SegmentationPipeline:
         Returns:
             segmentation pipeline
         """
-        data_fetcher_class = globals()[config.data_fetcher.name]
-        data_fetcher = data_fetcher_class.from_config(config.data_fetcher.config)
+        data_fetcher_class = globals()[config.data_fetcher_config.name]
+        data_fetcher = data_fetcher_class.from_config(config.data_fetcher_config.config)
 
-        data_preprocessor_class = globals()[config.data_preprocessor.name]
-        data_preprocessor = data_preprocessor_class.from_config(config.data_preprocessor.config)
+        data_preprocessor_class = globals()[config.data_preprocessor_config.name]
+        data_preprocessor = data_preprocessor_class.from_config(config.data_preprocessor_config.config)
 
-        process_area = ProcessArea.from_config(config.process_area)
+        process_area = ProcessArea.from_config(config.process_area_config)
 
-        model_class = globals()[config.model.name]
-        model = model_class.from_config(config.model.config)
+        model_class = globals()[config.segmentation_model_config.name]
+        model = model_class.from_config(config.segmentation_model_config.config)
 
-        exporter_class = globals()[config.exporter.name]
-        exporter = exporter_class.from_config(config.exporter.config)
+        exporter_class = globals()[config.exporter_config.name]
+        exporter = exporter_class.from_config(config.exporter_config.config)
 
         return cls(
             data_fetcher=data_fetcher,
@@ -134,16 +134,17 @@ class SegmentationPipelineConfig(pydantic.BaseModel):
         data_fetcher_config: configuration of the data fetcher
         data_preprocessor_config: configuration of the data preprocessor
         process_area_config: configuration of the process area
-        model_config: configuration of the model
+        segmentation_model_config: configuration of the model
         exporter_config: configuration of the exporter
         batch_size: batch size
         num_workers: number of workers
     """
-    data_fetcher_config: DataFetcherConfig
-    data_preprocessor_config: DataPreprocessorConfig
-    process_area_config: ProcessAreaConfig
-    model_config: ModelConfig
-    exporter_config: ExporterConfig
+    data_fetcher_config: DataFetcherConfig = pydantic.Field(alias='data_fetcher')
+    data_preprocessor_config: DataPreprocessorConfig = pydantic.Field(alias='data_preprocessor')
+    process_area_config: ProcessAreaConfig = pydantic.Field(alias='process_area')
+    # model_config is a reserved name in Pydantic's namespace, hence the alias segmentation_model_config
+    segmentation_model_config: ModelConfig = pydantic.Field(alias='model')
+    exporter_config: ExporterConfig = pydantic.Field(alias='exporter')
     batch_size: int = 1
     num_workers: int = 1
 
