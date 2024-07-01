@@ -88,6 +88,7 @@ def test_segmentation_exporter_call(
         field_name=segmentation_exporter.field_name,
         ignore_background_class=segmentation_exporter._IGNORE_BACKGROUND_CLASS,
         gpkg_name=segmentation_exporter._GPKG_NAME,
+        json_name=segmentation_exporter._JSON_NAME,
         mode=segmentation_exporter.mode,
         num_workers=segmentation_exporter.num_workers,
     )

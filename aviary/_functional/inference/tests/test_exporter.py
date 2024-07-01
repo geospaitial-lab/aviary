@@ -40,6 +40,7 @@ def test__segmentation_exporter_task(
     field_name = 'class'
     ignore_background_class = True
     gpkg_name = 'output.gpkg'
+    json_name = 'processed_coordinates.json'
     mode = SegmentationExporterMode.GPKG
     expected_gdf = 'expected_gdf'
     mocked__vectorize_preds.return_value = expected_gdf
@@ -55,6 +56,7 @@ def test__segmentation_exporter_task(
             field_name=field_name,
             ignore_background_class=ignore_background_class,
             gpkg_name=gpkg_name,
+            json_name=json_name,
             mode=mode,
         )
     )
@@ -75,21 +77,25 @@ def test__segmentation_exporter_task(
         x_min=x_min,
         y_min=y_min,
         gpkg_name=gpkg_name,
+        json_name=json_name,
         mode=mode,
     )
 
 
+@patch('aviary._functional.inference.exporter._export_coordinates_json')
 @patch('aviary._functional.inference.exporter._export_gdf_gpkg')
 @patch('aviary._functional.inference.exporter._export_gdf_feather')
 def test__export_gdf(
     mocked__export_gdf_feather,
     mocked__export_gdf_gpkg,
+    mocked__export_coordinates_json,
 ) -> None:
     gdf = MagicMock(spec=gpd.GeoDataFrame)
     path = Path('test')
     x_min = -128
     y_min = -128
     gpkg_name = 'output.gpkg'
+    json_name = 'processed_coordinates.json'
 
     mode = SegmentationExporterMode.FEATHER
     _export_gdf(
@@ -98,6 +104,7 @@ def test__export_gdf(
         x_min=x_min,
         y_min=y_min,
         gpkg_name=gpkg_name,
+        json_name=json_name,
         mode=mode,
     )
 
@@ -108,9 +115,16 @@ def test__export_gdf(
         y_min=y_min,
     )
     mocked__export_gdf_gpkg.assert_not_called()
+    mocked__export_coordinates_json.assert_called_once_with(
+        path=path,
+        x_min=x_min,
+        y_min=y_min,
+        json_name=json_name,
+    )
 
     mocked__export_gdf_feather.reset_mock()
     mocked__export_gdf_gpkg.reset_mock()
+    mocked__export_coordinates_json.reset_mock()
 
     mode = SegmentationExporterMode.GPKG
     _export_gdf(
@@ -128,9 +142,16 @@ def test__export_gdf(
         gpkg_name=gpkg_name,
     )
     mocked__export_gdf_feather.assert_not_called()
+    mocked__export_coordinates_json.assert_called_once_with(
+        path=path,
+        x_min=x_min,
+        y_min=y_min,
+        json_name=json_name,
+    )
 
     mocked__export_gdf_feather.reset_mock()
     mocked__export_gdf_gpkg.reset_mock()
+    mocked__export_coordinates_json.reset_mock()
 
     mode = 'invalid mode'
     mode = cast(SegmentationExporterMode, mode)
@@ -153,6 +174,11 @@ def test__export_gdf_feather() -> None:
 
 @pytest.mark.skip(reason='Not implemented')
 def test__export_gdf_gpkg() -> None:
+    pass
+
+
+@pytest.mark.skip(reason='Not implemented')
+def test__export_coordinates_json() -> None:
     pass
 
 
