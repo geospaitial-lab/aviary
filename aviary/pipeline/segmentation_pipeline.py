@@ -10,13 +10,11 @@ from aviary._utils.types import (
     ProcessArea,
     ProcessAreaConfig,
 )
-
 from aviary.data.data_fetcher import (
     DataFetcher,
     VRTDataFetcher,  # noqa: F401
     VRTDataFetcherConfig,
 )
-
 from aviary.data.data_preprocessor import (
     CompositePreprocessor,  # noqa: F401
     CompositePreprocessorConfig,
@@ -33,7 +31,6 @@ from aviary.inference.exporter import (
     SegmentationExporter,
     SegmentationExporterConfig,
 )
-
 from aviary.inference.model import (
     ONNXSegmentationModel,  # noqa: F401
     SegmentationModel,
