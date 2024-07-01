@@ -3,7 +3,7 @@ from __future__ import annotations
 import numpy as np
 import pydantic
 import torch.utils.data
-from tqdm import tqdm
+from rich.progress import track
 
 # noinspection PyProtectedMember
 from aviary._utils.types import (
@@ -119,7 +119,7 @@ class SegmentationPipeline:
             num_workers=self.num_workers,
         )
 
-        for batch in tqdm(dataloader):
+        for batch in track(dataloader, description='Processing'):
             preds = self.model(batch[0])
             x_min = batch[1].numpy()
             y_min = batch[2].numpy()
