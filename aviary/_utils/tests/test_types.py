@@ -340,6 +340,17 @@ def test_process_area_from_json() -> None:
 
     np.testing.assert_array_equal(process_area.coordinates, expected)
 
+    json_string = '[]'
+    process_area = ProcessArea.from_json(
+        json_string=json_string,
+    )
+    expected = np.empty(
+        shape=(0, 2),
+        dtype=np.int32,
+    )
+
+    np.testing.assert_array_equal(process_area.coordinates, expected)
+
 
 def test_process_area_len(
     process_area: ProcessArea,
