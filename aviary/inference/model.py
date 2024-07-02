@@ -203,7 +203,7 @@ class SegmentationModelConfig(pydantic.BaseModel):
             message = (
                 'Invalid configuration! '
                 'config must have one of the following field sets: '
-                'name, repo and path, path'
+                'name | repo, path | path'
             )
             raise ValueError(message)
 
