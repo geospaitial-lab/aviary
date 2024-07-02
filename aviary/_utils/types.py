@@ -629,23 +629,47 @@ class ProcessArea(Iterable[Coordinates]):
             process area
         """
         if config.json_string is not None:
-            return cls.from_json(
+            process_area = cls.from_json(
                 json_string=cast(str, config.json_string),
             )
 
+            if config.processed_coordinates_json_string is not None:
+                processed_process_area = cls.from_json(
+                    json_string=cast(str, config.processed_coordinates_json_string),
+                )
+                process_area = process_area - processed_process_area
+
+            return process_area
+
         if config.gdf is not None:
-            return cls.from_gdf(
+            process_area = cls.from_gdf(
                 gdf=cast(gpd.GeoDataFrame, config.gdf),
                 tile_size=config.tile_size,
                 quantize=config.quantize,
             )
 
+            if config.processed_coordinates_json_string is not None:
+                processed_process_area = cls.from_json(
+                    json_string=cast(str, config.processed_coordinates_json_string),
+                )
+                process_area = process_area - processed_process_area
+
+            return process_area
+
         if config.bounding_box is not None:
-            return cls.from_bounding_box(
+            process_area = cls.from_bounding_box(
                 bounding_box=cast(BoundingBox, config.bounding_box),
                 tile_size=config.tile_size,
                 quantize=config.quantize,
             )
+
+            if config.processed_coordinates_json_string is not None:
+                processed_process_area = cls.from_json(
+                    json_string=cast(str, config.processed_coordinates_json_string),
+                )
+                process_area = process_area - processed_process_area
+
+            return process_area
 
     def __len__(self) -> int:
         """Computes the number of coordinates.
@@ -846,19 +870,21 @@ class ProcessAreaConfig(pydantic.BaseModel):
 
     The configuration must have one of the following field sets:
         - `json_string`
-        - `gdf` and `tile_size` (optional: `quantize`)
-        - `bounding_box` and `tile_size` (optional: `quantize`)
+        - `gdf` and `tile_size`
+        - `bounding_box` and `tile_size`
 
     Attributes:
-        bounding_box: bounding box
+        bounding_box: bounding box (x_min, y_min, x_max, y_max)
         gdf: path to the geodataframe
         json_string: path to the JSON file
+        processed_coordinates_json_string: path to the JSON file containing the coordinates of the processed tiles
         tile_size: tile size in meters
         quantize: if True, the bounding box is quantized to `tile_size`
     """
     bounding_box: list[Coordinate] | None = None
     gdf: Path | None = None
     json_string: Path | None = None
+    processed_coordinates_json_string: Path | None = None
     tile_size: TileSize | None = None
     quantize: bool = True
 
@@ -905,6 +931,17 @@ class ProcessAreaConfig(pydantic.BaseModel):
         with open(json_string, 'r') as file:
             return file.read()
 
+    # noinspection PyNestedDecorators
+    @pydantic.field_validator('processed_coordinates_json_string')
+    @classmethod
+    def parse_processed_coordinates_json_string(
+        cls,
+        processed_coordinates_json_string: Path,
+    ) -> str:
+        """Parses the JSON string containing the coordinates of the processed tiles."""
+        with open(processed_coordinates_json_string, 'r') as file:
+            return file.read()
+
     @pydantic.model_validator(mode='after')
     def validate(self) -> ProcessAreaConfig:
         """Validates the configuration."""
@@ -918,7 +955,7 @@ class ProcessAreaConfig(pydantic.BaseModel):
             message = (
                 'Invalid configuration! '
                 'config must have one of the following field sets: '
-                'json_string, gdf and tile_size (optional: quantize), bounding_box and tile_size (optional: quantize)'
+                'json_string | gdf, tile_size | bounding_box, tile_size'
             )
             raise ValueError(message)
 
