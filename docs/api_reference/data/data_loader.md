@@ -1,4 +1,4 @@
-::: aviary.data.Dataset
+::: aviary.data.DataLoader
     options:
       filters:
       - "!_"

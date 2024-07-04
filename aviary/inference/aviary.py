@@ -15,16 +15,6 @@ class Channels(Enum):
     NIR = 'nir'
 
 
-class Framework(Enum):
-    """
-    Attributes:
-        ONNX: Open Neural Network Exchange
-        TORCH: PyTorch
-    """
-    ONNX = 'onnx'
-    TORCH = 'torch'
-
-
 class Type(Enum):
     """
     Attributes:
@@ -40,7 +30,6 @@ class ModelCard:
         name: name of the model
         repo: repository (Hugging Face Hub, e.g. 'user/repo')
         path: path to the model (Hugging Face Hub)
-        framework: framework (`ONNX` or `TORCH`)
         type: type (`SEGMENTATION`)
         required_channels: required channels (`RGB`, `NIR`)
         num_channels: number of channels
@@ -55,7 +44,6 @@ class ModelCard:
     name: str
     repo: str
     path: str
-    framework: Framework
     type: Type
     required_channels: list[Channels]
     num_channels: int
@@ -107,7 +95,6 @@ sparrow = ModelCard(
     name='sparrow',
     repo='geospaitial-lab/sparrow',
     path='models/sparrow.onnx',
-    framework=Framework.ONNX,
     type=Type.SEGMENTATION,
     required_channels=[Channels.RGB, Channels.NIR],
     num_channels=4,

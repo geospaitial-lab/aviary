@@ -1,5 +1,4 @@
 import numpy as np
-import torch
 
 data = np.array(
     [
@@ -35,20 +34,6 @@ data_test_standardize_preprocessor = [
                 [[0, 1.007874, -1], [-1, 0, 1.007874]],
             ],
             dtype=np.float32,
-        ),
-    ),
-]
-
-data_test_to_tensor_preprocessor = [
-    (
-        data.astype(np.float32),
-        torch.tensor(
-            [
-                [[0, 255], [127, 0]],
-                [[127, 0], [255, 127]],
-                [[255, 127], [0, 255]],
-            ],
-            dtype=torch.float32,
         ),
     ),
 ]

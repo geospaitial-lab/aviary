@@ -10,8 +10,6 @@ from aviary.data.data_preprocessor import (
     NormalizePreprocessorConfig,
     StandardizePreprocessor,
     StandardizePreprocessorConfig,
-    ToTensorPreprocessor,
-    ToTensorPreprocessorConfig,
 )
 
 
@@ -156,38 +154,5 @@ def test_standardize_preprocessor_call(
         data=data,
         mean_values=standardize_preprocessor.mean_values,
         std_values=standardize_preprocessor.std_values,
-    )
-    assert preprocessed_data == expected
-
-
-def test_to_tensor_preprocessor_init() -> None:
-    _ = ToTensorPreprocessor()
-
-
-def test_to_tensor_preprocessor_from_config() -> None:
-    to_tensor_preprocessor_config = ToTensorPreprocessorConfig()
-    _ = ToTensorPreprocessor.from_config(to_tensor_preprocessor_config)
-
-
-@patch('aviary.data.data_preprocessor.to_tensor_preprocessor')
-def test_to_tensor_preprocessor_call(
-    mocked_to_tensor_preprocessor,
-    to_tensor_preprocessor: ToTensorPreprocessor,
-) -> None:
-    data = np.array(
-        [
-            [[0, .5, 1], [1, 0, .5]],
-            [[.5, 1, 0], [0, .5, 1]],
-        ],
-        dtype=np.float32,
-    )
-    expected = 'expected'
-    mocked_to_tensor_preprocessor.return_value = expected
-    preprocessed_data = to_tensor_preprocessor(
-        data=data,
-    )
-
-    mocked_to_tensor_preprocessor.assert_called_once_with(
-        data=data,
     )
     assert preprocessed_data == expected

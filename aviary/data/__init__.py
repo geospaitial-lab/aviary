@@ -3,6 +3,7 @@ from .data_fetcher import (
     VRTDataFetcher,
     VRTDataFetcherConfig,
 )
+from .data_loader import DataLoader
 from .data_preprocessor import (
     CompositePreprocessor,
     CompositePreprocessorConfig,
@@ -12,8 +13,6 @@ from .data_preprocessor import (
     NormalizePreprocessorConfig,
     StandardizePreprocessor,
     StandardizePreprocessorConfig,
-    ToTensorPreprocessor,
-    ToTensorPreprocessorConfig,
 )
 from .dataset import Dataset
 
@@ -21,6 +20,7 @@ __all__ = [
     'CompositePreprocessor',
     'CompositePreprocessorConfig',
     'DataFetcher',
+    'DataLoader',
     'DataPreprocessor',
     'DataPreprocessorConfig',
     'Dataset',
@@ -28,8 +28,6 @@ __all__ = [
     'NormalizePreprocessorConfig',
     'StandardizePreprocessor',
     'StandardizePreprocessorConfig',
-    'ToTensorPreprocessor',
-    'ToTensorPreprocessorConfig',
     'VRTDataFetcher',
     'VRTDataFetcherConfig',
 ]

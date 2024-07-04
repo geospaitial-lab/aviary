@@ -6,7 +6,6 @@ from typing import Protocol
 import numpy.typing as npt
 import onnxruntime as ort
 import pydantic
-import torch
 from huggingface_hub import hf_hub_download
 
 # noinspection PyProtectedMember
@@ -32,7 +31,7 @@ class Model(Protocol):
 
     def __call__(
         self,
-        inputs: npt.NDArray | torch.Tensor,
+        inputs: npt.NDArray,
     ) -> npt.NDArray:
         """Runs the model.
 
@@ -156,7 +155,7 @@ class SegmentationModel:
 
     def __call__(
         self,
-        inputs: npt.NDArray | torch.Tensor,
+        inputs: npt.NDArray,
     ) -> npt.NDArray:
         """Runs the model.
 

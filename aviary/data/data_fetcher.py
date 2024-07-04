@@ -38,7 +38,7 @@ class DataFetcher(Protocol):
         - WMSDataFetcher: Fetches data from a web map service
 
     Notes:
-        - Implementations must support concurrency (the data fetcher may be called concurrently by the dataloader)
+        - Implementations must support concurrency (the data fetcher is called concurrently by the data loader)
     """
 
     def __call__(

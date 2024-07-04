@@ -1,5 +1,4 @@
 import numpy.typing as npt
-import torch.utils.data
 
 # noinspection PyProtectedMember
 from aviary._functional.data.dataset import (
@@ -16,11 +15,25 @@ from aviary.data.data_fetcher import DataFetcher
 from aviary.data.data_preprocessor import DataPreprocessor
 
 
-class Dataset(torch.utils.data.Dataset):
-    """Dataset
+class Dataset:
+    """A dataset is an iterable that returns a sample for each tile by calling the data fetcher and
+    the data preprocessor. The dataset is used by the data loader to fetch the samples for each batch.
 
-    A dataset is an iterable that returns data for each tile by calling the data fetcher and data preprocessor.
-    The dataset is used by the dataloader to fetch and preprocess data for each batch.
+    Notes:
+        - A sample contains the data, the minimum x coordinate and the minimum y coordinate of a tile
+        - The dataset is called concurrently by the data loader
+
+    Examples:
+        Assume the data fetcher, the data preprocessor and the coordinates are already created.
+
+        >>> dataset = Dataset(
+        ...     data_fetcher=data_fetcher,
+        ...     data_preprocessor=data_preprocessor,
+        ...     coordinates=coordinates,
+        ... )
+        ...
+        >>> for data, x_min, y_min in dataset:
+        ...     ...
     """
 
     def __init__(
@@ -40,10 +53,10 @@ class Dataset(torch.utils.data.Dataset):
         self.coordinates = coordinates
 
     def __len__(self) -> int:
-        """Computes the number of tiles.
+        """Computes the number of samples.
 
         Returns:
-            number of tiles
+            number of samples
         """
         return get_length(
             coordinates=self.coordinates,
@@ -52,14 +65,14 @@ class Dataset(torch.utils.data.Dataset):
     def __getitem__(
         self,
         index: int,
-    ) -> tuple[npt.NDArray | torch.Tensor, Coordinate, Coordinate]:
-        """Fetches and preprocesses data given the index of the tile.
+    ) -> tuple[npt.NDArray, Coordinate, Coordinate]:
+        """Returns the sample.
 
         Parameters:
             index: index of the tile
 
         Returns:
-            data and coordinates (x_min, y_min) of the tile
+            sample
         """
         return get_item(
             coordinates=self.coordinates,

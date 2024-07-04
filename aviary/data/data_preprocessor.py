@@ -5,14 +5,12 @@ from abc import ABC, abstractmethod
 import numpy as np
 import numpy.typing as npt
 import pydantic
-import torch
 
 # noinspection PyProtectedMember
 from aviary._functional.data.data_preprocessor import (
     composite_preprocessor,
     normalize_preprocessor,
     standardize_preprocessor,
-    to_tensor_preprocessor,
 )
 
 # noinspection PyProtectedMember
@@ -29,14 +27,13 @@ class DataPreprocessor(ABC, FromConfigMixin):
         - CompositePreprocessor: Composes multiple data preprocessors
         - NormalizePreprocessor: Applies min-max normalization
         - StandardizePreprocessor: Applies standardization
-        - ToTensorPreprocessor: Converts the data to a tensor
     """
 
     @abstractmethod
     def __call__(
         self,
-        data: npt.NDArray | torch.Tensor,
-    ) -> npt.NDArray | torch.Tensor:
+        data: npt.NDArray,
+    ) -> npt.NDArray:
         """Preprocesses the data.
 
         Parameters:
@@ -88,7 +85,7 @@ class CompositePreprocessor(DataPreprocessor):
     def __call__(
         self,
         data: npt.NDArray,
-    ) -> npt.NDArray | torch.Tensor:
+    ) -> npt.NDArray:
         """Preprocesses the data with each data preprocessor.
 
         Parameters:
@@ -120,7 +117,7 @@ class DataPreprocessorConfig(pydantic.BaseModel):
         config: configuration of the data preprocessor
     """
     name: str
-    config: NormalizePreprocessorConfig | StandardizePreprocessorConfig | ToTensorPreprocessorConfig
+    config: NormalizePreprocessorConfig | StandardizePreprocessorConfig
 
 
 class NormalizePreprocessor(DataPreprocessor):
@@ -238,28 +235,3 @@ class StandardizePreprocessorConfig(pydantic.BaseModel):
     """
     mean_values: list[float]
     std_values: list[float]
-
-
-class ToTensorPreprocessor(DataPreprocessor):
-    """Data preprocessor that converts the data to a tensor"""
-
-    def __call__(
-        self,
-        data: npt.NDArray[np.float32],
-    ) -> torch.Tensor:
-        """Converts the data to a tensor.
-
-        Parameters:
-            data: data
-
-        Returns:
-            tensor
-        """
-        return to_tensor_preprocessor(
-            data=data,
-        )
-
-
-class ToTensorPreprocessorConfig(pydantic.BaseModel):
-    """Configuration for the `from_config` classmethod of `ToTensorPreprocessor`"""
-    pass
