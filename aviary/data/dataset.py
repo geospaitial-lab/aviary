@@ -19,7 +19,7 @@ class Dataset:
     """Dataset
 
     A dataset is an iterable that returns data for each tile by calling the data fetcher and data preprocessor.
-    The dataset is used by the dataloader to fetch and preprocess data for each batch.
+    The dataset is used by the data loader to fetch and preprocess data for each batch.
     """
 
     def __init__(
