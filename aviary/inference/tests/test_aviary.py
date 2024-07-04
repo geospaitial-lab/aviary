@@ -5,7 +5,6 @@ from aviary._utils.exceptions import AviaryUserError
 from aviary.inference.aviary import (
     Aviary,
     Channels,
-    Framework,
     ModelCard,
     Type,
 )
@@ -15,7 +14,6 @@ def test_model_card_init() -> None:
     name = 'name'
     repo = 'repo'
     path = 'path'
-    framework = Framework.ONNX
     type_ = Type.SEGMENTATION
     required_channels = [Channels.RGB, Channels.NIR]
     num_channels = 4
@@ -30,7 +28,6 @@ def test_model_card_init() -> None:
         name=name,
         repo=repo,
         path=path,
-        framework=framework,
         type=type_,
         required_channels=required_channels,
         num_channels=num_channels,
@@ -46,7 +43,6 @@ def test_model_card_init() -> None:
     assert model.name == name
     assert model.repo == repo
     assert model.path == path
-    assert model.framework == framework
     assert model.type == type_
     assert model.required_channels == required_channels
     assert model.num_channels == num_channels

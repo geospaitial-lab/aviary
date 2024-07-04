@@ -7,7 +7,6 @@ from aviary._utils.types import SegmentationExporterMode
 from aviary.inference.aviary import (
     Aviary,
     Channels,
-    Framework,
     ModelCard,
     Type,
 )
@@ -19,7 +18,6 @@ def model_card() -> ModelCard:
     name = 'name'
     repo = 'repo'
     path = 'path'
-    framework = Framework.ONNX
     type_ = Type.SEGMENTATION
     required_channels = [Channels.RGB, Channels.NIR]
     num_channels = 4
@@ -34,7 +32,6 @@ def model_card() -> ModelCard:
         name=name,
         repo=repo,
         path=path,
-        framework=framework,
         type=type_,
         required_channels=required_channels,
         num_channels=num_channels,
