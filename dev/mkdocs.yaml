@@ -14,6 +14,7 @@ nav:
       - Types: api_reference/types.md
     - aviary.data:
       - DataFetcher: api_reference/data/data_fetcher.md
+      - DataLoader: api_reference/data/data_loader.md
       - DataPreprocessor: api_reference/data/data_preprocessor.md
       - Dataset: api_reference/data/dataset.md
     - aviary.geodata:
