@@ -21,7 +21,7 @@ def get_item(
     coordinates: CoordinatesSet,
     index: int,
 ) -> tuple[npt.NDArray, Coordinate, Coordinate]:
-    """Fetches and preprocesses data given the index of the tile.
+    """Returns the sample.
 
     Parameters:
         data_fetcher: data fetcher
@@ -30,7 +30,7 @@ def get_item(
         index: index of the tile
 
     Returns:
-        data and coordinates (x_min, y_min) of the tile
+        sample
     """
     x_min, y_min = coordinates[index]
     data = data_fetcher(
@@ -46,12 +46,12 @@ def get_item(
 def get_length(
     coordinates: CoordinatesSet,
 ) -> int:
-    """Computes the number of tiles.
+    """Computes the number of samples.
 
     Parameters:
         coordinates: coordinates (x_min, y_min) of each tile
 
     Returns:
-        number of tiles
+        number of samples
     """
     return len(coordinates)

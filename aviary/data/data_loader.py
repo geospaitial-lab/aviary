@@ -19,9 +19,7 @@ from aviary.data.dataset import Dataset
 
 
 class DataLoader(Iterator[tuple[npt.NDArray, Coordinate, Coordinate]]):
-    """Data loader
-
-    A data loader is an iterator that yields batches from the dataset.
+    """A data loader is an iterator that yields batches from the dataset.
     The data loader is used by the pipeline to fetch the batches for inference.
 
     Notes:
