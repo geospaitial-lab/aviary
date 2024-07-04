@@ -141,14 +141,14 @@ class SegmentationModel:
         if config.repo is not None and config.path is not None:
             return cls.from_huggingface(
                 repo=config.repo,
-                path=str(config.path),
+                path=config.path,
                 buffer_size=config.buffer_size,
                 device=config.device,
             )
 
         if config.path is not None:
             return cls(
-                path=config.path,
+                path=Path(config.path),
                 buffer_size=config.buffer_size,
                 device=config.device,
             )
@@ -183,7 +183,7 @@ class SegmentationModelConfig(pydantic.BaseModel):
         buffer_size: buffer size in pixels (specifies the area around the tile that is additionally fetched)
         device: device ('cpu' or 'cuda')
     """
-    path: Path | None = None
+    path: str | None = None  # don't cast to Path, as it can be a Hugging Face Hub unix path
     repo: str | None = None
     name: str | None = None
     buffer_size: BufferSize = 0
