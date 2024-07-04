@@ -1,5 +1,5 @@
 import json
-import multiprocessing
+import threading
 from pathlib import Path
 
 import dask
@@ -23,8 +23,8 @@ from aviary._utils.types import (
     TileSize,
 )
 
-_lock_gpkg = multiprocessing.Lock()
-_lock_json = multiprocessing.Lock()
+_lock_gpkg = threading.Lock()
+_lock_json = threading.Lock()
 
 
 def segmentation_exporter(
@@ -75,7 +75,11 @@ def segmentation_exporter(
         for preds_element, coordinates_element
         in zip(preds, coordinates)
     ]
-    dask.compute(tasks, num_workers=num_workers)
+    dask.compute(
+        args=tasks,
+        num_workers=num_workers,
+        scheduler='threads',
+    )
 
 
 @dask.delayed
