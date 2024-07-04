@@ -7,24 +7,24 @@ docs_dir: ../docs
 nav:
   - Get started: index.md
   - API Reference:
-      - aviary:
-        - BoundingBox: api_reference/bounding_box.md
-        - Enums: api_reference/enums.md
-        - ProcessArea: api_reference/process_area.md
-        - Types: api_reference/types.md
-      - aviary.data:
-        - DataFetcher: api_reference/data/data_fetcher.md
-        - DataPreprocessor: api_reference/data/data_preprocessor.md
-        - Dataset: api_reference/data/dataset.md
-      - aviary.geodata:
-        - CoordinatesFilter: api_reference/geodata/coordinates_filter.md
-        - GeodataPostprocessor: api_reference/geodata/geodata_postprocessor.md
-        - GridGenerator: api_reference/geodata/grid_generator.md
-      - aviary.inference:
-        - Exporter: api_reference/inference/exporter.md
-        - Model: api_reference/inference/model.md
-      - aviary.pipeline:
-        - SegmentationPipeline: api_reference/pipeline/segmentation_pipeline.md
+    - aviary:
+      - BoundingBox: api_reference/bounding_box.md
+      - Enums: api_reference/enums.md
+      - ProcessArea: api_reference/process_area.md
+      - Types: api_reference/types.md
+    - aviary.data:
+      - DataFetcher: api_reference/data/data_fetcher.md
+      - DataPreprocessor: api_reference/data/data_preprocessor.md
+      - Dataset: api_reference/data/dataset.md
+    - aviary.geodata:
+      - CoordinatesFilter: api_reference/geodata/coordinates_filter.md
+      - GeodataPostprocessor: api_reference/geodata/geodata_postprocessor.md
+      - GridGenerator: api_reference/geodata/grid_generator.md
+    - aviary.inference:
+      - Exporter: api_reference/inference/exporter.md
+      - Model: api_reference/inference/model.md
+    - aviary.pipeline:
+      - SegmentationPipeline: api_reference/pipeline/segmentation_pipeline.md
 
 theme:
   name: material
