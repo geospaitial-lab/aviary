@@ -3,6 +3,7 @@ from .data_fetcher import (
     VRTDataFetcher,
     VRTDataFetcherConfig,
 )
+from .data_loader import DataLoader
 from .data_preprocessor import (
     CompositePreprocessor,
     CompositePreprocessorConfig,
@@ -19,6 +20,7 @@ __all__ = [
     'CompositePreprocessor',
     'CompositePreprocessorConfig',
     'DataFetcher',
+    'DataLoader',
     'DataPreprocessor',
     'DataPreprocessorConfig',
     'Dataset',

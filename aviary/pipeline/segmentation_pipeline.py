@@ -14,6 +14,7 @@ from aviary.data.data_fetcher import (
     VRTDataFetcher,  # noqa: F401
     VRTDataFetcherConfig,
 )
+from aviary.data.data_loader import DataLoader
 from aviary.data.data_preprocessor import (
     CompositePreprocessor,  # noqa: F401
     CompositePreprocessorConfig,
@@ -110,16 +111,14 @@ class SegmentationPipeline:
             data_preprocessor=self.data_preprocessor,
             coordinates=self.process_area.coordinates,
         )
-        dataloader = DataLoader(
+        data_loader = DataLoader(
             dataset=dataset,
             batch_size=self.batch_size,
             num_workers=self.num_workers,
         )
 
-        for batch in track(dataloader, description='Processing'):
-            preds = self.model(batch[0])
-            x_min = batch[1].numpy()
-            y_min = batch[2].numpy()
+        for data, x_min, y_min in track(data_loader, description='Processing'):
+            preds = self.model(data)
             coordinates = np.column_stack((x_min, y_min))
             self.exporter(preds, coordinates)
 
