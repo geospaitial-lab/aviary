@@ -1,17 +1,14 @@
 import numpy as np
 import numpy.typing as npt
 import pytest
-import torch
 
 from aviary._functional.data.data_preprocessor import (
     normalize_preprocessor,
     standardize_preprocessor,
-    to_tensor_preprocessor,
 )
 from aviary._functional.data.tests.data.data_test_data_preprocessor import (
     data_test_normalize_preprocessor,
     data_test_standardize_preprocessor,
-    data_test_to_tensor_preprocessor,
 )
 
 
@@ -50,15 +47,3 @@ def test_standardize_preprocessor(
     )
 
     np.testing.assert_array_equal(preprocessed_data, expected)
-
-
-@pytest.mark.parametrize('data, expected', data_test_to_tensor_preprocessor)
-def test_to_tensor_preprocessor(
-    data: npt.NDArray[np.float32],
-    expected: torch.Tensor,
-) -> None:
-    preprocessed_data = to_tensor_preprocessor(
-        data=data,
-    )
-
-    assert torch.equal(preprocessed_data, expected)

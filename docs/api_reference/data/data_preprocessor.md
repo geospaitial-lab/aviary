@@ -31,13 +31,3 @@
 ---
 
 ::: aviary.data.StandardizePreprocessorConfig
-
----
-
-::: aviary.data.ToTensorPreprocessor
-    options:
-      inherited_members: true
-
----
-
-::: aviary.data.ToTensorPreprocessorConfig

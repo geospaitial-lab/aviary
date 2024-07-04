@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING
 
 import numpy as np
 import numpy.typing as npt
-import torch
 
 if TYPE_CHECKING:
     from aviary.data.data_preprocessor import DataPreprocessor
@@ -13,7 +12,7 @@ if TYPE_CHECKING:
 def composite_preprocessor(
     data: npt.NDArray,
     data_preprocessors: list[DataPreprocessor],
-) -> npt.NDArray | torch.Tensor:
+) -> npt.NDArray:
     """Preprocesses the data with each data preprocessor.
 
     Parameters:
@@ -66,17 +65,3 @@ def standardize_preprocessor(
     mean_values = np.array(mean_values, dtype=np.float32)
     std_values = np.array(std_values, dtype=np.float32)
     return (data - mean_values) / std_values
-
-
-def to_tensor_preprocessor(
-    data: npt.NDArray[np.float32],
-) -> torch.Tensor:
-    """Converts the data to a tensor.
-
-    Parameters:
-        data: data
-
-    Returns:
-        tensor
-    """
-    return torch.from_numpy(data).permute(2, 0, 1)

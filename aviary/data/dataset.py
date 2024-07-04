@@ -1,5 +1,4 @@
 import numpy.typing as npt
-import torch.utils.data
 
 # noinspection PyProtectedMember
 from aviary._functional.data.dataset import (
@@ -16,7 +15,7 @@ from aviary.data.data_fetcher import DataFetcher
 from aviary.data.data_preprocessor import DataPreprocessor
 
 
-class Dataset(torch.utils.data.Dataset):
+class Dataset:
     """Dataset
 
     A dataset is an iterable that returns data for each tile by calling the data fetcher and data preprocessor.
@@ -52,7 +51,7 @@ class Dataset(torch.utils.data.Dataset):
     def __getitem__(
         self,
         index: int,
-    ) -> tuple[npt.NDArray | torch.Tensor, Coordinate, Coordinate]:
+    ) -> tuple[npt.NDArray, Coordinate, Coordinate]:
         """Fetches and preprocesses data given the index of the tile.
 
         Parameters:

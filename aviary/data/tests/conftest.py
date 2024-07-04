@@ -15,7 +15,6 @@ from aviary.data.data_preprocessor import (
     DataPreprocessor,
     NormalizePreprocessor,
     StandardizePreprocessor,
-    ToTensorPreprocessor,
 )
 from aviary.data.dataset import Dataset
 
@@ -62,11 +61,6 @@ def standardize_preprocessor() -> StandardizePreprocessor:
         mean_values=mean_values,
         std_values=std_values,
     )
-
-
-@pytest.fixture(scope='session')
-def to_tensor_preprocessor() -> ToTensorPreprocessor:
-    return ToTensorPreprocessor()
 
 
 @pytest.fixture(scope='session')

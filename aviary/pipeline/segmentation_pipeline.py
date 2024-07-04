@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import numpy as np
 import pydantic
-import torch.utils.data
 from rich.progress import track
 
 # noinspection PyProtectedMember
@@ -23,8 +22,6 @@ from aviary.data.data_preprocessor import (
     NormalizePreprocessorConfig,
     StandardizePreprocessor,  # noqa: F401
     StandardizePreprocessorConfig,
-    ToTensorPreprocessor,  # noqa: F401
-    ToTensorPreprocessorConfig,
 )
 from aviary.data.dataset import Dataset
 from aviary.inference.exporter import (
@@ -113,7 +110,7 @@ class SegmentationPipeline:
             data_preprocessor=self.data_preprocessor,
             coordinates=self.process_area.coordinates,
         )
-        dataloader = torch.utils.data.DataLoader(
+        dataloader = DataLoader(
             dataset=dataset,
             batch_size=self.batch_size,
             num_workers=self.num_workers,
@@ -171,8 +168,7 @@ class DataPreprocessorConfig(pydantic.BaseModel):
     config: (
         CompositePreprocessorConfig |
         NormalizePreprocessorConfig |
-        StandardizePreprocessorConfig |
-        ToTensorPreprocessorConfig
+        StandardizePreprocessorConfig
     )
 
 

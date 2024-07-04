@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import numpy.typing as npt
-import torch
 
 # noinspection PyProtectedMember
 from aviary._utils.types import (
@@ -21,7 +20,7 @@ def get_item(
     data_preprocessor: DataPreprocessor,
     coordinates: CoordinatesSet,
     index: int,
-) -> tuple[npt.NDArray | torch.Tensor, Coordinate, Coordinate]:
+) -> tuple[npt.NDArray, Coordinate, Coordinate]:
     """Fetches and preprocesses data given the index of the tile.
 
     Parameters:

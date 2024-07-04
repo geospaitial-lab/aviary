@@ -12,8 +12,6 @@ from .data_preprocessor import (
     NormalizePreprocessorConfig,
     StandardizePreprocessor,
     StandardizePreprocessorConfig,
-    ToTensorPreprocessor,
-    ToTensorPreprocessorConfig,
 )
 from .dataset import Dataset
 
@@ -28,8 +26,6 @@ __all__ = [
     'NormalizePreprocessorConfig',
     'StandardizePreprocessor',
     'StandardizePreprocessorConfig',
-    'ToTensorPreprocessor',
-    'ToTensorPreprocessorConfig',
     'VRTDataFetcher',
     'VRTDataFetcherConfig',
 ]
