@@ -59,9 +59,9 @@ def segmentation_exporter(
     """
     tasks = [
         _segmentation_exporter_task(
-            preds=preds_element,
-            x_min=coordinates_element[0],
-            y_min=coordinates_element[1],
+            preds=preds_item,
+            x_min=coordinates_item[0],
+            y_min=coordinates_item[1],
             path=path,
             tile_size=tile_size,
             ground_sampling_distance=ground_sampling_distance,
@@ -72,11 +72,11 @@ def segmentation_exporter(
             json_name=json_name,
             mode=mode,
         )
-        for preds_element, coordinates_element
+        for preds_item, coordinates_item
         in zip(preds, coordinates)
     ]
     dask.compute(
-        args=tasks,
+        tasks,
         num_workers=num_workers,
         scheduler='threads',
     )
