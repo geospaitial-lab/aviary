@@ -146,6 +146,22 @@ class NormalizePreprocessor(DataPreprocessor):
         self.min_values = min_values
         self.max_values = max_values
 
+    @classmethod
+    def from_config(
+        cls,
+        config: NormalizePreprocessorConfig,
+    ) -> NormalizePreprocessor:
+        """Creates a normalize preprocessor from the configuration.
+
+        Parameters:
+            config: configuration
+
+        Returns:
+            normalize preprocessor
+        """
+        # noinspection PyTypeChecker
+        return super().from_config(config)
+
     def __call__(
         self,
         data: npt.NDArray,
@@ -202,6 +218,22 @@ class StandardizePreprocessor(DataPreprocessor):
         """
         self.mean_values = mean_values
         self.std_values = std_values
+
+    @classmethod
+    def from_config(
+        cls,
+        config: StandardizePreprocessorConfig,
+    ) -> StandardizePreprocessor:
+        """Creates a standardize preprocessor from the configuration.
+
+        Parameters:
+            config: configuration
+
+        Returns:
+            standardize preprocessor
+        """
+        # noinspection PyTypeChecker
+        return super().from_config(config)
 
     def __call__(
         self,
