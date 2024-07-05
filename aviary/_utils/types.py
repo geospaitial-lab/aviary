@@ -45,7 +45,8 @@ TileSize: TypeAlias = int
 
 @dataclass
 class BoundingBox(Iterable[Coordinate]):
-    """
+    """A bounding box specifies the spatial extent of an area of interest.
+
     Attributes:
         x_min: minimum x coordinate
         y_min: minimum y coordinate
@@ -242,7 +243,7 @@ class BoundingBox(Iterable[Coordinate]):
         self,
         index: int,
     ) -> Coordinate:
-        """Returns the coordinate given the index.
+        """Returns the coordinate.
 
         Parameters:
             index: index of the coordinate
@@ -268,6 +269,19 @@ class BoundingBox(Iterable[Coordinate]):
         inplace: bool = False,
     ) -> BoundingBox:
         """Buffers the bounding box.
+
+        Examples:
+            Assume the area of interest is specified by x_min=363084, y_min=5715326, x_max=363340 and y_max=5715582.
+            You can expand the area of interest by buffering the bounding box.
+
+            >>> bounding_box = BoundingBox(
+            ...     x_min=363084,
+            ...     y_min=5715326,
+            ...     x_max=363340,
+            ...     y_max=5715582,
+            ... )
+            >>> bounding_box.buffer(buffer_size=64)
+            BoundingBox(x_min=363020, y_min=5715262, x_max=363404, y_max=5715646)
 
         Parameters:
             buffer_size: buffer size in meters
@@ -314,6 +328,19 @@ class BoundingBox(Iterable[Coordinate]):
         inplace: bool = False,
     ) -> BoundingBox:
         """Quantizes the coordinates to the specified value.
+
+        Examples:
+            Assume the area of interest is specified by x_min=363084, y_min=5715326, x_max=363340 and y_max=5715582.
+            You can align the area of interest to a grid by quantizing the bounding box.
+
+            >>> bounding_box = BoundingBox(
+            ...     x_min=363084,
+            ...     y_min=5715326,
+            ...     x_max=363340,
+            ...     y_max=5715582,
+            ... )
+            >>> bounding_box.quantize(value=64)
+            BoundingBox(x_min=363072, y_min=5715264, x_max=363392, y_max=5715584)
 
         Parameters:
             value: value to quantize the coordinates to in meters
@@ -409,7 +436,7 @@ class DType(Enum):
         cls,
         dtype: str,
     ) -> DType:
-        """Converts the rasterio data type to the data type.
+        """Creates a data type from a rasterio data type.
 
         Parameters:
             dtype: rasterio data type
@@ -459,7 +486,12 @@ class InterpolationMode(Enum):
 
 @dataclass
 class ProcessArea(Iterable[Coordinates]):
-    """
+    """A process area specifies the area of interest by a set of coordinates.
+
+    Notes:
+        - The + operator can be used to add two process areas
+        - The - operator can be used to subtract two process areas
+
     Attributes:
         coordinates: coordinates (x_min, y_min) of each tile
     """
@@ -598,6 +630,22 @@ class ProcessArea(Iterable[Coordinates]):
     ) -> ProcessArea:
         """Creates a process area from a JSON string.
 
+        Notes:
+            - The JSON string contains a list of coordinates (x_min, y_min) of each tile
+
+        Examples:
+            Assume the JSON string is '[[363084, 5715326], [363212, 5715326], [363084, 5715454], [363212, 5715454]]'.
+            You can create a process area from the JSON string.
+
+            >>> process_area = ProcessArea.from_json(
+            ...     json_string= (
+            ...         '[[363084, 5715326], '
+            ...         '[363212, 5715326], '
+            ...         '[363084, 5715454], '
+            ...         '[363212, 5715454]]'
+            ...     ),
+            ... )
+
         Parameters:
             json_string: JSON string
 
@@ -683,7 +731,7 @@ class ProcessArea(Iterable[Coordinates]):
         self,
         index: int,
     ) -> Coordinates:
-        """Returns the coordinates given the index.
+        """Returns the coordinates.
 
         Parameters:
             index: index of the coordinates
@@ -859,6 +907,9 @@ class ProcessArea(Iterable[Coordinates]):
     def to_json(self) -> str:
         """Converts the coordinates to a JSON string.
 
+        Notes:
+            - The JSON string contains a list of coordinates (x_min, y_min) of each tile
+
         Returns:
             JSON string
         """
@@ -876,8 +927,9 @@ class ProcessAreaConfig(pydantic.BaseModel):
     Attributes:
         bounding_box: bounding box (x_min, y_min, x_max, y_max)
         gdf: path to the geodataframe
-        json_string: path to the JSON file
-        processed_coordinates_json_string: path to the JSON file containing the coordinates of the processed tiles
+        json_string: path to the JSON file containing the coordinates (x_min, y_min) of each tile
+        processed_coordinates_json_string: path to the JSON file containing the coordinates (x_min, y_min)
+            of the processed tiles
         tile_size: tile size in meters
         quantize: if True, the bounding box is quantized to `tile_size`
     """
@@ -927,7 +979,7 @@ class ProcessAreaConfig(pydantic.BaseModel):
         cls,
         json_string: Path,
     ) -> str:
-        """Parses the JSON string."""
+        """Parses the JSON string containing the coordinates (x_min, y_min) of each tile."""
         with open(json_string, 'r') as file:
             return file.read()
 
@@ -938,7 +990,7 @@ class ProcessAreaConfig(pydantic.BaseModel):
         cls,
         processed_coordinates_json_string: Path,
     ) -> str:
-        """Parses the JSON string containing the coordinates of the processed tiles."""
+        """Parses the JSON string containing the coordinates (x_min, y_min) of the processed tiles."""
         with open(processed_coordinates_json_string, 'r') as file:
             return file.read()
 
