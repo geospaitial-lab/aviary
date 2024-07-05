@@ -35,7 +35,6 @@ class DataFetcher(Protocol):
 
     Currently implemented data fetchers:
         - VRTDataFetcher: Fetches data from a virtual raster
-        - WMSDataFetcher: Fetches data from a web map service
 
     Notes:
         - Implementations must support concurrency (the data fetcher is called concurrently by the data loader)
@@ -46,7 +45,7 @@ class DataFetcher(Protocol):
         x_min: Coordinate,
         y_min: Coordinate,
     ) -> npt.NDArray:
-        """Fetches data from the source given a minimum x and y coordinate.
+        """Fetches data from the source.
 
         Parameters:
             x_min: minimum x coordinate
@@ -144,7 +143,7 @@ class VRTDataFetcher(FromConfigMixin):
         x_min: Coordinate,
         y_min: Coordinate,
     ) -> npt.NDArray:
-        """Fetches data from the virtual raster given a minimum x and y coordinate.
+        """Fetches data from the virtual raster.
 
         Parameters:
             x_min: minimum x coordinate
