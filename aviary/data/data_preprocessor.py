@@ -126,11 +126,9 @@ class NormalizePreprocessor(DataPreprocessor):
     Examples:
         Assume the data is a 3-channel image of data type uint8.
 
-        >>> min_values = [0.] * 3
-        >>> max_values = [255.] * 3
         >>> normalize_preprocessor = NormalizePreprocessor(
-        ...     min_values=min_values,
-        ...     max_values=max_values,
+        ...     min_values=[0.] * 3,
+        ...     max_values=[255.] * 3,
         ... )
         >>> preprocessed_data = normalize_preprocessor(data)
     """
@@ -185,11 +183,9 @@ class StandardizePreprocessor(DataPreprocessor):
         Assume the data is a 3-channel image of data type float32.
         In this example the mean and standard deviation values from the ImageNet dataset are used.
 
-        >>> mean_values = [.485, .456, .406]
-        >>> std_values = [.229, .224, .225]
         >>> standardize_preprocessor = StandardizePreprocessor(
-        ...     mean_values=mean_values,
-        ...     std_values=std_values,
+        ...     mean_values=[.485, .456, .406],
+        ...     std_values=[.229, .224, .225],
         ... )
         >>> preprocessed_data = standardize_preprocessor(data)
     """
