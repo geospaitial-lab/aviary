@@ -866,7 +866,7 @@ class ProcessArea(Iterable[Coordinates]):
 
 
 class ProcessAreaConfig(pydantic.BaseModel):
-    """Configuration for the `from_config` classmethod of `ProcessArea`
+    """Configuration for the `from_config` class method of `ProcessArea`
 
     The configuration must have one of the following field sets:
         - `json_string`

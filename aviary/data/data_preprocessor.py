@@ -101,7 +101,7 @@ class CompositePreprocessor(DataPreprocessor):
 
 
 class CompositePreprocessorConfig(pydantic.BaseModel):
-    """Configuration for the `from_config` classmethod of `CompositePreprocessor`
+    """Configuration for the `from_config` class method of `CompositePreprocessor`
 
     Attributes:
         data_preprocessors_configs: configurations of the data preprocessors
@@ -168,7 +168,7 @@ class NormalizePreprocessor(DataPreprocessor):
 
 
 class NormalizePreprocessorConfig(pydantic.BaseModel):
-    """Configuration for the `from_config` classmethod of `NormalizePreprocessor`
+    """Configuration for the `from_config` class method of `NormalizePreprocessor`
 
     Attributes:
         min_values: minimum values of the data (per channel)
@@ -227,7 +227,7 @@ class StandardizePreprocessor(DataPreprocessor):
 
 
 class StandardizePreprocessorConfig(pydantic.BaseModel):
-    """Configuration for the `from_config` classmethod of `StandardizePreprocessor`
+    """Configuration for the `from_config` class method of `StandardizePreprocessor`
 
     Attributes:
         mean_values: mean values of the data (per channel)

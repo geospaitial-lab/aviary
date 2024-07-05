@@ -121,7 +121,7 @@ class SegmentationExporter(FromConfigMixin):
 
 
 class SegmentationExporterConfig(pydantic.BaseModel):
-    """Configuration for the `from_config` classmethod of `SegmentationExporter`
+    """Configuration for the `from_config` class method of `SegmentationExporter`
 
     Attributes:
         path: path to the output directory

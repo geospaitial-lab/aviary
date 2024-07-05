@@ -169,7 +169,7 @@ class SegmentationModel:
 
 
 class SegmentationModelConfig(pydantic.BaseModel):
-    """Configuration for the `from_config` classmethod of `SegmentationModel`
+    """Configuration for the `from_config` class method of `SegmentationModel`
 
     The configuration must have one of the following field sets:
         - `name`

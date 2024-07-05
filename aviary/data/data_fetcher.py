@@ -167,7 +167,7 @@ class VRTDataFetcher(FromConfigMixin):
 
 
 class VRTDataFetcherConfig(pydantic.BaseModel):
-    """Configuration for the `from_config` classmethod of `VRTDataFetcher`
+    """Configuration for the `from_config` class method of `VRTDataFetcher`
 
     Attributes:
         path: path to the virtual raster (.vrt file)
