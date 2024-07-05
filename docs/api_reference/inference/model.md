@@ -15,4 +15,4 @@
 
 ::: aviary.inference.ONNXSegmentationModel
     options:
-        inherited_members: true
+      inherited_members: true
