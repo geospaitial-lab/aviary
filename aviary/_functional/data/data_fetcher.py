@@ -30,7 +30,7 @@ def vrt_data_fetcher(
     drop_channels: list[int] = None,
     fill_value: int = 0,
 ) -> npt.NDArray:
-    """Fetches data from the virtual raster given a minimum x and y coordinate.
+    """Fetches data from the virtual raster.
 
     Parameters:
         x_min: minimum x coordinate
