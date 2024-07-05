@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from pathlib import Path
 from typing import Protocol
 
@@ -137,6 +139,22 @@ class VRTDataFetcher(FromConfigMixin):
             number of channels
         """
         return self._data_fetcher_info.num_channels
+
+    @classmethod
+    def from_config(
+        cls,
+        config: VRTDataFetcherConfig,
+    ) -> VRTDataFetcher:
+        """Creates a vrt data fetcher from the configuration.
+
+        Parameters:
+            config: configuration
+
+        Returns:
+            vrt data fetcher
+        """
+        # noinspection PyTypeChecker
+        return super().from_config(config)
 
     def __call__(
         self,
