@@ -68,7 +68,7 @@ class Aviary:
         self,
         name: str,
     ) -> ModelCard:
-        """Returns the model card given its name.
+        """Returns the model card.
 
         Parameters:
             name: name of the model
