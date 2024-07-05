@@ -15,7 +15,7 @@ maintainers = [
     {name = "Marius Maryniak", email = "marius.maryniak@w-hs.de"},
 ]
 license = {text = "GPL-3.0"}
-requires-python = ">=3.8"
+requires-python = ">=3.10"
 dynamic = [
     "dependencies",
     "optional-dependencies",
@@ -54,7 +54,7 @@ exclude_also = [
 
 [tool.ruff]
 line-length = 120
-target-version = "py38"
+target-version = "py310"
 
 [tool.ruff.lint]
 extend-select = [
