@@ -1,4 +1,7 @@
 ::: aviary.ProcessArea
+    options:
+      filters:
+      - "!^_"
 
 ---
 

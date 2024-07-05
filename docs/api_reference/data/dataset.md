@@ -1,4 +1,4 @@
 ::: aviary.data.Dataset
     options:
       filters:
-      - "!_"
+      - "!^_"
