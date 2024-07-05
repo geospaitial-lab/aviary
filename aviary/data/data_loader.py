@@ -31,14 +31,11 @@ class DataLoader(Iterator[tuple[npt.NDArray, Coordinate, Coordinate]]):
         Assume the dataset is already created.
         You can create a data loader and iterate over the batches.
 
-        >>> batch_size = 4
-        >>> num_workers = 8
-        >>> num_prefetched_batches = 1
         >>> data_loader = DataLoader(
         ...     dataset=dataset,
-        ...     batch_size=batch_size,
-        ...     num_workers=num_workers,
-        ...     num_prefetched_batches=num_prefetched_batches,
+        ...     batch_size=4,
+        ...     num_workers=8,
+        ...     num_prefetched_batches=1,
         ... )
         ...
         >>> for data, x_min, y_min in data_loader:
