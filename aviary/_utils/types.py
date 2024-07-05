@@ -486,7 +486,7 @@ class InterpolationMode(Enum):
 
 @dataclass
 class ProcessArea(Iterable[Coordinates]):
-    """A process area specifies the area of interest by a set of coordinates.
+    """A process area specifies the area of interest by a set of coordinates of the bottom left corner of each tile.
 
     Notes:
         - The + operator can be used to add two process areas
