@@ -25,6 +25,8 @@ from aviary.inference.aviary import aviary
 class Model(Protocol):
     """Protocol for models
 
+    Models are callables that transform inputs into predictions.
+
     Currently implemented models:
         - ONNXSegmentationModel: ONNX model for segmentation
     """
