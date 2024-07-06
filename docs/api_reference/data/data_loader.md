@@ -1,4 +1,4 @@
 ::: aviary.data.DataLoader
     options:
       filters:
-      - "!_"
+      - "!^_"

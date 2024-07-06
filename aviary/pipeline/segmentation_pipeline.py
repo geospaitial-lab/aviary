@@ -124,7 +124,7 @@ class SegmentationPipeline:
 
 
 class SegmentationPipelineConfig(pydantic.BaseModel):
-    """Configuration for the `from_config` classmethod of `SegmentationPipeline`
+    """Configuration for the `from_config` class method of `SegmentationPipeline`
 
     Attributes:
         data_fetcher_config: configuration of the data fetcher

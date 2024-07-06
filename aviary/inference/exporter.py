@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from pathlib import Path
 from typing import Protocol
 
@@ -53,13 +55,18 @@ class SegmentationExporter(FromConfigMixin):
     The predictions (i.e. raster data) are transformed to geospatial data (i.e. vector data).
     The resulting geodataframe contains the geometry of the polygons and their class that is stored
     in the field `field_name` as the pixel value of the prediction.
-    The coordinates of the processed tiles are exported dynamically to a JSON file named `processed_coordinates.json`.
+    The coordinates of the bottom left corner of the processed tiles are exported dynamically to a JSON file
+    named `processed_coordinates.json`.
 
     Available modes:
-        - `FEATHER`: For each processed tile, the segmentation exporter creates a subdirectory named `{x_min}_{y_min}`
+        - `FEATHER`: The segmentation exporter creates a subdirectory named `{x_min}_{y_min}` for each tile
           (if the tile contains any polygons, it exports the geodataframe as a feather file
           named `{x_min}_{y_min}.feather`)
-        - `GPKG`: The segmentation exporter creates a geopackage named `output.gpkg`
+        - `GPKG`: The segmentation exporter creates a geopackage named `output.gpkg` and exports the geodataframe
+          of each tile dynamically
+
+    Notes:
+        - The segmentation exporter uses multiple threads to vectorize and export the predictions
     """
     _GPKG_NAME = 'output.gpkg'
     _JSON_NAME = 'processed_coordinates.json'
@@ -93,6 +100,22 @@ class SegmentationExporter(FromConfigMixin):
         self.mode = mode
         self.num_workers = num_workers
 
+    @classmethod
+    def from_config(
+        cls,
+        config: SegmentationExporterConfig,
+    ) -> SegmentationExporter:
+        """Creates a segmentation exporter from the configuration.
+
+        Parameters:
+            config: configuration
+
+        Returns:
+            segmentation exporter
+        """
+        # noinspection PyTypeChecker
+        return super().from_config(config)
+
     def __call__(
         self,
         preds: npt.NDArray[np.uint8],
@@ -121,7 +144,7 @@ class SegmentationExporter(FromConfigMixin):
 
 
 class SegmentationExporterConfig(pydantic.BaseModel):
-    """Configuration for the `from_config` classmethod of `SegmentationExporter`
+    """Configuration for the `from_config` class method of `SegmentationExporter`
 
     Attributes:
         path: path to the output directory

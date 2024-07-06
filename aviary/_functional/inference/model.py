@@ -80,7 +80,7 @@ def _remove_buffer(
         buffer_size: buffer size in pixels (specifies the area around the tile that is additionally fetched)
 
     Returns:
-        batched predictions without the buffer
+        batched predictions
     """
     return preds[
         :,

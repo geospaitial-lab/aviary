@@ -25,6 +25,8 @@ from aviary.inference.aviary import aviary
 class Model(Protocol):
     """Protocol for models
 
+    Models are callables that transform inputs into predictions.
+
     Currently implemented models:
         - ONNXSegmentationModel: ONNX model for segmentation
     """
@@ -169,7 +171,7 @@ class SegmentationModel:
 
 
 class SegmentationModelConfig(pydantic.BaseModel):
-    """Configuration for the `from_config` classmethod of `SegmentationModel`
+    """Configuration for the `from_config` class method of `SegmentationModel`
 
     The configuration must have one of the following field sets:
         - `name`

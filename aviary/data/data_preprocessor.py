@@ -101,7 +101,7 @@ class CompositePreprocessor(DataPreprocessor):
 
 
 class CompositePreprocessorConfig(pydantic.BaseModel):
-    """Configuration for the `from_config` classmethod of `CompositePreprocessor`
+    """Configuration for the `from_config` class method of `CompositePreprocessor`
 
     Attributes:
         data_preprocessors_configs: configurations of the data preprocessors
@@ -126,11 +126,9 @@ class NormalizePreprocessor(DataPreprocessor):
     Examples:
         Assume the data is a 3-channel image of data type uint8.
 
-        >>> min_values = [0.] * 3
-        >>> max_values = [255.] * 3
         >>> normalize_preprocessor = NormalizePreprocessor(
-        ...     min_values=min_values,
-        ...     max_values=max_values,
+        ...     min_values=[0.] * 3,
+        ...     max_values=[255.] * 3,
         ... )
         >>> preprocessed_data = normalize_preprocessor(data)
     """
@@ -147,6 +145,22 @@ class NormalizePreprocessor(DataPreprocessor):
         """
         self.min_values = min_values
         self.max_values = max_values
+
+    @classmethod
+    def from_config(
+        cls,
+        config: NormalizePreprocessorConfig,
+    ) -> NormalizePreprocessor:
+        """Creates a normalize preprocessor from the configuration.
+
+        Parameters:
+            config: configuration
+
+        Returns:
+            normalize preprocessor
+        """
+        # noinspection PyTypeChecker
+        return super().from_config(config)
 
     def __call__(
         self,
@@ -168,7 +182,7 @@ class NormalizePreprocessor(DataPreprocessor):
 
 
 class NormalizePreprocessorConfig(pydantic.BaseModel):
-    """Configuration for the `from_config` classmethod of `NormalizePreprocessor`
+    """Configuration for the `from_config` class method of `NormalizePreprocessor`
 
     Attributes:
         min_values: minimum values of the data (per channel)
@@ -185,11 +199,9 @@ class StandardizePreprocessor(DataPreprocessor):
         Assume the data is a 3-channel image of data type float32.
         In this example the mean and standard deviation values from the ImageNet dataset are used.
 
-        >>> mean_values = [.485, .456, .406]
-        >>> std_values = [.229, .224, .225]
         >>> standardize_preprocessor = StandardizePreprocessor(
-        ...     mean_values=mean_values,
-        ...     std_values=std_values,
+        ...     mean_values=[.485, .456, .406],
+        ...     std_values=[.229, .224, .225],
         ... )
         >>> preprocessed_data = standardize_preprocessor(data)
     """
@@ -206,6 +218,22 @@ class StandardizePreprocessor(DataPreprocessor):
         """
         self.mean_values = mean_values
         self.std_values = std_values
+
+    @classmethod
+    def from_config(
+        cls,
+        config: StandardizePreprocessorConfig,
+    ) -> StandardizePreprocessor:
+        """Creates a standardize preprocessor from the configuration.
+
+        Parameters:
+            config: configuration
+
+        Returns:
+            standardize preprocessor
+        """
+        # noinspection PyTypeChecker
+        return super().from_config(config)
 
     def __call__(
         self,
@@ -227,7 +255,7 @@ class StandardizePreprocessor(DataPreprocessor):
 
 
 class StandardizePreprocessorConfig(pydantic.BaseModel):
-    """Configuration for the `from_config` classmethod of `StandardizePreprocessor`
+    """Configuration for the `from_config` class method of `StandardizePreprocessor`
 
     Attributes:
         mean_values: mean values of the data (per channel)

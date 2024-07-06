@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from pathlib import Path
 from typing import Protocol
 
@@ -35,7 +37,6 @@ class DataFetcher(Protocol):
 
     Currently implemented data fetchers:
         - VRTDataFetcher: Fetches data from a virtual raster
-        - WMSDataFetcher: Fetches data from a web map service
 
     Notes:
         - Implementations must support concurrency (the data fetcher is called concurrently by the data loader)
@@ -46,7 +47,7 @@ class DataFetcher(Protocol):
         x_min: Coordinate,
         y_min: Coordinate,
     ) -> npt.NDArray:
-        """Fetches data from the source given a minimum x and y coordinate.
+        """Fetches data from the source.
 
         Parameters:
             x_min: minimum x coordinate
@@ -139,12 +140,28 @@ class VRTDataFetcher(FromConfigMixin):
         """
         return self._data_fetcher_info.num_channels
 
+    @classmethod
+    def from_config(
+        cls,
+        config: VRTDataFetcherConfig,
+    ) -> VRTDataFetcher:
+        """Creates a vrt data fetcher from the configuration.
+
+        Parameters:
+            config: configuration
+
+        Returns:
+            vrt data fetcher
+        """
+        # noinspection PyTypeChecker
+        return super().from_config(config)
+
     def __call__(
         self,
         x_min: Coordinate,
         y_min: Coordinate,
     ) -> npt.NDArray:
-        """Fetches data from the virtual raster given a minimum x and y coordinate.
+        """Fetches data from the virtual raster.
 
         Parameters:
             x_min: minimum x coordinate
@@ -167,7 +184,7 @@ class VRTDataFetcher(FromConfigMixin):
 
 
 class VRTDataFetcherConfig(pydantic.BaseModel):
-    """Configuration for the `from_config` classmethod of `VRTDataFetcher`
+    """Configuration for the `from_config` class method of `VRTDataFetcher`
 
     Attributes:
         path: path to the virtual raster (.vrt file)

@@ -16,9 +16,7 @@ from aviary._utils.types import (
 
 
 class GridGenerator:
-    """Grid generator
-
-    A grid generator generates a grid of tiles.
+    """A grid generator generates a grid of tiles.
     The grid generator can be used to compute the coordinates of the bottom left corner of each tile
     or to generate a geodataframe of the grid for aggregation.
     """

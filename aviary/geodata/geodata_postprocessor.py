@@ -110,7 +110,19 @@ class CompositePostprocessor(GeodataPostprocessor):
 
 
 class FieldNamePostprocessor(GeodataPostprocessor):
-    """Geodata postprocessor that renames the fields"""
+    """Geodata postprocessor that renames the fields
+
+    Examples:
+        Assume the geodataframe has the field 'class'.
+
+        >>> field_name_postprocessor = FieldNamePostprocessor(
+        ...     mapping={
+        ...         'class': 'type',
+        ...     },
+        ... )
+        ...
+        >>> gdf = field_name_postprocessor(gdf)
+    """
 
     def __init__(
         self,
@@ -236,7 +248,22 @@ class SimplifyPostprocessor(GeodataPostprocessor):
 
 
 class ValuePostprocessor(GeodataPostprocessor):
-    """Geodata postprocessor that maps the values of a field"""
+    """Geodata postprocessor that maps the values of a field
+
+    Examples:
+        Assume the geodataframe has the values 0, 1 and 2 in the field 'class'.
+
+        >>> value_postprocessor = ValuePostprocessor(
+        ...     mapping={
+        ...         0: 'class_1',
+        ...         1: 'class_2',
+        ...         2: 'class_3',
+        ...     },
+        ...     field_name='class',
+        ... )
+        ...
+        >>> gdf = value_postprocessor(gdf)
+    """
 
     def __init__(
         self,

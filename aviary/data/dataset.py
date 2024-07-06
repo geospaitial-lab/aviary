@@ -25,6 +25,7 @@ class Dataset:
 
     Examples:
         Assume the data fetcher, the data preprocessor and the coordinates are already created.
+        You can create a dataset and iterate over the samples.
 
         >>> dataset = Dataset(
         ...     data_fetcher=data_fetcher,
