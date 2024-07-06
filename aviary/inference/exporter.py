@@ -53,13 +53,18 @@ class SegmentationExporter(FromConfigMixin):
     The predictions (i.e. raster data) are transformed to geospatial data (i.e. vector data).
     The resulting geodataframe contains the geometry of the polygons and their class that is stored
     in the field `field_name` as the pixel value of the prediction.
-    The coordinates of the processed tiles are exported dynamically to a JSON file named `processed_coordinates.json`.
+    The coordinates of the bottom left corner of the processed tiles are exported dynamically to a JSON file
+    named `processed_coordinates.json`.
 
     Available modes:
-        - `FEATHER`: For each processed tile, the segmentation exporter creates a subdirectory named `{x_min}_{y_min}`
+        - `FEATHER`: The segmentation exporter creates a subdirectory named `{x_min}_{y_min}` for each tile
           (if the tile contains any polygons, it exports the geodataframe as a feather file
           named `{x_min}_{y_min}.feather`)
-        - `GPKG`: The segmentation exporter creates a geopackage named `output.gpkg`
+        - `GPKG`: The segmentation exporter creates a geopackage named `output.gpkg` and exports the geodataframe
+          of each tile dynamically
+
+    Notes:
+        - The segmentation exporter uses multiple threads to vectorize and export the predictions
     """
     _GPKG_NAME = 'output.gpkg'
     _JSON_NAME = 'processed_coordinates.json'
