@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from pathlib import Path
 from typing import Protocol
 
@@ -97,6 +99,22 @@ class SegmentationExporter(FromConfigMixin):
         self.field_name = field_name
         self.mode = mode
         self.num_workers = num_workers
+
+    @classmethod
+    def from_config(
+        cls,
+        config: SegmentationExporterConfig,
+    ) -> SegmentationExporter:
+        """Creates a segmentation exporter from the configuration.
+
+        Parameters:
+            config: configuration
+
+        Returns:
+            segmentation exporter
+        """
+        # noinspection PyTypeChecker
+        return super().from_config(config)
 
     def __call__(
         self,
