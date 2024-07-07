@@ -981,7 +981,7 @@ class ProcessAreaConfig(pydantic.BaseModel):
     ) -> str:
         """Parses the JSON string containing the coordinates (x_min, y_min) of each tile."""
         with open(json_string, 'r') as file:
-            return file.read()
+            return json.load(file)
 
     # noinspection PyNestedDecorators
     @pydantic.field_validator('processed_coordinates_json_string')
@@ -992,7 +992,7 @@ class ProcessAreaConfig(pydantic.BaseModel):
     ) -> str:
         """Parses the JSON string containing the coordinates (x_min, y_min) of the processed tiles."""
         with open(processed_coordinates_json_string, 'r') as file:
-            return file.read()
+            return json.load(file)
 
     @pydantic.model_validator(mode='after')
     def validate(self) -> ProcessAreaConfig:
