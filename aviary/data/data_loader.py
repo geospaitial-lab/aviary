@@ -34,7 +34,7 @@ class DataLoader(Iterator[tuple[npt.NDArray, Coordinate, Coordinate]]):
         >>> data_loader = DataLoader(
         ...     dataset=dataset,
         ...     batch_size=4,
-        ...     num_workers=8,
+        ...     num_workers=4,
         ...     num_prefetched_batches=1,
         ... )
         ...
@@ -46,7 +46,7 @@ class DataLoader(Iterator[tuple[npt.NDArray, Coordinate, Coordinate]]):
         self,
         dataset: Dataset,
         batch_size: int,
-        num_workers: int = 1,
+        num_workers: int = 4,
         num_prefetched_batches: int = 1,
     ) -> None:
         """

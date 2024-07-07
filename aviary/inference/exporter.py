@@ -80,7 +80,7 @@ class SegmentationExporter(FromConfigMixin):
         epsg_code: EPSGCode,
         field_name: str = 'class',
         mode: SegmentationExporterMode = SegmentationExporterMode.GPKG,
-        num_workers: int = 1,
+        num_workers: int = 4,
     ) -> None:
         """
         Parameters:
@@ -161,4 +161,4 @@ class SegmentationExporterConfig(pydantic.BaseModel):
     epsg_code: EPSGCode
     field_name: str = 'class'
     mode: SegmentationExporterMode = SegmentationExporterMode.GPKG
-    num_workers: int = 1
+    num_workers: int = 4

@@ -39,7 +39,7 @@ def segmentation_exporter(
     gpkg_name: str = 'output.gpkg',
     json_name: str = 'processed_coordinates.json',
     mode: SegmentationExporterMode = SegmentationExporterMode.GPKG,
-    num_workers: int = 1,
+    num_workers: int = 4,
 ) -> None:
     """Exports the predictions.
 
