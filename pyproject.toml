@@ -8,6 +8,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "geospaitial-lab-aviary"
 description = "Composable inference and postprocessing pipeline for remote sensing data"
+readme = "README.md"
 authors = [
     {name = "Marius Maryniak", email = "marius.maryniak@w-hs.de"},
 ]
@@ -16,6 +17,17 @@ maintainers = [
 ]
 license = {text = "GPL-3.0"}
 requires-python = ">=3.10"
+classifiers = [
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Scientific/Engineering :: GIS",
+]
 dynamic = [
     "dependencies",
     "optional-dependencies",
