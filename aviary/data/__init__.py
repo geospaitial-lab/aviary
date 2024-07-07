@@ -1,7 +1,7 @@
 from .data_fetcher import (
     DataFetcher,
-    VRTDataFetcher,
-    VRTDataFetcherConfig,
+    VRTFetcher,
+    VRTFetcherConfig,
 )
 from .data_loader import DataLoader
 from .data_preprocessor import (
@@ -28,6 +28,6 @@ __all__ = [
     'NormalizePreprocessorConfig',
     'StandardizePreprocessor',
     'StandardizePreprocessorConfig',
-    'VRTDataFetcher',
-    'VRTDataFetcherConfig',
+    'VRTFetcher',
+    'VRTFetcherConfig',
 ]

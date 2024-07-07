@@ -9,7 +9,7 @@ from aviary._functional.data.data_fetcher import (
     _compute_tile_size_pixels,
     _drop_channels,
     _permute_data,
-    vrt_data_fetcher_info,
+    vrt_fetcher_info,
 )
 from aviary._functional.data.tests.data.data_test_data_fetcher import (
     data_test__compute_tile_size_pixels,
@@ -29,7 +29,7 @@ from aviary._utils.types import (
 
 
 @pytest.mark.skip(reason='Not implemented')
-def test_vrt_data_fetcher() -> None:
+def test_vrt_fetcher() -> None:
     pass
 
 
@@ -79,7 +79,7 @@ def test__permute_data(
 
 
 @patch('aviary._functional.data.data_fetcher.rio.open')
-def test_vrt_data_fetcher_info(
+def test_vrt_fetcher_info(
     mocked_rio_open,
 ) -> None:
     path = Path('test/test.vrt')
@@ -110,8 +110,8 @@ def test_vrt_data_fetcher_info(
         ground_sampling_distance=expected_ground_sampling_distance,
         num_channels=expected_num_channels,
     )
-    vrt_data_fetcher_info_ = vrt_data_fetcher_info(
+    vrt_fetcher_info_ = vrt_fetcher_info(
         path=path,
     )
 
-    assert vrt_data_fetcher_info_ == expected
+    assert vrt_fetcher_info_ == expected

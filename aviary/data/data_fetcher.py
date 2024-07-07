@@ -8,8 +8,8 @@ import pydantic
 
 # noinspection PyProtectedMember
 from aviary._functional.data.data_fetcher import (
-    vrt_data_fetcher,
-    vrt_data_fetcher_info,
+    vrt_fetcher,
+    vrt_fetcher_info,
 )
 
 # noinspection PyProtectedMember
@@ -36,7 +36,7 @@ class DataFetcher(Protocol):
     The data fetcher is used by the dataset to fetch data for each tile.
 
     Currently implemented data fetchers:
-        - VRTDataFetcher: Fetches data from a virtual raster
+        - VRTFetcher: Fetches data from a virtual raster
 
     Notes:
         - Implementations must support concurrency (the data fetcher is called concurrently by the data loader)
@@ -59,7 +59,7 @@ class DataFetcher(Protocol):
         ...
 
 
-class VRTDataFetcher(FromConfigMixin):
+class VRTFetcher(FromConfigMixin):
     """Data fetcher for virtual rasters
 
     Implements the `DataFetcher` protocol.
@@ -91,7 +91,7 @@ class VRTDataFetcher(FromConfigMixin):
         self.buffer_size = buffer_size
         self.drop_channels = drop_channels
 
-        self._data_fetcher_info = vrt_data_fetcher_info(
+        self._data_fetcher_info = vrt_fetcher_info(
             path=self.path,
         )
 
@@ -143,15 +143,15 @@ class VRTDataFetcher(FromConfigMixin):
     @classmethod
     def from_config(
         cls,
-        config: VRTDataFetcherConfig,
-    ) -> VRTDataFetcher:
-        """Creates a vrt data fetcher from the configuration.
+        config: VRTFetcherConfig,
+    ) -> VRTFetcher:
+        """Creates a vrt fetcher from the configuration.
 
         Parameters:
             config: configuration
 
         Returns:
-            vrt data fetcher
+            vrt fetcher
         """
         # noinspection PyTypeChecker
         return super().from_config(config)
@@ -170,7 +170,7 @@ class VRTDataFetcher(FromConfigMixin):
         Returns:
             data
         """
-        return vrt_data_fetcher(
+        return vrt_fetcher(
             x_min=x_min,
             y_min=y_min,
             path=self.path,
@@ -183,8 +183,8 @@ class VRTDataFetcher(FromConfigMixin):
         )
 
 
-class VRTDataFetcherConfig(pydantic.BaseModel):
-    """Configuration for the `from_config` class method of `VRTDataFetcher`
+class VRTFetcherConfig(pydantic.BaseModel):
+    """Configuration for the `from_config` class method of `VRTFetcher`
 
     Attributes:
         path: path to the virtual raster (.vrt file)

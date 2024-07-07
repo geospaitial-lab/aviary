@@ -11,8 +11,8 @@ from aviary._utils.types import (
 )
 from aviary.data.data_fetcher import (
     DataFetcher,
-    VRTDataFetcher,  # noqa: F401
-    VRTDataFetcherConfig,
+    VRTFetcher,  # noqa: F401
+    VRTFetcherConfig,
 )
 from aviary.data.data_loader import DataLoader
 from aviary.data.data_preprocessor import (
@@ -153,7 +153,7 @@ class DataFetcherConfig(pydantic.BaseModel):
         config: configuration of the data fetcher
     """
     name: str
-    config: VRTDataFetcherConfig
+    config: VRTFetcherConfig
 
 
 class DataPreprocessorConfig(pydantic.BaseModel):
