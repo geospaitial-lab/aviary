@@ -8,6 +8,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "geospaitial-lab-aviary"
 description = "Composable inference and postprocessing pipeline for remote sensing data"
+readme = "README.md"
 authors = [
     {name = "Marius Maryniak", email = "marius.maryniak@w-hs.de"},
 ]

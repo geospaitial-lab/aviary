@@ -1,8 +1,8 @@
 <div align="center">
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/aviary_logo_white.svg">
-  <img alt="aviary" src="docs/assets/aviary_logo_black.svg" width="30%">
+  <source media="(prefers-color-scheme: dark)" srcset="https://github.com/geospaitial-lab/aviary/raw/main/docs/assets/aviary_logo_white.svg">
+  <img alt="aviary" src="https://github.com/geospaitial-lab/aviary/raw/main/docs/assets/aviary_logo_black.svg" width="30%">
 </picture>
 
 </div>
