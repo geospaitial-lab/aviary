@@ -14,3 +14,10 @@
 [![Docs](https://img.shields.io/github/actions/workflow/status/geospaitial-lab/aviary/docs.yaml?branch=main&color=black&label=Docs&logo=materialformkdocs&logoColor=white)](https://geospaitial-lab.github.io/aviary)
 
 </div>
+
+<div align="center">
+
+[![PyPI version](https://img.shields.io/pypi/v/geospaitial-lab-aviary?color=black&label=PyPI)](https://pypi.org/project/geospaitial-lab-aviary)
+[![Python version](https://img.shields.io/pypi/pyversions/geospaitial-lab-aviary?color=black&label=Python)](https://pypi.org/project/geospaitial-lab-aviary)
+
+</div>
