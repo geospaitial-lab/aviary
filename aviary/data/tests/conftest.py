@@ -8,7 +8,7 @@ import pytest
 from aviary._utils.types import InterpolationMode
 from aviary.data.data_fetcher import (
     DataFetcher,
-    VRTDataFetcher,
+    VRTFetcher,
 )
 from aviary.data.data_preprocessor import (
     CompositePreprocessor,
@@ -64,17 +64,17 @@ def standardize_preprocessor() -> StandardizePreprocessor:
 
 
 @pytest.fixture(scope='session')
-@patch('aviary.data.data_fetcher.vrt_data_fetcher_info')
-def vrt_data_fetcher(
-    _mocked_vrt_data_fetcher_info,
-) -> VRTDataFetcher:
+@patch('aviary.data.data_fetcher.vrt_fetcher_info')
+def vrt_fetcher(
+    _mocked_vrt_fetcher_info,
+) -> VRTFetcher:
     path = Path('test/test.vrt')
     tile_size = 128
     ground_sampling_distance = .2
     interpolation_mode = InterpolationMode.BILINEAR
     buffer_size = 0
     drop_channels = None
-    return VRTDataFetcher(
+    return VRTFetcher(
         path=path,
         tile_size=tile_size,
         ground_sampling_distance=ground_sampling_distance,

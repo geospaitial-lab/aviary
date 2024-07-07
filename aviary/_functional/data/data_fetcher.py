@@ -19,7 +19,7 @@ from aviary._utils.types import (
 )
 
 
-def vrt_data_fetcher(
+def vrt_fetcher(
     x_min: Coordinate,
     y_min: Coordinate,
     path: Path,
@@ -143,7 +143,7 @@ def _permute_data(
     return np.transpose(data, (1, 2, 0))
 
 
-def vrt_data_fetcher_info(
+def vrt_fetcher_info(
     path: Path,
 ) -> DataFetcherInfo:
     """Returns information about the data fetcher.

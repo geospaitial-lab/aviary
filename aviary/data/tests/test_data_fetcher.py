@@ -9,14 +9,14 @@ from aviary._utils.types import (
     InterpolationMode,
 )
 from aviary.data.data_fetcher import (
-    VRTDataFetcher,
-    VRTDataFetcherConfig,
+    VRTFetcher,
+    VRTFetcherConfig,
 )
 
 
-@patch('aviary.data.data_fetcher.vrt_data_fetcher_info')
-def test_vrt_data_fetcher_init(
-    mocked_vrt_data_fetcher_info,
+@patch('aviary.data.data_fetcher.vrt_fetcher_info')
+def test_vrt_fetcher_init(
+    mocked_vrt_fetcher_info,
 ) -> None:
     path = Path('test/test.vrt')
     tile_size = 128
@@ -41,8 +41,8 @@ def test_vrt_data_fetcher_init(
         ground_sampling_distance=expected_ground_sampling_distance,
         num_channels=expected_num_channels,
     )
-    mocked_vrt_data_fetcher_info.return_value = expected
-    vrt_data_fetcher = VRTDataFetcher(
+    mocked_vrt_fetcher_info.return_value = expected
+    vrt_fetcher = VRTFetcher(
         path=path,
         tile_size=tile_size,
         ground_sampling_distance=ground_sampling_distance,
@@ -51,25 +51,25 @@ def test_vrt_data_fetcher_init(
         drop_channels=drop_channels,
     )
 
-    assert vrt_data_fetcher.path == path
-    assert vrt_data_fetcher.tile_size == tile_size
-    assert vrt_data_fetcher.ground_sampling_distance == ground_sampling_distance
-    assert vrt_data_fetcher.interpolation_mode == interpolation_mode
-    assert vrt_data_fetcher.buffer_size == buffer_size
-    assert vrt_data_fetcher.drop_channels == drop_channels
-    mocked_vrt_data_fetcher_info.assert_called_once_with(
+    assert vrt_fetcher.path == path
+    assert vrt_fetcher.tile_size == tile_size
+    assert vrt_fetcher.ground_sampling_distance == ground_sampling_distance
+    assert vrt_fetcher.interpolation_mode == interpolation_mode
+    assert vrt_fetcher.buffer_size == buffer_size
+    assert vrt_fetcher.drop_channels == drop_channels
+    mocked_vrt_fetcher_info.assert_called_once_with(
         path=path,
     )
-    assert vrt_data_fetcher.src_bounding_box == expected_bounding_box
-    assert vrt_data_fetcher.src_dtype == expected_dtype
-    assert vrt_data_fetcher.src_epsg_code == expected_epsg_code
-    assert vrt_data_fetcher.src_ground_sampling_distance == expected_ground_sampling_distance
-    assert vrt_data_fetcher.src_num_channels == expected_num_channels
+    assert vrt_fetcher.src_bounding_box == expected_bounding_box
+    assert vrt_fetcher.src_dtype == expected_dtype
+    assert vrt_fetcher.src_epsg_code == expected_epsg_code
+    assert vrt_fetcher.src_ground_sampling_distance == expected_ground_sampling_distance
+    assert vrt_fetcher.src_num_channels == expected_num_channels
 
 
-@patch('aviary.data.data_fetcher.vrt_data_fetcher_info')
-def test_vrt_data_fetcher_from_config(
-    mocked_vrt_data_fetcher_info,
+@patch('aviary.data.data_fetcher.vrt_fetcher_info')
+def test_vrt_fetcher_from_config(
+    mocked_vrt_fetcher_info,
 ) -> None:
     path = Path('test/test.vrt')
     tile_size = 128
@@ -94,8 +94,8 @@ def test_vrt_data_fetcher_from_config(
         ground_sampling_distance=expected_ground_sampling_distance,
         num_channels=expected_num_channels,
     )
-    mocked_vrt_data_fetcher_info.return_value = expected
-    vrt_data_fetcher_config = VRTDataFetcherConfig(
+    mocked_vrt_fetcher_info.return_value = expected
+    vrt_fetcher_config = VRTFetcherConfig(
         path=path,
         tile_size=tile_size,
         ground_sampling_distance=ground_sampling_distance,
@@ -103,47 +103,47 @@ def test_vrt_data_fetcher_from_config(
         buffer_size=buffer_size,
         drop_channels=drop_channels,
     )
-    vrt_data_fetcher = VRTDataFetcher.from_config(vrt_data_fetcher_config)
+    vrt_fetcher = VRTFetcher.from_config(vrt_fetcher_config)
 
-    assert vrt_data_fetcher.path == path
-    assert vrt_data_fetcher.tile_size == tile_size
-    assert vrt_data_fetcher.ground_sampling_distance == ground_sampling_distance
-    assert vrt_data_fetcher.interpolation_mode == interpolation_mode
-    assert vrt_data_fetcher.buffer_size == buffer_size
-    assert vrt_data_fetcher.drop_channels == drop_channels
-    mocked_vrt_data_fetcher_info.assert_called_once_with(
+    assert vrt_fetcher.path == path
+    assert vrt_fetcher.tile_size == tile_size
+    assert vrt_fetcher.ground_sampling_distance == ground_sampling_distance
+    assert vrt_fetcher.interpolation_mode == interpolation_mode
+    assert vrt_fetcher.buffer_size == buffer_size
+    assert vrt_fetcher.drop_channels == drop_channels
+    mocked_vrt_fetcher_info.assert_called_once_with(
         path=path,
     )
-    assert vrt_data_fetcher.src_bounding_box == expected_bounding_box
-    assert vrt_data_fetcher.src_dtype == expected_dtype
-    assert vrt_data_fetcher.src_epsg_code == expected_epsg_code
-    assert vrt_data_fetcher.src_ground_sampling_distance == expected_ground_sampling_distance
-    assert vrt_data_fetcher.src_num_channels == expected_num_channels
+    assert vrt_fetcher.src_bounding_box == expected_bounding_box
+    assert vrt_fetcher.src_dtype == expected_dtype
+    assert vrt_fetcher.src_epsg_code == expected_epsg_code
+    assert vrt_fetcher.src_ground_sampling_distance == expected_ground_sampling_distance
+    assert vrt_fetcher.src_num_channels == expected_num_channels
 
 
-@patch('aviary.data.data_fetcher.vrt_data_fetcher')
-def test_vrt_data_fetcher_call(
-    mocked_vrt_data_fetcher,
-    vrt_data_fetcher: VRTDataFetcher,
+@patch('aviary.data.data_fetcher.vrt_fetcher')
+def test_vrt_fetcher_call(
+    mocked_vrt_fetcher,
+    vrt_fetcher: VRTFetcher,
 ) -> None:
     x_min = -128
     y_min = -128
     expected = 'expected'
-    mocked_vrt_data_fetcher.return_value = expected
-    data = vrt_data_fetcher(
+    mocked_vrt_fetcher.return_value = expected
+    data = vrt_fetcher(
         x_min=x_min,
         y_min=y_min,
     )
 
-    mocked_vrt_data_fetcher.assert_called_once_with(
+    mocked_vrt_fetcher.assert_called_once_with(
         x_min=x_min,
         y_min=y_min,
-        path=vrt_data_fetcher.path,
-        tile_size=vrt_data_fetcher.tile_size,
-        ground_sampling_distance=vrt_data_fetcher.ground_sampling_distance,
-        interpolation_mode=vrt_data_fetcher.interpolation_mode,
-        buffer_size=vrt_data_fetcher.buffer_size,
-        drop_channels=vrt_data_fetcher.drop_channels,
-        fill_value=vrt_data_fetcher._FILL_VALUE,
+        path=vrt_fetcher.path,
+        tile_size=vrt_fetcher.tile_size,
+        ground_sampling_distance=vrt_fetcher.ground_sampling_distance,
+        interpolation_mode=vrt_fetcher.interpolation_mode,
+        buffer_size=vrt_fetcher.buffer_size,
+        drop_channels=vrt_fetcher.drop_channels,
+        fill_value=vrt_fetcher._FILL_VALUE,
     )
     assert data == expected

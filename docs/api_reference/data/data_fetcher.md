@@ -2,10 +2,10 @@
 
 ---
 
-::: aviary.data.VRTDataFetcher
+::: aviary.data.VRTFetcher
     options:
       inherited_members: true
 
 ---
 
-::: aviary.data.VRTDataFetcherConfig
+::: aviary.data.VRTFetcherConfig
