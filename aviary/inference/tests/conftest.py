@@ -63,7 +63,7 @@ def segmentation_exporter() -> SegmentationExporter:
     epsg_code = 25832
     field_name = 'class'
     mode = SegmentationExporterMode.GPKG
-    num_workers = 1
+    num_workers = 4
     return SegmentationExporter(
         path=path,
         tile_size=tile_size,

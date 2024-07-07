@@ -47,7 +47,7 @@ class SegmentationPipeline:
         model: SegmentationModel,
         exporter: SegmentationExporter,
         batch_size: int = 1,
-        num_workers: int = 1,
+        num_workers: int = 4,
     ) -> None:
         """
         Parameters:
@@ -142,7 +142,7 @@ class SegmentationPipelineConfig(pydantic.BaseModel):
     segmentation_model_config: ModelConfig = pydantic.Field(alias='model')
     exporter_config: ExporterConfig = pydantic.Field(alias='exporter')
     batch_size: int = 1
-    num_workers: int = 1
+    num_workers: int = 4
 
 
 class DataFetcherConfig(pydantic.BaseModel):
