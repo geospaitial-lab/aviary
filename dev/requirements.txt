@@ -1,5 +1,5 @@
 build==1.2.1
-mkdocs-material==9.5.27
+mkdocs-material==9.5.28
 mkdocstrings-python==1.10.5
 pip-audit==2.7.3
 pre-commit==3.7.1
