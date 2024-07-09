@@ -2,6 +2,10 @@ import typer
 import yaml
 
 from aviary import __version__
+from aviary.pipeline.postprocessing_pipeline import (
+    PostprocessingPipeline,
+    PostprocessingPipelineConfig,
+)
 from aviary.pipeline.segmentation_pipeline import (
     SegmentationPipeline,
     SegmentationPipelineConfig,
@@ -25,6 +29,23 @@ def segmentation_pipeline(
     segmentation_pipeline_config = SegmentationPipelineConfig(**config)
     segmentation_pipeline = SegmentationPipeline.from_config(segmentation_pipeline_config)
     segmentation_pipeline()
+
+
+@app.command()
+def postprocessing_pipeline(
+    config_path: str,
+) -> None:
+    """Run the postprocessing pipeline.
+
+    Parameters:
+        config_path: path to the configuration file
+    """
+    with open(config_path, 'r') as file:
+        config = yaml.safe_load(file)
+
+    postprocessing_pipeline_config = PostprocessingPipelineConfig(**config)
+    postprocessing_pipeline = PostprocessingPipeline.from_config(postprocessing_pipeline_config)
+    postprocessing_pipeline()
 
 
 @app.command()
