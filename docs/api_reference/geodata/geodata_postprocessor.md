@@ -6,7 +6,18 @@
 
 ---
 
+::: aviary.geodata.ClipPostprocessorConfig
+    options:
+      filters:
+      - "!parse"
+
+---
+
 ::: aviary.geodata.CompositePostprocessor
+
+---
+
+::: aviary.geodata.CompositePostprocessorConfig
 
 ---
 
@@ -14,7 +25,15 @@
 
 ---
 
+::: aviary.geodata.FieldNamePostprocessorConfig
+
+---
+
 ::: aviary.geodata.FillPostprocessor
+
+---
+
+::: aviary.geodata.FillPostprocessorConfig
 
 ---
 
@@ -22,8 +41,20 @@
 
 ---
 
+::: aviary.geodata.SievePostprocessorConfig
+
+---
+
 ::: aviary.geodata.SimplifyPostprocessor
 
 ---
 
+::: aviary.geodata.SimplifyPostprocessorConfig
+
+---
+
 ::: aviary.geodata.ValuePostprocessor
+
+---
+
+::: aviary.geodata.ValuePostprocessorConfig
