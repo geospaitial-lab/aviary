@@ -3,8 +3,6 @@
 ---
 
 ::: aviary.inference.SegmentationExporter
-    options:
-      inherited_members: true
 
 ---
 

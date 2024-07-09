@@ -15,8 +15,6 @@
 ---
 
 ::: aviary.data.NormalizePreprocessor
-    options:
-      inherited_members: true
 
 ---
 
@@ -25,8 +23,6 @@
 ---
 
 ::: aviary.data.StandardizePreprocessor
-    options:
-      inherited_members: true
 
 ---
 

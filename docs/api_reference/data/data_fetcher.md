@@ -3,8 +3,6 @@
 ---
 
 ::: aviary.data.VRTFetcher
-    options:
-      inherited_members: true
 
 ---
 
