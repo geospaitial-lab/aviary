@@ -1,3 +1,8 @@
+from .postprocessing_pipeline import (
+    GeodataPostprocessorConfig,
+    PostprocessingPipeline,
+    PostprocessingPipelineConfig,
+)
 from .segmentation_pipeline import (
     DataFetcherConfig,
     DataPreprocessorConfig,
@@ -11,7 +16,10 @@ __all__ = [
     'DataFetcherConfig',
     'DataPreprocessorConfig',
     'ExporterConfig',
+    'GeodataPostprocessorConfig',
     'ModelConfig',
+    'PostprocessingPipeline',
+    'PostprocessingPipelineConfig',
     'SegmentationPipeline',
     'SegmentationPipelineConfig',
 ]

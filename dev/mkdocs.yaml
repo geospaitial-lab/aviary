@@ -25,6 +25,7 @@ nav:
       - Exporter: api_reference/inference/exporter.md
       - Model: api_reference/inference/model.md
     - aviary.pipeline:
+      - PostprocessingPipeline: api_reference/pipeline/postprocessing_pipeline.md
       - SegmentationPipeline: api_reference/pipeline/segmentation_pipeline.md
 
 theme:
