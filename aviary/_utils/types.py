@@ -672,6 +672,9 @@ class ProcessArea(Iterable[Coordinates]):
 
         Returns:
             process area
+
+        Raises:
+            AviaryUserError: Invalid configuration
         """
         if config.json_string is not None:
             process_area = cls.from_json(
@@ -715,6 +718,13 @@ class ProcessArea(Iterable[Coordinates]):
                 process_area = process_area - processed_process_area
 
             return process_area
+
+        message = (
+            'Invalid configuration! '
+            'config must have one of the following field sets: '
+            'json_string | gdf, tile_size | bounding_box, tile_size'
+        )
+        raise AviaryUserError(message)
 
     def __len__(self) -> int:
         """Computes the number of coordinates.

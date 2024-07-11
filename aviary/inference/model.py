@@ -15,6 +15,9 @@ from aviary._functional.inference.model import (
 )
 
 # noinspection PyProtectedMember
+from aviary._utils.exceptions import AviaryUserError
+
+# noinspection PyProtectedMember
 from aviary._utils.types import (
     BufferSize,
     Device,
@@ -132,6 +135,9 @@ class SegmentationModel:
 
         Returns:
             segmentation model
+
+        Raises:
+            AviaryUserError: Invalid configuration
         """
         if config.name is not None:
             return cls.from_aviary(
@@ -154,6 +160,13 @@ class SegmentationModel:
                 buffer_size=config.buffer_size,
                 device=config.device,
             )
+
+        message = (
+            'Invalid configuration! '
+            'config must have one of the following field sets: '
+            'name | repo, path | path'
+        )
+        raise AviaryUserError(message)
 
     def __call__(
         self,
