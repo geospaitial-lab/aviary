@@ -69,8 +69,35 @@ line-length = 120
 target-version = "py310"
 
 [tool.ruff.lint]
-extend-select = [
-    "C901",
-    "E",
-    "W",
+select = ["ALL"]
+ignore = [
+    "ANN101",  # rule has been deprecated
+    "ANN102",  # rule has been deprecated
+    "D100",
+    "D104",
+    "D205",
+    "D212",
+    "D415",
+    "FBT001",
+    "FBT002",
+    "PLR0913",
+    "PT003",
 ]
+
+[tool.ruff.lint.flake8-quotes]
+inline-quotes = "single"
+multiline-quotes = "single"
+
+[tool.ruff.lint.per-file-ignores]
+"aviary/_cli/cli.py" = [
+    "T201",
+]
+"**/tests/*" = [
+    "D103",
+    "PLR2004",
+    "S101",
+    "SLF001",
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
