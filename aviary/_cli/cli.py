@@ -54,5 +54,5 @@ def version() -> None:
     print(__version__)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     app()
