@@ -295,5 +295,4 @@ def _set_filter_union(
         filtered coordinates (x_min, y_min) of each tile
     """
     coordinates = np.concatenate([coordinates, other], axis=0)
-    coordinates = duplicates_filter(coordinates)
-    return coordinates
+    return duplicates_filter(coordinates)

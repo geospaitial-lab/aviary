@@ -81,11 +81,10 @@ def vrt_fetcher(
     data = _permute_data(
         data=data,
     )
-    data = _drop_channels(
+    return _drop_channels(
         data=data,
         drop_channels=drop_channels,
     )
-    return data
 
 
 def _compute_tile_size_pixels(

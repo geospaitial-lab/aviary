@@ -65,8 +65,7 @@ def onnx_segmentation_model(
             buffer_size=buffer_size,
         )
 
-    preds = np.argmax(preds, axis=-1).astype(np.uint8)
-    return preds
+    return np.argmax(preds, axis=-1).astype(np.uint8)
 
 
 def _remove_buffer(

@@ -43,8 +43,7 @@ def compute_coordinates(
 
     coordinates_x = coordinates_x.reshape(-1)[..., np.newaxis]
     coordinates_y = coordinates_y.reshape(-1)[..., np.newaxis]
-    coordinates = np.concatenate((coordinates_x, coordinates_y), axis=-1).astype(np.int32)
-    return coordinates
+    return np.concatenate((coordinates_x, coordinates_y), axis=-1).astype(np.int32)
 
 
 def generate_grid(
@@ -92,8 +91,7 @@ def _generate_tiles(
     Returns:
         list of tiles
     """
-    tiles = [
+    return [
         box(x_min, y_min, x_min + tile_size, y_min + tile_size)
         for x_min, y_min in coordinates
     ]
-    return tiles

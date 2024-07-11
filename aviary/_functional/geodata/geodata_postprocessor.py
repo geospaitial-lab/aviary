@@ -180,10 +180,9 @@ def simplify_postprocessor(
         simplify_with='simplification',
         inplace=True,
     )
-    gdf = topo.to_gdf(
+    return topo.to_gdf(
         crs=gdf.crs,
     )
-    return gdf
 
 
 def value_postprocessor(
