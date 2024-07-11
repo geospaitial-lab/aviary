@@ -1,12 +1,12 @@
 from __future__ import annotations
 
+from collections.abc import Iterator
 from concurrent.futures import (
     ThreadPoolExecutor,
     as_completed,
 )
 from queue import Queue
 from threading import Thread
-from typing import Iterator
 
 import numpy.typing as npt
 

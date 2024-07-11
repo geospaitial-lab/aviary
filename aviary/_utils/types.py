@@ -1,14 +1,16 @@
 from __future__ import annotations
 
 import json
+from collections.abc import (
+    Iterable,
+    Iterator,
+)
 from dataclasses import dataclass, fields
 from enum import Enum
 from math import ceil, floor
 from pathlib import Path
 from typing import (
     TYPE_CHECKING,
-    Iterable,
-    Iterator,
     TypeAlias,
     cast,
 )
