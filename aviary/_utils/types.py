@@ -316,13 +316,13 @@ class BoundingBox(Iterable[Coordinate]):
         if inplace:
             self.x_min, self.y_min, self.x_max, self.y_max = x_min, y_min, x_max, y_max
             return self
-        else:
-            return BoundingBox(
-                x_min=x_min,
-                y_min=y_min,
-                x_max=x_max,
-                y_max=y_max,
-            )
+
+        return BoundingBox(
+            x_min=x_min,
+            y_min=y_min,
+            x_max=x_max,
+            y_max=y_max,
+        )
 
     def quantize(
         self,
@@ -369,13 +369,13 @@ class BoundingBox(Iterable[Coordinate]):
         if inplace:
             self.x_min, self.y_min, self.x_max, self.y_max = x_min, y_min, x_max, y_max
             return self
-        else:
-            return BoundingBox(
-                x_min=x_min,
-                y_min=y_min,
-                x_max=x_max,
-                y_max=y_max,
-            )
+
+        return BoundingBox(
+            x_min=x_min,
+            y_min=y_min,
+            x_max=x_max,
+            y_max=y_max,
+        )
 
     def to_gdf(
         self,
@@ -819,10 +819,8 @@ class ProcessArea(Iterable[Coordinates]):
         if inplace:
             self.coordinates = coordinates
             return self
-        else:
-            return ProcessArea(
-                coordinates=coordinates,
-            )
+
+        return ProcessArea(coordinates=coordinates)
 
     def chunk(
         self,
@@ -863,10 +861,8 @@ class ProcessArea(Iterable[Coordinates]):
         if inplace:
             self.coordinates = coordinates
             return self
-        else:
-            return ProcessArea(
-                coordinates=coordinates,
-            )
+
+        return ProcessArea(coordinates=coordinates)
 
     def to_gdf(
         self,
