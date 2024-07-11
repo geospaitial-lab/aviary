@@ -73,7 +73,7 @@ def segmentation_exporter(
             mode=mode,
         )
         for preds_item, coordinates_item
-        in zip(preds, coordinates)
+        in zip(preds, coordinates, strict=True)
     ]
     dask.compute(
         tasks,
