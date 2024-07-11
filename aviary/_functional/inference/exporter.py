@@ -261,7 +261,7 @@ def _export_coordinates_json(
     json_path = path / json_name
     with _lock_json:
         try:
-            with open(json_path, 'r') as file:
+            with json_path.open() as file:
                 json_string = json.load(file)
             process_area = ProcessArea.from_json(json_string)
         except FileNotFoundError:
@@ -269,7 +269,7 @@ def _export_coordinates_json(
 
         process_area = process_area.append(coordinates)
         json_string = process_area.to_json()
-        with open(json_path, 'w') as file:
+        with json_path.open('w') as file:
             json.dump(json_string, file)
 
 

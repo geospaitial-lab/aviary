@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import typer
 import yaml
 
@@ -23,7 +25,7 @@ def segmentation_pipeline(
     Parameters:
         config_path: path to the configuration file
     """
-    with open(config_path, 'r') as file:
+    with Path(config_path).open() as file:
         config = yaml.safe_load(file)
 
     segmentation_pipeline_config = SegmentationPipelineConfig(**config)
@@ -40,7 +42,7 @@ def postprocessing_pipeline(
     Parameters:
         config_path: path to the configuration file
     """
-    with open(config_path, 'r') as file:
+    with Path(config_path).open() as file:
         config = yaml.safe_load(file)
 
     postprocessing_pipeline_config = PostprocessingPipelineConfig(**config)
