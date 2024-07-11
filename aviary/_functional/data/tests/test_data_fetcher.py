@@ -34,7 +34,7 @@ def test_vrt_fetcher() -> None:
 
 
 @pytest.mark.parametrize(
-    'tile_size, buffer_size, ground_sampling_distance, expected',
+    ('tile_size', 'buffer_size', 'ground_sampling_distance', 'expected'),
     data_test__compute_tile_size_pixels,
 )
 def test__compute_tile_size_pixels(
@@ -52,7 +52,7 @@ def test__compute_tile_size_pixels(
     assert tile_size_pixels == expected
 
 
-@pytest.mark.parametrize('data, drop_channels, expected', data_test__drop_channels)
+@pytest.mark.parametrize(('data', 'drop_channels', 'expected'), data_test__drop_channels)
 def test__drop_channels(
     data: npt.NDArray,
     drop_channels: list[int] | None,
@@ -66,7 +66,7 @@ def test__drop_channels(
     np.testing.assert_array_equal(data, expected)
 
 
-@pytest.mark.parametrize('data, expected', data_test__permute_data)
+@pytest.mark.parametrize(('data', 'expected'), data_test__permute_data)
 def test__permute_data(
     data: npt.NDArray,
     expected: npt.NDArray,

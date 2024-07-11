@@ -30,7 +30,7 @@ def test_composite_postprocessor() -> None:
     pass
 
 
-@pytest.mark.parametrize('gdf, mapping, expected', data_test_field_name_postprocessor)
+@pytest.mark.parametrize(('gdf', 'mapping', 'expected'), data_test_field_name_postprocessor)
 def test_field_name_postprocessor(
     gdf: gpd.GeoDataFrame,
     mapping: dict,
@@ -44,7 +44,7 @@ def test_field_name_postprocessor(
     gpd.testing.assert_geodataframe_equal(postprocessed_gdf, expected)
 
 
-@pytest.mark.parametrize('gdf, max_area, expected', data_test_fill_postprocessor)
+@pytest.mark.parametrize(('gdf', 'max_area', 'expected'), data_test_fill_postprocessor)
 def test_fill_postprocessor(
     gdf: gpd.GeoDataFrame,
     max_area: float,
@@ -58,7 +58,7 @@ def test_fill_postprocessor(
     gpd.testing.assert_geodataframe_equal(postprocessed_gdf, expected)
 
 
-@pytest.mark.parametrize('polygon, max_area, expected', data_test__fill_polygon)
+@pytest.mark.parametrize(('polygon', 'max_area', 'expected'), data_test__fill_polygon)
 def test__fill_polygon(
     polygon: Polygon,
     max_area: float,
@@ -72,7 +72,7 @@ def test__fill_polygon(
     shapely.testing.assert_geometries_equal(filled_polygon, expected)
 
 
-@pytest.mark.parametrize('gdf, min_area, expected', data_test_sieve_postprocessor)
+@pytest.mark.parametrize(('gdf', 'min_area', 'expected'), data_test_sieve_postprocessor)
 def test_sieve_postprocessor(
     gdf: gpd.GeoDataFrame,
     min_area: float,
@@ -91,7 +91,7 @@ def test_simplify_postprocessor() -> None:
     pass
 
 
-@pytest.mark.parametrize('gdf, mapping, field_name, expected', data_test_value_postprocessor)
+@pytest.mark.parametrize(('gdf', 'mapping', 'field_name', 'expected'), data_test_value_postprocessor)
 def test_value_postprocessor(
     gdf: gpd.GeoDataFrame,
     mapping: dict,
