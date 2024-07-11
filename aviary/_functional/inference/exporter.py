@@ -210,8 +210,9 @@ def _export_gdf_feather(
     subdir_path = path / f'{x_min}_{y_min}'
     subdir_path.mkdir(exist_ok=True)
 
-    for path in subdir_path.iterdir():
-        path.unlink()
+    for path in subdir_path.iterdir():  # noqa: PLR1704
+        if path.is_file():
+            path.unlink()
 
     if gdf is None:
         return
