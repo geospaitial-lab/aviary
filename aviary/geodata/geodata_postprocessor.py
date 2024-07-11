@@ -51,7 +51,6 @@ class GeodataPostprocessor(ABC, FromConfigMixin):
         Returns:
             postprocessed geodataframe
         """
-        pass
 
 
 class ClipPostprocessor(GeodataPostprocessor):

@@ -42,7 +42,6 @@ class DataPreprocessor(ABC, FromConfigMixin):
         Returns:
             preprocessed data
         """
-        pass
 
 
 class CompositePreprocessor(DataPreprocessor):
