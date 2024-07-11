@@ -519,8 +519,8 @@ class ProcessArea(Iterable[Coordinates]):
             )
 
         conditions = [
-            self._coordinates.ndim != 2,
-            self._coordinates.shape[1] != 2,
+            self._coordinates.ndim != 2,  # noqa: PLR2004
+            self._coordinates.shape[1] != 2,  # noqa: PLR2004
             self._coordinates.dtype != np.int32,
         ]
 
@@ -552,8 +552,8 @@ class ProcessArea(Iterable[Coordinates]):
             AviaryUserError: Invalid coordinates (`coordinates` is not an array of shape (n, 2) and data type int32)
         """
         conditions = [
-            value.ndim != 2,
-            value.shape[1] != 2,
+            value.ndim != 2,  # noqa: PLR2004
+            value.shape[1] != 2,  # noqa: PLR2004
             value.dtype != np.int32,
         ]
 
@@ -951,7 +951,7 @@ class ProcessAreaConfig(pydantic.BaseModel):
         bounding_box: list[Coordinate],
     ) -> BoundingBox:
         """Parses the bounding box."""
-        if len(bounding_box) != 4:
+        if len(bounding_box) != 4:  # noqa: PLR2004
             message = (
                 'Invalid bounding box! '
                 'bounding_box must be a list of length 4.'
