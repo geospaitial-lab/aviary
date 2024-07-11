@@ -653,12 +653,7 @@ class ProcessArea(Iterable[Coordinates]):
             process area
         """
         coordinates = json.loads(json_string)
-
-        if coordinates:
-            coordinates = np.array(coordinates, dtype=np.int32)
-        else:
-            coordinates = None
-
+        coordinates = np.array(coordinates, dtype=np.int32) if coordinates else None
         return cls(
             coordinates=coordinates,
         )
