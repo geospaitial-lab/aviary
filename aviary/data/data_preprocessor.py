@@ -1,10 +1,13 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
+from typing import TYPE_CHECKING
 
-import numpy as np
-import numpy.typing as npt
 import pydantic
+
+if TYPE_CHECKING:
+    import numpy as np
+    import numpy.typing as npt
 
 # noinspection PyProtectedMember
 from aviary._functional.data.data_preprocessor import (

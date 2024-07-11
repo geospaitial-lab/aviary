@@ -1,6 +1,9 @@
 from __future__ import annotations
 
-import pydantic
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    import pydantic
 
 
 class FromConfigMixin:

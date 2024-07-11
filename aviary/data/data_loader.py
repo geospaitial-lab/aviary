@@ -7,6 +7,7 @@ from concurrent.futures import (
 )
 from queue import Queue
 from threading import Thread
+from typing import TYPE_CHECKING
 
 import numpy.typing as npt
 
@@ -15,7 +16,9 @@ from aviary._functional.data.data_loader import collate_batch
 
 # noinspection PyProtectedMember
 from aviary._utils.types import Coordinate
-from aviary.data.dataset import Dataset
+
+if TYPE_CHECKING:
+    from aviary.data.dataset import Dataset
 
 
 class DataLoader(Iterator[tuple[npt.NDArray, Coordinate, Coordinate]]):

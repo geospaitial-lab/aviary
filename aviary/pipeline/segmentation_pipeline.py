@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 import numpy as np
 import pydantic
 from rich.progress import track
@@ -9,31 +11,33 @@ from aviary._utils.types import (
     ProcessArea,
     ProcessAreaConfig,
 )
-from aviary.data.data_fetcher import (
-    DataFetcher,
-    VRTFetcher,  # noqa: F401
-    VRTFetcherConfig,
-)
+from aviary.data.data_fetcher import VRTFetcher  # noqa: F401
 from aviary.data.data_loader import DataLoader
-from aviary.data.data_preprocessor import (
-    CompositePreprocessor,  # noqa: F401
-    CompositePreprocessorConfig,
-    DataPreprocessor,
-    NormalizePreprocessor,  # noqa: F401
-    NormalizePreprocessorConfig,
-    StandardizePreprocessor,  # noqa: F401
-    StandardizePreprocessorConfig,
+from aviary.data.data_preprocessor import (  # noqa: F401
+    CompositePreprocessor,
+    NormalizePreprocessor,
+    StandardizePreprocessor,
 )
 from aviary.data.dataset import Dataset
-from aviary.inference.exporter import (
-    SegmentationExporter,
-    SegmentationExporterConfig,
-)
-from aviary.inference.model import (
-    ONNXSegmentationModel,  # noqa: F401
-    SegmentationModel,
-    SegmentationModelConfig,
-)
+from aviary.inference.exporter import SegmentationExporter  # noqa: TCH001
+from aviary.inference.model import ONNXSegmentationModel  # noqa: F401
+
+if TYPE_CHECKING:
+    from aviary.data.data_fetcher import (
+        DataFetcher,
+        VRTFetcherConfig,
+    )
+    from aviary.data.data_preprocessor import (
+        CompositePreprocessorConfig,
+        DataPreprocessor,
+        NormalizePreprocessorConfig,
+        StandardizePreprocessorConfig,
+    )
+    from aviary.inference.exporter import SegmentationExporterConfig
+    from aviary.inference.model import (
+        SegmentationModel,
+        SegmentationModelConfig,
+    )
 
 
 class SegmentationPipeline:

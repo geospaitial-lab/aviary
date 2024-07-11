@@ -1,10 +1,13 @@
 from __future__ import annotations
 
-from pathlib import Path
-from typing import Protocol
+# noinspection PyUnresolvedReferences
+from pathlib import Path  # noqa: TCH003
+from typing import TYPE_CHECKING, Protocol
 
-import numpy.typing as npt
 import pydantic
+
+if TYPE_CHECKING:
+    import numpy.typing as npt
 
 # noinspection PyProtectedMember
 from aviary._functional.data.data_fetcher import (

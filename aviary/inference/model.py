@@ -1,12 +1,14 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Protocol
+from typing import TYPE_CHECKING, Protocol
 
-import numpy.typing as npt
 import onnxruntime as ort
 import pydantic
 from huggingface_hub import hf_hub_download
+
+if TYPE_CHECKING:
+    import numpy.typing as npt
 
 # noinspection PyProtectedMember
 from aviary._functional.inference.model import (

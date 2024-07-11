@@ -6,6 +6,8 @@ import geopandas as gpd
 import numpy as np
 from numpy import typing as npt
 
+from aviary._functional.geodata.grid_generator import _generate_tiles
+
 # noinspection PyProtectedMember
 from aviary._utils.exceptions import AviaryUserError
 
@@ -19,7 +21,6 @@ if TYPE_CHECKING:
         TileSize,
     )
     from aviary.geodata.coordinates_filter import CoordinatesFilter
-from aviary._functional.geodata.grid_generator import _generate_tiles
 
 
 def composite_filter(
