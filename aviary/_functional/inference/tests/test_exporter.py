@@ -58,7 +58,7 @@ def test__segmentation_exporter_task(
             gpkg_name=gpkg_name,
             json_name=json_name,
             mode=mode,
-        )
+        ),
     )
 
     mocked__vectorize_preds.assert_called_once_with(
