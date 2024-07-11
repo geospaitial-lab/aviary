@@ -1,5 +1,5 @@
 from pathlib import Path
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 # noinspection PyProtectedMember
 from aviary._utils.types import (
@@ -16,7 +16,7 @@ from aviary.data.data_fetcher import (
 
 @patch('aviary.data.data_fetcher.vrt_fetcher_info')
 def test_vrt_fetcher_init(
-    mocked_vrt_fetcher_info,
+    mocked_vrt_fetcher_info: MagicMock,
 ) -> None:
     path = Path('test/test.vrt')
     tile_size = 128
@@ -69,7 +69,7 @@ def test_vrt_fetcher_init(
 
 @patch('aviary.data.data_fetcher.vrt_fetcher_info')
 def test_vrt_fetcher_from_config(
-    mocked_vrt_fetcher_info,
+    mocked_vrt_fetcher_info: MagicMock,
 ) -> None:
     path = Path('test/test.vrt')
     tile_size = 128
@@ -123,7 +123,7 @@ def test_vrt_fetcher_from_config(
 
 @patch('aviary.data.data_fetcher.vrt_fetcher')
 def test_vrt_fetcher_call(
-    mocked_vrt_fetcher,
+    mocked_vrt_fetcher: MagicMock,
     vrt_fetcher: VRTFetcher,
 ) -> None:
     x_min = -128

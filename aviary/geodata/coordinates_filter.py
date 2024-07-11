@@ -50,7 +50,6 @@ class CoordinatesFilter(ABC):
         Returns:
             filtered coordinates (x_min, y_min) of each tile
         """
-        pass
 
 
 class CompositeFilter(CoordinatesFilter):

@@ -1,4 +1,4 @@
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 # noinspection PyProtectedMember
 from aviary._utils.types import BoundingBox
@@ -24,7 +24,7 @@ def test_init() -> None:
 
 @patch('aviary.geodata.grid_generator.compute_coordinates')
 def test_compute_coordinates(
-    mocked_compute_coordinates,
+    mocked_compute_coordinates: MagicMock,
     grid_generator: GridGenerator,
 ) -> None:
     tile_size = 128
@@ -46,7 +46,7 @@ def test_compute_coordinates(
 
 @patch('aviary.geodata.grid_generator.generate_grid')
 def test_generate_grid(
-    mocked_generate_grid,
+    mocked_generate_grid: MagicMock,
     grid_generator: GridGenerator,
 ) -> None:
     tile_size = 128

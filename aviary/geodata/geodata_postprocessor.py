@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from pathlib import Path
+
+# noinspection PyUnresolvedReferences
+from pathlib import Path  # noqa: TCH003
 
 import geopandas as gpd
 import pydantic
@@ -51,7 +53,6 @@ class GeodataPostprocessor(ABC, FromConfigMixin):
         Returns:
             postprocessed geodataframe
         """
-        pass
 
 
 class ClipPostprocessor(GeodataPostprocessor):

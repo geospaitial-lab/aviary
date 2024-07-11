@@ -31,7 +31,7 @@ def test_clip_postprocessor_init() -> None:
 
 @patch('aviary.geodata.geodata_postprocessor.clip_postprocessor')
 def test_clip_postprocessor_call(
-    mocked_clip_postprocessor,
+    mocked_clip_postprocessor: MagicMock,
     clip_postprocessor: ClipPostprocessor,
 ) -> None:
     geometry = []
@@ -68,7 +68,7 @@ def test_composite_postprocessor_init() -> None:
 
 @patch('aviary.geodata.geodata_postprocessor.composite_postprocessor')
 def test_composite_postprocessor_call(
-    mocked_composite_postprocessor,
+    mocked_composite_postprocessor: MagicMock,
     composite_postprocessor: CompositePostprocessor,
 ) -> None:
     geometry = []
@@ -101,7 +101,7 @@ def test_field_name_postprocessor_init() -> None:
 
 @patch('aviary.geodata.geodata_postprocessor.field_name_postprocessor')
 def test_field_name_postprocessor_call(
-    mocked_field_name_postprocessor,
+    mocked_field_name_postprocessor: MagicMock,
     field_name_postprocessor: FieldNamePostprocessor,
 ) -> None:
     geometry = []
@@ -134,7 +134,7 @@ def test_fill_postprocessor_init() -> None:
 
 @patch('aviary.geodata.geodata_postprocessor.fill_postprocessor')
 def test_fill_postprocessor_call(
-    mocked_fill_postprocessor,
+    mocked_fill_postprocessor: MagicMock,
     fill_postprocessor: FillPostprocessor,
 ) -> None:
     geometry = []
@@ -167,7 +167,7 @@ def test_sieve_postprocessor_init() -> None:
 
 @patch('aviary.geodata.geodata_postprocessor.sieve_postprocessor')
 def test_sieve_postprocessor_call(
-    mocked_sieve_postprocessor,
+    mocked_sieve_postprocessor: MagicMock,
     sieve_postprocessor: SievePostprocessor,
 ) -> None:
     geometry = []
@@ -200,7 +200,7 @@ def test_simplify_postprocessor_init() -> None:
 
 @patch('aviary.geodata.geodata_postprocessor.simplify_postprocessor')
 def test_simplify_postprocessor_call(
-    mocked_simplify_postprocessor,
+    mocked_simplify_postprocessor: MagicMock,
     simplify_postprocessor: SimplifyPostprocessor,
 ) -> None:
     geometry = []
@@ -233,7 +233,7 @@ def test_value_postprocessor_init() -> None:
 
 @patch('aviary.geodata.geodata_postprocessor.value_postprocessor')
 def test_value_postprocessor_call(
-    mocked_value_postprocessor,
+    mocked_value_postprocessor: MagicMock,
     value_postprocessor: ValuePostprocessor,
 ) -> None:
     geometry = []

@@ -17,7 +17,7 @@ def test_composite_preprocessor() -> None:
     pass
 
 
-@pytest.mark.parametrize('data, min_values, max_values, expected', data_test_normalize_preprocessor)
+@pytest.mark.parametrize(('data', 'min_values', 'max_values', 'expected'), data_test_normalize_preprocessor)
 def test_normalize_preprocessor(
     data: npt.NDArray,
     min_values: list[float],
@@ -33,7 +33,7 @@ def test_normalize_preprocessor(
     np.testing.assert_array_equal(preprocessed_data, expected)
 
 
-@pytest.mark.parametrize('data, mean_values, std_values, expected', data_test_standardize_preprocessor)
+@pytest.mark.parametrize(('data', 'mean_values', 'std_values', 'expected'), data_test_standardize_preprocessor)
 def test_standardize_preprocessor(
     data: npt.NDArray,
     mean_values: list[float],

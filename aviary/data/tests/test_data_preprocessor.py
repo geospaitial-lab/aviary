@@ -33,7 +33,7 @@ def test_composite_preprocessor_from_config() -> None:
 
 @patch('aviary.data.data_preprocessor.composite_preprocessor')
 def test_composite_preprocessor_call(
-    mocked_composite_preprocessor,
+    mocked_composite_preprocessor: MagicMock,
     composite_preprocessor: CompositePreprocessor,
 ) -> None:
     data = np.array(
@@ -83,7 +83,7 @@ def test_normalize_preprocessor_from_config() -> None:
 
 @patch('aviary.data.data_preprocessor.normalize_preprocessor')
 def test_normalize_preprocessor_call(
-    mocked_normalize_preprocessor,
+    mocked_normalize_preprocessor: MagicMock,
     normalize_preprocessor: NormalizePreprocessor,
 ) -> None:
     data = np.array(
@@ -134,7 +134,7 @@ def test_standardize_preprocessor_from_config() -> None:
 
 @patch('aviary.data.data_preprocessor.standardize_preprocessor')
 def test_standardize_preprocessor_call(
-    mocked_standardize_preprocessor,
+    mocked_standardize_preprocessor: MagicMock,
     standardize_preprocessor: StandardizePreprocessor,
 ) -> None:
     data = np.array(

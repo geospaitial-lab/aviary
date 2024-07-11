@@ -73,7 +73,7 @@ def segmentation_exporter(
             mode=mode,
         )
         for preds_item, coordinates_item
-        in zip(preds, coordinates)
+        in zip(preds, coordinates, strict=True)
     ]
     dask.compute(
         tasks,
@@ -210,8 +210,9 @@ def _export_gdf_feather(
     subdir_path = path / f'{x_min}_{y_min}'
     subdir_path.mkdir(exist_ok=True)
 
-    for path in subdir_path.iterdir():
-        path.unlink()
+    for path in subdir_path.iterdir():  # noqa: PLR1704
+        if path.is_file():
+            path.unlink()
 
     if gdf is None:
         return
@@ -261,7 +262,7 @@ def _export_coordinates_json(
     json_path = path / json_name
     with _lock_json:
         try:
-            with open(json_path, 'r') as file:
+            with json_path.open() as file:
                 json_string = json.load(file)
             process_area = ProcessArea.from_json(json_string)
         except FileNotFoundError:
@@ -269,7 +270,7 @@ def _export_coordinates_json(
 
         process_area = process_area.append(coordinates)
         json_string = process_area.to_json()
-        with open(json_path, 'w') as file:
+        with json_path.open('w') as file:
             json.dump(json_string, file)
 
 

@@ -1,18 +1,23 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Protocol
+from typing import TYPE_CHECKING, Protocol
 
-import numpy.typing as npt
 import onnxruntime as ort
 import pydantic
 from huggingface_hub import hf_hub_download
+
+if TYPE_CHECKING:
+    import numpy.typing as npt
 
 # noinspection PyProtectedMember
 from aviary._functional.inference.model import (
     get_providers,
     onnx_segmentation_model,
 )
+
+# noinspection PyProtectedMember
+from aviary._utils.exceptions import AviaryUserError
 
 # noinspection PyProtectedMember
 from aviary._utils.types import (
@@ -132,6 +137,9 @@ class SegmentationModel:
 
         Returns:
             segmentation model
+
+        Raises:
+            AviaryUserError: Invalid configuration
         """
         if config.name is not None:
             return cls.from_aviary(
@@ -154,6 +162,13 @@ class SegmentationModel:
                 buffer_size=config.buffer_size,
                 device=config.device,
             )
+
+        message = (
+            'Invalid configuration! '
+            'config must have one of the following field sets: '
+            'name | repo, path | path'
+        )
+        raise AviaryUserError(message)
 
     def __call__(
         self,

@@ -27,8 +27,8 @@ def test_segmentation_exporter() -> None:
 @patch('aviary._functional.inference.exporter._export_gdf')
 @patch('aviary._functional.inference.exporter._vectorize_preds')
 def test__segmentation_exporter_task(
-    mocked__vectorize_preds,
-    mocked__export_gdf,
+    mocked__vectorize_preds: MagicMock,
+    mocked__export_gdf: MagicMock,
 ) -> None:
     preds = np.ones(shape=(640, 640), dtype=np.uint8)
     x_min = -128
@@ -58,7 +58,7 @@ def test__segmentation_exporter_task(
             gpkg_name=gpkg_name,
             json_name=json_name,
             mode=mode,
-        )
+        ),
     )
 
     mocked__vectorize_preds.assert_called_once_with(
@@ -86,9 +86,9 @@ def test__segmentation_exporter_task(
 @patch('aviary._functional.inference.exporter._export_gdf_gpkg')
 @patch('aviary._functional.inference.exporter._export_gdf_feather')
 def test__export_gdf(
-    mocked__export_gdf_feather,
-    mocked__export_gdf_gpkg,
-    mocked__export_coordinates_json,
+    mocked__export_gdf_feather: MagicMock,
+    mocked__export_gdf_gpkg: MagicMock,
+    mocked__export_coordinates_json: MagicMock,
 ) -> None:
     gdf = MagicMock(spec=gpd.GeoDataFrame)
     path = Path('test')

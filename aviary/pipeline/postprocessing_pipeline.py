@@ -1,28 +1,33 @@
 from __future__ import annotations
 
-from pathlib import Path
-from typing import cast
+# noinspection PyUnresolvedReferences
+from pathlib import Path  # noqa: TCH003
+from typing import TYPE_CHECKING, cast
 
 import geopandas as gpd
 import pydantic
 
-from aviary.geodata.geodata_postprocessor import (
-    ClipPostprocessor,  # noqa: F401
-    ClipPostprocessorConfig,
-    CompositePostprocessor,  # noqa: F401
-    CompositePostprocessorConfig,
-    FieldNamePostprocessor,  # noqa: F401
-    FieldNamePostprocessorConfig,
-    FillPostprocessor,  # noqa: F401
-    FillPostprocessorConfig,
-    GeodataPostprocessor,
-    SievePostprocessor,  # noqa: F401
-    SievePostprocessorConfig,
-    SimplifyPostprocessor,  # noqa: F401
-    SimplifyPostprocessorConfig,
-    ValuePostprocessor,  # noqa: F401
-    ValuePostprocessorConfig,
+from aviary.geodata.geodata_postprocessor import (  # noqa: F401
+    ClipPostprocessor,
+    CompositePostprocessor,
+    FieldNamePostprocessor,
+    FillPostprocessor,
+    SievePostprocessor,
+    SimplifyPostprocessor,
+    ValuePostprocessor,
 )
+
+if TYPE_CHECKING:
+    from aviary.geodata.geodata_postprocessor import (
+        ClipPostprocessorConfig,
+        CompositePostprocessorConfig,
+        FieldNamePostprocessorConfig,
+        FillPostprocessorConfig,
+        GeodataPostprocessor,
+        SievePostprocessorConfig,
+        SimplifyPostprocessorConfig,
+        ValuePostprocessorConfig,
+    )
 
 
 class PostprocessingPipeline:
@@ -32,7 +37,7 @@ class PostprocessingPipeline:
         self,
         gdf: gpd.GeoDataFrame,
         geodata_postprocessor: GeodataPostprocessor,
-        path: Path = None,
+        path: Path | None = None,
     ) -> None:
         """
         Parameters:

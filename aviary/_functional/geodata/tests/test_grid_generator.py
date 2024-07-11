@@ -1,4 +1,4 @@
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 import geopandas as gpd
 import geopandas.testing
@@ -24,7 +24,7 @@ from aviary._utils.types import (
 )
 
 
-@pytest.mark.parametrize('bounding_box, tile_size, quantize, expected', data_test_compute_coordinates)
+@pytest.mark.parametrize(('bounding_box', 'tile_size', 'quantize', 'expected'), data_test_compute_coordinates)
 def test_compute_coordinates(
     bounding_box: BoundingBox,
     tile_size: TileSize,
@@ -43,8 +43,8 @@ def test_compute_coordinates(
 @patch('aviary._functional.geodata.grid_generator._generate_tiles')
 @patch('aviary._functional.geodata.grid_generator.compute_coordinates')
 def test_generate_grid(
-    mocked_compute_coordinates,
-    mocked__generate_tiles,
+    mocked_compute_coordinates: MagicMock,
+    mocked__generate_tiles: MagicMock,
 ) -> None:
     bounding_box = BoundingBox(
         x_min=-128,
@@ -85,7 +85,7 @@ def test_generate_grid(
     gpd.testing.assert_geodataframe_equal(grid, expected)
 
 
-@pytest.mark.parametrize('coordinates, tile_size, expected', data_test__generate_tiles)
+@pytest.mark.parametrize(('coordinates', 'tile_size', 'expected'), data_test__generate_tiles)
 def test__generate_tiles(
     coordinates: CoordinatesSet,
     tile_size: TileSize,

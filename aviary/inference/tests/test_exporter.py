@@ -1,5 +1,5 @@
 from pathlib import Path
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 import numpy as np
 
@@ -68,7 +68,7 @@ def test_segmentation_exporter_from_config() -> None:
 
 @patch('aviary.inference.exporter.segmentation_exporter')
 def test_segmentation_exporter_call(
-    mocked_segmentation_exporter,
+    mocked_segmentation_exporter: MagicMock,
     segmentation_exporter: SegmentationExporter,
 ) -> None:
     preds = np.ones(shape=(4, 640, 640), dtype=np.uint8)

@@ -1,14 +1,18 @@
 from __future__ import annotations
 
 import json
+from collections.abc import (
+    Iterable,
+    Iterator,
+)
 from dataclasses import dataclass, fields
 from enum import Enum
 from math import ceil, floor
-from pathlib import Path
+
+# noinspection PyUnresolvedReferences
+from pathlib import Path  # noqa: TCH003
 from typing import (
     TYPE_CHECKING,
-    Iterable,
-    Iterator,
     TypeAlias,
     cast,
 )
@@ -314,13 +318,13 @@ class BoundingBox(Iterable[Coordinate]):
         if inplace:
             self.x_min, self.y_min, self.x_max, self.y_max = x_min, y_min, x_max, y_max
             return self
-        else:
-            return BoundingBox(
-                x_min=x_min,
-                y_min=y_min,
-                x_max=x_max,
-                y_max=y_max,
-            )
+
+        return BoundingBox(
+            x_min=x_min,
+            y_min=y_min,
+            x_max=x_max,
+            y_max=y_max,
+        )
 
     def quantize(
         self,
@@ -367,13 +371,13 @@ class BoundingBox(Iterable[Coordinate]):
         if inplace:
             self.x_min, self.y_min, self.x_max, self.y_max = x_min, y_min, x_max, y_max
             return self
-        else:
-            return BoundingBox(
-                x_min=x_min,
-                y_min=y_min,
-                x_max=x_max,
-                y_max=y_max,
-            )
+
+        return BoundingBox(
+            x_min=x_min,
+            y_min=y_min,
+            x_max=x_max,
+            y_max=y_max,
+        )
 
     def to_gdf(
         self,
@@ -517,8 +521,8 @@ class ProcessArea(Iterable[Coordinates]):
             )
 
         conditions = [
-            self._coordinates.ndim != 2,
-            self._coordinates.shape[1] != 2,
+            self._coordinates.ndim != 2,  # noqa: PLR2004
+            self._coordinates.shape[1] != 2,  # noqa: PLR2004
             self._coordinates.dtype != np.int32,
         ]
 
@@ -550,8 +554,8 @@ class ProcessArea(Iterable[Coordinates]):
             AviaryUserError: Invalid coordinates (`coordinates` is not an array of shape (n, 2) and data type int32)
         """
         conditions = [
-            value.ndim != 2,
-            value.shape[1] != 2,
+            value.ndim != 2,  # noqa: PLR2004
+            value.shape[1] != 2,  # noqa: PLR2004
             value.dtype != np.int32,
         ]
 
@@ -653,12 +657,7 @@ class ProcessArea(Iterable[Coordinates]):
             process area
         """
         coordinates = json.loads(json_string)
-
-        if coordinates:
-            coordinates = np.array(coordinates, dtype=np.int32)
-        else:
-            coordinates = None
-
+        coordinates = np.array(coordinates, dtype=np.int32) if coordinates else None
         return cls(
             coordinates=coordinates,
         )
@@ -675,6 +674,9 @@ class ProcessArea(Iterable[Coordinates]):
 
         Returns:
             process area
+
+        Raises:
+            AviaryUserError: Invalid configuration
         """
         if config.json_string is not None:
             process_area = cls.from_json(
@@ -719,6 +721,13 @@ class ProcessArea(Iterable[Coordinates]):
 
             return process_area
 
+        message = (
+            'Invalid configuration! '
+            'config must have one of the following field sets: '
+            'json_string | gdf, tile_size | bounding_box, tile_size'
+        )
+        raise AviaryUserError(message)
+
     def __len__(self) -> int:
         """Computes the number of coordinates.
 
@@ -748,7 +757,7 @@ class ProcessArea(Iterable[Coordinates]):
         Yields:
             coordinates
         """
-        for x_min, y_min in self._coordinates:
+        for x_min, y_min in self._coordinates:  # noqa: UP028
             yield x_min, y_min
 
     def __add__(
@@ -822,10 +831,8 @@ class ProcessArea(Iterable[Coordinates]):
         if inplace:
             self.coordinates = coordinates
             return self
-        else:
-            return ProcessArea(
-                coordinates=coordinates,
-            )
+
+        return ProcessArea(coordinates=coordinates)
 
     def chunk(
         self,
@@ -866,10 +873,8 @@ class ProcessArea(Iterable[Coordinates]):
         if inplace:
             self.coordinates = coordinates
             return self
-        else:
-            return ProcessArea(
-                coordinates=coordinates,
-            )
+
+        return ProcessArea(coordinates=coordinates)
 
     def to_gdf(
         self,
@@ -948,7 +953,7 @@ class ProcessAreaConfig(pydantic.BaseModel):
         bounding_box: list[Coordinate],
     ) -> BoundingBox:
         """Parses the bounding box."""
-        if len(bounding_box) != 4:
+        if len(bounding_box) != 4:  # noqa: PLR2004
             message = (
                 'Invalid bounding box! '
                 'bounding_box must be a list of length 4.'
@@ -980,7 +985,7 @@ class ProcessAreaConfig(pydantic.BaseModel):
         json_string: Path,
     ) -> str:
         """Parses the JSON string containing the coordinates (x_min, y_min) of each tile."""
-        with open(json_string, 'r') as file:
+        with json_string.open() as file:
             return json.load(file)
 
     # noinspection PyNestedDecorators
@@ -991,7 +996,7 @@ class ProcessAreaConfig(pydantic.BaseModel):
         processed_coordinates_json_string: Path,
     ) -> str:
         """Parses the JSON string containing the coordinates (x_min, y_min) of the processed tiles."""
-        with open(processed_coordinates_json_string, 'r') as file:
+        with processed_coordinates_json_string.open() as file:
             return json.load(file)
 
     @pydantic.model_validator(mode='after')

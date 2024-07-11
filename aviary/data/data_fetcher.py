@@ -1,10 +1,13 @@
 from __future__ import annotations
 
-from pathlib import Path
-from typing import Protocol
+# noinspection PyUnresolvedReferences
+from pathlib import Path  # noqa: TCH003
+from typing import TYPE_CHECKING, Protocol
 
-import numpy.typing as npt
 import pydantic
+
+if TYPE_CHECKING:
+    import numpy.typing as npt
 
 # noinspection PyProtectedMember
 from aviary._functional.data.data_fetcher import (
@@ -73,7 +76,7 @@ class VRTFetcher(FromConfigMixin):
         ground_sampling_distance: GroundSamplingDistance,
         interpolation_mode: InterpolationMode = InterpolationMode.BILINEAR,
         buffer_size: BufferSize = 0,
-        drop_channels: list[int] = None,
+        drop_channels: list[int] | None = None,
     ) -> None:
         """
         Parameters:

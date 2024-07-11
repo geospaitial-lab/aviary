@@ -2,15 +2,15 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-import numpy.typing as npt
-
-# noinspection PyProtectedMember
-from aviary._utils.types import (
-    Coordinate,
-    CoordinatesSet,
-)
+if TYPE_CHECKING:
+    import numpy.typing as npt
 
 if TYPE_CHECKING:
+    # noinspection PyProtectedMember
+    from aviary._utils.types import (
+        Coordinate,
+        CoordinatesSet,
+    )
     from aviary.data.data_fetcher import DataFetcher
     from aviary.data.data_preprocessor import DataPreprocessor
 

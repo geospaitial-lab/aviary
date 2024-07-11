@@ -45,7 +45,7 @@ def test_bounding_box_init() -> None:
     assert bounding_box.y_max == y_max
 
 
-@pytest.mark.parametrize('x_min, y_min, x_max, y_max, message', data_test_bounding_box_init_exceptions)
+@pytest.mark.parametrize(('x_min', 'y_min', 'x_max', 'y_max', 'message'), data_test_bounding_box_init_exceptions)
 def test_bounding_box_init_exceptions(
     x_min: Coordinate,
     y_min: Coordinate,
@@ -80,7 +80,7 @@ def test_bounding_box_properties(
     assert bounding_box.y_max == y_max
 
 
-@pytest.mark.parametrize('property_, value, message', data_test_bounding_box_properties_exceptions)
+@pytest.mark.parametrize(('property_', 'value', 'message'), data_test_bounding_box_properties_exceptions)
 def test_bounding_box_properties_exceptions(
     property_: str,
     value: Coordinate,
@@ -148,7 +148,7 @@ def test_bounding_box_iter(
     assert list(bounding_box) == expected
 
 
-@pytest.mark.parametrize('buffer_size, expected', data_test_bounding_box_buffer)
+@pytest.mark.parametrize(('buffer_size', 'expected'), data_test_bounding_box_buffer)
 def test_bounding_box_buffer(
     buffer_size: BufferSize,
     expected: BoundingBox,
@@ -159,7 +159,7 @@ def test_bounding_box_buffer(
     assert bounding_box == expected
 
 
-@pytest.mark.parametrize('buffer_size, expected', data_test_bounding_box_buffer)
+@pytest.mark.parametrize(('buffer_size', 'expected'), data_test_bounding_box_buffer)
 def test_bounding_box_buffer_inplace(
     buffer_size: BufferSize,
     expected: BoundingBox,
@@ -170,7 +170,7 @@ def test_bounding_box_buffer_inplace(
     assert bounding_box == expected
 
 
-@pytest.mark.parametrize('buffer_size, message', data_test_bounding_box_buffer_exceptions)
+@pytest.mark.parametrize(('buffer_size', 'message'), data_test_bounding_box_buffer_exceptions)
 def test_bounding_box_buffer_exceptions(
     buffer_size: BufferSize,
     message: str,
@@ -180,7 +180,7 @@ def test_bounding_box_buffer_exceptions(
         _ = bounding_box.buffer(buffer_size)
 
 
-@pytest.mark.parametrize('bounding_box, value, expected', data_test_bounding_box_quantize)
+@pytest.mark.parametrize(('bounding_box', 'value', 'expected'), data_test_bounding_box_quantize)
 def test_bounding_box_quantize(
     bounding_box: BoundingBox,
     value: int,
@@ -191,7 +191,7 @@ def test_bounding_box_quantize(
     assert bounding_box == expected
 
 
-@pytest.mark.parametrize('bounding_box, value, expected', data_test_bounding_box_quantize)
+@pytest.mark.parametrize(('bounding_box', 'value', 'expected'), data_test_bounding_box_quantize)
 def test_bounding_box_quantize_inplace(
     bounding_box: BoundingBox,
     value: int,
@@ -202,7 +202,7 @@ def test_bounding_box_quantize_inplace(
     assert bounding_box == expected
 
 
-@pytest.mark.parametrize('value, message', data_test_bounding_box_quantize_exceptions)
+@pytest.mark.parametrize(('value', 'message'), data_test_bounding_box_quantize_exceptions)
 def test_bounding_box_quantize_exceptions(
     value: int,
     message: str,
@@ -258,7 +258,7 @@ def test_process_area_init() -> None:
     np.testing.assert_array_equal(process_area.coordinates, expected)
 
 
-@pytest.mark.parametrize('coordinates, message', data_test_process_area_init_exceptions)
+@pytest.mark.parametrize(('coordinates', 'message'), data_test_process_area_init_exceptions)
 def test_process_area_init_exceptions(
     coordinates: CoordinatesSet,
     message: str,
@@ -278,7 +278,7 @@ def test_process_area_properties(
     np.testing.assert_array_equal(process_area.coordinates, coordinates)
 
 
-@pytest.mark.parametrize('property_, value, message', data_test_process_area_properties_exceptions)
+@pytest.mark.parametrize(('property_', 'value', 'message'), data_test_process_area_properties_exceptions)
 def test_process_area_properties_exceptions(
     property_: str,
     value: CoordinatesSet,

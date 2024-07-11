@@ -41,7 +41,7 @@ def test_get_item() -> None:
     assert data == (expected_data_preprocessor, -128, -128)
 
 
-@pytest.mark.parametrize('coordinates, expected', data_test_get_length)
+@pytest.mark.parametrize(('coordinates', 'expected'), data_test_get_length)
 def test_get_length(
     coordinates: CoordinatesSet,
     expected: int,
