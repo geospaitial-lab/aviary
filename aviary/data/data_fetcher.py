@@ -73,7 +73,7 @@ class VRTFetcher(FromConfigMixin):
         ground_sampling_distance: GroundSamplingDistance,
         interpolation_mode: InterpolationMode = InterpolationMode.BILINEAR,
         buffer_size: BufferSize = 0,
-        drop_channels: list[int] = None,
+        drop_channels: list[int] | None = None,
     ) -> None:
         """
         Parameters:

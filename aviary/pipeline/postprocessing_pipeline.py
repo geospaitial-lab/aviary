@@ -32,7 +32,7 @@ class PostprocessingPipeline:
         self,
         gdf: gpd.GeoDataFrame,
         geodata_postprocessor: GeodataPostprocessor,
-        path: Path = None,
+        path: Path | None = None,
     ) -> None:
         """
         Parameters:

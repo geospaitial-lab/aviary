@@ -27,7 +27,7 @@ def vrt_fetcher(
     ground_sampling_distance: GroundSamplingDistance,
     interpolation_mode: InterpolationMode = InterpolationMode.BILINEAR,
     buffer_size: BufferSize = 0,
-    drop_channels: list[int] = None,
+    drop_channels: list[int] | None = None,
     fill_value: int = 0,
 ) -> npt.NDArray:
     """Fetches data from the virtual raster.
