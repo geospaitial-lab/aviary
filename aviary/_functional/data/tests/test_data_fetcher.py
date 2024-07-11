@@ -80,7 +80,7 @@ def test__permute_data(
 
 @patch('aviary._functional.data.data_fetcher.rio.open')
 def test_vrt_fetcher_info(
-    mocked_rio_open,
+    mocked_rio_open: MagicMock,
 ) -> None:
     path = Path('test/test.vrt')
     mocked_src = MagicMock()

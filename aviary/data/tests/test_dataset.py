@@ -24,7 +24,7 @@ def test_init() -> None:
 
 @patch('aviary.data.dataset.get_item')
 def test_getitem(
-    mocked_get_item,
+    mocked_get_item: MagicMock,
     dataset: Dataset,
 ) -> None:
     index = 0
@@ -43,7 +43,7 @@ def test_getitem(
 
 @patch('aviary.data.dataset.get_length')
 def test_len(
-    mocked_get_length,
+    mocked_get_length: MagicMock,
     dataset: Dataset,
 ) -> None:
     expected = 1

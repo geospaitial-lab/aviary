@@ -1,4 +1,4 @@
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 import geopandas as gpd
 import geopandas.testing
@@ -43,8 +43,8 @@ def test_compute_coordinates(
 @patch('aviary._functional.geodata.grid_generator._generate_tiles')
 @patch('aviary._functional.geodata.grid_generator.compute_coordinates')
 def test_generate_grid(
-    mocked_compute_coordinates,
-    mocked__generate_tiles,
+    mocked_compute_coordinates: MagicMock,
+    mocked__generate_tiles: MagicMock,
 ) -> None:
     bounding_box = BoundingBox(
         x_min=-128,
