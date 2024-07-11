@@ -31,11 +31,7 @@ def clip_postprocessor(
         mask=mask,
         keep_geom_type=True,
     )
-    gdf.reset_index(
-        drop=True,
-        inplace=True,
-    )
-    return gdf
+    return gdf.reset_index(drop=True)
 
 
 def composite_postprocessor(
@@ -149,11 +145,7 @@ def sieve_postprocessor(
         return gdf
 
     gdf = gdf[gdf.geometry.area >= min_area]
-    gdf.reset_index(
-        drop=True,
-        inplace=True,
-    )
-    return gdf
+    return gdf.reset_index(drop=True)
 
 
 def simplify_postprocessor(
