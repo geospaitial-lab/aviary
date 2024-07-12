@@ -2,6 +2,7 @@ import re
 
 import numpy as np
 
+# noinspection PyProtectedMember
 from aviary._utils.types import BoundingBox
 
 data_test_bounding_box_buffer = [
