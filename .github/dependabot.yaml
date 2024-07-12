@@ -4,6 +4,10 @@ updates:
     directory: /
     schedule:
       interval: weekly
+    assignees:
+      - mrsmrynk
+    reviewers:
+      - mrsmrynk
     labels:
       - build
 
@@ -11,5 +15,9 @@ updates:
     directory: /
     schedule:
       interval: weekly
+    assignees:
+      - mrsmrynk
+    reviewers:
+      - mrsmrynk
     labels:
       - build
