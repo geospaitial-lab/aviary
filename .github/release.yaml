@@ -1,7 +1,7 @@
 changelog:
   exclude:
     authors:
-      - dependabot[bot]
+      - dependabot
     labels:
       - ignore for release
   categories:
