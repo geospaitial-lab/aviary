@@ -4,8 +4,20 @@ updates:
     directory: /
     schedule:
       interval: weekly
+    assignees:
+      - mrsmrynk
+    reviewers:
+      - mrsmrynk
+    labels:
+      - build
 
   - package-ecosystem: pip
     directory: /
     schedule:
       interval: weekly
+    assignees:
+      - mrsmrynk
+    reviewers:
+      - mrsmrynk
+    labels:
+      - build
