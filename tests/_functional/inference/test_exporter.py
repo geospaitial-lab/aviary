@@ -7,6 +7,7 @@ import geopandas as gpd
 import numpy as np
 import pytest
 
+# noinspection PyProtectedMember
 from aviary._functional.inference.exporter import (
     _export_gdf,
     _segmentation_exporter_task,

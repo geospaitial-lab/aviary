@@ -49,7 +49,7 @@ jobs:
       - name: Lint with ruff
         if: matrix.os == 'ubuntu-latest'
         run: |
-          ruff check aviary
+          ruff check
 
       - name: Check dependencies with pip-audit
         if: matrix.os == 'ubuntu-latest'

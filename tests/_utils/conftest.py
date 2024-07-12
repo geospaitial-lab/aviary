@@ -1,6 +1,7 @@
 import numpy as np
 import pytest
 
+# noinspection PyProtectedMember
 from aviary._utils.types import (
     BoundingBox,
     ProcessArea,

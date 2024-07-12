@@ -4,6 +4,7 @@ import pytest
 import shapely.testing
 from shapely.geometry import Polygon
 
+# noinspection PyProtectedMember
 from aviary._functional.geodata.geodata_postprocessor import (
     _fill_polygon,
     field_name_postprocessor,
@@ -11,7 +12,7 @@ from aviary._functional.geodata.geodata_postprocessor import (
     sieve_postprocessor,
     value_postprocessor,
 )
-from aviary._functional.geodata.tests.data.data_test_geodata_postprocessor import (
+from tests._functional.geodata.data.data_test_geodata_postprocessor import (
     data_test__fill_polygon,
     data_test_field_name_postprocessor,
     data_test_fill_postprocessor,

@@ -1,8 +1,8 @@
 *
 !aviary
 !dev
+!tests
 !LICENSE.md
 !pyproject.toml
 !README.md
 !requirements.txt
-**tests
