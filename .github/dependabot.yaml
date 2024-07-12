@@ -4,8 +4,12 @@ updates:
     directory: /
     schedule:
       interval: weekly
+    labels:
+      - build
 
   - package-ecosystem: pip
     directory: /
     schedule:
       interval: weekly
+    labels:
+      - build
