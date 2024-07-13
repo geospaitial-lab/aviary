@@ -3,6 +3,7 @@ from unittest.mock import MagicMock, patch
 import geopandas as gpd
 import geopandas.testing
 
+import aviary.geodata.geodata_postprocessor
 from aviary.geodata.geodata_postprocessor import (
     ClipPostprocessor,
     CompositePostprocessor,
@@ -13,6 +14,20 @@ from aviary.geodata.geodata_postprocessor import (
     SimplifyPostprocessor,
     ValuePostprocessor,
 )
+
+
+def test_globals() -> None:
+    class_names = [
+        'ClipPostprocessor',
+        'FieldNamePostprocessor',
+        'FillPostprocessor',
+        'SievePostprocessor',
+        'SimplifyPostprocessor',
+        'ValuePostprocessor',
+    ]
+
+    for class_name in class_names:
+        assert hasattr(aviary.geodata.geodata_postprocessor, class_name)
 
 
 def test_clip_postprocessor_init() -> None:
