@@ -3,6 +3,7 @@ from unittest.mock import MagicMock, patch
 import numpy as np
 import pytest
 
+import aviary.data.data_preprocessor
 from aviary.data.data_preprocessor import (
     CompositePreprocessor,
     DataPreprocessor,
@@ -11,6 +12,16 @@ from aviary.data.data_preprocessor import (
     StandardizePreprocessor,
     StandardizePreprocessorConfig,
 )
+
+
+def test_globals() -> None:
+    class_names = [
+        'NormalizePreprocessor',
+        'StandardizePreprocessor',
+    ]
+
+    for class_name in class_names:
+        assert hasattr(aviary.data.data_preprocessor, class_name)
 
 
 def test_composite_preprocessor_init() -> None:
