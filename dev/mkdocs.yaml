@@ -10,6 +10,7 @@ nav:
     - aviary:
       - BoundingBox: api_reference/bounding_box.md
       - Enums: api_reference/enums.md
+      - Exceptions: api_reference/exceptions.md
       - ProcessArea: api_reference/process_area.md
       - Types: api_reference/types.md
     - aviary.data:
