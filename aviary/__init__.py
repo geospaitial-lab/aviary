@@ -1,5 +1,7 @@
-__version__ = '0.1.0'
-
+from ._utils.exceptions import (
+    AviaryUserError,
+    AviaryUserWarning,
+)
 from ._utils.types import (
     BoundingBox,
     Device,
@@ -14,6 +16,8 @@ from ._utils.types import (
 
 __all__ = [
     '__version__',
+    'AviaryUserError',
+    'AviaryUserWarning',
     'BoundingBox',
     'Device',
     'DType',
@@ -24,3 +28,5 @@ __all__ = [
     'SegmentationExporterMode',
     'SetFilterMode',
 ]
+
+__version__ = '0.1.0'
