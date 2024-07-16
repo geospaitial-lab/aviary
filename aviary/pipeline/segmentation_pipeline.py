@@ -11,33 +11,33 @@ from aviary._utils.types import (
     ProcessArea,
     ProcessAreaConfig,
 )
-from aviary.data.data_fetcher import VRTFetcher  # noqa: F401
+from aviary.data.data_fetcher import (  # noqa: F401,TCH001
+    VRTFetcher,
+    VRTFetcherConfig,
+)
 from aviary.data.data_loader import DataLoader
-from aviary.data.data_preprocessor import (  # noqa: F401
+from aviary.data.data_preprocessor import (  # noqa: F401,TCH001
     CompositePreprocessor,
+    CompositePreprocessorConfig,
     NormalizePreprocessor,
+    NormalizePreprocessorConfig,
     StandardizePreprocessor,
+    StandardizePreprocessorConfig,
 )
 from aviary.data.dataset import Dataset
-from aviary.inference.exporter import SegmentationExporter  # noqa: TCH001
-from aviary.inference.model import ONNXSegmentationModel  # noqa: F401
+from aviary.inference.exporter import (  # noqa: TCH001
+    SegmentationExporter,
+    SegmentationExporterConfig,
+)
+from aviary.inference.model import (  # noqa: F401,TCH001
+    ONNXSegmentationModel,
+    SegmentationModelConfig,
+)
 
 if TYPE_CHECKING:
-    from aviary.data.data_fetcher import (
-        DataFetcher,
-        VRTFetcherConfig,
-    )
-    from aviary.data.data_preprocessor import (
-        CompositePreprocessorConfig,
-        DataPreprocessor,
-        NormalizePreprocessorConfig,
-        StandardizePreprocessorConfig,
-    )
-    from aviary.inference.exporter import SegmentationExporterConfig
-    from aviary.inference.model import (
-        SegmentationModel,
-        SegmentationModelConfig,
-    )
+    from aviary.data.data_fetcher import DataFetcher
+    from aviary.data.data_preprocessor import DataPreprocessor
+    from aviary.inference.model import SegmentationModel
 
 
 class SegmentationPipeline:
