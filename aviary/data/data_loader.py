@@ -120,10 +120,10 @@ class DataLoader(Iterator[tuple[npt.NDArray, Coordinate, Coordinate]]):
             batch_indices = range(index, end_index)
 
             with ThreadPoolExecutor(max_workers=self.num_workers) as executor:
-                tasks = {
-                    executor.submit(self.dataset.__getitem__, batch_index):
-                        batch_index for batch_index in batch_indices
-                }
+                tasks = [
+                    executor.submit(self.dataset.__getitem__, batch_index)
+                    for batch_index in batch_indices
+                ]
                 samples = [
                     task.result()
                     for task in as_completed(tasks)
