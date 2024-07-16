@@ -121,7 +121,10 @@ class DataLoader(Iterator[tuple[npt.NDArray, Coordinate, Coordinate]]):
 
             with ThreadPoolExecutor(max_workers=self.num_workers) as executor:
                 tasks = [
-                    executor.submit(self.dataset.__getitem__, sample_index)
+                    executor.submit(
+                        self.dataset.__getitem__,
+                        index=sample_index,
+                    )
                     for sample_index in sample_indices
                 ]
                 samples = [
