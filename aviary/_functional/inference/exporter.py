@@ -1,8 +1,8 @@
 import json
 import threading
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
-import dask
 import geopandas as gpd
 import numpy as np
 import numpy.typing as npt
@@ -57,32 +57,25 @@ def segmentation_exporter(
         mode: segmentation exporter mode (`FEATHER` or `GPKG`)
         num_workers: number of workers
     """
-    tasks = [
-        _segmentation_exporter_task(
-            preds=preds_item,
-            x_min=coordinates_item[0],
-            y_min=coordinates_item[1],
-            path=path,
-            tile_size=tile_size,
-            ground_sampling_distance=ground_sampling_distance,
-            epsg_code=epsg_code,
-            field_name=field_name,
-            ignore_background_class=ignore_background_class,
-            gpkg_name=gpkg_name,
-            json_name=json_name,
-            mode=mode,
-        )
-        for preds_item, coordinates_item
-        in zip(preds, coordinates, strict=True)
-    ]
-    dask.compute(
-        tasks,
-        num_workers=num_workers,
-        scheduler='threads',
-    )
+    with ThreadPoolExecutor(max_workers=num_workers) as executor:
+        for preds_item, coordinates_item in zip(preds, coordinates, strict=True):
+            executor.submit(
+                _segmentation_exporter_task,
+                preds=preds_item,
+                x_min=coordinates_item[0],
+                y_min=coordinates_item[1],
+                path=path,
+                tile_size=tile_size,
+                ground_sampling_distance=ground_sampling_distance,
+                epsg_code=epsg_code,
+                field_name=field_name,
+                ignore_background_class=ignore_background_class,
+                gpkg_name=gpkg_name,
+                json_name=json_name,
+                mode=mode,
+            )
 
 
-@dask.delayed
 def _segmentation_exporter_task(
     preds: npt.NDArray[np.uint8],
     x_min: Coordinate,
