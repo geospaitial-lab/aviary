@@ -2,7 +2,6 @@ from pathlib import Path
 from typing import cast
 from unittest.mock import MagicMock, patch
 
-import dask
 import geopandas as gpd
 import numpy as np
 import pytest
@@ -45,21 +44,19 @@ def test__segmentation_exporter_task(
     mode = SegmentationExporterMode.GPKG
     expected_gdf = 'expected_gdf'
     mocked__vectorize_preds.return_value = expected_gdf
-    dask.compute(
-        _segmentation_exporter_task(
-            preds=preds,
-            x_min=x_min,
-            y_min=y_min,
-            path=path,
-            tile_size=tile_size,
-            ground_sampling_distance=ground_sampling_distance,
-            epsg_code=epsg_code,
-            field_name=field_name,
-            ignore_background_class=ignore_background_class,
-            gpkg_name=gpkg_name,
-            json_name=json_name,
-            mode=mode,
-        ),
+    _segmentation_exporter_task(
+        preds=preds,
+        x_min=x_min,
+        y_min=y_min,
+        path=path,
+        tile_size=tile_size,
+        ground_sampling_distance=ground_sampling_distance,
+        epsg_code=epsg_code,
+        field_name=field_name,
+        ignore_background_class=ignore_background_class,
+        gpkg_name=gpkg_name,
+        json_name=json_name,
+        mode=mode,
     )
 
     mocked__vectorize_preds.assert_called_once_with(
