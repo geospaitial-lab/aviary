@@ -1,0 +1,22 @@
+breaking:
+  - '!'
+build:
+  - '^build'
+cd:
+  - '^cd'
+chore:
+  - '^chore'
+ci:
+  - '^ci'
+docs:
+  - '^docs'
+feat:
+  - '^feat'
+fix:
+  - '^fix'
+refactor:
+  - '^refactor'
+style:
+  - '^style'
+test:
+  - '^test'

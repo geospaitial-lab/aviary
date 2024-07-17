@@ -1,0 +1,25 @@
+name: Label PR
+
+on:
+  pull_request:
+    types:
+      - opened
+      - edited
+
+permissions:
+  pull-requests: write
+  contents: read
+
+jobs:
+  label:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Label PR
+        uses: github/issue-labeler@v3.4
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          configuration-path: .github/labeler.yaml
+          include-title: true
+          include-body: false
+          sync-labels: true
