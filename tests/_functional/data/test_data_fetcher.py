@@ -1,6 +1,3 @@
-from pathlib import Path
-from unittest.mock import MagicMock, patch
-
 import numpy as np
 import numpy.typing as npt
 import pytest
@@ -10,15 +7,11 @@ from aviary._functional.data.data_fetcher import (
     _compute_tile_size_pixels,
     _drop_channels,
     _permute_data,
-    vrt_fetcher_info,
 )
 
 # noinspection PyProtectedMember
 from aviary._utils.types import (
-    BoundingBox,
     BufferSize,
-    DataFetcherInfo,
-    DType,
     GroundSamplingDistance,
     TileSize,
 )
@@ -77,42 +70,3 @@ def test__permute_data(
     )
 
     np.testing.assert_array_equal(data, expected)
-
-
-@patch('aviary._functional.data.data_fetcher.rio.open')
-def test_vrt_fetcher_info(
-    mocked_rio_open: MagicMock,
-) -> None:
-    path = Path('test/test.vrt')
-    mocked_src = MagicMock()
-    mocked_src.bounds.left = -127.9
-    mocked_src.bounds.bottom = -127.9
-    mocked_src.bounds.right = 127.9
-    mocked_src.bounds.top = 127.9
-    mocked_src.dtypes = ['uint8', 'uint8', 'uint8']
-    mocked_src.crs.to_epsg.return_value = 25832
-    mocked_src.res = (.5, .5)
-    mocked_src.count = 3
-    mocked_rio_open.return_value.__enter__.return_value = mocked_src
-    expected_bounding_box = BoundingBox(
-        x_min=-128,
-        y_min=-128,
-        x_max=128,
-        y_max=128,
-    )
-    expected_dtype = [DType.UINT8, DType.UINT8, DType.UINT8]
-    expected_epsg_code = 25832
-    expected_ground_sampling_distance = .5
-    expected_num_channels = 3
-    expected = DataFetcherInfo(
-        bounding_box=expected_bounding_box,
-        dtype=expected_dtype,
-        epsg_code=expected_epsg_code,
-        ground_sampling_distance=expected_ground_sampling_distance,
-        num_channels=expected_num_channels,
-    )
-    vrt_fetcher_info_ = vrt_fetcher_info(
-        path=path,
-    )
-
-    assert vrt_fetcher_info_ == expected
