@@ -5,7 +5,6 @@ from ._utils.exceptions import (
 from ._utils.types import (
     BoundingBox,
     Device,
-    DType,
     GeospatialFilterMode,
     InterpolationMode,
     ProcessArea,
@@ -20,7 +19,6 @@ __all__ = [
     'AviaryUserWarning',
     'BoundingBox',
     'Device',
-    'DType',
     'GeospatialFilterMode',
     'InterpolationMode',
     'ProcessArea',
