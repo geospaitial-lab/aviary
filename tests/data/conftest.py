@@ -1,5 +1,5 @@
 from pathlib import Path
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 import numpy as np
 import pytest
@@ -64,10 +64,7 @@ def standardize_preprocessor() -> StandardizePreprocessor:
 
 
 @pytest.fixture(scope='session')
-@patch('aviary.data.data_fetcher.vrt_fetcher_info')
-def vrt_fetcher(
-    _mocked_vrt_fetcher_info: MagicMock,
-) -> VRTFetcher:
+def vrt_fetcher() -> VRTFetcher:
     path = Path('test/test.vrt')
     tile_size = 128
     ground_sampling_distance = .2

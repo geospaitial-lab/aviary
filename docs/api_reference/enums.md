@@ -2,13 +2,6 @@
 
 ---
 
-::: aviary.DType
-    options:
-      filters:
-      - "!from_rio"
-
----
-
 ::: aviary.GeospatialFilterMode
 
 ---

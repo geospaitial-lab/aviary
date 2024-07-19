@@ -397,23 +397,6 @@ class BoundingBox(Iterable[Coordinate]):
         )
 
 
-@dataclass
-class DataFetcherInfo:
-    """
-    Attributes:
-        bounding_box: bounding box
-        dtype: data type of each channel
-        epsg_code: EPSG code
-        ground_sampling_distance: ground sampling distance in meters
-        num_channels: number of channels
-    """
-    bounding_box: BoundingBox
-    dtype: list[DType]
-    epsg_code: EPSGCode
-    ground_sampling_distance: GroundSamplingDistance
-    num_channels: int
-
-
 class Device(Enum):
     """
     Attributes:
@@ -422,38 +405,6 @@ class Device(Enum):
     """
     CPU = 'cpu'
     CUDA = 'cuda'
-
-
-class DType(Enum):
-    """
-    Attributes:
-        BOOL: boolean data type
-        FLOAT32: 32-bit floating point data type
-        UINT8: 8-bit unsigned integer data type
-    """
-    BOOL = np.bool_
-    FLOAT32 = np.float32
-    UINT8 = np.uint8
-
-    @classmethod
-    def from_rio(
-        cls,
-        dtype: str,
-    ) -> DType:
-        """Creates a data type from a rasterio data type.
-
-        Parameters:
-            dtype: rasterio data type
-
-        Returns:
-            data type
-        """
-        mapping = {
-            rio.dtypes.bool_: DType.BOOL,
-            rio.dtypes.float32: DType.FLOAT32,
-            rio.dtypes.uint8: DType.UINT8,
-        }
-        return mapping[dtype]
 
 
 class GeospatialFilterMode(Enum):

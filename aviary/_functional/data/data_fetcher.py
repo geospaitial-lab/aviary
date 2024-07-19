@@ -1,4 +1,3 @@
-from math import ceil, floor
 from pathlib import Path
 
 import numpy as np
@@ -11,8 +10,6 @@ from aviary._utils.types import (
     BoundingBox,
     BufferSize,
     Coordinate,
-    DataFetcherInfo,
-    DType,
     GroundSamplingDistance,
     InterpolationMode,
     TileSize,
@@ -140,35 +137,3 @@ def _permute_data(
         data
     """
     return np.transpose(data, (1, 2, 0))
-
-
-def vrt_fetcher_info(
-    path: Path,
-) -> DataFetcherInfo:
-    """Returns information about the data fetcher.
-
-    Parameters:
-        path: path to the virtual raster (.vrt file)
-
-    Returns:
-        data fetcher information
-    """
-    with rio.open(path) as src:
-        bounding_box = BoundingBox(
-            x_min=floor(src.bounds.left),
-            y_min=floor(src.bounds.bottom),
-            x_max=ceil(src.bounds.right),
-            y_max=ceil(src.bounds.top),
-        )
-        dtype = [DType.from_rio(dtype) for dtype in src.dtypes]
-        epsg_code = src.crs.to_epsg()
-        ground_sampling_distance, _ = src.res
-        num_channels = src.count
-
-    return DataFetcherInfo(
-        bounding_box=bounding_box,
-        dtype=dtype,
-        epsg_code=epsg_code,
-        ground_sampling_distance=ground_sampling_distance,
-        num_channels=num_channels,
-    )
