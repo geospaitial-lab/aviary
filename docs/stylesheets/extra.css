@@ -5,3 +5,13 @@ html {
 .md-typeset h2:first-of-type {
   margin-top: 0;
 }
+
+.md-typeset h2 {
+  transition: transform 500ms ease-in-out;
+  transform-origin: left;
+}
+
+.md-typeset h2:hover {
+  transition: transform 100ms ease-in-out;
+  transform: scale(105%);
+}
