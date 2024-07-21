@@ -7,6 +7,7 @@ docs_dir: ../docs
 nav:
   - Get started: index.md
   - API Reference:
+    - API Reference: api_reference/index.md
     - aviary:
       - BoundingBox: api_reference/bounding_box.md
       - Enums: api_reference/enums.md
@@ -41,6 +42,7 @@ theme:
     text: Noto Sans
     code: Noto Sans Mono
   features:
+    - navigation.indexes
     - navigation.instant
     - navigation.instant.progress
     - navigation.tabs
