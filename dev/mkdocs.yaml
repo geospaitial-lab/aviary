@@ -88,5 +88,8 @@ extra:
     - icon: simple/huggingface
       link: https://huggingface.co/geospaitial-lab
 
+extra_css:
+  - stylesheets/extra.css
+
 copyright:
   © 2024 geospaitial lab
