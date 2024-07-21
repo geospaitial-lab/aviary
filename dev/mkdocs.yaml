@@ -51,14 +51,14 @@ theme:
       primary: black
       accent: blue
       toggle:
-        icon: material/lightbulb
+        icon: material/toggle-switch
         name: Switch to dark mode
     - media: '(prefers-color-scheme: dark)'
       scheme: slate
       primary: black
       accent: blue
       toggle:
-        icon: material/lightbulb-outline
+        icon: material/toggle-switch-off-outline
         name: Switch to light mode
 
 plugins:
