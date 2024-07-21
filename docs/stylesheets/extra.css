@@ -1,3 +1,7 @@
 html {
   overflow-y: scroll;
 }
+
+.md-typeset h2:first-of-type {
+  margin-top: 0;
+}

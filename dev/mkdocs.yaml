@@ -31,6 +31,7 @@ nav:
 
 theme:
   name: material
+  custom_dir: ../docs/overrides
   language: en
   logo: assets/aviary_logo_white.svg
   favicon: assets/aviary_logo_white.svg
