@@ -83,6 +83,14 @@ plugins:
           paths:
             - ../
 
+markdown_extensions:
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+      slugify: !!python/object/apply:pymdownx.slugs.slugify
+        kwds:
+          case: lower
+
 extra:
   generator: false
   social:
