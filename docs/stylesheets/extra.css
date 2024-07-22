@@ -2,6 +2,16 @@ html {
   overflow-y: scroll;
 }
 
+.md-header, .md-tabs {
+  backdrop-filter: blur(5px);
+  background-color: rgba(0, 0, 0, 0);
+}
+
+[data-md-color-scheme="slate"] .md-header,
+[data-md-color-scheme="slate"] .md-tabs {
+  background-color: rgba(0, 0, 0, 0);
+}
+
 #logo_light_mode {
   display: var(--md-logo-light-mode);
 }
