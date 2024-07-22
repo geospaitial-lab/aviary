@@ -34,7 +34,8 @@ theme:
   name: material
   custom_dir: ../docs/overrides
   language: en
-  logo: assets/aviary_logo_white.svg
+  logo_light_mode: assets/aviary_logo_black.svg
+  logo_dark_mode: assets/aviary_logo_white.svg
   favicon: assets/aviary_logo_white.svg
   icon:
     repo: simple/github
@@ -50,7 +51,7 @@ theme:
   palette:
     - media: '(prefers-color-scheme: light)'
       scheme: default
-      primary: black
+      primary: white
       accent: blue
       toggle:
         icon: material/toggle-switch

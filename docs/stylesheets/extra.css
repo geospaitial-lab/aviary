@@ -2,6 +2,24 @@ html {
   overflow-y: scroll;
 }
 
+#logo_light_mode {
+  display: var(--md-logo-light-mode);
+}
+
+#logo_dark_mode {
+  display: var(--md-logo-dark-mode);
+}
+
+[data-md-color-scheme="default"] {
+  --md-logo-light-mode: block;
+  --md-logo-dark-mode: none;
+}
+
+[data-md-color-scheme="slate"] {
+  --md-logo-light-mode: none;
+  --md-logo-dark-mode: block;
+}
+
 .md-header__topic:first-child {
   font-weight: normal;
 }
