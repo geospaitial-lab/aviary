@@ -1,7 +1,5 @@
 site_name: aviary
 site_url: https://geospaitial-lab.github.io/aviary
-repo_name: geospaitial-lab/aviary
-repo_url: https://github.com/geospaitial-lab/aviary
 docs_dir: ../docs
 
 nav:
@@ -37,8 +35,6 @@ theme:
   logo_light_mode: assets/aviary_logo_black.svg
   logo_dark_mode: assets/aviary_logo_white.svg
   favicon: assets/aviary_logo_white.svg
-  icon:
-    repo: simple/github
   font:
     text: Noto Sans
     code: Noto Sans Mono
