@@ -4,12 +4,12 @@ html {
 
 .md-header, .md-tabs {
   backdrop-filter: blur(5px);
-  background-color: rgba(0, 0, 0, 0);
+  background-color: hsla(0, 0%, 100%, 0.5);
 }
 
 [data-md-color-scheme=slate] .md-header,
 [data-md-color-scheme=slate] .md-tabs {
-  background-color: rgba(0, 0, 0, 0);
+  background-color: hsla(0, 0%, 5%, 0.5);
 }
 
 #logo_light_mode {
