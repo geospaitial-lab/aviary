@@ -7,8 +7,8 @@ html {
   background-color: rgba(0, 0, 0, 0);
 }
 
-[data-md-color-scheme="slate"] .md-header,
-[data-md-color-scheme="slate"] .md-tabs {
+[data-md-color-scheme=slate] .md-header,
+[data-md-color-scheme=slate] .md-tabs {
   background-color: rgba(0, 0, 0, 0);
 }
 
@@ -20,12 +20,12 @@ html {
   display: var(--md-logo-dark-mode);
 }
 
-[data-md-color-scheme="default"] {
+[data-md-color-scheme=default] {
   --md-logo-light-mode: block;
   --md-logo-dark-mode: none;
 }
 
-[data-md-color-scheme="slate"] {
+[data-md-color-scheme=slate] {
   --md-logo-light-mode: none;
   --md-logo-dark-mode: block;
 }
