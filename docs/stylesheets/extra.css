@@ -38,12 +38,12 @@ html {
   margin-top: 0;
 }
 
-.md-typeset h2 {
+.md-typeset h2, h3 {
   transition: transform 500ms ease-in-out;
   transform-origin: left;
 }
 
-.md-typeset h2:hover {
+.md-typeset h2:hover, h3:hover {
   transition: transform 100ms ease-in-out;
   transform: scale(105%);
 }
