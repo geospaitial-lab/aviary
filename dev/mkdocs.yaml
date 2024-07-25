@@ -39,6 +39,7 @@ theme:
     text: Noto Sans
     code: Noto Sans Mono
   features:
+    - content.code.copy
     - navigation.indexes
     - navigation.instant
     - navigation.instant.progress
