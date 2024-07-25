@@ -21,7 +21,7 @@ If you need help installing Docker, you can refer to the
 
 ### Step 2: Download the Docker image
 
-Download the Docker image by launching your command line and run the following command:
+Download the Docker image by launching your command-line interface and run the following command:
 
 ```
 docker pull ghcr.io/geospaitial-lab/aviary/aviary

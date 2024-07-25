@@ -10,7 +10,7 @@ Follow along this step-by-step guide to install aviary using a virtual environme
 
 First, make sure you have Python installed.
 Note that some operating systems come with Python pre-installed.
-To verify this, launch your command line and run the following command:
+To verify this, launch your command-line interface and run the following command:
 
 ```
 python --version
