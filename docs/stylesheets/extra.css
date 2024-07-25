@@ -47,3 +47,7 @@ html {
   transition: transform 100ms ease-in-out;
   transform: scale(105%);
 }
+
+.md-main {
+  padding-bottom: 1rem;
+}
