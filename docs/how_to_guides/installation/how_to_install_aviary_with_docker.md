@@ -19,6 +19,8 @@ If you don't have Docker installed, you can download the latest version from the
 If you need help installing Docker, you can refer to the
 [official Docker installation guide](https://docs.docker.com/get-docker).
 
+---
+
 ### Step 2: Download the Docker image
 
 Download the Docker image by launching your command-line interface and run the following command:
@@ -33,6 +35,8 @@ To do so, run the command below:
 ```
 docker tag ghcr.io/geospaitial-lab/aviary/aviary aviary
 ```
+
+---
 
 ### Step 3: Verify the download
 

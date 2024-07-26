@@ -24,6 +24,8 @@ you can download the latest version from the
 If you need help installing Python, you can refer to the
 [official Python installation guide](https://wiki.python.org/moin/BeginnersGuide/Download).
 
+---
+
 ### Step 2: Set up a virtual environment
 
 It is considered best practice to use a virtual environment to install Python packages.
@@ -55,6 +57,8 @@ Next, activate the virtual environment by running the following command:
 If the virtual environment is activated successfully, you should see its name
 (in this case, *venv*) in your command line prompt.
 
+---
+
 ### Step 3: Install the package
 
 Install the package using pip by running the command below:
@@ -62,6 +66,8 @@ Install the package using pip by running the command below:
 ```
 pip install geospaitial-lab-aviary
 ```
+
+---
 
 ### Step 4: Verify the installation
 
