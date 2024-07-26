@@ -68,5 +68,5 @@ pip install geospaitial-lab-aviary
 To verify that the package was installed successfully, you can run the following command:
 
 ```
-aviary version
+aviary --version
 ```

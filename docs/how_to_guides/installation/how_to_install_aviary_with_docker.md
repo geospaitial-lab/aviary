@@ -39,5 +39,5 @@ docker tag ghcr.io/geospaitial-lab/aviary/aviary aviary
 To verify that the Docker image was downloaded successfully, you can run the following command:
 
 ```
-docker run --rm aviary version
+docker run --rm aviary --version
 ```
