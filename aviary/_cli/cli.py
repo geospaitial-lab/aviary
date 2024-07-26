@@ -13,7 +13,31 @@ from aviary.pipeline.segmentation_pipeline import (
     SegmentationPipelineConfig,
 )
 
-app = typer.Typer(no_args_is_help=True)
+app = typer.Typer(
+    no_args_is_help=True,
+    add_completion=False,
+)
+
+
+def version_callback(
+    value: bool,
+) -> None:
+    if value:
+        print(f'aviary {__version__}')
+        raise typer.Exit
+
+
+# noinspection PyUnusedLocal
+@app.callback()
+def main(
+    version: bool = typer.Option(  # noqa: ARG001
+        None,
+        '--version',
+        callback=version_callback,
+        help='Show the version of the package and exit.',
+    ),
+) -> None:
+    pass
 
 
 @app.command()
@@ -48,12 +72,6 @@ def postprocessing_pipeline(
     postprocessing_pipeline_config = PostprocessingPipelineConfig(**config)
     postprocessing_pipeline = PostprocessingPipeline.from_config(postprocessing_pipeline_config)
     postprocessing_pipeline()
-
-
-@app.command()
-def version() -> None:
-    """Show the version of the package."""
-    print(__version__)
 
 
 if __name__ == '__main__':
