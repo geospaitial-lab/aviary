@@ -13,7 +13,10 @@ from aviary.pipeline.segmentation_pipeline import (
     SegmentationPipelineConfig,
 )
 
-app = typer.Typer(no_args_is_help=True)
+app = typer.Typer(
+    no_args_is_help=True,
+    add_completion=False,
+)
 
 
 @app.command()
