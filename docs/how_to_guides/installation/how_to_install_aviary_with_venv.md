@@ -8,7 +8,7 @@ Follow along this step-by-step guide to install aviary using a virtual environme
 
 ### Step 1: Install Python
 
-First, make sure you have Python installed.
+First, make sure you have Python installed.<br />
 Note that some operating systems come with Python pre-installed.
 To verify this, launch your command-line interface and run the following command:
 
@@ -28,7 +28,7 @@ If you need help installing Python, you can refer to the
 
 ### Step 2: Set up a virtual environment
 
-It is considered best practice to use a virtual environment to install Python packages.
+It is considered best practice to use a virtual environment to install Python packages.<br />
 Note that this is not required, so you can skip this step if you prefer.
 However, it is **strongly recommended** to use a virtual environment to avoid conflicts with other Python packages
 and to keep your project dependencies isolated.
