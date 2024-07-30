@@ -32,6 +32,10 @@ nav:
     - aviary.pipeline:
       - PostprocessingPipeline: api_reference/pipeline/postprocessing_pipeline.md
       - SegmentationPipeline: api_reference/pipeline/segmentation_pipeline.md
+  - CLI Reference:
+      - CLI Reference: cli_reference/index.md
+      - Segmentation pipeline: cli_reference/segmentation_pipeline.md
+      - Postprocessing pipeline: cli_reference/postprocessing_pipeline.md
 
 theme:
   name: material
@@ -87,6 +91,8 @@ plugins:
             - ../
 
 markdown_extensions:
+  - attr_list
+  - md_in_html
   - pymdownx.superfences
   - pymdownx.tabbed:
       alternate_style: true
