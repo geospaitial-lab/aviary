@@ -47,5 +47,5 @@ To run the postprocessing pipeline, run the following command:
 
 ## Next steps
 
-Have a look at the [how-to guide](../how_to_guides/cli/how_to_use_the_postprocessing_pipeline.md)
-on how to use the postprocessing pipeline with an example configuration file.
+Have a look at the [how-to guide](../how_to_guides/cli/how_to_run_the_postprocessing_pipeline.md)
+on how to run the postprocessing pipeline with an example configuration file.

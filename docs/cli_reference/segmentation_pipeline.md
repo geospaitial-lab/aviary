@@ -62,5 +62,5 @@ To run the segmentation pipeline, run the following command:
 
 ## Next steps
 
-Have a look at the [how-to guide](../how_to_guides/cli/how_to_use_the_segmentation_pipeline.md)
-on how to use the segmentation pipeline with an example configuration file.
+Have a look at the [how-to guide](../how_to_guides/cli/how_to_run_the_segmentation_pipeline.md)
+on how to run the segmentation pipeline with an example configuration file.
