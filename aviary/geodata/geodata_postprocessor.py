@@ -209,6 +209,8 @@ class FieldNamePostprocessor(GeodataPostprocessor):
     Examples:
         Assume the geodataframe has the field 'class'.
 
+        You can rename the field 'class' to 'type'.
+
         >>> field_name_postprocessor = FieldNamePostprocessor(
         ...     mapping={
         ...         'class': 'type',
@@ -448,6 +450,8 @@ class ValuePostprocessor(GeodataPostprocessor):
 
     Examples:
         Assume the geodataframe has the values 0, 1 and 2 in the field 'class'.
+
+        You can map the values 0, 1 and 2 to 'class_1', 'class_2' and 'class_3'.
 
         >>> value_postprocessor = ValuePostprocessor(
         ...     mapping={

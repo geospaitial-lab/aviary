@@ -128,6 +128,8 @@ class NormalizePreprocessor(DataPreprocessor):
     Examples:
         Assume the data is a 3-channel image of data type uint8.
 
+        You can scale the data to the range 0 to 1 by normalizing the data.
+
         >>> normalize_preprocessor = NormalizePreprocessor(
         ...     min_values=[0.] * 3,
         ...     max_values=[255.] * 3,
@@ -199,7 +201,9 @@ class StandardizePreprocessor(DataPreprocessor):
 
     Examples:
         Assume the data is a 3-channel image of data type float32.
-        In this example the mean and standard deviation values from the ImageNet dataset are used.
+
+        You can scale the data to have a mean of 0 and a standard deviation of 1 by standardizing the data.
+        In this example, the mean and standard deviation values from the ImageNet dataset are used.
 
         >>> standardize_preprocessor = StandardizePreprocessor(
         ...     mean_values=[.485, .456, .406],

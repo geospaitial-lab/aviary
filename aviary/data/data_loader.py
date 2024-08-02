@@ -32,6 +32,7 @@ class DataLoader(Iterator[tuple[npt.NDArray, Coordinate, Coordinate]]):
 
     Examples:
         Assume the dataset is already created.
+
         You can create a data loader and iterate over the batches.
 
         >>> data_loader = DataLoader(

@@ -275,7 +275,9 @@ class BoundingBox(Iterable[Coordinate]):
         """Buffers the bounding box.
 
         Examples:
-            Assume the area of interest is specified by x_min=363084, y_min=5715326, x_max=363340 and y_max=5715582.
+            Assume the area of interest is specified by `x_min`=363084, `y_min`=5715326, `x_max`=363340 and
+            `y_max`=5715582.
+
             You can expand the area of interest by buffering the bounding box.
 
             >>> bounding_box = BoundingBox(
@@ -334,7 +336,9 @@ class BoundingBox(Iterable[Coordinate]):
         """Quantizes the coordinates to the specified value.
 
         Examples:
-            Assume the area of interest is specified by x_min=363084, y_min=5715326, x_max=363340 and y_max=5715582.
+            Assume the area of interest is specified by `x_min`=363084, `y_min`=5715326, `x_max`=363340 and
+            `y_max`=5715582.
+
             You can align the area of interest to a grid by quantizing the bounding box.
 
             >>> bounding_box = BoundingBox(
@@ -590,6 +594,7 @@ class ProcessArea(Iterable[Coordinates]):
 
         Examples:
             Assume the JSON string is '[[363084, 5715326], [363212, 5715326], [363084, 5715454], [363212, 5715454]]'.
+
             You can create a process area from the JSON string.
 
             >>> process_area = ProcessArea.from_json(
