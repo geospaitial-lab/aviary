@@ -13,7 +13,7 @@ It consists of the following components:
 - a [Model](../api_reference/inference/model.md) to do the inference on the preprocessed data
 - an [Exporter](../api_reference/inference/exporter.md) to export the predictions dynamically as geospatial data
 
-These components are set up in a configuration file (.yaml) that is passed to the pipeline.<br />
+These components are set up in a configuration file (.yaml file) that is passed to the pipeline.<br />
 The configuration file must have the following structure:
 
 ``` yaml

@@ -11,7 +11,7 @@ It consists of the following components:
 - a [GeodataPostprocessor](../api_reference/geodata/geodata_postprocessor.md) to postprocess the geodata
 - a path to export the geodataframe
 
-These components are set up in a configuration file (.yaml) that is passed to the pipeline.<br />
+These components are set up in a configuration file (.yaml file) that is passed to the pipeline.<br />
 The configuration file must have the following structure:
 
 ``` yaml
