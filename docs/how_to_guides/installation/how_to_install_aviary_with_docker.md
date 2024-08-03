@@ -31,7 +31,7 @@ Download the Docker image by launching your command-line interface and run the f
 docker pull ghcr.io/geospaitial-lab/aviary/aviary
 ```
 
-We recommend to shorten the image name by tagging it with a custom name (in this case, *aviary*).
+We recommend to shorten the image name by tagging it with a custom name (in this case, `aviary`).
 To do so, run the command below:
 
 ```

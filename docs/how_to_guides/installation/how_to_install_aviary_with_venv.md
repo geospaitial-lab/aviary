@@ -33,7 +33,7 @@ Note that this is not required, so you can skip this step if you prefer.
 However, it is **strongly recommended** to use a virtual environment to avoid conflicts with other Python packages
 and to keep your project dependencies isolated.
 
-To create a virtual environment named *venv*, navigate to the directory where you want to install aviary
+To create a virtual environment named `venv`, navigate to the directory where you want to install aviary
 and run the command below:
 
 ```
@@ -55,7 +55,7 @@ Next, activate the virtual environment by running the following command:
     ```
 
 If the virtual environment is activated successfully, you should see its name
-(in this case, *venv*) in your command line prompt.
+(in this case, `venv`) in your command line prompt.
 
 ---
 
