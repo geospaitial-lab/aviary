@@ -58,14 +58,14 @@ theme:
     - media: '(prefers-color-scheme: light)'
       scheme: default
       primary: white
-      accent: blue
+      accent: custom
       toggle:
         icon: material/toggle-switch
         name: Switch to dark mode
     - media: '(prefers-color-scheme: dark)'
       scheme: slate
       primary: black
-      accent: blue
+      accent: custom
       toggle:
         icon: material/toggle-switch-off-outline
         name: Switch to light mode
@@ -109,6 +109,7 @@ extra:
       link: https://huggingface.co/geospaitial-lab
 
 extra_css:
+  - stylesheets/color.css
   - stylesheets/extra.css
 
 copyright:
