@@ -42,7 +42,7 @@ model = ONNXSegmentationModel.from_aviary('sparrow')
 If you want to use the [command-line interface (CLI)](../cli_reference/segmentation_pipeline.md),
 you can use the following configuration:
 
-``` yaml
+``` yaml title="config.yaml"
 model:
   name: ONNXSegmentationModel
   config:

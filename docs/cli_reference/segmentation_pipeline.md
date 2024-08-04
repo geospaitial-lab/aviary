@@ -16,7 +16,7 @@ It consists of the following components:
 These components are set up in a configuration file (.yaml file) that is passed to the pipeline.<br />
 The configuration file must have the following structure:
 
-``` yaml
+``` yaml title="config.yaml"
 data_fetcher:
   name:
   config:
