@@ -28,7 +28,7 @@ class ModelCard:
     """
     Attributes:
         name: name of the model
-        repo: repository (Hugging Face Hub, e.g. 'user/repo')
+        repo: repository (Hugging Face Hub, e.g., 'user/repo')
         path: path to the model (Hugging Face Hub)
         type: type (`SEGMENTATION`)
         required_channels: required channels (`RGB`, `NIR`)
