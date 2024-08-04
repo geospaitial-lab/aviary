@@ -1,0 +1,23 @@
+cff-version: 1.2.0
+title: aviary
+type: software
+authors:
+  - given-names: Marius
+    family-names: Maryniak
+    email: marius.maryniak@w-hs.de
+  - name: geospaitial lab
+repository-code: 'https://github.com/geospaitial-lab/aviary'
+abstract: >-
+  Composable inference and postprocessing pipeline for
+  remote sensing data
+keywords:
+  - python
+  - deep-learning
+  - machine-learning
+  - computer-vision
+  - remote-sensing
+  - aerial-imagery
+  - orthophotos
+license: GPL-3.0
+version: 0.1.0
+date-released: TBA
