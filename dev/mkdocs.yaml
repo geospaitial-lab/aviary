@@ -1,12 +1,16 @@
 site_name: aviary
 site_url: https://geospaitial-lab.github.io/aviary
-repo_name: geospaitial-lab/aviary
-repo_url: https://github.com/geospaitial-lab/aviary
 docs_dir: ../docs
 
 nav:
   - Get started: index.md
+  - How-to Guides:
+    - How-to Guides: how_to_guides/index.md
+    - Installation:
+      - How to install aviary with venv: how_to_guides/installation/how_to_install_aviary_with_venv.md
+      - How to install aviary with Docker: how_to_guides/installation/how_to_install_aviary_with_docker.md
   - API Reference:
+    - API Reference: api_reference/index.md
     - aviary:
       - BoundingBox: api_reference/bounding_box.md
       - Enums: api_reference/enums.md
@@ -28,37 +32,44 @@ nav:
     - aviary.pipeline:
       - PostprocessingPipeline: api_reference/pipeline/postprocessing_pipeline.md
       - SegmentationPipeline: api_reference/pipeline/segmentation_pipeline.md
+  - CLI Reference:
+      - CLI Reference: cli_reference/index.md
+      - Segmentation pipeline: cli_reference/segmentation_pipeline.md
+      - Postprocessing pipeline: cli_reference/postprocessing_pipeline.md
+  - Aviary:
+      - Aviary: aviary/index.md
 
 theme:
   name: material
+  custom_dir: ../docs/overrides
   language: en
-  logo: assets/aviary_logo_white.svg
+  logo_light_mode: assets/aviary_logo_black.svg
+  logo_dark_mode: assets/aviary_logo_white.svg
   favicon: assets/aviary_logo_white.svg
-  icon:
-    repo: simple/github
   font:
     text: Noto Sans
     code: Noto Sans Mono
   features:
+    - content.code.copy
+    - navigation.indexes
     - navigation.instant
     - navigation.instant.progress
-    - navigation.expand
     - navigation.tabs
     - navigation.top
   palette:
     - media: '(prefers-color-scheme: light)'
       scheme: default
-      primary: black
-      accent: blue
+      primary: white
+      accent: custom
       toggle:
-        icon: material/lightbulb
+        icon: material/toggle-switch
         name: Switch to dark mode
     - media: '(prefers-color-scheme: dark)'
       scheme: slate
       primary: black
-      accent: blue
+      accent: custom
       toggle:
-        icon: material/lightbulb-outline
+        icon: material/toggle-switch-off-outline
         name: Switch to light mode
 
 plugins:
@@ -81,6 +92,16 @@ plugins:
           paths:
             - ../
 
+markdown_extensions:
+  - attr_list
+  - md_in_html
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+      slugify: !!python/object/apply:pymdownx.slugs.slugify
+        kwds:
+          case: lower
+
 extra:
   generator: false
   social:
@@ -88,6 +109,10 @@ extra:
       link: https://github.com/geospaitial-lab
     - icon: simple/huggingface
       link: https://huggingface.co/geospaitial-lab
+
+extra_css:
+  - stylesheets/color.css
+  - stylesheets/extra.css
 
 copyright:
   © 2024 geospaitial lab
