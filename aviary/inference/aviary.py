@@ -8,8 +8,8 @@ from aviary._utils.exceptions import AviaryUserError
 class Channels(Enum):
     """
     Attributes:
-        RGB: Red, Green, Blue
-        NIR: Near Infrared
+        RGB: red, green, blue
+        NIR: near-infrared
     """
     RGB = 'rgb'
     NIR = 'nir'
