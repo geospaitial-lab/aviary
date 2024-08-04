@@ -36,6 +36,8 @@ nav:
       - CLI Reference: cli_reference/index.md
       - Segmentation pipeline: cli_reference/segmentation_pipeline.md
       - Postprocessing pipeline: cli_reference/postprocessing_pipeline.md
+  - Aviary:
+      - Aviary: aviary/index.md
 
 theme:
   name: material
