@@ -27,7 +27,7 @@ class CoordinatesFilter(ABC):
 
     Coordinates filters are callables that filter coordinates.
     The coordinates filter can be used to filter the coordinates of the bottom left corner of each tile.
-    E.g., to remove tiles that do not intersect with an area of interest or tiles that are already processed.
+    E.g., to remove tiles that don't intersect with an area of interest or tiles that are already processed.
 
     Currently implemented coordinates filters:
         - CompositeFilter: Composes multiple coordinates filters
@@ -108,7 +108,7 @@ class GeospatialFilter(CoordinatesFilter):
 
     Available modes:
         - `DIFFERENCE`: Removes coordinates of tiles that are within the polygons in the geodataframe
-        - `INTERSECTION`: Removes coordinates of tiles that do not intersect with the polygons in the geodataframe
+        - `INTERSECTION`: Removes coordinates of tiles that don't intersect with the polygons in the geodataframe
     """
 
     def __init__(
