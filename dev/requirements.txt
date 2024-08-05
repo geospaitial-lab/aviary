@@ -1,6 +1,6 @@
 build==1.2.1
 mkdocs-material==9.5.30
-mkdocstrings-python==1.10.5
+mkdocstrings-python==1.10.7
 pip-audit==2.7.3
 pre-commit==3.8.0
 pytest==8.3.2
