@@ -19,10 +19,6 @@ def test_model_card_init() -> None:
     num_channels = 4
     ground_sampling_distance = .2
     num_classes = 3
-    min_values = [0.] * 4
-    max_values = [255.] * 4
-    mean_values = [.485, .456, .406, .5]
-    std_values = [.229, .224, .225, .5]
     description = 'description'
     model = ModelCard(
         name=name,
@@ -33,10 +29,6 @@ def test_model_card_init() -> None:
         num_channels=num_channels,
         ground_sampling_distance=ground_sampling_distance,
         num_classes=num_classes,
-        min_values=min_values,
-        max_values=max_values,
-        mean_values=mean_values,
-        std_values=std_values,
         description=description,
     )
 
@@ -48,10 +40,6 @@ def test_model_card_init() -> None:
     assert model.num_channels == num_channels
     assert model.ground_sampling_distance == ground_sampling_distance
     assert model.num_classes == num_classes
-    assert model.min_values == min_values
-    assert model.max_values == max_values
-    assert model.mean_values == mean_values
-    assert model.std_values == std_values
     assert model.description == description
 
 
