@@ -4,11 +4,17 @@ import aviary.pipeline.segmentation_pipeline
 def test_globals() -> None:
     class_names = [
         'CompositePreprocessor',
+        'CompositePreprocessorConfig',
         'NormalizePreprocessor',
+        'NormalizePreprocessorConfig',
         'ONNXSegmentationModel',
         'SegmentationExporter',
+        'SegmentationExporterConfig',
+        'SegmentationModelConfig',
         'StandardizePreprocessor',
+        'StandardizePreprocessorConfig',
         'VRTFetcher',
+        'VRTFetcherConfig',
     ]
 
     for class_name in class_names:
