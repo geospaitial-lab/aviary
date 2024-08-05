@@ -35,10 +35,6 @@ class ModelCard:
         num_channels: number of channels
         ground_sampling_distance: ground sampling distance in meters
         num_classes: number of classes
-        min_values: minimum values of the data (per channel)
-        max_values: maximum values of the data (per channel)
-        mean_values: mean values of the data (per channel)
-        std_values: standard deviation values of the data (per channel)
         description: description
     """
     name: str
@@ -49,10 +45,6 @@ class ModelCard:
     num_channels: int
     ground_sampling_distance: float
     num_classes: int
-    min_values: list[float]
-    max_values: list[float]
-    mean_values: list[float] = None
-    std_values: list[float] = None
     description: str = None
 
 
@@ -100,8 +92,6 @@ sparrow = ModelCard(
     num_channels=4,
     ground_sampling_distance=.2,
     num_classes=2,
-    min_values=[0.] * 4,
-    max_values=[255.] * 4,
     description='Impervious surfaces',
 )  # pragma: no cover
 
