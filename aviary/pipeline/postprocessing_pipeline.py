@@ -7,27 +7,25 @@ from typing import TYPE_CHECKING, cast
 import geopandas as gpd
 import pydantic
 
-from aviary.geodata.geodata_postprocessor import (  # noqa: F401
+from aviary.geodata.geodata_postprocessor import (  # noqa: F401,TCH001
     ClipPostprocessor,
+    ClipPostprocessorConfig,
     CompositePostprocessor,
+    CompositePostprocessorConfig,
     FieldNamePostprocessor,
+    FieldNamePostprocessorConfig,
     FillPostprocessor,
+    FillPostprocessorConfig,
     SievePostprocessor,
+    SievePostprocessorConfig,
     SimplifyPostprocessor,
+    SimplifyPostprocessorConfig,
     ValuePostprocessor,
+    ValuePostprocessorConfig,
 )
 
 if TYPE_CHECKING:
-    from aviary.geodata.geodata_postprocessor import (
-        ClipPostprocessorConfig,
-        CompositePostprocessorConfig,
-        FieldNamePostprocessorConfig,
-        FillPostprocessorConfig,
-        GeodataPostprocessor,
-        SievePostprocessorConfig,
-        SimplifyPostprocessorConfig,
-        ValuePostprocessorConfig,
-    )
+    from aviary.geodata.geodata_postprocessor import GeodataPostprocessor
 
 
 class PostprocessingPipeline:
