@@ -9,7 +9,6 @@ from ._utils.types import (
     InterpolationMode,
     ProcessArea,
     ProcessAreaConfig,
-    SegmentationExporterMode,
     SetFilterMode,
 )
 
@@ -23,7 +22,6 @@ __all__ = [
     'InterpolationMode',
     'ProcessArea',
     'ProcessAreaConfig',
-    'SegmentationExporterMode',
     'SetFilterMode',
 ]
 

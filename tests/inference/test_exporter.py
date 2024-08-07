@@ -3,8 +3,6 @@ from unittest.mock import MagicMock, patch
 
 import numpy as np
 
-# noinspection PyProtectedMember
-from aviary._utils.types import SegmentationExporterMode
 from aviary.inference.exporter import (
     SegmentationExporter,
     SegmentationExporterConfig,
@@ -17,7 +15,6 @@ def test_segmentation_exporter_init() -> None:
     ground_sampling_distance = .2
     epsg_code = 25832
     field_name = 'class'
-    mode = SegmentationExporterMode.GPKG
     num_workers = 4
     segmentation_exporter = SegmentationExporter(
         path=path,
@@ -25,7 +22,6 @@ def test_segmentation_exporter_init() -> None:
         ground_sampling_distance=ground_sampling_distance,
         epsg_code=epsg_code,
         field_name=field_name,
-        mode=mode,
         num_workers=num_workers,
     )
 
@@ -34,7 +30,6 @@ def test_segmentation_exporter_init() -> None:
     assert segmentation_exporter.ground_sampling_distance == ground_sampling_distance
     assert segmentation_exporter.epsg_code == epsg_code
     assert segmentation_exporter.field_name == field_name
-    assert segmentation_exporter.mode == mode
     assert segmentation_exporter.num_workers == num_workers
 
 
@@ -44,7 +39,6 @@ def test_segmentation_exporter_from_config() -> None:
     ground_sampling_distance = .2
     epsg_code = 25832
     field_name = 'class'
-    mode = SegmentationExporterMode.GPKG
     num_workers = 4
     segmentation_exporter_config = SegmentationExporterConfig(
         path=path,
@@ -52,7 +46,6 @@ def test_segmentation_exporter_from_config() -> None:
         ground_sampling_distance=ground_sampling_distance,
         epsg_code=epsg_code,
         field_name=field_name,
-        mode=mode,
         num_workers=num_workers,
     )
     segmentation_exporter = SegmentationExporter.from_config(segmentation_exporter_config)
@@ -62,7 +55,6 @@ def test_segmentation_exporter_from_config() -> None:
     assert segmentation_exporter.ground_sampling_distance == ground_sampling_distance
     assert segmentation_exporter.epsg_code == epsg_code
     assert segmentation_exporter.field_name == field_name
-    assert segmentation_exporter.mode == mode
     assert segmentation_exporter.num_workers == num_workers
 
 
@@ -89,6 +81,5 @@ def test_segmentation_exporter_call(
         ignore_background_class=segmentation_exporter._IGNORE_BACKGROUND_CLASS,
         gpkg_name=segmentation_exporter._GPKG_NAME,
         json_name=segmentation_exporter._JSON_NAME,
-        mode=segmentation_exporter.mode,
         num_workers=segmentation_exporter.num_workers,
     )

@@ -17,11 +17,10 @@ from aviary._functional.inference.exporter import segmentation_exporter
 from aviary._utils.mixins import FromConfigMixin
 
 # noinspection PyProtectedMember
-from aviary._utils.types import (
+from aviary._utils.types import (  # noqa: TCH001
     CoordinatesSet,
     EPSGCode,
     GroundSamplingDistance,
-    SegmentationExporterMode,
     TileSize,
 )
 
@@ -58,15 +57,10 @@ class SegmentationExporter(FromConfigMixin):
     The predictions (i.e. raster data) are transformed to geospatial data (i.e. vector data).
     The resulting geodataframe contains the geometry of the polygons and their class that is stored
     in the field `field_name` as the pixel value of the prediction.
+    The segmentation exporter creates a geopackage named `output.gpkg` and exports the geodataframe
+    of each tile dynamically.
     The coordinates of the bottom left corner of the processed tiles are exported dynamically to a JSON file
     named `processed_coordinates.json`.
-
-    Available modes:
-        - `FEATHER`: The segmentation exporter creates a subdirectory named `{x_min}_{y_min}` for each tile
-          (if the tile contains any polygons, it exports the geodataframe as a feather file
-          named `{x_min}_{y_min}.feather`)
-        - `GPKG`: The segmentation exporter creates a geopackage named `output.gpkg` and exports the geodataframe
-          of each tile dynamically
 
     Notes:
         - The segmentation exporter uses multiple threads to vectorize and export the predictions
@@ -82,7 +76,6 @@ class SegmentationExporter(FromConfigMixin):
         ground_sampling_distance: GroundSamplingDistance,
         epsg_code: EPSGCode,
         field_name: str = 'class',
-        mode: SegmentationExporterMode = SegmentationExporterMode.GPKG,
         num_workers: int = 4,
     ) -> None:
         """
@@ -92,7 +85,6 @@ class SegmentationExporter(FromConfigMixin):
             ground_sampling_distance: ground sampling distance in meters
             epsg_code: EPSG code
             field_name: name of the field in the geodataframe
-            mode: segmentation exporter mode (`FEATHER` or `GPKG`)
             num_workers: number of workers
         """
         self.path = path
@@ -100,7 +92,6 @@ class SegmentationExporter(FromConfigMixin):
         self.ground_sampling_distance = ground_sampling_distance
         self.epsg_code = epsg_code
         self.field_name = field_name
-        self.mode = mode
         self.num_workers = num_workers
 
     @classmethod
@@ -141,7 +132,6 @@ class SegmentationExporter(FromConfigMixin):
             ignore_background_class=self._IGNORE_BACKGROUND_CLASS,
             gpkg_name=self._GPKG_NAME,
             json_name=self._JSON_NAME,
-            mode=self.mode,
             num_workers=self.num_workers,
         )
 
@@ -155,7 +145,6 @@ class SegmentationExporterConfig(pydantic.BaseModel):
         ground_sampling_distance: ground sampling distance in meters
         epsg_code: EPSG code
         field_name: name of the field in the geodataframe
-        mode: segmentation exporter mode ('feather' or 'gpkg')
         num_workers: number of workers
     """
     path: Path
@@ -163,5 +152,4 @@ class SegmentationExporterConfig(pydantic.BaseModel):
     ground_sampling_distance: GroundSamplingDistance
     epsg_code: EPSGCode
     field_name: str = 'class'
-    mode: SegmentationExporterMode = SegmentationExporterMode.GPKG
     num_workers: int = 4

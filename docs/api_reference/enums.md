@@ -13,8 +13,4 @@
 
 ---
 
-::: aviary.SegmentationExporterMode
-
----
-
 ::: aviary.SetFilterMode
