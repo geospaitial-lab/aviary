@@ -14,6 +14,9 @@ LABEL org.opencontainers.image.title="aviary" \
     org.opencontainers.image.url="https://github.com/geospaitial-lab/aviary" \
     org.opencontainers.image.documentation="https://geospaitial-lab.github.io/aviary"
 
-RUN pip install --no-cache-dir .
+RUN pip install --no-cache-dir . && \
+    adduser --disabled-password --gecos "" aviary_user
+
+USER aviary_user
 
 ENTRYPOINT ["aviary"]
