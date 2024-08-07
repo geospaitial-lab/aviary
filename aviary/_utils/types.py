@@ -975,16 +975,6 @@ class ProcessAreaConfig(pydantic.BaseModel):
         return self
 
 
-class SegmentationExporterMode(Enum):
-    """
-    Attributes:
-        FEATHER: feather mode
-        GPKG: geopackage mode
-    """
-    FEATHER = 'feather'
-    GPKG = 'gpkg'
-
-
 class SetFilterMode(Enum):
     """
     Attributes:

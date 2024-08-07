@@ -10,16 +10,12 @@ import rasterio as rio
 import rasterio.features
 
 # noinspection PyProtectedMember
-from aviary._utils.exceptions import AviaryUserError
-
-# noinspection PyProtectedMember
 from aviary._utils.types import (
     Coordinate,
     CoordinatesSet,
     EPSGCode,
     GroundSamplingDistance,
     ProcessArea,
-    SegmentationExporterMode,
     TileSize,
 )
 
@@ -38,7 +34,6 @@ def segmentation_exporter(
     ignore_background_class: bool = True,
     gpkg_name: str = 'output.gpkg',
     json_name: str = 'processed_coordinates.json',
-    mode: SegmentationExporterMode = SegmentationExporterMode.GPKG,
     num_workers: int = 4,
 ) -> None:
     """Exports the predictions.
@@ -52,9 +47,8 @@ def segmentation_exporter(
         epsg_code: EPSG code
         field_name: name of the field in the geodataframe
         ignore_background_class: if True, the background class is not additionally vectorized as a polygon of class 0
-        gpkg_name: name of the geopackage (only used if `mode` is `GPKG`)
+        gpkg_name: name of the geopackage
         json_name: name of the JSON file containing the coordinates of the processed tiles
-        mode: segmentation exporter mode (`FEATHER` or `GPKG`)
         num_workers: number of workers
     """
     with ThreadPoolExecutor(max_workers=num_workers) as executor:
@@ -72,7 +66,6 @@ def segmentation_exporter(
                 ignore_background_class=ignore_background_class,
                 gpkg_name=gpkg_name,
                 json_name=json_name,
-                mode=mode,
             )
 
 
@@ -88,7 +81,6 @@ def _segmentation_exporter_task(
     ignore_background_class: bool = True,
     gpkg_name: str = 'output.gpkg',
     json_name: str = 'processed_coordinates.json',
-    mode: SegmentationExporterMode = SegmentationExporterMode.GPKG,
 ) -> None:
     """Exports the predictions.
 
@@ -105,9 +97,8 @@ def _segmentation_exporter_task(
         epsg_code: EPSG code
         field_name: name of the field in the geodataframe
         ignore_background_class: if True, the background class is not additionally vectorized as a polygon of class 0
-        gpkg_name: name of the geopackage (only used if `mode` is `GPKG`)
+        gpkg_name: name of the geopackage
         json_name: name of the JSON file containing the coordinates of the processed tiles
-        mode: segmentation exporter mode (`FEATHER` or `GPKG`)
     """
     gdf = _vectorize_preds(
         preds=preds,
@@ -122,99 +113,17 @@ def _segmentation_exporter_task(
     _export_gdf(
         gdf=gdf,
         path=path,
+        gpkg_name=gpkg_name,
+    )
+    _export_coordinates_json(
         x_min=x_min,
         y_min=y_min,
-        gpkg_name=gpkg_name,
+        path=path,
         json_name=json_name,
-        mode=mode,
     )
 
 
 def _export_gdf(
-    gdf: gpd.GeoDataFrame | None,
-    path: Path,
-    x_min: Coordinate,
-    y_min: Coordinate,
-    gpkg_name: str = 'output.gpkg',
-    json_name: str = 'processed_coordinates.json',
-    mode: SegmentationExporterMode = SegmentationExporterMode.GPKG,
-) -> None:
-    """Exports the geodataframe and the coordinates of the processed tiles.
-
-    Parameters:
-        gdf: geodataframe of the vectorized predictions
-        path: path to the output directory
-        x_min: minimum x coordinate
-        y_min: minimum y coordinate
-        gpkg_name: name of the geopackage (only used if `mode` is `GPKG`)
-        json_name: name of the JSON file containing the coordinates of the processed tiles
-        mode: segmentation exporter mode (`FEATHER` or `GPKG`)
-
-    Raises:
-        AviaryUserError: Invalid segmentation exporter mode
-    """
-    if mode == SegmentationExporterMode.FEATHER:
-        _export_gdf_feather(
-            gdf=gdf,
-            path=path,
-            x_min=x_min,
-            y_min=y_min,
-        )
-        _export_coordinates_json(
-            path=path,
-            x_min=x_min,
-            y_min=y_min,
-            json_name=json_name,
-        )
-        return
-
-    if mode == SegmentationExporterMode.GPKG:
-        _export_gdf_gpkg(
-            gdf=gdf,
-            path=path,
-            gpkg_name=gpkg_name,
-        )
-        _export_coordinates_json(
-            path=path,
-            x_min=x_min,
-            y_min=y_min,
-            json_name=json_name,
-        )
-        return
-
-    message = 'Invalid segmentation exporter mode!'
-    raise AviaryUserError(message)
-
-
-def _export_gdf_feather(
-    gdf: gpd.GeoDataFrame | None,
-    path: Path,
-    x_min: Coordinate,
-    y_min: Coordinate,
-) -> None:
-    """Exports the geodataframe as a feather file.
-
-    Parameters:
-        gdf: geodataframe of the vectorized predictions
-        path: path to the output directory
-        x_min: minimum x coordinate
-        y_min: minimum y coordinate
-    """
-    subdir_path = path / f'{x_min}_{y_min}'
-    subdir_path.mkdir(exist_ok=True)
-
-    for path in subdir_path.iterdir():  # noqa: PLR1704
-        if path.is_file():
-            path.unlink()
-
-    if gdf is None:
-        return
-
-    gdf_path = subdir_path / f'{x_min}_{y_min}.feather'
-    gdf.to_feather(gdf_path)
-
-
-def _export_gdf_gpkg(
     gdf: gpd.GeoDataFrame | None,
     path: Path,
     gpkg_name: str = 'output.gpkg',
@@ -238,17 +147,17 @@ def _export_gdf_gpkg(
 
 
 def _export_coordinates_json(
-    path: Path,
     x_min: Coordinate,
     y_min: Coordinate,
+    path: Path,
     json_name: str = 'processed_coordinates.json',
 ) -> None:
     """Exports the coordinates of the processed tiles as a JSON file.
 
     Parameters:
-        path: path to the output directory
         x_min: minimum x coordinate
         y_min: minimum y coordinate
+        path: path to the output directory
         json_name: name of the JSON file containing the coordinates of the processed tiles
     """
     coordinates = (x_min, y_min)
