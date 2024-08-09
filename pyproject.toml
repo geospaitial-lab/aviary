@@ -96,7 +96,7 @@ multiline-quotes = "single"
     "T201",
 ]
 "dev/scripts/*" = [
-    "INP001",
+    "T201",
 ]
 "**/tests/*" = [
     "D103",
