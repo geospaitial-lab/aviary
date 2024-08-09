@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytz
 
-from aviary import __version__
+from .get_version import get_version
 
 
 def bump_version(
@@ -99,7 +99,7 @@ if __name__ == '__main__':
     )
     args = parser.parse_args()
 
-    version = __version__
+    version = get_version()
     bumped_version = bump_version(
         version=version,
         bump_type=args.bump_type,
