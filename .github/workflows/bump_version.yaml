@@ -33,7 +33,7 @@ jobs:
       - name: Bump version
         run: |
           python dev/scripts/bump_version.py --bump-type ${{ github.event.inputs.bump_type }}
-          echo "BUMPED_VERSION=$(python -c 'from aviary import __version__; print(__version__)')" >> $GITHUB_ENV
+          echo "BUMPED_VERSION=$(python dev/scripts/get_version.py)" >> $GITHUB_ENV
 
       - name: Create pull request
         uses: peter-evans/create-pull-request@v6
