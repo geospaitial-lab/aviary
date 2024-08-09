@@ -26,7 +26,6 @@ jobs:
 
       - name: Install dependencies
         run: |
-          echo "PYTHONPATH=$(pwd)" >> $GITHUB_ENV
           python -m pip install --upgrade pip setuptools
           pip install pytz
 
