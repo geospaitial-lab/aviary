@@ -1,0 +1,49 @@
+name: Bump version
+
+on:
+  workflow_dispatch:
+    inputs:
+      bump_type:
+        type: choice
+        description: Type of bump
+        options:
+        - major
+        - minor
+        - patch
+        required: true
+
+jobs:
+  bump_version:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip setuptools
+          pip install pytz
+
+      - name: Bump version
+        run: |
+          python dev/scripts/bump_version.py --bump-type ${{ github.event.inputs.bump_type }}
+          echo "BUMPED_VERSION=$(python -c 'from aviary import __version__; print(__version__)')" >> $GITHUB_ENV
+
+      - name: Create pull request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: bump version to ${{ env.BUMPED_VERSION }}
+          branch: build/bump-version
+          title: 'build: bump version to ${{ env.BUMPED_VERSION }}'
+          labels: |
+            build
+            ignore for release
+          assignees: |
+            mrsmrynk
+          reviewers: |
+            mrsmrynk
