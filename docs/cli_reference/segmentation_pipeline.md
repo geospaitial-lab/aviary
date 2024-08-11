@@ -55,7 +55,9 @@ To run the segmentation pipeline, run the following command:
 === "Docker"
 
     ```
-    docker run --rm aviary segmentation-pipeline path/to/config.yaml
+    docker run --rm \
+      -v path/to/config.yaml:/aviary/config.yaml \
+      aviary segmentation-pipeline /aviary/config.yaml
     ```
 
 ---
