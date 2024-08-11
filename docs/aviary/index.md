@@ -18,8 +18,8 @@ so canopies don't cover buildings or impervious surfaces.
 
 ### Requirements
 
-- channels: RGB (red, green, blue) and NIR (near-infrared)
-- ground sampling distance: 0.2m
+- Channels: RGB (red, green, blue) and NIR (near-infrared)
+- Ground sampling distance: 0.2m
 
 ---
 
