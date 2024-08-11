@@ -40,7 +40,9 @@ To run the postprocessing pipeline, run the following command:
 === "Docker"
 
     ```
-    docker run --rm aviary postprocessing-pipeline path/to/config.yaml
+    docker run --rm \
+      -v path/to/config.yaml:/aviary/config.yaml \
+      aviary postprocessing-pipeline /aviary/config.yaml
     ```
 
 ---
