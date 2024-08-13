@@ -55,7 +55,7 @@ Next, activate the virtual environment by running the following command:
     ```
 
 If the virtual environment is activated successfully, you should see its name
-(in this case, `venv`) in your command line prompt.
+(in this case, `venv`) in your command-line prompt.
 
 ---
 
