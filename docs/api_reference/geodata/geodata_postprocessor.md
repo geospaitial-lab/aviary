@@ -21,6 +21,10 @@
 
 ---
 
+::: aviary.geodata.GeodataPostprocessorConfig
+
+---
+
 ::: aviary.geodata.FieldNamePostprocessor
 
 ---
