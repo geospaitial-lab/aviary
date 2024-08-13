@@ -45,6 +45,20 @@ To run the postprocessing pipeline, run the following command:
       aviary postprocessing-pipeline /aviary/config.yaml
     ```
 
+    Note that you need to bind mount all directories and files that are referenced in the configuration file,
+    so they're accessible inside the Docker container.<br />
+    Add the following options to the command for each directory:
+
+    ```
+    -v path/to/directory:/aviary/directory
+    ```
+
+    and for each file:
+
+    ```
+    -v path/to/file:/aviary/file
+    ```
+
 ---
 
 ## Next steps

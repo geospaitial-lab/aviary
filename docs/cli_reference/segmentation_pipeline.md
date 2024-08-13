@@ -9,7 +9,7 @@ It consists of the following components:
 
 - A [`DataFetcher`](../api_reference/data/data_fetcher.md) to fetch data from a source
 - A [`DataPreprocessor`](../api_reference/data/data_preprocessor.md) to preprocess the fetched data
-- A [`ProcessArea`](../api_reference/process_area.md) to define the area of interest
+- A [`ProcessArea`](../api_reference/process_area.md) to specify the area of interest
 - A [`Model`](../api_reference/inference/model.md) to do the inference on the preprocessed data
 - An [`Exporter`](../api_reference/inference/exporter.md) to export the predictions dynamically as geospatial data
 
@@ -58,6 +58,20 @@ To run the segmentation pipeline, run the following command:
     docker run --rm \
       -v path/to/config.yaml:/aviary/config.yaml \
       aviary segmentation-pipeline /aviary/config.yaml
+    ```
+
+    Note that you need to bind mount all directories and files that are referenced in the configuration file,
+    so they're accessible inside the Docker container.<br />
+    Add the following options to the command for each directory:
+
+    ```
+    -v path/to/directory:/aviary/directory
+    ```
+
+    and for each file:
+
+    ```
+    -v path/to/file:/aviary/file
     ```
 
 ---
