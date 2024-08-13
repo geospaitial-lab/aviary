@@ -11,6 +11,7 @@ nav:
       - How to install aviary with Docker: how_to_guides/installation/how_to_install_aviary_with_docker.md
     - CLI:
       - How to run the segmentation pipeline: how_to_guides/cli/how_to_run_the_segmentation_pipeline.md
+      - How to run the postprocessing pipeline: how_to_guides/cli/how_to_run_the_postprocessing_pipeline.md
   - API Reference:
     - API Reference: api_reference/index.md
     - aviary:

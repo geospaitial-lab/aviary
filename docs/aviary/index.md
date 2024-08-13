@@ -24,6 +24,14 @@ so canopies don't cover buildings or impervious surfaces.
 
 ---
 
+### Mapping of the values
+
+- 0: non-impervious surfaces
+- 1: buildings
+- 2: impervious surfaces
+
+---
+
 ### Create the model with the Python API
 
 If you want to use the [Python API](../api_reference/index.md),
