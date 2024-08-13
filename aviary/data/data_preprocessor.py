@@ -128,7 +128,7 @@ class NormalizePreprocessor(DataPreprocessor):
     Examples:
         Assume the data is a 3-channel image of data type uint8.
 
-        You can scale the data to the range 0 to 1 by normalizing the data.
+        You can scale the data to a range of 0 to 1 by normalizing the data.
 
         >>> normalize_preprocessor = NormalizePreprocessor(
         ...     min_values=[0.] * 3,
