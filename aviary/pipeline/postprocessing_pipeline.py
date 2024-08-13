@@ -61,7 +61,7 @@ class PostprocessingPipeline:
             postprocessing pipeline
         """
         geodata_postprocessor_class = globals()[config.geodata_postprocessor_config.name]
-        geodata_postprocessor = geodata_postprocessor_class.from_config(config.geodata_postprocessor_config)
+        geodata_postprocessor = geodata_postprocessor_class.from_config(config.geodata_postprocessor_config.config)
 
         return cls(
             gdf=cast(gpd.GeoDataFrame, config.gdf),
