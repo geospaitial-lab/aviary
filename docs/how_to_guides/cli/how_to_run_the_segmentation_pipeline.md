@@ -45,10 +45,10 @@ a buffer of 32 meters (1/4 of the tile size) is additionally fetched around each
 This results in a tile size of 160x160 meters, i.e. 800x800 pixels
 given a ground sampling distance of 0.2 meters.
 
-#### Notes
+???+ note "Notes"
 
-- The data is automatically resampled to the specified ground sampling distance
-- You may need to adjust the tile size and the buffer size depending on the available resources
+    - The data is automatically resampled to the specified ground sampling distance
+    - You may need to adjust the tile size and the buffer size depending on the available resources
 
 Have a look at the [API reference](../../api_reference/data/data_fetcher.md#aviary.data.VRTFetcherConfig)
 for more details on the configuration options.
@@ -74,9 +74,9 @@ as stated in the [requirements](../../aviary/index.md#requirements) of the model
 The data is assumed to be of data type `uint8` (8-bit unsigned integer),
 where the minimum value is 0 and the maximum value is 255.
 
-#### Notes
+???+ note "Notes"
 
-- The minimum and maximum values are specified for each channel (red, green, blue, near-infrared)
+    - The minimum and maximum values are specified for each channel (red, green, blue, near-infrared)
 
 Have a look at the [API reference](../../api_reference/data/data_preprocessor.md#aviary.data.NormalizePreprocessorConfig)
 for more details on the configuration options.
@@ -98,14 +98,14 @@ process_area:
 This configuration will create a set of coordinates of the bottom left corner of each tile
 in the area of interest.
 
-#### Notes
+???+ note "Notes"
 
-- The coordinates of the bounding box are specified in the projected coordinate system of the data
-- The tile size must match the tile size of the data fetcher
-- You might need to exclude tiles that are already processed in a previous run
-  by specifying the path to the JSON file named `processed_coordinates.json`
-  containing the coordinates of the bottom left corner of the processed tiles
-  (this file is created automatically by the [exporter](#step-6-configure-the-exporter) in the output directory)
+    - The coordinates of the bounding box are specified in the projected coordinate system of the data
+    - The tile size must match the tile size of the data fetcher
+    - You might need to exclude tiles that are already processed in a previous run
+      by specifying the path to the JSON file named `processed_coordinates.json`
+      containing the coordinates of the bottom left corner of the processed tiles
+      (this file is created automatically by the [exporter](#step-6-configure-the-exporter) in the output directory)
 
 Note that there are alternative ways to specify the area of interest,
 e.g. by providing a path to a geodataframe (geopackage or shapefile)
@@ -132,10 +132,10 @@ model:
 
 This configuration will download the weights of the model sparrow.
 
-#### Notes
+???+ note "Notes"
 
-- The buffer size must match the buffer size of the data fetcher
-- The buffer is removed from the predictions after the inference
+    - The buffer size must match the buffer size of the data fetcher
+    - The buffer is removed from the predictions after the inference
 
 Have a look at the [API reference](../../api_reference/inference/model.md#aviary.inference.SegmentationModelConfig)
 for more details on the configuration options.
@@ -165,11 +165,11 @@ in the specified output directory.<br />
 The coordinates of the bottom left corner of the processed tiles are exported dynamically to a JSON file
 named `processed_coordinates.json`.
 
-#### Notes
+???+ note "Notes"
 
-- The tile size must match the tile size of the data fetcher
-- The ground sampling distance must match the ground sampling distance of the data fetcher
-- You may need to adjust the number of workers depending on the available resources and the number of tiles per batch
+    - The tile size must match the tile size of the data fetcher
+    - The ground sampling distance must match the ground sampling distance of the data fetcher
+    - You may need to adjust the number of workers depending on the available resources and the number of tiles per batch
 
 Have a look at the [API reference](../../api_reference/inference/exporter.md#aviary.inference.SegmentationExporterConfig)
 for more details on the configuration options.
@@ -188,9 +188,9 @@ num_workers: 4
 This configuration will do the inference on 4 tiles in parallel.<br />
 The number of workers specifies the number of threads that are used for fetching the data.
 
-#### Notes
+???+ note "Notes"
 
-- You may need to adjust the batch size and the number of workers depending on the available resources
+    - You may need to adjust the batch size and the number of workers depending on the available resources
 
 ---
 
