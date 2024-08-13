@@ -3,7 +3,7 @@
   --md-code-hl-number-color: #FF595E;
   --md-code-hl-special-color: #FF595E;
   --md-code-hl-function-color: #6A4C93;
-  --md-code-hl-constant-color: #FFCA3A;
+  --md-code-hl-constant-color: var(--md-code-fg-color);
   --md-code-hl-keyword-color: #1982C4;
   --md-code-hl-string-color: #71B127;
   --md-footer-bg-color: hsla(0, 0%, 6%, 1);
@@ -50,7 +50,7 @@
   --md-code-hl-number-color: #EE686C;
   --md-code-hl-special-color: #EE686C;
   --md-code-hl-function-color: #6E637E;
-  --md-code-hl-constant-color: #EBC14C;
+  --md-code-hl-constant-color: var(--md-code-fg-color);
   --md-code-hl-keyword-color: #2F7CAC;
   --md-code-hl-string-color: #6E9A3C;
   --md-typeset-kbd-color: hsla(0, 0%, 90%, 0.12);
