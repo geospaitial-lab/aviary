@@ -42,7 +42,7 @@ data_fetcher:
 This configuration will fetch the data from the virtual raster in tiles of size 128x128 meters.<br />
 In order to increase the quality of the predictions in the border area of the tiles,
 a buffer of 32 meters (1/4 of the tile size) is additionally fetched around each tile.
-This results in a tile size of 160x160 meters, i.e. 800x800 pixels
+This results in a tile size of 192x192 meters, i.e. 960x960 pixels
 given a ground sampling distance of 0.2 meters.
 
 ???+ note "Notes"
@@ -127,6 +127,7 @@ model:
   name: ONNXSegmentationModel
   config:
     name: sparrow
+    ground_sampling_distance: 0.2
     buffer_size: 32
 ```
 
@@ -134,6 +135,7 @@ This configuration will download the weights of the model sparrow.
 
 ???+ note "Notes"
 
+    - The ground sampling distance must match the ground sampling distance of the data fetcher
     - The buffer size must match the buffer size of the data fetcher
     - The buffer is removed from the predictions after the inference
 
@@ -221,6 +223,7 @@ model:
   name: ONNXSegmentationModel
   config:
     name: sparrow
+    ground_sampling_distance: 0.2
     buffer_size: 32
 
 exporter:

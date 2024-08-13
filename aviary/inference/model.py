@@ -23,6 +23,7 @@ from aviary._utils.exceptions import AviaryUserError
 from aviary._utils.types import (
     BufferSize,
     Device,
+    GroundSamplingDistance,
 )
 from aviary.inference.aviary import aviary
 
@@ -57,16 +58,19 @@ class SegmentationModel:
     def __init__(
         self,
         path: Path,
+        ground_sampling_distance: GroundSamplingDistance,
         buffer_size: BufferSize = 0,
         device: Device = Device.CPU,
     ) -> None:
         """
         Parameters:
             path: path to the model
-            buffer_size: buffer size in pixels (specifies the area around the tile that is additionally fetched)
+            ground_sampling_distance: ground sampling distance in meters
+            buffer_size: buffer size in meters (specifies the area around the tile that is additionally fetched)
             device: device (`CPU` or `CUDA`)
         """
         self.path = path
+        self.ground_sampling_distance = ground_sampling_distance
         self.buffer_size = buffer_size
         self.device = device
 
@@ -75,6 +79,7 @@ class SegmentationModel:
         cls,
         repo: str,
         path: str,
+        ground_sampling_distance: GroundSamplingDistance,
         buffer_size: BufferSize = 0,
         device: Device = Device.CPU,
     ) -> SegmentationModel:
@@ -83,7 +88,8 @@ class SegmentationModel:
         Parameters:
             repo: repository (Hugging Face Hub, e.g., 'user/repo')
             path: path to the model (Hugging Face Hub)
-            buffer_size: buffer size in pixels (specifies the area around the tile that is additionally fetched)
+            ground_sampling_distance: ground sampling distance in meters
+            buffer_size: buffer size in meters (specifies the area around the tile that is additionally fetched)
             device: device (`CPU` or `CUDA`)
 
         Returns:
@@ -96,6 +102,7 @@ class SegmentationModel:
         path = Path(path)
         return cls(
             path=path,
+            ground_sampling_distance=ground_sampling_distance,
             buffer_size=buffer_size,
             device=device,
         )
@@ -104,6 +111,7 @@ class SegmentationModel:
     def from_aviary(
         cls,
         name: str,
+        ground_sampling_distance: GroundSamplingDistance,
         buffer_size: BufferSize = 0,
         device: Device = Device.CPU,
     ) -> SegmentationModel:
@@ -111,7 +119,8 @@ class SegmentationModel:
 
         Parameters:
             name: name of the model
-            buffer_size: buffer size in pixels (specifies the area around the tile that is additionally fetched)
+            ground_sampling_distance: ground sampling distance in meters
+            buffer_size: buffer size in meters (specifies the area around the tile that is additionally fetched)
             device: device (`CPU` or `CUDA`)
 
         Returns:
@@ -121,6 +130,7 @@ class SegmentationModel:
         return cls.from_huggingface(
             repo=model_card.repo,
             path=model_card.path,
+            ground_sampling_distance=ground_sampling_distance,
             buffer_size=buffer_size,
             device=device,
         )
@@ -144,6 +154,7 @@ class SegmentationModel:
         if config.name is not None:
             return cls.from_aviary(
                 name=config.name,
+                ground_sampling_distance=config.ground_sampling_distance,
                 buffer_size=config.buffer_size,
                 device=config.device,
             )
@@ -152,6 +163,7 @@ class SegmentationModel:
             return cls.from_huggingface(
                 repo=config.repo,
                 path=config.path,
+                ground_sampling_distance=config.ground_sampling_distance,
                 buffer_size=config.buffer_size,
                 device=config.device,
             )
@@ -159,6 +171,7 @@ class SegmentationModel:
         if config.path is not None:
             return cls(
                 path=Path(config.path),
+                ground_sampling_distance=config.ground_sampling_distance,
                 buffer_size=config.buffer_size,
                 device=config.device,
             )
@@ -197,12 +210,14 @@ class SegmentationModelConfig(pydantic.BaseModel):
         path: path to the model (local or Hugging Face Hub)
         repo: repository (Hugging Face Hub, e.g., 'user/repo')
         name: name of the model
-        buffer_size: buffer size in pixels (specifies the area around the tile that is additionally fetched)
+        ground_sampling_distance: ground sampling distance in meters
+        buffer_size: buffer size in meters (specifies the area around the tile that is additionally fetched)
         device: device ('cpu' or 'cuda')
     """
     path: str | None = None  # don't cast to Path, as it can be a Hugging Face Hub unix path
     repo: str | None = None
     name: str | None = None
+    ground_sampling_distance: GroundSamplingDistance
     buffer_size: BufferSize = 0
     device: Device = Device.CPU
 
@@ -235,17 +250,20 @@ class ONNXSegmentationModel(SegmentationModel):
     def __init__(
         self,
         path: Path,
+        ground_sampling_distance: GroundSamplingDistance,
         buffer_size: BufferSize = 0,
         device: Device = Device.CPU,
     ) -> None:
         """
         Parameters:
             path: path to the model
-            buffer_size: buffer size in pixels (specifies the area around the tile that is additionally fetched)
+            ground_sampling_distance: ground sampling distance in meters
+            buffer_size: buffer size in meters (specifies the area around the tile that is additionally fetched)
             device: device (`CPU` or `CUDA`)
         """
         super().__init__(
             path=path,
+            ground_sampling_distance=ground_sampling_distance,
             buffer_size=buffer_size,
             device=device,
         )
@@ -273,5 +291,6 @@ class ONNXSegmentationModel(SegmentationModel):
             model_input_name=self._model_input_name,
             model_output_name=self._model_output_name,
             inputs=inputs,
+            ground_sampling_distance=self.ground_sampling_distance,
             buffer_size=self.buffer_size,
         )
