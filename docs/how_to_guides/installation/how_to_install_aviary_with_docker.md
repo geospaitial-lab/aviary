@@ -28,14 +28,14 @@ If you need help installing Docker, you can refer to the
 Download the Docker image by launching your command-line interface and run the following command:
 
 ```
-docker pull ghcr.io/geospaitial-lab/aviary/aviary
+docker pull ghcr.io/geospaitial-lab/aviary
 ```
 
 We recommend to shorten the image name by tagging it with a custom name (in this case, `aviary`).
 To do so, run the command below:
 
 ```
-docker tag ghcr.io/geospaitial-lab/aviary/aviary aviary
+docker tag ghcr.io/geospaitial-lab/aviary aviary
 ```
 
 ---

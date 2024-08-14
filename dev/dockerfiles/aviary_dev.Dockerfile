@@ -12,6 +12,7 @@ LABEL org.opencontainers.image.title="aviary" \
     org.opencontainers.image.licenses="GPL-3.0" \
     org.opencontainers.image.version="dev" \
     org.opencontainers.image.url="https://github.com/geospaitial-lab/aviary" \
+    org.opencontainers.image.source="https://github.com/geospaitial-lab/aviary" \
     org.opencontainers.image.documentation="https://geospaitial-lab.github.io/aviary"
 
 RUN pip install --no-cache-dir . && \
