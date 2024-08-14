@@ -233,6 +233,7 @@ exporter:
     tile_size: 128
     ground_sampling_distance: 0.2
     epsg_code: 25832
+    num_workers: 4
 
 batch_size: 4
 num_workers: 4
