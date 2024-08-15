@@ -9,7 +9,7 @@ You can choose from the following categories:
 
 <div class="grid cards" markdown>
 
--   [**Installation**](installation/how_to_install_aviary_with_venv.md)<br />
+-   [**Installation**](installation/how_to_install_aviary_with_pip.md)<br />
     How to install aviary
 
 -   [**CLI**](cli/how_to_run_the_segmentation_pipeline.md)<br />

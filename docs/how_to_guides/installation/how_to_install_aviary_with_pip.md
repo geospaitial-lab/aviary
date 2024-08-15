@@ -2,7 +2,7 @@
   .md-sidebar--secondary { visibility: hidden }
 </style>
 
-## How to install aviary with venv
+## How to install aviary with pip
 
 Follow along this step-by-step guide to install aviary using a virtual environment.
 
