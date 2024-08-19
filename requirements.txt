@@ -1,5 +1,5 @@
 geopandas==1.0.1
-huggingface_hub==0.24.5
+huggingface_hub==0.24.6
 numpy==1.26.4
 onnxruntime==1.18.1
 pydantic==2.8.2
