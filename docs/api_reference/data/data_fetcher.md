@@ -7,3 +7,11 @@
 ---
 
 ::: aviary.data.VRTFetcherConfig
+
+---
+
+::: aviary.data.WMSFetcher
+
+---
+
+::: aviary.data.WMSFetcherConfig
