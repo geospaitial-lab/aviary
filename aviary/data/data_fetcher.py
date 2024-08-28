@@ -182,7 +182,7 @@ class WMSFetcher(FromConfigMixin):
             version: version of the web map service (`V1_1_1` or `V1_3_0`)
             layer: name of the layer
             epsg_code: EPSG code
-            response_format: format of the response (e.g., 'image/png')
+            response_format: format of the response (MIME type, e.g., 'image/png')
             tile_size: tile size in meters
             ground_sampling_distance: ground sampling distance in meters
             style: name of the style
@@ -255,7 +255,7 @@ class WMSFetcherConfig(pydantic.BaseModel):
         version: version of the web map service ('1.1.1' or '1.3.0')
         layer: name of the layer
         epsg_code: EPSG code
-        response_format: format of the response (e.g., 'image/png')
+        response_format: format of the response (MIME type, e.g., 'image/png')
         tile_size: tile size in meters
         ground_sampling_distance: ground sampling distance in meters
         style: name of the style
