@@ -15,6 +15,8 @@ def test_globals() -> None:
         'StandardizePreprocessorConfig',
         'VRTFetcher',
         'VRTFetcherConfig',
+        'WMSFetcher',
+        'WMSFetcherConfig',
     ]
 
     for class_name in class_names:
