@@ -985,3 +985,13 @@ class SetFilterMode(Enum):
     DIFFERENCE = 'difference'
     INTERSECTION = 'intersection'
     UNION = 'union'
+
+
+class WMSVersion(Enum):
+    """
+    Attributes:
+        V1_1_1: version 1.1.1
+        V1_3_0: version 1.3.0
+    """
+    V1_1_1 = '1.1.1'
+    V1_3_0 = '1.3.0'

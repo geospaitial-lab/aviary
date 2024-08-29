@@ -14,3 +14,7 @@
 ---
 
 ::: aviary.SetFilterMode
+
+---
+
+::: aviary.WMSVersion

@@ -10,6 +10,7 @@ from ._utils.types import (
     ProcessArea,
     ProcessAreaConfig,
     SetFilterMode,
+    WMSVersion,
 )
 
 __all__ = [
@@ -23,6 +24,7 @@ __all__ = [
     'ProcessArea',
     'ProcessAreaConfig',
     'SetFilterMode',
+    'WMSVersion',
 ]
 
 __version__ = '0.1.0'

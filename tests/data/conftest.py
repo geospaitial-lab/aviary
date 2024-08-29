@@ -5,10 +5,14 @@ import numpy as np
 import pytest
 
 # noinspection PyProtectedMember
-from aviary._utils.types import InterpolationMode
+from aviary._utils.types import (
+    InterpolationMode,
+    WMSVersion,
+)
 from aviary.data.data_fetcher import (
     DataFetcher,
     VRTFetcher,
+    WMSFetcher,
 )
 from aviary.data.data_preprocessor import (
     CompositePreprocessor,
@@ -76,6 +80,32 @@ def vrt_fetcher() -> VRTFetcher:
         tile_size=tile_size,
         ground_sampling_distance=ground_sampling_distance,
         interpolation_mode=interpolation_mode,
+        buffer_size=buffer_size,
+        drop_channels=drop_channels,
+    )
+
+
+@pytest.fixture(scope='session')
+def wms_fetcher() -> WMSFetcher:
+    url = 'https://test.com'
+    version = WMSVersion.V1_3_0
+    layer = 'test_layer'
+    epsg_code = 25832
+    response_format = 'image/png'
+    tile_size = 128
+    ground_sampling_distance = .2
+    style = None
+    buffer_size = 0
+    drop_channels = None
+    return WMSFetcher(
+        url=url,
+        version=version,
+        layer=layer,
+        epsg_code=epsg_code,
+        response_format=response_format,
+        tile_size=tile_size,
+        ground_sampling_distance=ground_sampling_distance,
+        style=style,
         buffer_size=buffer_size,
         drop_channels=drop_channels,
     )
