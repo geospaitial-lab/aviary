@@ -231,13 +231,15 @@ def _get_wms_params(
 
     Returns:
         params
+
+    Raises:
+        AviaryUserError: Invalid WMS version
     """
     params = {
         'service': 'WMS',
         'version': version.value,
         'request': 'GetMap',
         'layers': layer,
-        'crs': f'EPSG:{epsg_code}',
         'format': response_format,
         'width': str(tile_size_pixels),
         'height': str(tile_size_pixels),
@@ -246,6 +248,14 @@ def _get_wms_params(
         'transparent': 'false',
         'bgcolor': fill_value,
     }
+
+    if version == WMSVersion.V1_1_1:
+        params['srs'] = f'EPSG:{epsg_code}'
+    elif version == WMSVersion.V1_3_0:
+        params['crs'] = f'EPSG:{epsg_code}'
+    else:
+        message = 'Invalid WMS version!'
+        raise AviaryUserError(message)
 
     if style is not None:
         params['styles'] = style
@@ -291,7 +301,10 @@ def _request_wms(
     response.raise_for_status()
 
     if not response.headers['Content-Type'].startswith('image/'):
-        message = 'The response is not an image.'
+        message = (
+            'Invalid request! '
+            'The response must be an image.'
+        )
         raise AviaryUserError(message)
 
     with rio.io.MemoryFile(response.content) as file, warnings.catch_warnings():
