@@ -312,4 +312,17 @@ def _request_wms(
         with file.open() as src:
             data = src.read()
 
+            conditions = [
+                data.ndim != 3,  # noqa: PLR2004
+                data.shape[0] != 3,  # noqa: PLR2004
+                data.dtype != np.uint8,
+            ]
+
+            if any(conditions):
+                message = (
+                    'Invalid request! '
+                    'The response must be an array of shape (n, n, 3) and data type uint8.'
+                )
+                raise AviaryUserError(message)
+
     return data
