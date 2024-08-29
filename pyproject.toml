@@ -30,7 +30,6 @@ classifiers = [
 ]
 dynamic = [
     "dependencies",
-    "optional-dependencies",
     "version",
 ]
 
@@ -43,7 +42,6 @@ aviary = "aviary._cli.cli:app"
 
 [tool.setuptools.dynamic]
 dependencies = {file = "requirements.txt"}
-optional-dependencies = {dev = {file = "dev/requirements.txt"}}
 version = {attr = "aviary.__version__"}
 
 [tool.setuptools.packages]
