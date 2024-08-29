@@ -4,7 +4,8 @@ WORKDIR /aviary
 
 COPY . .
 
-RUN pip wheel --no-cache-dir --no-deps --wheel-dir wheels .
+RUN python -m pip install --upgrade pip setuptools wheel && \
+    pip wheel --no-cache-dir --no-deps --wheel-dir wheels .
 
 FROM python:3.12-slim as runner
 
@@ -25,7 +26,8 @@ LABEL org.opencontainers.image.title="aviary" \
     org.opencontainers.image.source="https://github.com/geospaitial-lab/aviary" \
     org.opencontainers.image.documentation="https://geospaitial-lab.github.io/aviary"
 
-RUN pip install --no-cache-dir wheels/* && \
+RUN python -m pip install --upgrade pip setuptools wheel && \
+    pip install --no-cache-dir wheels/* && \
     rm -rf wheels && \
     adduser --disabled-password --gecos "" aviary_user
 
