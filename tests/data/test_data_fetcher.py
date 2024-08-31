@@ -1,17 +1,77 @@
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
+import pytest
+
+import aviary.data.data_fetcher
+
 # noinspection PyProtectedMember
 from aviary._utils.types import (
     InterpolationMode,
     WMSVersion,
 )
 from aviary.data.data_fetcher import (
+    CompositeFetcher,
+    DataFetcher,
     VRTFetcher,
     VRTFetcherConfig,
     WMSFetcher,
     WMSFetcherConfig,
 )
+
+
+def test_globals() -> None:
+    class_names = [
+        'VRTFetcher',
+        'WMSFetcher',
+    ]
+
+    for class_name in class_names:
+        assert hasattr(aviary.data.data_fetcher, class_name)
+
+
+def test_composite_fetcher_init() -> None:
+    data_fetchers = [
+        MagicMock(spec=DataFetcher),
+        MagicMock(spec=DataFetcher),
+        MagicMock(spec=DataFetcher),
+    ]
+    num_workers = 1
+    composite_fetcher = CompositeFetcher(
+        data_fetchers=data_fetchers,
+        num_workers=num_workers,
+    )
+
+    assert composite_fetcher.data_fetchers == data_fetchers
+    assert composite_fetcher.num_workers == num_workers
+
+
+@pytest.mark.skip(reason='Not implemented')
+def test_composite_fetcher_from_config() -> None:
+    pass
+
+
+@patch('aviary.data.data_fetcher.composite_fetcher')
+def test_composite_fetcher_call(
+    mocked_composite_fetcher: MagicMock,
+    composite_fetcher: CompositeFetcher,
+) -> None:
+    x_min = -128
+    y_min = -128
+    expected = 'expected'
+    mocked_composite_fetcher.return_value = expected
+    data = composite_fetcher(
+        x_min=x_min,
+        y_min=y_min,
+    )
+
+    mocked_composite_fetcher.assert_called_once_with(
+        x_min=x_min,
+        y_min=y_min,
+        data_fetchers=composite_fetcher.data_fetchers,
+        num_workers=composite_fetcher.num_workers,
+    )
+    assert data == expected
 
 
 def test_vrt_fetcher_init() -> None:
