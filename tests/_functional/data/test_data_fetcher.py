@@ -28,6 +28,11 @@ from tests._functional.data.data.data_test_data_fetcher import (
 
 
 @pytest.mark.skip(reason='Not implemented')
+def test_composite_fetcher() -> None:
+    pass
+
+
+@pytest.mark.skip(reason='Not implemented')
 def test_vrt_fetcher() -> None:
     pass
 
