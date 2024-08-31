@@ -12,6 +12,8 @@ from aviary._utils.types import (
     ProcessAreaConfig,
 )
 from aviary.data.data_fetcher import (  # noqa: F401,TCH001
+    CompositeFetcher,
+    CompositeFetcherConfig,
     VRTFetcher,
     VRTFetcherConfig,
     WMSFetcher,
@@ -160,6 +162,7 @@ class DataFetcherConfig(pydantic.BaseModel):
     """
     name: str
     config: (
+        CompositeFetcherConfig |
         VRTFetcherConfig |
         WMSFetcherConfig
     )
