@@ -10,6 +10,7 @@ from aviary._utils.types import (
     WMSVersion,
 )
 from aviary.data.data_fetcher import (
+    CompositeFetcher,
     DataFetcher,
     VRTFetcher,
     WMSFetcher,
@@ -21,6 +22,20 @@ from aviary.data.data_preprocessor import (
     StandardizePreprocessor,
 )
 from aviary.data.dataset import Dataset
+
+
+@pytest.fixture(scope='session')
+def composite_fetcher() -> CompositeFetcher:
+    data_fetchers = [
+        MagicMock(spec=DataFetcher),
+        MagicMock(spec=DataFetcher),
+        MagicMock(spec=DataFetcher),
+    ]
+    num_workers = 1
+    return CompositeFetcher(
+        data_fetchers=data_fetchers,
+        num_workers=num_workers,
+    )
 
 
 @pytest.fixture(scope='session')

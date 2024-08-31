@@ -1,5 +1,14 @@
+from __future__ import annotations
+
 import warnings
-from pathlib import Path
+from concurrent.futures import (
+    ThreadPoolExecutor,
+    as_completed,
+)
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 import numpy as np
 import numpy.typing as npt
@@ -21,6 +30,42 @@ from aviary._utils.types import (
     TileSize,
     WMSVersion,
 )
+
+if TYPE_CHECKING:
+    from aviary.data.data_fetcher import DataFetcher
+
+
+def composite_fetcher(
+    x_min: Coordinate,
+    y_min: Coordinate,
+    data_fetchers: list[DataFetcher],
+    num_workers: int = 1,
+) -> npt.NDArray:
+    """Fetches data from the sources.
+
+    Parameters:
+        x_min: minimum x coordinate
+        y_min: minimum y coordinate
+        data_fetchers: data fetchers
+        num_workers: number of workers
+
+    Returns:
+        data
+    """
+    with ThreadPoolExecutor(max_workers=num_workers) as executor:
+        tasks = [
+            executor.submit(
+                data_fetcher,
+                x_min=x_min,
+                y_min=y_min,
+            )
+            for data_fetcher in data_fetchers
+        ]
+        data = [
+            futures.result() for futures in as_completed(tasks)
+        ]
+
+    return np.concatenate(data, axis=-1)
 
 
 def vrt_fetcher(

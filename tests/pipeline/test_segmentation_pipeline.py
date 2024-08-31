@@ -3,6 +3,8 @@ import aviary.pipeline.segmentation_pipeline
 
 def test_globals() -> None:
     class_names = [
+        'CompositeFetcher',
+        'CompositeFetcherConfig',
         'CompositePreprocessor',
         'CompositePreprocessorConfig',
         'NormalizePreprocessor',

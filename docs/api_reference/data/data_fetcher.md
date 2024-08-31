@@ -2,6 +2,18 @@
 
 ---
 
+::: aviary.data.CompositeFetcher
+
+---
+
+::: aviary.data.CompositeFetcherConfig
+
+---
+
+::: aviary.data.DataFetcherConfig
+
+---
+
 ::: aviary.data.VRTFetcher
 
 ---
