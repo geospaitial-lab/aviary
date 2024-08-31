@@ -1,5 +1,8 @@
 from .data_fetcher import (
+    CompositeFetcher,
+    CompositeFetcherConfig,
     DataFetcher,
+    DataFetcherConfig,
     VRTFetcher,
     VRTFetcherConfig,
     WMSFetcher,
@@ -19,9 +22,12 @@ from .data_preprocessor import (
 from .dataset import Dataset
 
 __all__ = [
+    'CompositeFetcher',
+    'CompositeFetcherConfig',
     'CompositePreprocessor',
     'CompositePreprocessorConfig',
     'DataFetcher',
+    'DataFetcherConfig',
     'DataLoader',
     'DataPreprocessor',
     'DataPreprocessorConfig',

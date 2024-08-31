@@ -11,6 +11,7 @@ if TYPE_CHECKING:
 
 # noinspection PyProtectedMember
 from aviary._functional.data.data_fetcher import (
+    composite_fetcher,
     vrt_fetcher,
     wms_fetcher,
 )
@@ -38,6 +39,7 @@ class DataFetcher(Protocol):
     The data fetcher is used by the dataset to fetch data for each tile.
 
     Currently implemented data fetchers:
+        - CompositeFetcher: Composes multiple data fetchers
         - VRTFetcher: Fetches data from a virtual raster
         - WMSFetcher: Fetches data from a web map service
 
@@ -60,6 +62,94 @@ class DataFetcher(Protocol):
             data
         """
         ...
+
+
+class CompositeFetcher(FromConfigMixin):
+    """Data fetcher that composes multiple data fetchers
+
+    Implements the `DataFetcher` protocol.
+    """
+
+    def __init__(
+        self,
+        data_fetchers: list[DataFetcher],
+        num_workers: int = 1,
+    ) -> None:
+        """
+        Parameters:
+            data_fetchers: data fetchers
+            num_workers: number of workers
+        """
+        self.data_fetchers = data_fetchers
+        self.num_workers = num_workers
+
+    @classmethod
+    def from_config(
+        cls,
+        config: CompositeFetcherConfig,
+    ) -> CompositeFetcher:
+        """Creates a composite fetcher from the configuration.
+
+        Parameters:
+            config: configuration
+
+        Returns:
+            composite fetcher
+        """
+        data_fetchers = []
+
+        for data_fetcher_config in config.data_fetchers_configs:
+            data_fetcher_class = globals()[data_fetcher_config.name]
+            data_fetcher = data_fetcher_class.from_config(data_fetcher_config.config)
+            data_fetchers.append(data_fetcher)
+
+        return cls(
+            data_fetchers=data_fetchers,
+            num_workers=config.num_workers,
+        )
+
+    def __call__(
+        self,
+        x_min: Coordinate,
+        y_min: Coordinate,
+    ) -> npt.NDArray:
+        """Fetches data from the sources.
+
+        Parameters:
+            x_min: minimum x coordinate
+            y_min: minimum y coordinate
+
+        Returns:
+            data
+        """
+        return composite_fetcher(
+            x_min=x_min,
+            y_min=y_min,
+            data_fetchers=self.data_fetchers,
+            num_workers=self.num_workers,
+        )
+
+
+class CompositeFetcherConfig(pydantic.BaseModel):
+    """Configuration for the `from_config` class method of `CompositeFetcher`
+
+    Attributes:
+        data_fetchers_configs: configurations of the data fetchers
+        num_workers: number of workers
+    """
+    data_fetchers_configs: list[DataFetcherConfig]
+    num_workers: int = 1
+
+
+class DataFetcherConfig(pydantic.BaseModel):
+    """Configuration for data fetchers
+
+    Attributes:
+        name: name of the data fetcher
+        config: configuration of the data fetcher
+    """
+    name: str
+    config: VRTFetcherConfig | WMSFetcherConfig
 
 
 class VRTFetcher(FromConfigMixin):
