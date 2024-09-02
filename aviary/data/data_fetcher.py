@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-# noinspection PyUnresolvedReferences
 from pathlib import Path  # noqa: TCH003
 from typing import TYPE_CHECKING, Protocol
 

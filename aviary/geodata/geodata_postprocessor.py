@@ -1,8 +1,6 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-
-# noinspection PyUnresolvedReferences
 from pathlib import Path  # noqa: TCH003
 
 import geopandas as gpd
