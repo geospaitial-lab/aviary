@@ -39,7 +39,7 @@ jobs:
         with:
           context: .
           file: dev/dockerfiles/aviary.Dockerfile
-          build_args: |
+          build-args: |
             VERSION=${{ github.event.release.tag_name }}
           tags: ${{ steps.metadata.outputs.tags }}
           push: true
