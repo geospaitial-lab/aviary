@@ -30,7 +30,7 @@ def version_callback(
 # noinspection PyUnusedLocal
 @app.callback()
 def main(
-    version: bool = typer.Option(  # noqa: ARG001
+    version: bool = typer.Option(
         None,
         '--version',
         callback=version_callback,
