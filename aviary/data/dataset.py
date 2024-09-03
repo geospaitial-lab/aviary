@@ -24,14 +24,14 @@ class Dataset:
         - The dataset is called concurrently by the data loader
 
     Examples:
-        Assume the data fetcher, the data preprocessor and the coordinates are already created.
+        Assume the data fetcher, the coordinates and the data preprocessor are already created.
 
         You can create a dataset and iterate over the samples.
 
         >>> dataset = Dataset(
         ...     data_fetcher=data_fetcher,
-        ...     data_preprocessor=data_preprocessor,
         ...     coordinates=coordinates,
+        ...     data_preprocessor=data_preprocessor,
         ... )
         ...
         >>> for data, x_min, y_min in dataset:
@@ -41,14 +41,14 @@ class Dataset:
     def __init__(
         self,
         data_fetcher: DataFetcher,
-        data_preprocessor: DataPreprocessor,
         coordinates: CoordinatesSet,
+        data_preprocessor: DataPreprocessor | None = None,
     ) -> None:
         """
         Parameters:
             data_fetcher: data fetcher
-            data_preprocessor: data preprocessor
             coordinates: coordinates (x_min, y_min) of each tile
+            data_preprocessor: data preprocessor
         """
         self.data_fetcher = data_fetcher
         self.data_preprocessor = data_preprocessor
@@ -77,8 +77,8 @@ class Dataset:
             sample
         """
         return get_item(
+            data_fetcher=self.data_fetcher,
             coordinates=self.coordinates,
             index=index,
-            data_fetcher=self.data_fetcher,
             data_preprocessor=self.data_preprocessor,
         )

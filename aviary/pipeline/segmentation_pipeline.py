@@ -116,8 +116,8 @@ class SegmentationPipeline:
         """Runs the segmentation pipeline."""
         dataset = Dataset(
             data_fetcher=self.data_fetcher,
-            data_preprocessor=self.data_preprocessor,
             coordinates=self.process_area.coordinates,
+            data_preprocessor=self.data_preprocessor,
         )
         data_loader = DataLoader(
             dataset=dataset,
