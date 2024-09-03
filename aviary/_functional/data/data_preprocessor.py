@@ -24,6 +24,7 @@ def composite_preprocessor(
     """
     for data_preprocessor in data_preprocessors:
         data = data_preprocessor(data)
+
     return data
 
 
