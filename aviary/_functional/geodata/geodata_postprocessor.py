@@ -52,6 +52,7 @@ def composite_postprocessor(
 
     for geodata_postprocessor in geodata_postprocessors:
         gdf = geodata_postprocessor(gdf)
+
     return gdf
 
 

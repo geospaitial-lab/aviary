@@ -456,7 +456,7 @@ class ProcessArea(Iterable[Coordinates]):
 
     def __init__(
         self,
-        coordinates: CoordinatesSet = None,
+        coordinates: CoordinatesSet | None = None,
     ) -> None:
         """
         Parameters:

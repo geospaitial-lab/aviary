@@ -38,6 +38,7 @@ def composite_filter(
     """
     for coordinates_filter in coordinates_filters:
         coordinates = coordinates_filter(coordinates)
+
     return coordinates
 
 
