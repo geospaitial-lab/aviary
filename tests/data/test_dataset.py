@@ -3,14 +3,13 @@ from unittest.mock import MagicMock, patch
 import numpy as np
 
 from aviary.data.data_fetcher import DataFetcher
-from aviary.data.data_preprocessor import DataPreprocessor
 from aviary.data.dataset import Dataset
 
 
 def test_init() -> None:
     data_fetcher = MagicMock(spec=DataFetcher)
-    data_preprocessor = MagicMock(spec=DataPreprocessor)
     coordinates = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32)
+    data_preprocessor = None
     dataset = Dataset(
         data_fetcher=data_fetcher,
         data_preprocessor=data_preprocessor,
@@ -18,8 +17,8 @@ def test_init() -> None:
     )
 
     assert dataset.data_fetcher == data_fetcher
-    assert dataset.data_preprocessor == data_preprocessor
     np.testing.assert_array_equal(dataset.coordinates, coordinates)
+    assert dataset.data_preprocessor == data_preprocessor
 
 
 @patch('aviary.data.dataset.get_item')
@@ -33,9 +32,9 @@ def test_getitem(
     item = dataset[index]
 
     mocked_get_item.assert_called_once_with(
+        data_fetcher=dataset.data_fetcher,
         coordinates=dataset.coordinates,
         index=index,
-        data_fetcher=dataset.data_fetcher,
         data_preprocessor=dataset.data_preprocessor,
     )
     assert item == expected

@@ -53,12 +53,12 @@ def composite_preprocessor() -> CompositePreprocessor:
 @pytest.fixture(scope='session')
 def dataset() -> Dataset:
     data_fetcher = MagicMock(spec=DataFetcher)
-    data_preprocessor = MagicMock(spec=DataPreprocessor)
     coordinates = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32)
+    data_preprocessor = None
     return Dataset(
         data_fetcher=data_fetcher,
-        data_preprocessor=data_preprocessor,
         coordinates=coordinates,
+        data_preprocessor=data_preprocessor,
     )
 
 

@@ -20,16 +20,34 @@ def test_get_item() -> None:
     data_fetcher = MagicMock(spec=DataFetcher)
     expected_data_fetcher = 'expected_data_fetcher'
     data_fetcher.return_value = expected_data_fetcher
+    coordinates = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32)
+    index = 0
+    data_preprocessor = None
+    data = get_item(
+        data_fetcher=data_fetcher,
+        coordinates=coordinates,
+        index=index,
+        data_preprocessor=data_preprocessor,
+    )
+    data_fetcher.assert_called_once_with(
+        x_min=-128,
+        y_min=-128,
+    )
+    assert data == (expected_data_fetcher, -128, -128)
+
+    data_fetcher = MagicMock(spec=DataFetcher)
+    expected_data_fetcher = 'expected_data_fetcher'
+    data_fetcher.return_value = expected_data_fetcher
+    coordinates = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32)
+    index = 0
     data_preprocessor = MagicMock(spec=DataPreprocessor)
     expected_data_preprocessor = 'expected_data_preprocessor'
     data_preprocessor.return_value = expected_data_preprocessor
-    coordinates = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32)
-    index = 0
     data = get_item(
         data_fetcher=data_fetcher,
-        data_preprocessor=data_preprocessor,
         coordinates=coordinates,
         index=index,
+        data_preprocessor=data_preprocessor,
     )
 
     data_fetcher.assert_called_once_with(
