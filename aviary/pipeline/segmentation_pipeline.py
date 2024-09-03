@@ -50,8 +50,8 @@ class SegmentationPipeline:
     def __init__(
         self,
         data_fetcher: DataFetcher,
-        data_preprocessor: DataPreprocessor,
         process_area: ProcessArea,
+        data_preprocessor: DataPreprocessor | None,
         model: SegmentationModel,
         exporter: SegmentationExporter,
         batch_size: int = 1,
@@ -60,16 +60,16 @@ class SegmentationPipeline:
         """
         Parameters:
             data_fetcher: data fetcher
-            data_preprocessor: data preprocessor
             process_area: process area
+            data_preprocessor: data preprocessor
             model: model
             exporter: exporter
             batch_size: batch size
             num_workers: number of workers
         """
         self.data_fetcher = data_fetcher
-        self.data_preprocessor = data_preprocessor
         self.process_area = process_area
+        self.data_preprocessor = data_preprocessor
         self.model = model
         self.exporter = exporter
         self.batch_size = batch_size
@@ -91,10 +91,16 @@ class SegmentationPipeline:
         data_fetcher_class = globals()[config.data_fetcher_config.name]
         data_fetcher = data_fetcher_class.from_config(config.data_fetcher_config.config)
 
-        data_preprocessor_class = globals()[config.data_preprocessor_config.name]
-        data_preprocessor = data_preprocessor_class.from_config(config.data_preprocessor_config.config)
-
         process_area = ProcessArea.from_config(config.process_area_config)
+
+        if config.data_preprocessor_config is not None:
+            if config.data_preprocessor_config.name is not None:
+                data_preprocessor_class = globals()[config.data_preprocessor_config.name]
+                data_preprocessor = data_preprocessor_class.from_config(config.data_preprocessor_config.config)
+            else:
+                data_preprocessor = None
+        else:
+            data_preprocessor = None
 
         model_class = globals()[config.segmentation_model_config.name]
         model = model_class.from_config(config.segmentation_model_config.config)
@@ -104,8 +110,8 @@ class SegmentationPipeline:
 
         return cls(
             data_fetcher=data_fetcher,
-            data_preprocessor=data_preprocessor,
             process_area=process_area,
+            data_preprocessor=data_preprocessor,
             model=model,
             exporter=exporter,
             batch_size=config.batch_size,
@@ -136,16 +142,16 @@ class SegmentationPipelineConfig(pydantic.BaseModel):
 
     Attributes:
         data_fetcher_config: configuration of the data fetcher
-        data_preprocessor_config: configuration of the data preprocessor
         process_area_config: configuration of the process area
+        data_preprocessor_config: configuration of the data preprocessor
         segmentation_model_config: configuration of the model
         exporter_config: configuration of the exporter
         batch_size: batch size
         num_workers: number of workers
     """
     data_fetcher_config: DataFetcherConfig = pydantic.Field(alias='data_fetcher')
-    data_preprocessor_config: DataPreprocessorConfig = pydantic.Field(alias='data_preprocessor')
     process_area_config: ProcessAreaConfig = pydantic.Field(alias='process_area')
+    data_preprocessor_config: DataPreprocessorConfig | None = pydantic.Field(alias='data_preprocessor')
     # model_config is a reserved name in Pydantic's namespace, hence the alias segmentation_model_config
     segmentation_model_config: ModelConfig = pydantic.Field(alias='model')
     exporter_config: ExporterConfig = pydantic.Field(alias='exporter')
@@ -175,11 +181,12 @@ class DataPreprocessorConfig(pydantic.BaseModel):
         name: name of the data preprocessor
         config: configuration of the data preprocessor
     """
-    name: str
+    name: str | None
     config: (
         CompositePreprocessorConfig |
         NormalizePreprocessorConfig |
-        StandardizePreprocessorConfig
+        StandardizePreprocessorConfig |
+        None
     )
 
 
