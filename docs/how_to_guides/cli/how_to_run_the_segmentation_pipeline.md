@@ -55,35 +55,7 @@ for more details on the configuration options.
 
 ---
 
-### Step 3: Configure the data preprocessor
-
-To preprocess the fetched data,
-we will use the [`NormalizePreprocessor`](../../api_reference/data/data_preprocessor.md#aviary.data.NormalizePreprocessor)
-with the following configuration:
-
-``` yaml title="config.yaml"
-data_preprocessor:
-  name: NormalizePreprocessor
-  config:
-    min_values: [0.0, 0.0, 0.0, 0.0]
-    max_values: [255.0, 255.0, 255.0, 255.0]
-```
-
-This configuration will scale the data to a range of 0 to 1
-as stated in the [requirements](../../aviary/index.md#requirements) of the model.<br />
-The data is assumed to be of data type `uint8` (8-bit unsigned integer),
-where the minimum value is 0 and the maximum value is 255.
-
-???+ note "Notes"
-
-    - The minimum and maximum values are specified for each channel (red, green, blue, near-infrared)
-
-Have a look at the [API reference](../../api_reference/data/data_preprocessor.md#aviary.data.NormalizePreprocessorConfig)
-for more details on the configuration options.
-
----
-
-### Step 4: Configure the process area
+### Step 3: Configure the process area
 
 To specify the area of interest,
 we will use the [`ProcessArea`](../../api_reference/process_area.md#aviary.ProcessArea)
@@ -112,6 +84,34 @@ e.g. by providing a path to a geodataframe (geopackage or shapefile)
 containing the area of interest as a single polygon or a set of polygons.
 
 Have a look at the [API reference](../../api_reference/process_area.md#aviary.ProcessAreaConfig)
+for more details on the configuration options.
+
+---
+
+### Step 4: Configure the data preprocessor
+
+To preprocess the fetched data,
+we will use the [`NormalizePreprocessor`](../../api_reference/data/data_preprocessor.md#aviary.data.NormalizePreprocessor)
+with the following configuration:
+
+``` yaml title="config.yaml"
+data_preprocessor:
+  name: NormalizePreprocessor
+  config:
+    min_values: [0.0, 0.0, 0.0, 0.0]
+    max_values: [255.0, 255.0, 255.0, 255.0]
+```
+
+This configuration will scale the data to a range of 0 to 1
+as stated in the [requirements](../../aviary/index.md#requirements) of the model.<br />
+The data is assumed to be of data type `uint8` (8-bit unsigned integer),
+where the minimum value is 0 and the maximum value is 255.
+
+???+ note "Notes"
+
+    - The minimum and maximum values are specified for each channel (red, green, blue, near-infrared)
+
+Have a look at the [API reference](../../api_reference/data/data_preprocessor.md#aviary.data.NormalizePreprocessorConfig)
 for more details on the configuration options.
 
 ---
@@ -209,15 +209,15 @@ data_fetcher:
     ground_sampling_distance: 0.2
     buffer_size: 32
 
+process_area:
+  bounding_box: [x_min, y_min, x_max, y_max]
+  tile_size: 128
+
 data_preprocessor:
   name: NormalizePreprocessor
   config:
     min_values: [0.0, 0.0, 0.0, 0.0]
     max_values: [255.0, 255.0, 255.0, 255.0]
-
-process_area:
-  bounding_box: [x_min, y_min, x_max, y_max]
-  tile_size: 128
 
 model:
   name: ONNXSegmentationModel

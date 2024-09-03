@@ -17,17 +17,17 @@ if TYPE_CHECKING:
 
 def get_item(
     data_fetcher: DataFetcher,
-    data_preprocessor: DataPreprocessor,
     coordinates: CoordinatesSet,
     index: int,
+    data_preprocessor: DataPreprocessor | None = None,
 ) -> tuple[npt.NDArray, Coordinate, Coordinate]:
     """Returns the sample.
 
     Parameters:
         data_fetcher: data fetcher
-        data_preprocessor: data preprocessor
         coordinates: coordinates (x_min, y_min) of each tile
         index: index of the tile
+        data_preprocessor: data preprocessor
 
     Returns:
         sample
@@ -37,9 +37,12 @@ def get_item(
         x_min=x_min,
         y_min=y_min,
     )
-    data = data_preprocessor(
-        data=data,
-    )
+
+    if data_preprocessor is not None:
+        data = data_preprocessor(
+            data=data,
+        )
+
     return data, x_min, y_min
 
 
