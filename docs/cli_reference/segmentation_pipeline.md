@@ -8,8 +8,8 @@ The segmentation pipeline is a pre-built pipeline designed to run a segmentation
 It consists of the following components:
 
 - A [`DataFetcher`](../api_reference/data/data_fetcher.md) to fetch data from a source
-- A [`DataPreprocessor`](../api_reference/data/data_preprocessor.md) to preprocess the fetched data
 - A [`ProcessArea`](../api_reference/process_area.md) to specify the area of interest
+- A [`DataPreprocessor`](../api_reference/data/data_preprocessor.md) to preprocess the fetched data
 - A [`Model`](../api_reference/inference/model.md) to do the inference on the preprocessed data
 - An [`Exporter`](../api_reference/inference/exporter.md) to export the predictions dynamically as geospatial data
 
@@ -21,11 +21,11 @@ data_fetcher:
   name:
   config:
 
+process_area:
+
 data_preprocessor:
   name:
   config:
-
-process_area:
 
 model:
   name:
