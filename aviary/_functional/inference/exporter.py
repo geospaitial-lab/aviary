@@ -139,6 +139,7 @@ def _export_gdf(
         return
 
     gdf_path = path / gpkg_name
+
     with _lock_gpkg:
         try:
             gdf.to_file(gdf_path, driver='GPKG', mode='a')
@@ -162,6 +163,7 @@ def _export_coordinates_json(
     """
     coordinates = (x_min, y_min)
     json_path = path / json_name
+
     with _lock_json:
         try:
             with json_path.open() as file:
@@ -172,6 +174,7 @@ def _export_coordinates_json(
 
         process_area = process_area.append(coordinates)
         json_string = process_area.to_json()
+
         with json_path.open('w') as file:
             json.dump(json_string, file)
 

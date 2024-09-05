@@ -71,5 +71,6 @@ def test_aviary_getitem_exceptions(
         'Invalid name of the model! '
         f'Available model cards: {model_names}'
     )
+
     with pytest.raises(AviaryUserError, match=message):
         _ = aviary[name]
