@@ -141,10 +141,11 @@ def _export_gdf(
     gdf_path = path / gpkg_name
 
     with _lock_gpkg:
-        try:
-            gdf.to_file(gdf_path, driver='GPKG', mode='a')
-        except OSError:
-            gdf.to_file(gdf_path, driver='GPKG')
+        gdf.to_file(
+            gdf_path,
+            driver='GPKG',
+            mode='a',
+        )
 
 
 def _export_coordinates_json(
