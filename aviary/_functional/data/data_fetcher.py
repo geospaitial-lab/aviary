@@ -354,6 +354,7 @@ def _request_wms(
 
     with rio.io.MemoryFile(response.content) as file, warnings.catch_warnings():
         warnings.filterwarnings('ignore', category=rio.errors.NotGeoreferencedWarning)
+
         with file.open() as src:
             data = src.read()
 

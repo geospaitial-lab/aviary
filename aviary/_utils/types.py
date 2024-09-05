@@ -596,7 +596,7 @@ class ProcessArea(Iterable[Coordinates]):
             You can create a process area from the JSON string.
 
             >>> process_area = ProcessArea.from_json(
-            ...     json_string= (
+            ...     json_string=(
             ...         '[[363084, 5715326], '
             ...         '[363212, 5715326], '
             ...         '[363084, 5715454], '
