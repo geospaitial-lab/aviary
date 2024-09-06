@@ -1,6 +1,7 @@
 site_name: aviary
 site_url: https://geospaitial-lab.github.io/aviary
 docs_dir: ../docs
+exclude_docs: README.md
 
 nav:
   - Get started: index.md
