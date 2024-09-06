@@ -1,7 +1,3 @@
-::: aviary.inference.Model
-
----
-
 ::: aviary.inference.SegmentationModel
 
 ---
@@ -10,9 +6,3 @@
     options:
       filters:
       - "!validate"
-
----
-
-::: aviary.inference.ONNXSegmentationModel
-    options:
-      inherited_members: true

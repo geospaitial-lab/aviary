@@ -9,13 +9,13 @@ aviary's Python API is structured into the following namespaces:
 -   [**`aviary`**](bounding_box.md)<br />
     Core types
 
--   [**`aviary.data`**](data/data_fetcher.md)<br />
+-   [**`aviary.data`**](data/data_fetcher/data_fetcher.md)<br />
     Data fetching and processing
 
--   [**`aviary.geodata`**](geodata/coordinates_filter.md)<br />
+-   [**`aviary.geodata`**](geodata/coordinates_filter/coordinates_filter.md)<br />
     Geodata processing
 
--   [**`aviary.inference`**](inference/exporter.md)<br />
+-   [**`aviary.inference`**](inference/exporter/exporter.md)<br />
     Models and exporters
 
 -   [**`aviary.pipeline`**](pipeline/postprocessing_pipeline.md)<br />

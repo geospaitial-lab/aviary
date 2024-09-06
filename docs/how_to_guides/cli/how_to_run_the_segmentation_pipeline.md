@@ -26,7 +26,7 @@ In the next steps, we will add the configuration of each component of the pipeli
 ### Step 2: Configure the data fetcher
 
 To fetch the data from the virtual raster,
-we will use the [`VRTFetcher`](../../api_reference/data/data_fetcher.md#aviary.data.VRTFetcher)
+we will use the [`VRTFetcher`](../../api_reference/data/data_fetcher/vrt_fetcher.md)
 with the following configuration:
 
 ``` yaml title="config.yaml"
@@ -50,7 +50,7 @@ given a ground sampling distance of 0.2 meters.
     - The data is automatically resampled to the specified ground sampling distance
     - You may need to adjust the tile size and the buffer size depending on the available resources
 
-Have a look at the [API reference](../../api_reference/data/data_fetcher.md#aviary.data.VRTFetcherConfig)
+Have a look at the [API reference](../../api_reference/data/data_fetcher/vrt_fetcher.md#aviary.data.VRTFetcherConfig)
 for more details on the configuration options.
 
 ---
@@ -58,7 +58,7 @@ for more details on the configuration options.
 ### Step 3: Configure the process area
 
 To specify the area of interest,
-we will use the [`ProcessArea`](../../api_reference/process_area.md#aviary.ProcessArea)
+we will use the [`ProcessArea`](../../api_reference/process_area.md)
 with the following configuration:
 
 ``` yaml title="config.yaml"
@@ -91,7 +91,7 @@ for more details on the configuration options.
 ### Step 4: Configure the data preprocessor
 
 To preprocess the fetched data,
-we will use the [`NormalizePreprocessor`](../../api_reference/data/data_preprocessor.md#aviary.data.NormalizePreprocessor)
+we will use the [`NormalizePreprocessor`](../../api_reference/data/data_preprocessor/normalize_preprocessor.md)
 with the following configuration:
 
 ``` yaml title="config.yaml"
@@ -111,7 +111,7 @@ where the minimum value is 0 and the maximum value is 255.
 
     - The minimum and maximum values are specified for each channel (red, green, blue, near-infrared)
 
-Have a look at the [API reference](../../api_reference/data/data_preprocessor.md#aviary.data.NormalizePreprocessorConfig)
+Have a look at the [API reference](../../api_reference/data/data_preprocessor/normalize_preprocessor.md#aviary.data.NormalizePreprocessorConfig)
 for more details on the configuration options.
 
 ---
@@ -119,7 +119,7 @@ for more details on the configuration options.
 ### Step 5: Configure the model
 
 To do the inference on the preprocessed data,
-we will use the [`ONNXSegmentationModel`](../../api_reference/inference/model.md#aviary.inference.ONNXSegmentationModel)
+we will use the [`ONNXSegmentationModel`](../../api_reference/inference/model/onnx_segmentation_model.md)
 with the following configuration:
 
 ``` yaml title="config.yaml"
@@ -139,7 +139,7 @@ This configuration will download the weights of the model sparrow.
     - The buffer size must match the buffer size of the data fetcher
     - The buffer is removed from the predictions after the inference
 
-Have a look at the [API reference](../../api_reference/inference/model.md#aviary.inference.SegmentationModelConfig)
+Have a look at the [API reference](../../api_reference/inference/model/segmentation_model.md#aviary.inference.SegmentationModelConfig)
 for more details on the configuration options.
 
 ---
@@ -147,7 +147,7 @@ for more details on the configuration options.
 ### Step 6: Configure the exporter
 
 To export the predictions dynamically as geospatial data,
-we will use the [`SegmentationExporter`](../../api_reference/inference/exporter.md#aviary.inference.SegmentationExporter)
+we will use the [`SegmentationExporter`](../../api_reference/inference/exporter/segmentation_exporter.md)
 with the following configuration:
 
 ``` yaml title="config.yaml"
@@ -173,7 +173,7 @@ named `processed_coordinates.json`.
     - The ground sampling distance must match the ground sampling distance of the data fetcher
     - You may need to adjust the number of workers depending on the available resources and the number of tiles per batch
 
-Have a look at the [API reference](../../api_reference/inference/exporter.md#aviary.inference.SegmentationExporterConfig)
+Have a look at the [API reference](../../api_reference/inference/exporter/segmentation_exporter.md#aviary.inference.SegmentationExporterConfig)
 for more details on the configuration options.
 
 ---

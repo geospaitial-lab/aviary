@@ -29,7 +29,7 @@ gdf: path/to/your/output.gpkg
 ### Step 3: Configure the geodata postprocessor
 
 To postprocess the geodata,
-we will use the [`CompositePostprocessor`](../../api_reference/geodata/geodata_postprocessor.md#aviary.geodata.CompositePostprocessor)
+we will use the [`CompositePostprocessor`](../../api_reference/geodata/geodata_postprocessor/composite_postprocessor.md)
 with the following configuration:
 
 ``` yaml title="config.yaml"
@@ -68,10 +68,10 @@ This configuration will postprocess the geodataframe by:
   as stated in the [mapping of the values](../../aviary/index.md#mapping-of-the-values) of the model
 
 Note that there are alternative ways to postprocess the geodata.
-You can choose from a collection of [geodata postprocessors](../../api_reference/geodata/geodata_postprocessor.md)
+You can choose from a collection of [geodata postprocessors](../../api_reference/geodata/geodata_postprocessor/geodata_postprocessor.md)
 and compose them as needed.
 
-Have a look at the [API reference](../../api_reference/geodata/geodata_postprocessor.md#aviary.geodata.CompositePostprocessorConfig)
+Have a look at the [API reference](../../api_reference/geodata/geodata_postprocessor/composite_postprocessor.md#aviary.geodata.CompositePostprocessorConfig)
 for more details on the configuration options.
 
 ---
