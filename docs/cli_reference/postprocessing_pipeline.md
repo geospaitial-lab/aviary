@@ -8,7 +8,7 @@ The postprocessing pipeline is a pre-built pipeline designed to postprocess geos
 It consists of the following components:
 
 - A path to the geodataframe
-- A [`GeodataPostprocessor`](../api_reference/geodata/geodata_postprocessor.md) to postprocess the geodata
+- A [`GeodataPostprocessor`](../api_reference/geodata/geodata_postprocessor/geodata_postprocessor.md) to postprocess the geodata
 - A path to export the geodataframe
 
 These components are set up in a configuration file (.yaml file) that is passed to the pipeline.<br />
