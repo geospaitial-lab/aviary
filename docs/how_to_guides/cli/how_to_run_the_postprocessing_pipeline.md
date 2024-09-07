@@ -1,7 +1,3 @@
-<style>
-  .md-sidebar--secondary { visibility: hidden }
-</style>
-
 ## How to run the postprocessing pipeline
 
 Follow along this step-by-step guide to run the [postprocessing pipeline](../../cli_reference/postprocessing_pipeline.md)

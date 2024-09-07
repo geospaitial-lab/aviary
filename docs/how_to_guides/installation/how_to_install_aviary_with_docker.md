@@ -1,7 +1,3 @@
-<style>
-  .md-sidebar--secondary { visibility: hidden }
-</style>
-
 ## How to install aviary with Docker
 
 Follow along this step-by-step guide to install aviary using Docker.

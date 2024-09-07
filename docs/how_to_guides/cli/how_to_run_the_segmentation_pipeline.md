@@ -1,7 +1,3 @@
-<style>
-  .md-sidebar--secondary { visibility: hidden }
-</style>
-
 ## How to run the segmentation pipeline
 
 Follow along this step-by-step guide to run the [segmentation pipeline](../../cli_reference/segmentation_pipeline.md)
@@ -275,7 +271,7 @@ a JSON file named `processed_coordinates.json` containing the coordinates of the
 
 ---
 
-## Next steps:
+## Next steps
 
 Have a look at the [how-to guide](how_to_run_the_postprocessing_pipeline.md)
 on how to run the postprocessing pipeline on the resulting geodataframe.
