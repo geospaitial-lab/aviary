@@ -1,0 +1,31 @@
+name: Check links
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * 1'
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  check_links:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check links
+        uses: lycheeverse/lychee-action@v1
+
+      - name: Create issue
+        if: env.lychee_exit_code != 0
+        uses: peter-evans/create-issue-from-file@v4
+        with:
+          title: 'Check links failed'
+          content-filepath: ./lychee/out.md
+          labels: |
+            docs
+          assignees: |
+            mrsmrynk
