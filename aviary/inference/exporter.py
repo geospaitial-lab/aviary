@@ -31,7 +31,7 @@ class Exporter(Protocol):
     The exporter is used by the pipeline to export the batched output of the model's inference.
 
     Currently implemented exporters:
-        - SegmentationExporter: Exports segmentation predictions
+        - `SegmentationExporter`: Exports segmentation predictions
     """
 
     def __call__(

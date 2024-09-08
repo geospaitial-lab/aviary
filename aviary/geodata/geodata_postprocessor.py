@@ -29,13 +29,13 @@ class GeodataPostprocessor(ABC, FromConfigMixin):
     which is the vectorized output of the model's inference.
 
     Currently implemented geodata postprocessors:
-        - ClipPostprocessor: Clips the polygons based on the mask extent
-        - CompositePostprocessor: Composes multiple geodata postprocessors
-        - FieldNamePostprocessor: Renames the fields
-        - FillPostprocessor: Fills holes in the polygons
-        - SievePostprocessor: Sieves the polygons
-        - SimplifyPostprocessor: Simplifies the polygons by applying the Douglas-Peucker algorithm
-        - ValuePostprocessor: Maps the values of a field
+        - `ClipPostprocessor`: Clips the polygons based on the mask extent
+        - `CompositePostprocessor`: Composes multiple geodata postprocessors
+        - `FieldNamePostprocessor`: Renames the fields
+        - `FillPostprocessor`: Fills holes in the polygons
+        - `SievePostprocessor`: Sieves the polygons
+        - `SimplifyPostprocessor`: Simplifies the polygons by applying the Douglas-Peucker algorithm
+        - `ValuePostprocessor`: Maps the values of a field
     """
 
     @abstractmethod
