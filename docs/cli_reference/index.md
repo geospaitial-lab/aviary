@@ -3,7 +3,7 @@
 </style>
 
 aviary provides a command-line interface (CLI) that allows you to run the pre-built pipelines easily
-without writing any code.
+without writing any code, requiring only a declarative configuration file that specifies the components.
 
 To see the available options and commands of the CLI, run the following command:
 
