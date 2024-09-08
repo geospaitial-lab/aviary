@@ -34,7 +34,7 @@ class Model(Protocol):
     Models are callables that transform inputs into predictions.
 
     Currently implemented models:
-        - ONNXSegmentationModel: ONNX model for segmentation
+        - `ONNXSegmentationModel`: ONNX model for segmentation
     """
 
     def __call__(

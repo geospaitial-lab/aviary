@@ -30,11 +30,11 @@ class CoordinatesFilter(ABC):
     E.g., to remove tiles that don't intersect with an area of interest or tiles that are already processed.
 
     Currently implemented coordinates filters:
-        - CompositeFilter: Composes multiple coordinates filters
-        - DuplicatesFilter: Removes duplicates
-        - GeospatialFilter: Filters based on geospatial data
-        - MaskFilter: Filters based on a boolean mask
-        - SetFilter: Filters based on other coordinates
+        - `CompositeFilter`: Composes multiple coordinates filters
+        - `DuplicatesFilter`: Removes duplicates
+        - `GeospatialFilter`: Filters based on geospatial data
+        - `MaskFilter`: Filters based on a boolean mask
+        - `SetFilter`: Filters based on other coordinates
     """
 
     @abstractmethod

@@ -27,9 +27,9 @@ class DataPreprocessor(ABC, FromConfigMixin):
     The data preprocessor is used by the dataset to preprocess the fetched data for each tile.
 
     Currently implemented data preprocessors:
-        - CompositePreprocessor: Composes multiple data preprocessors
-        - NormalizePreprocessor: Applies min-max normalization
-        - StandardizePreprocessor: Applies standardization
+        - `CompositePreprocessor`: Composes multiple data preprocessors
+        - `NormalizePreprocessor`: Applies min-max normalization
+        - `StandardizePreprocessor`: Applies standardization
     """
 
     @abstractmethod

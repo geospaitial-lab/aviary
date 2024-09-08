@@ -38,9 +38,9 @@ class DataFetcher(Protocol):
     The data fetcher is used by the dataset to fetch data for each tile.
 
     Currently implemented data fetchers:
-        - CompositeFetcher: Composes multiple data fetchers
-        - VRTFetcher: Fetches data from a virtual raster
-        - WMSFetcher: Fetches data from a web map service
+        - `CompositeFetcher`: Composes multiple data fetchers
+        - `VRTFetcher`: Fetches data from a virtual raster
+        - `WMSFetcher`: Fetches data from a web map service
 
     Notes:
         - Implementations must support concurrency (the data fetcher is called concurrently by the data loader)
