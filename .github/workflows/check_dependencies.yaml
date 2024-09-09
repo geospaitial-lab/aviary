@@ -62,6 +62,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip setuptools wheel
           pip install geospaitial-lab-aviary
+          pip install -r dev/requirements/ci_requirements.txt
 
       - name: Check dependencies with pip-audit
         run: |
