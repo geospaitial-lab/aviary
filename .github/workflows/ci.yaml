@@ -52,6 +52,5 @@ jobs:
           ruff check
 
       - name: Check dependencies with pip-audit
-        if: matrix.os == 'ubuntu-latest'
         run: |
           pip-audit
