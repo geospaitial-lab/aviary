@@ -40,7 +40,7 @@ jobs:
           echo "BUMPED_VERSION=$(python -m dev.scripts.get_version)" >> $GITHUB_ENV
 
       - name: Create pull request
-        uses: peter-evans/create-pull-request@v6
+        uses: peter-evans/create-pull-request@v7
         with:
           commit-message: bump version from ${{ env.VERSION }} to ${{ env.BUMPED_VERSION }}
           branch: build/bump-version
