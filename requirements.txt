@@ -4,7 +4,7 @@ numpy==1.26.4
 onnxruntime==1.19.0
 pydantic==2.8.2
 pyyaml==6.0.2
-rasterio==1.3.10
+rasterio==1.3.11
 requests==2.32.3
 rich==13.8.0
 shapely==2.0.6
