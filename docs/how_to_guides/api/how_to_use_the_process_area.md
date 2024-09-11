@@ -143,7 +143,6 @@ The geodataframe may contain multiple polygons, e.g. the administrative areas of
 ``` python
 url = 'TODO'
 gdf = gpd.read_file(url)
-
 process_area = process_area.from_gdf(
     gdf=gdf,
     tile_size=128,
@@ -308,7 +307,7 @@ print(process_area.coordinates)
 ### Append coordinates to the process area
 
 You can append coordinates to the process area with the `append` method.
-    
+
 ``` python
 coordinates = np.array(
     [
