@@ -90,7 +90,7 @@ bounding_box = aviary.BoundingBox(
     x_max=363340,
     y_max=5715582,
 )
-process_area = process_area.from_bounding_box(
+process_area = aviary.ProcessArea.from_bounding_box(
     bounding_box=bounding_box,
     tile_size=128,
     quantize=False,
@@ -120,7 +120,7 @@ gdf = gpd.GeoDataFrame(
     geometry=[box(363084, 5715326, 363340, 5715582)],
     crs='EPSG:25832',
 )
-process_area = process_area.from_gdf(
+process_area = aviary.ProcessArea.from_gdf(
     gdf=gdf,
     tile_size=128,
     quantize=False,
@@ -146,7 +146,7 @@ url = (
     '/docs/how_to_guides/api/notebooks/administrative_areas.geojson'
 )
 gdf = gpd.read_file(url)
-process_area = process_area.from_gdf(
+process_area = aviary.ProcessArea.from_gdf(
     gdf=gdf,
     tile_size=128,
     quantize=True,
@@ -178,7 +178,7 @@ json_string = (
     '[363084, 5715454], '
     '[363212, 5715454]]'
 )
-process_area = process_area.from_json(json_string=json_string)
+process_area = aviary.ProcessArea.from_json(json_string=json_string)
 
 print(process_area.coordinates)
 ```
