@@ -100,6 +100,10 @@ multiline-quotes = "single"
     "D103",
     "T201",
 ]
+"docs/how_to_guides/api/notebooks/how_to_use_the_process_area.ipynb" = [
+    "ARG005",
+    "E731",
+]
 "**/tests/*" = [
     "D103",
     "PLR2004",
