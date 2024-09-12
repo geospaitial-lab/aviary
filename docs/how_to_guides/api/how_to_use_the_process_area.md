@@ -106,6 +106,37 @@ print(process_area.coordinates)
  [ 363212 5715454]]
 ```
 
+You can set the tile size of the process area with the `tile_size` parameter.<br />
+If the bounding box is not divisible by the tile size, the tiles will extend beyond the bounding box.
+
+``` python
+bounding_box = aviary.BoundingBox(
+    x_min=363084,
+    y_min=5715326,
+    x_max=363340,
+    y_max=5715582,
+)
+process_area = aviary.ProcessArea.from_bounding_box(
+    bounding_box=bounding_box,
+    tile_size=96,
+    quantize=False,
+)
+
+print(process_area.coordinates)
+```
+
+``` title="Output"
+[[ 363084 5715326]
+ [ 363180 5715326]
+ [ 363276 5715326]
+ [ 363084 5715422]
+ [ 363180 5715422]
+ [ 363276 5715422]
+ [ 363084 5715518]
+ [ 363180 5715518]
+ [ 363276 5715518]]
+```
+
 ---
 
 #### Create a process area from a geodataframe
