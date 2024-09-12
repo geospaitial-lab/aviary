@@ -3,9 +3,9 @@
 Follow along this step-by-step guide to learn about the [ProcessArea](../../api_reference/process_area.md) class.
 
 ???+ note "Open in Google Colab"
-    Open the how-to guide as an interactive [notebook](TODO)
+    Open the how-to guide as an interactive [notebook](https://githubtocolab.com/geospaitial-lab/aviary/blob/main/docs/how_to_guides/api/notebooks/how_to_use_the_process_area.ipynb)
     in [Google Colab](https://colab.google)
-    or download the [notebook](TODO) to run it locally.
+    or download the [notebook](https://github.com/geospaitial-lab/aviary/blob/main/docs/how_to_guides/api/notebooks/how_to_use_the_process_area.ipynb) to run it locally.
 
 ### Create a process area
 
@@ -141,7 +141,10 @@ print(process_area.coordinates)
 The geodataframe may contain multiple polygons, e.g. the administrative areas of Gelsenkirchen and Recklinghausen.
 
 ``` python
-url = 'TODO'
+url = (
+    'https://raw.githubusercontent.com/geospaitial-lab/aviary/main'
+    '/docs/how_to_guides/api/notebooks/administrative_areas.geojson'
+)
 gdf = gpd.read_file(url)
 process_area = process_area.from_gdf(
     gdf=gdf,
