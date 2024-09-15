@@ -5,7 +5,8 @@ Follow along this step-by-step guide to learn about the [ProcessArea](../../api_
 ???+ note "Open in Google Colab"
     Open the how-to guide as an interactive [notebook](https://githubtocolab.com/geospaitial-lab/aviary/blob/main/docs/how_to_guides/api/notebooks/how_to_use_the_process_area.ipynb)
     in [Google Colab](https://colab.google)
-    or download the [notebook](https://github.com/geospaitial-lab/aviary/blob/main/docs/how_to_guides/api/notebooks/how_to_use_the_process_area.ipynb) to run it locally.
+    or download the [notebook](https://github.com/geospaitial-lab/aviary/blob/main/docs/how_to_guides/api/notebooks/how_to_use_the_process_area.ipynb) to run it locally.<br />
+    The notebook contains additional interactive visualizations of the following code examples.
 
 ### Create a process area
 
@@ -106,6 +107,8 @@ print(process_area.coordinates)
  [ 363212 5715454]]
 ```
 
+---
+
 You can set the tile size of the process area with the `tile_size` parameter.<br />
 If the bounding box is not divisible by the tile size, the tiles will extend beyond the bounding box.
 
@@ -135,6 +138,40 @@ print(process_area.coordinates)
  [ 363084 5715518]
  [ 363180 5715518]
  [ 363276 5715518]]
+```
+
+---
+
+You can quantize the process area with the `quantize` parameter.<br />
+If the coordinates are not divisible by the tile size, the coordinates will be quantized to the tile size.<br />
+This might be useful when you want to ensure matching tiles for different process areas.
+
+``` python
+bounding_box = aviary.BoundingBox(
+    x_min=363084,
+    y_min=5715326,
+    x_max=363340,
+    y_max=5715582,
+)
+process_area = aviary.ProcessArea.from_bounding_box(
+    bounding_box=bounding_box,
+    tile_size=128,
+    quantize=True,
+)
+
+print(process_area.coordinates)
+```
+
+``` title="Output"
+[[ 363008 5715200]
+ [ 363136 5715200]
+ [ 363264 5715200]
+ [ 363008 5715328]
+ [ 363136 5715328]
+ [ 363264 5715328]
+ [ 363008 5715456]
+ [ 363136 5715456]
+ [ 363264 5715456]]
 ```
 
 ---
