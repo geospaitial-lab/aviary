@@ -5,8 +5,7 @@ Follow along this step-by-step guide to learn about the [ProcessArea](../../api_
 ???+ note "Open in Google Colab"
     Open the how-to guide as an interactive [notebook](https://githubtocolab.com/geospaitial-lab/aviary/blob/main/docs/how_to_guides/api/notebooks/how_to_use_the_process_area.ipynb)
     in [Google Colab](https://colab.google)
-    or download the [notebook](https://github.com/geospaitial-lab/aviary/blob/main/docs/how_to_guides/api/notebooks/how_to_use_the_process_area.ipynb) to run it locally.<br />
-    The notebook contains additional interactive visualizations of the following code examples.
+    or download the [notebook](https://github.com/geospaitial-lab/aviary/blob/main/docs/how_to_guides/api/notebooks/how_to_use_the_process_area.ipynb) to run it locally.
 
 ### Create a process area
 
@@ -56,6 +55,10 @@ print(process_area.coordinates)
  [ 363212 5715454]]
 ```
 
+We can visualize the process area given the tile size.
+
+<iframe src="../maps/process_area.html" width="100%" height="300px"></iframe>
+
 ---
 
 You can set the coordinates of an already created process area with the `coordinates` attribute.
@@ -77,6 +80,10 @@ print(process_area.coordinates)
 [[ 363084 5715326]
  [ 363212 5715326]]
 ```
+
+We can visualize the process area given the tile size.
+
+<iframe src="../maps/process_area_setter.html" width="100%" height="300px"></iframe>
 
 ---
 
@@ -106,6 +113,11 @@ print(process_area.coordinates)
  [ 363084 5715454]
  [ 363212 5715454]]
 ```
+
+We can visualize the process area given the tile size.<br />
+The red polygon represents the bounding box.
+
+<iframe src="../maps/process_area_from_bounding_box.html" width="100%" height="300px"></iframe>
 
 ---
 
@@ -139,6 +151,11 @@ print(process_area.coordinates)
  [ 363180 5715518]
  [ 363276 5715518]]
 ```
+
+We can visualize the process area given the tile size.<br />
+The red polygon represents the bounding box.
+
+<iframe src="../maps/process_area_from_bounding_box_tile_size.html" width="100%" height="300px"></iframe>
 
 ---
 
@@ -174,6 +191,11 @@ print(process_area.coordinates)
  [ 363264 5715456]]
 ```
 
+We can visualize the process area given the tile size.<br />
+The red polygon represents the bounding box.
+
+<iframe src="../maps/process_area_from_bounding_box_quantize.html" width="100%" height="300px"></iframe>
+
 ---
 
 #### Create a process area from a geodataframe
@@ -204,6 +226,10 @@ print(process_area.coordinates)
  [ 363212 5715454]]
 ```
 
+We can visualize the process area given the tile size.
+
+<iframe src="../maps/process_area.html" width="100%" height="300px"></iframe>
+
 ---
 
 The geodataframe may contain multiple polygons, e.g. the northern districts of Gelsenkirchen.
@@ -233,6 +259,11 @@ print(process_area.coordinates)
  [ 363648 5721856]]
 ```
 
+We can visualize the process area given the tile size.<br />
+The red polygons represent the districts.
+
+<iframe src="../maps/process_area_from_gdf.html" width="100%" height="300px"></iframe>
+
 ---
 
 #### Create a process area from a json string
@@ -257,6 +288,10 @@ print(process_area.coordinates)
  [ 363084 5715454]
  [ 363212 5715454]]
 ```
+
+We can visualize the process area given the tile size.
+
+<iframe src="../maps/process_area.html" width="100%" height="300px"></iframe>
 
 ---
 
@@ -319,6 +354,11 @@ print(process_area.coordinates)
  [ 363340 5715582]]
 ```
 
+We can visualize the process area given the tile size.<br />
+The red polygons represent the first process area and the blue polygons represent the second process area.
+
+<iframe src="../maps/process_area_add.html" width="100%" height="300px"></iframe>
+
 ---
 
 You can subtract two process areas with the `-` operator.
@@ -373,6 +413,11 @@ print(process_area.coordinates)
  [ 363084 5715454]]
 ```
 
+We can visualize the process area given the tile size.<br />
+The red polygons represent the first process area and the blue polygons represent the second process area.
+
+<iframe src="../maps/process_area_sub.html" width="100%" height="300px"></iframe>
+
 ---
 
 ### Append coordinates to the process area
@@ -414,6 +459,10 @@ print(process_area.coordinates)
  [ 363212 5715454]
  [ 363340 5715582]]
 ```
+
+We can visualize the process area given the tile size.
+
+<iframe src="../maps/process_area_append.html" width="100%" height="300px"></iframe>
 
 ---
 
