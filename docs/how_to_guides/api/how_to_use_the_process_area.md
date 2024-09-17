@@ -206,12 +206,12 @@ print(process_area.coordinates)
 
 ---
 
-The geodataframe may contain multiple polygons, e.g. the administrative areas of Gelsenkirchen and Recklinghausen.
+The geodataframe may contain multiple polygons, e.g. the northern districts of Gelsenkirchen.
 
 ``` python
 url = (
     'https://raw.githubusercontent.com/geospaitial-lab/aviary/main'
-    '/docs/how_to_guides/api/notebooks/administrative_areas.geojson'
+    '/docs/how_to_guides/api/data/districts.geojson'
 )
 gdf = gpd.read_file(url)
 process_area = aviary.ProcessArea.from_gdf(
@@ -224,13 +224,13 @@ print(process_area.coordinates)
 ```
 
 ``` title="Output"
-[[ 368000 5704960]
- [ 368128 5704960]
- [ 367360 5705088]
+[[ 364288 5713792]
+ [ 364416 5713792]
+ [ 364544 5713792]
  ...
- [ 375424 5723648]
- [ 374656 5723776]
- [ 374784 5723776]]
+ [ 363392 5721856]
+ [ 363520 5721856]
+ [ 363648 5721856]]
 ```
 
 ---
