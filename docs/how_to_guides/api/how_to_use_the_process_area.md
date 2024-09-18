@@ -1,17 +1,19 @@
 ## How to use the process area
 
-Follow along this step-by-step guide to learn about the [ProcessArea](../../api_reference/process_area.md) class.
+Follow along this step-by-step guide to learn about the [`ProcessArea`](../../api_reference/process_area.md) class.
 
 ???+ note "Open in Google Colab"
-    Open the how-to guide as an interactive [notebook](https://githubtocolab.com/geospaitial-lab/aviary/blob/main/docs/how_to_guides/api/notebooks/how_to_use_the_process_area.ipynb)
+    Open the how-to guide as an interactive
+    [notebook](https://githubtocolab.com/geospaitial-lab/aviary/blob/main/docs/how_to_guides/api/notebooks/how_to_use_the_process_area.ipynb)
     in [Google Colab](https://colab.google)
-    or download the [notebook](https://github.com/geospaitial-lab/aviary/blob/main/docs/how_to_guides/api/notebooks/how_to_use_the_process_area.ipynb) to run it locally.
+    or download the
+    [notebook](https://github.com/geospaitial-lab/aviary/blob/main/docs/how_to_guides/api/notebooks/how_to_use_the_process_area.ipynb) to run it locally.
 
 ### Create a process area
 
 A process area specifies the area of interest by a set of coordinates of the bottom left corner of each tile.
 
-By default, a new instance of the `ProcessArea` class has no coordinates.<br />
+By default, a new instance of the [`ProcessArea`](../../api_reference/process_area.md) class has no coordinates.<br />
 You can access the coordinates of the process area with the `coordinates` attribute,
 which is a numpy array of shape (n, 2) and data type int32.
 
@@ -29,7 +31,8 @@ print(process_area.coordinates)
 
 ---
 
-If you already have the coordinates, you can pass them to the initializer of the `ProcessArea` class.
+If you already have the coordinates, you can pass them to the initializer of the
+[`ProcessArea`](../../api_reference/process_area.md) class.
 
 ``` python
 import numpy as np
@@ -89,7 +92,8 @@ We can visualize the process area given the tile size.
 
 #### Create a process area from a bounding box
 
-You can create a process area from a bounding box with the `from_bounding_box` class method.
+You can create a process area from a bounding box with the
+[`from_bounding_box`](../../api_reference/process_area.md#aviary.ProcessArea.from_bounding_box) class method.
 
 ``` python
 bounding_box = aviary.BoundingBox(
@@ -200,7 +204,8 @@ The red polygon represents the bounding box.
 
 #### Create a process area from a geodataframe
 
-You can create a process area from a geodataframe with the `from_gdf` class method.
+You can create a process area from a geodataframe with the
+[`from_gdf`](../../api_reference/process_area.md#aviary.ProcessArea.from_gdf) class method.
 
 ``` python
 import geopandas as gpd
@@ -268,7 +273,8 @@ The red polygons represent the districts.
 
 #### Create a process area from a json string
 
-You can create a process area from a json string with the `from_json` class method.
+You can create a process area from a json string with the
+[`from_json`](../../api_reference/process_area.md#aviary.ProcessArea.from_json) class method.
 
 ``` python
 json_string = (
@@ -422,7 +428,8 @@ The red polygons represent the first process area and the blue polygons represen
 
 ### Append coordinates to the process area
 
-You can append coordinates to the process area with the `append` method.
+You can append coordinates to the process area with the
+[`append`](../../api_reference/process_area.md#aviary.ProcessArea.append) method.
 
 ``` python
 coordinates = np.array(
@@ -486,7 +493,8 @@ print(process_area.coordinates)
 
 ### Chunk the process area
 
-You can chunk the process area into multiple process areas with the `chunk` method.<br />
+You can chunk the process area into multiple process areas with the
+[`chunk`](../../api_reference/process_area.md#aviary.ProcessArea.chunk) method.<br />
 This might be useful when you want to run multiple pipelines in distributed environments.
 
 ``` python
@@ -535,7 +543,8 @@ TODO
 
 ### Convert the process area to a geodataframe
 
-You can convert the process area to a geodataframe with the `to_gdf` method.
+You can convert the process area to a geodataframe with the
+[`to_gdf`](../../api_reference/process_area.md#aviary.ProcessArea.to_gdf) method.
 
 ``` python
 coordinates = np.array(
@@ -580,7 +589,8 @@ print(gdf)
 
 ### Convert the process area to a json string
 
-You can convert the process area to a json string with the `to_json` method.
+You can convert the process area to a json string with the
+[`to_json`](../../api_reference/process_area.md#aviary.ProcessArea.to_json) method.
 
 ``` python
 coordinates = np.array(
