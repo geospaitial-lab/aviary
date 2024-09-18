@@ -242,7 +242,7 @@ url = (
 gdf = gpd.read_file(url)
 process_area = aviary.ProcessArea.from_gdf(
     gdf=gdf,
-    tile_size=128,
+    tile_size=256,
     quantize=True,
 )
 
@@ -250,13 +250,13 @@ print(process_area.coordinates)
 ```
 
 ``` title="Output"
-[[ 364288 5713792]
- [ 364416 5713792]
- [ 364544 5713792]
+[[ 364288 5713664]
+ [ 364544 5713664]
+ [ 364800 5713664]
  ...
- [ 363392 5721856]
- [ 363520 5721856]
- [ 363648 5721856]]
+ [ 363008 5721856]
+ [ 363264 5721856]
+ [ 363520 5721856]]
 ```
 
 We can visualize the process area given the tile size.<br />
