@@ -1,6 +1,6 @@
 ## How to use the process area
 
-Follow along this step-by-step guide to learn about the [`ProcessArea`](../../api_reference/process_area.md) class.
+Follow along this step-by-step guide to learn about the [`ProcessArea`](../../api_reference/process_area.md).
 
 ???+ note "Open in Google Colab"
     Open the how-to guide as an interactive
@@ -13,7 +13,7 @@ Follow along this step-by-step guide to learn about the [`ProcessArea`](../../ap
 
 A process area specifies the area of interest by a set of coordinates of the bottom left corner of each tile.
 
-By default, a new instance of the [`ProcessArea`](../../api_reference/process_area.md) class has no coordinates.<br />
+By default, a new instance of the [`ProcessArea`](../../api_reference/process_area.md) has no coordinates.<br />
 You can access the coordinates of the process area with the `coordinates` attribute,
 which is a numpy array of shape (n, 2) and data type int32.
 
@@ -32,7 +32,7 @@ print(process_area.coordinates)
 ---
 
 If you already have the coordinates, you can pass them to the initializer of the
-[`ProcessArea`](../../api_reference/process_area.md) class.
+[`ProcessArea`](../../api_reference/process_area.md).
 
 ``` python
 import numpy as np
