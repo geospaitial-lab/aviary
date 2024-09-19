@@ -173,12 +173,21 @@ def _geospatial_filter_intersection(
     Returns:
         filtered coordinates (x_min, y_min) of each tile
     """
-    valid_tiles = gpd.sjoin(
+    intersecting_tiles = gpd.sjoin(
         left_df=grid,
         right_df=gdf,
         how='inner',
         predicate='intersects',
+        rsuffix='right_intersects',
     )
+    touching_tiles = gpd.sjoin(
+        left_df=intersecting_tiles,
+        right_df=gdf,
+        how='inner',
+        predicate='touches',
+        rsuffix='right_touches',
+    )
+    valid_tiles = intersecting_tiles[~intersecting_tiles.index.isin(touching_tiles.index)]
     return coordinates[grid.index.isin(valid_tiles.index)]
 
 
