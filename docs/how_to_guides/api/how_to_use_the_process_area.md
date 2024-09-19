@@ -537,7 +537,124 @@ for process_area in process_areas:
 
 ### Filter the process area
 
-TODO
+You can filter the process area with the
+[`filter`](../../api_reference/process_area.md#aviary.ProcessArea.filter) method.<br />
+This method applies a
+[`CoordinatesFilter`](../../api_reference/geodata/coordinates_filter/coordinates_filter.md)
+to the coordinates of the process area.
+
+In this example, we filter the process area based on geospatial data with the
+[`GeospatialFilter`](../../api_reference/geodata/coordinates_filter/geospatial_filter.md).<br />
+You can remove coordinates of tiles that are within the polygons in the geodataframe with the difference mode.
+
+``` python
+coordinates = np.array(
+    [
+        [363084, 5715326],
+        [363212, 5715326],
+        [363084, 5715454],
+        [363212, 5715454],
+    ],
+    dtype=np.int32,
+)
+process_area = aviary.ProcessArea(coordinates=coordinates)
+
+gdf = gpd.GeoDataFrame(
+    geometry=[box(363212, 5715454, 363468, 5715710)],
+    crs='EPSG:25832',
+)
+
+print(process_area.coordinates)
+print(gdf)
+```
+
+``` title="Output"
+[[ 363084 5715326]
+ [ 363212 5715326]
+ [ 363084 5715454]
+ [ 363212 5715454]]
+                                            geometry
+0  POLYGON ((363468 5715454, 363468 5715710, 3632...
+```
+
+``` python
+from aviary.geodata import GeospatialFilter
+
+geospatial_filter = GeospatialFilter(
+    tile_size=128,
+    gdf=gdf,
+    mode=aviary.GeospatialFilterMode.DIFFERENCE,
+)
+process_area = process_area.filter(coordinates_filter=geospatial_filter)
+
+print(process_area.coordinates)
+```
+
+``` title="Output"
+[[ 363084 5715326]
+ [ 363212 5715326]
+ [ 363084 5715454]]
+```
+
+We can visualize the process area given the tile size.<br />
+The red polygon represents the geodataframe.
+
+<iframe src="../maps/process_area_filter_difference.html" width="100%" height="300px"></iframe>
+
+---
+
+You can remove coordinates of tiles that don't intersect with the polygons in the geodataframe
+with the intersection mode.
+
+``` python
+coordinates = np.array(
+    [
+        [363084, 5715326],
+        [363212, 5715326],
+        [363084, 5715454],
+        [363212, 5715454],
+    ],
+    dtype=np.int32,
+)
+process_area = aviary.ProcessArea(coordinates=coordinates)
+
+gdf = gpd.GeoDataFrame(
+    geometry=[box(363212, 5715454, 363468, 5715710)],
+    crs='EPSG:25832',
+)
+
+print(process_area.coordinates)
+print(gdf)
+```
+
+``` title="Output"
+[[ 363084 5715326]
+ [ 363212 5715326]
+ [ 363084 5715454]
+ [ 363212 5715454]]
+                                            geometry
+0  POLYGON ((363468 5715454, 363468 5715710, 3632...
+```
+
+``` python
+geospatial_filter = GeospatialFilter(
+    tile_size=128,
+    gdf=gdf,
+    mode=aviary.GeospatialFilterMode.INTERSECTION,
+)
+process_area = process_area.filter(coordinates_filter=geospatial_filter)
+
+print(process_area.coordinates)
+```
+
+``` title="Output"
+[[ 363212 5715454]]
+```
+
+We can visualize the process area given the tile size.<br />
+The red polygon represents the geodataframe.
+
+<iframe src="../maps/process_area_filter_intersection.html" width="100%" height="300px"></iframe>
 
 ---
 
