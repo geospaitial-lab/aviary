@@ -705,7 +705,7 @@ class ProcessArea(Iterable[Coordinates]):
         self,
         other: ProcessArea,
     ) -> ProcessArea:
-        """Adds the coordinates.
+        """Adds the process areas.
 
         Notes:
             - This method is equivalent to applying the set filter with the `UNION` set filter mode
@@ -730,7 +730,7 @@ class ProcessArea(Iterable[Coordinates]):
         self,
         other: ProcessArea,
     ) -> ProcessArea:
-        """Subtracts the coordinates.
+        """Subtracts the process areas.
 
         Notes:
             - This method is equivalent to applying the set filter with the `DIFFERENCE` set filter mode
@@ -756,7 +756,7 @@ class ProcessArea(Iterable[Coordinates]):
         other: Coordinates,
         inplace: bool = False,
     ) -> ProcessArea:
-        """Appends the coordinates.
+        """Appends the coordinates to the process area.
 
         Parameters:
             other: other coordinates
@@ -779,7 +779,7 @@ class ProcessArea(Iterable[Coordinates]):
         self,
         num_chunks: int,
     ) -> list[ProcessArea]:
-        """Chunks the coordinates.
+        """Chunks the process area.
 
         Parameters:
             num_chunks: number of chunks
@@ -800,7 +800,7 @@ class ProcessArea(Iterable[Coordinates]):
         coordinates_filter: CoordinatesFilter,
         inplace: bool = False,
     ) -> ProcessArea:
-        """Filters the coordinates.
+        """Filters the process area.
 
         Parameters:
             coordinates_filter: coordinates filter
@@ -822,7 +822,7 @@ class ProcessArea(Iterable[Coordinates]):
         epsg_code: EPSGCode,
         tile_size: TileSize,
     ) -> gpd.GeoDataFrame:
-        """Converts the coordinates to a geodataframe.
+        """Converts the process area to a geodataframe.
 
         Parameters:
             epsg_code: EPSG code
@@ -851,7 +851,7 @@ class ProcessArea(Iterable[Coordinates]):
         )
 
     def to_json(self) -> str:
-        """Converts the coordinates to a JSON string.
+        """Converts the process area to a JSON string.
 
         Notes:
             - The JSON string contains a list of coordinates (x_min, y_min) of each tile
