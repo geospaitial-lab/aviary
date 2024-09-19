@@ -231,9 +231,10 @@ print(process_area.coordinates)
  [ 363212 5715454]]
 ```
 
-We can visualize the process area given the tile size.
+We can visualize the process area given the tile size.<br />
+The red polygon represents the geodataframe.
 
-<iframe src="../maps/process_area.html" width="100%" height="300px"></iframe>
+<iframe src="../maps/process_area_from_gdf.html" width="100%" height="300px"></iframe>
 
 ---
 
@@ -267,7 +268,7 @@ print(process_area.coordinates)
 We can visualize the process area given the tile size.<br />
 The red polygons represent the districts.
 
-<iframe src="../maps/process_area_from_gdf.html" width="100%" height="300px"></iframe>
+<iframe src="../maps/process_area_from_gdf_districts.html" width="100%" height="300px"></iframe>
 
 ---
 
