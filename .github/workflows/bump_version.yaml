@@ -43,6 +43,7 @@ jobs:
         uses: peter-evans/create-pull-request@v7
         with:
           commit-message: bump version from ${{ env.VERSION }} to ${{ env.BUMPED_VERSION }}
+          sign-commits: true
           branch: build/bump-version
           title: 'build: bump version from ${{ env.VERSION }} to ${{ env.BUMPED_VERSION }}'
           labels: |
