@@ -544,7 +544,7 @@ This method applies a
 [`CoordinatesFilter`](../../api_reference/geodata/coordinates_filter/coordinates_filter.md)
 to the coordinates of the process area.
 
-In this example, we filter the process area based on geospatial data with the
+In this example, we will filter the process area based on geospatial data with the
 [`GeospatialFilter`](../../api_reference/geodata/coordinates_filter/geospatial_filter.md).<br />
 You can remove coordinates of tiles that are within the polygons in the geodataframe with the difference mode.
 
