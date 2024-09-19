@@ -129,7 +129,7 @@ data_test__geospatial_filter_intersection = [
             geometry=[box(-256, -256, -128, -128)],
             crs='EPSG:25832',
         ),
-        np.array([[-128, -128]], dtype=np.int32),
+        np.empty(shape=(0, 2), dtype=np.int32),
     ),
     # test case 4: gdf contains a polygon that intersects a tile
     (
@@ -149,7 +149,7 @@ data_test__geospatial_filter_intersection = [
             geometry=[box(-128, -128, 0, 0)],
             crs='EPSG:25832',
         ),
-        coordinates,
+        np.array([[-128, -128]], dtype=np.int32),
     ),
     # test case 6: gdf contains a polygon that intersects multiple tiles
     (
