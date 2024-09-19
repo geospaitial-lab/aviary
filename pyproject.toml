@@ -14,6 +14,7 @@ authors = [
 ]
 maintainers = [
     {name = "Marius Maryniak", email = "marius.maryniak@w-hs.de"},
+    {name = "Alexander Roß", email = "alexander.ross@w-hs.de"},
 ]
 license = {text = "GPL-3.0"}
 requires-python = ">=3.10"
@@ -104,7 +105,7 @@ multiline-quotes = "single"
     "ARG005",
     "E731",
 ]
-"**/tests/*" = [
+"tests/*" = [
     "D103",
     "PLR2004",
     "S101",
