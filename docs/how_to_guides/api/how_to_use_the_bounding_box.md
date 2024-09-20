@@ -237,7 +237,7 @@ TODO
 
 ### Quantize the bounding box
 
-You can quantize the bounding box with the
+You can align the bounding box to a grid with the
 [`quantize`](../../api_reference/bounding_box.md#aviary.BoundingBox.quantize) method.
 
 ``` python
