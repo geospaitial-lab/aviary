@@ -15,7 +15,7 @@ A bounding box specifies the spatial extent of an area of interest.
 
 You can pass the coordinates to the initializer of the
 [`BoundingBox`](../../api_reference/bounding_box.md).<br />
-You can access the coordinates of the bounding box with the `x_min`, `y_min`, `x_max`, and `y_max` attributes.
+You can access the coordinates of the bounding box with the `x_min`, `y_min`, `x_max` and `y_max` attributes.
 
 ``` python
 import aviary
