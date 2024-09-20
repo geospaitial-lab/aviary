@@ -13,6 +13,7 @@ nav:
       - How to install aviary with pip: how_to_guides/installation/how_to_install_aviary_with_pip.md
       - How to install aviary with Docker: how_to_guides/installation/how_to_install_aviary_with_docker.md
     - API:
+      - How to use the bounding box: how_to_guides/api/how_to_use_the_bounding_box.md
       - How to use the process area: how_to_guides/api/how_to_use_the_process_area.md
     - CLI:
       - How to run the segmentation pipeline: how_to_guides/cli/how_to_run_the_segmentation_pipeline.md
