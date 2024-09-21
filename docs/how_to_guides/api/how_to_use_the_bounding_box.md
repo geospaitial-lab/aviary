@@ -42,7 +42,7 @@ print(bounding_box.y_max)
 
 We can visualize the bounding box.
 
-TODO
+<iframe src="../maps/bounding_box.html" width="100%" height="300px"></iframe>
 
 ---
 
@@ -70,7 +70,7 @@ print(bounding_box.y_max)
 
 We can visualize the bounding box.
 
-TODO
+<iframe src="../maps/bounding_box_setter.html" width="100%" height="300px"></iframe>
 
 ---
 
@@ -105,7 +105,7 @@ print(bounding_box.y_max)
 We can visualize the bounding box.<br />
 The red polygon represents the geodataframe.
 
-TODO
+<iframe src="../maps/bounding_box_from_gdf.html" width="100%" height="300px"></iframe>
 
 ---
 
@@ -135,7 +135,7 @@ print(bounding_box.y_max)
 We can visualize the bounding box.<br />
 The red polygons represent the districts.
 
-TODO
+<iframe src="../maps/bounding_box_from_gdf_districts.html" width="100%" height="300px"></iframe>
 
 ---
 
@@ -184,7 +184,7 @@ print(buffered_bounding_box.y_max)
 We can visualize the bounding box.<br />
 The red polygon represents the original bounding box.
 
-TODO
+<iframe src="../maps/bounding_box_buffer_1.html" width="100%" height="300px"></iframe>
 
 ---
 
@@ -231,7 +231,7 @@ print(buffered_bounding_box.y_max)
 We can visualize the bounding box.<br />
 The red polygon represents the original bounding box.
 
-TODO
+<iframe src="../maps/bounding_box_buffer_2.html" width="100%" height="300px"></iframe>
 
 ---
 
@@ -280,7 +280,7 @@ print(quantized_bounding_box.y_max)
 We can visualize the bounding box.<br />
 The red polygon represents the original bounding box.
 
-TODO
+<iframe src="../maps/bounding_box_quantize.html" width="100%" height="300px"></iframe>
 
 ---
 
