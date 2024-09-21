@@ -188,7 +188,7 @@ The red polygon represents the original bounding box.
 
 ---
 
-You can shrink the bounding box with the
+You can also shrink the bounding box with the
 [`buffer`](../../api_reference/bounding_box.md#aviary.BoundingBox.buffer) method.
 
 ``` python
