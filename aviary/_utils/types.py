@@ -345,8 +345,8 @@ class BoundingBox(Iterable[Coordinate]):
             ...     x_max=363340,
             ...     y_max=5715582,
             ... )
-            >>> bounding_box.quantize(value=64)
-            BoundingBox(x_min=363072, y_min=5715264, x_max=363392, y_max=5715584)
+            >>> bounding_box.quantize(value=128)
+            BoundingBox(x_min=363008, y_min=5715200, x_max=363392, y_max=5715584)
 
         Parameters:
             value: value to quantize the coordinates to in meters
