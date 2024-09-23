@@ -16,6 +16,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip setuptools wheel
+          pip install -r dev/requirements/check_links_requirements.txt
+
+      - name: Convert notebooks to markdown
+        run: |
+          find . -name "*.ipynb" -exec jupyter nbconvert --to markdown {} \;
+
       - name: Check links
         uses: lycheeverse/lychee-action@v1
         with:
