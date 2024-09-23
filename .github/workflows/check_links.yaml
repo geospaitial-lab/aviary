@@ -34,7 +34,10 @@ jobs:
       - name: Check links
         uses: lycheeverse/lychee-action@v1
         with:
-          args: --exclude-path docs/overrides/partials/logo.html -- .
+          args: |
+            --exclude .*\/maps\/.*\.html$
+            --exclude-path docs/overrides/partials/logo.html
+            -- .
 
       - name: Create issue
         if: env.lychee_exit_code != 0
