@@ -74,6 +74,73 @@ We can visualize the bounding box.
 
 ---
 
+A bounding box is an iterable object, so it supports indexing, length and iteration.
+
+You can access the coordinates of the bounding box with the index operator.
+
+``` python
+x_min = bounding_box[0]
+y_min = bounding_box[1]
+x_max = bounding_box[2]
+y_max = bounding_box[3]
+
+print(x_min)
+print(y_min)
+print(x_max)
+print(y_max)
+```
+
+``` title="Output"
+363148
+5715390
+363276
+5715518
+```
+
+You can also unpack its coordinates.
+
+``` python
+x_min, y_min, x_max, y_max = bounding_box
+
+print(x_min)
+print(y_min)
+print(x_max)
+print(y_max)
+```
+
+``` title="Output"
+363148
+5715390
+363276
+5715518
+```
+
+A bounding box has a length, which is obviously 4.
+
+``` python
+print(len(bounding_box))
+```
+
+``` title="Output"
+4
+```
+
+You can iterate over the coordinates of the bounding box.
+
+``` python
+for coordinate in bounding_box:
+    print(coordinate)
+```
+
+``` title="Output"
+363148
+5715390
+363276
+5715518
+```
+
+---
+
 #### Create a bounding box from a geodataframe
 
 You can create a bounding box from a geodataframe with the
