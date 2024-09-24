@@ -90,6 +90,47 @@ We can visualize the process area given the tile size.
 
 ---
 
+A process area is an iterable object, so it supports indexing, length and iteration.
+
+You can access the coordinates of the process area with the index operator.
+
+``` python
+coordinates_1 = process_area[0]
+coordinates_2 = process_area[1]
+
+print(coordinates_1)
+print(coordinates_2)
+```
+
+``` title="Output"
+(363084, 5715326)
+(363212, 5715326)
+```
+
+A process area has a length, which is equal to the number of coordinates, i.e. the number of tiles.
+
+``` python
+print(len(process_area))
+```
+
+``` title="Output"
+2
+```
+
+You can iterate over the coordinates of the process area.
+
+``` python
+for coordinates in process_area:
+    print(coordinates)
+```
+
+``` title="Output"
+(363084, 5715326)
+(363212, 5715326)
+```
+
+---
+
 #### Create a process area from a bounding box
 
 You can create a process area from a bounding box with the
