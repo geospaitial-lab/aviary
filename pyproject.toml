@@ -48,6 +48,9 @@ version = {attr = "aviary.__version__"}
 [tool.setuptools.packages]
 find = {where = ["."], include = ["aviary*"]}
 
+[tool.setuptools.package-data]
+aviary = ["py.typed"]
+
 [tool.coverage.run]
 omit = [
     "aviary/_cli/*",
