@@ -37,7 +37,8 @@ jobs:
           args: |
             --exclude .*\/maps\/.*\.html$
             --exclude-path docs/overrides/partials/logo.html
-            -- .
+            --user-agent curl
+            .
 
       - name: Create issue
         if: env.lychee_exit_code != 0
