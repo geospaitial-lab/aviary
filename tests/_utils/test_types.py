@@ -135,6 +135,10 @@ def test_bounding_box_getitem(
     assert bounding_box[1] == expected_y_min
     assert bounding_box[2] == expected_x_max
     assert bounding_box[3] == expected_y_max
+    assert bounding_box[-1] == expected_y_max
+    assert bounding_box[-2] == expected_x_max
+    assert bounding_box[-3] == expected_y_min
+    assert bounding_box[-4] == expected_x_min
 
 
 def test_bounding_box_iter(
@@ -368,6 +372,24 @@ def test_process_area_getitem(
     assert process_area[1] == expected_coordinates_2
     assert process_area[2] == expected_coordinates_3
     assert process_area[3] == expected_coordinates_4
+    assert process_area[-1] == expected_coordinates_4
+    assert process_area[-2] == expected_coordinates_3
+    assert process_area[-3] == expected_coordinates_2
+    assert process_area[-4] == expected_coordinates_1
+
+
+def test_process_area_getitem_slice(
+    process_area: ProcessArea,
+) -> None:
+    expected_coordinates_1 = np.array([[-128, -128], [0, -128]], dtype=np.int32)
+    expected_coordinates_2 = np.array([[-128, 0], [0, 0]], dtype=np.int32)
+    expected_coordinates_3 = np.array([[0, -128], [-128, 0]], dtype=np.int32)
+    expected_coordinates_4 = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32)
+
+    np.testing.assert_array_equal(process_area[:2].coordinates, expected_coordinates_1)
+    np.testing.assert_array_equal(process_area[2:].coordinates, expected_coordinates_2)
+    np.testing.assert_array_equal(process_area[1:-1].coordinates, expected_coordinates_3)
+    np.testing.assert_array_equal(process_area[:].coordinates, expected_coordinates_4)
 
 
 def test_process_area_getitem_slice(
