@@ -866,14 +866,14 @@ class ProcessArea(Iterable[Coordinates]):
 
     def to_gdf(
         self,
-        epsg_code: EPSGCode,
         tile_size: TileSize,
+        epsg_code: EPSGCode,
     ) -> gpd.GeoDataFrame:
         """Converts the process area to a geodataframe.
 
         Parameters:
-            epsg_code: EPSG code
             tile_size: tile size in meters
+            epsg_code: EPSG code
 
         Returns:
             geodataframe
