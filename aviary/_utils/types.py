@@ -447,8 +447,9 @@ class ProcessArea(Iterable[Coordinates]):
     """A process area specifies the area of interest by a set of coordinates of the bottom left corner of each tile.
 
     Notes:
-        - The + operator can be used to add two process areas
-        - The - operator can be used to subtract two process areas
+        - The `+` operator can be used to add two process areas
+        - The `-` operator can be used to subtract two process areas
+        - The `&` operator can be used to intersect two process areas
 
     Attributes:
         coordinates: coordinates (x_min, y_min) of each tile
@@ -767,6 +768,31 @@ class ProcessArea(Iterable[Coordinates]):
             coordinates=self._coordinates,
             other=other.coordinates,
             mode=SetFilterMode.DIFFERENCE,
+        )
+        return ProcessArea(
+            coordinates=coordinates,
+        )
+
+    def __and__(
+        self,
+        other: ProcessArea,
+    ) -> ProcessArea:
+        """Intersects the process areas.
+
+        Notes:
+            - This method is equivalent to applying the set filter with the `INTERSECTION` set filter mode
+              to the coordinates
+
+        Parameters:
+            other: other process area
+
+        Returns:
+            intersection of the process areas
+        """
+        coordinates = set_filter(
+            coordinates=self._coordinates,
+            other=other.coordinates,
+            mode=SetFilterMode.INTERSECTION,
         )
         return ProcessArea(
             coordinates=coordinates,

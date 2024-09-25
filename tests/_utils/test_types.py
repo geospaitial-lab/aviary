@@ -421,12 +421,25 @@ def test_process_area_add(
 def test_process_area_sub(
     process_area: ProcessArea,
 ) -> None:
-    other_coordinates = np.array([[-128, 0], [0, 0]], dtype=np.int32)
+    other_coordinates = np.array([[-128, 0], [0, 0], [128, -128], [128, 0]], dtype=np.int32)
     other_process_area = ProcessArea(
         coordinates=other_coordinates,
     )
     process_area = process_area - other_process_area
     expected = np.array([[-128, -128], [0, -128]], dtype=np.int32)
+
+    np.testing.assert_array_equal(process_area.coordinates, expected)
+
+
+def test_process_area_and(
+    process_area: ProcessArea,
+) -> None:
+    other_coordinates = np.array([[-128, 0], [0, 0], [128, -128], [128, 0]], dtype=np.int32)
+    other_process_area = ProcessArea(
+        coordinates=other_coordinates,
+    )
+    process_area = process_area & other_process_area
+    expected = np.array([[-128, 0], [0, 0]], dtype=np.int32)
 
     np.testing.assert_array_equal(process_area.coordinates, expected)
 
