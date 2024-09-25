@@ -64,6 +64,7 @@ exclude_also = [
     "if TYPE_CHECKING:",
     "class .*\\bProtocol\\):",
     "@(abc\\.)?abstractmethod",
+    "@overload",
 ]
 
 [tool.pytest.ini_options]
