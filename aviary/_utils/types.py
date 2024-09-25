@@ -447,8 +447,9 @@ class ProcessArea(Iterable[Coordinates]):
     """A process area specifies the area of interest by a set of coordinates of the bottom left corner of each tile.
 
     Notes:
-        - The + operator can be used to add two process areas
-        - The - operator can be used to subtract two process areas
+        - The `+` operator can be used to add two process areas
+        - The `-` operator can be used to subtract two process areas
+        - The `&` operator can be used to intersect two process areas
 
     Attributes:
         coordinates: coordinates (x_min, y_min) of each tile
