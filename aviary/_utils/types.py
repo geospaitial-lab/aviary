@@ -772,6 +772,31 @@ class ProcessArea(Iterable[Coordinates]):
             coordinates=coordinates,
         )
 
+    def __and__(
+        self,
+        other: ProcessArea,
+    ) -> ProcessArea:
+        """Intersects the process areas.
+
+        Notes:
+            - This method is equivalent to applying the set filter with the `INTERSECTION` set filter mode
+              to the coordinates
+
+        Parameters:
+            other: other process area
+
+        Returns:
+            intersection of the process areas
+        """
+        coordinates = set_filter(
+            coordinates=self._coordinates,
+            other=other.coordinates,
+            mode=SetFilterMode.INTERSECTION,
+        )
+        return ProcessArea(
+            coordinates=coordinates,
+        )
+
     def append(
         self,
         other: Coordinates,
