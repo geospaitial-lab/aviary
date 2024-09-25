@@ -107,6 +107,19 @@ print(coordinates_2)
 (363212, 5715326)
 ```
 
+You can slice the process area to create a new process area of a subset of the coordinates with the index operator
+and the colon operator.
+
+``` python
+sliced_process_area = process_area[:-1]
+
+print(sliced_process_area.coordinates)
+```
+
+``` title="Output"
+[[ 363084 5715326]]
+```
+
 A process area has a length, which is equal to the number of coordinates, i.e. the number of tiles.
 
 ``` python
