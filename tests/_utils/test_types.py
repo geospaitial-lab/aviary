@@ -378,6 +378,20 @@ def test_process_area_getitem(
     assert process_area[-4] == expected_coordinates_1
 
 
+def test_process_area_getitem_slice(
+    process_area: ProcessArea,
+) -> None:
+    expected_coordinates_1 = np.array([[-128, -128], [0, -128]], dtype=np.int32)
+    expected_coordinates_2 = np.array([[-128, 0], [0, 0]], dtype=np.int32)
+    expected_coordinates_3 = np.array([[0, -128], [-128, 0]], dtype=np.int32)
+    expected_coordinates_4 = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32)
+
+    np.testing.assert_array_equal(process_area[:2].coordinates, expected_coordinates_1)
+    np.testing.assert_array_equal(process_area[2:].coordinates, expected_coordinates_2)
+    np.testing.assert_array_equal(process_area[1:-1].coordinates, expected_coordinates_3)
+    np.testing.assert_array_equal(process_area[:].coordinates, expected_coordinates_4)
+
+
 def test_process_area_iter(
     process_area: ProcessArea,
 ) -> None:
