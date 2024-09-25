@@ -13,6 +13,7 @@ from typing import (
     TYPE_CHECKING,
     TypeAlias,
     cast,
+    overload,
 )
 
 import geopandas as gpd
@@ -677,18 +678,38 @@ class ProcessArea(Iterable[Coordinates]):
         """
         return len(self._coordinates)
 
+    @overload
     def __getitem__(
         self,
         index: int,
     ) -> Coordinates:
-        """Returns the coordinates.
+        ...
+
+    @overload
+    def __getitem__(
+        self,
+        index: slice,
+    ) -> ProcessArea:
+        ...
+
+    def __getitem__(
+        self,
+        index: int | slice,
+    ) -> Coordinates | ProcessArea:
+        """Returns the coordinates or the sliced process area.
 
         Parameters:
-            index: index of the coordinates
+            index: index or slice of the coordinates
 
         Returns:
-            coordinates
+            coordinates or sliced process area
         """
+        if isinstance(index, slice):
+            coordinates = self._coordinates[index]
+            return ProcessArea(
+                coordinates=coordinates,
+            )
+
         x_min, y_min = self._coordinates[index]
         return x_min, y_min
 
