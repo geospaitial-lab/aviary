@@ -356,7 +356,7 @@ We can visualize the process area given the tile size.
 
 ---
 
-### Add or subtract process areas
+### Add, subtract or intersect process areas
 
 You can add two process areas with the `+` operator.<br />
 If the process areas overlap, the resulting process area will contain the union of the two process areas.
@@ -478,6 +478,63 @@ We can visualize the process area given the tile size.<br />
 The red polygons represent the first process area and the blue polygons represent the second process area.
 
 <iframe src="../maps/process_area_sub.html" width="100%" height="300px"></iframe>
+
+---
+
+You can intersect two process areas with the `&` operator.
+
+``` python
+coordinates_1 = np.array(
+    [
+        [363084, 5715326],
+        [363212, 5715326],
+        [363084, 5715454],
+        [363212, 5715454],
+    ],
+    dtype=np.int32,
+)
+process_area_1 = aviary.ProcessArea(coordinates=coordinates_1)
+
+coordinates_2 = np.array(
+    [
+        [363212, 5715454],
+        [363340, 5715454],
+        [363212, 5715582],
+        [363340, 5715582],
+    ],
+    dtype=np.int32,
+)
+process_area_2 = aviary.ProcessArea(coordinates=coordinates_2)
+
+print(process_area_1.coordinates)
+print(process_area_2.coordinates)
+```
+
+``` title="Output"
+[[ 363084 5715326]
+ [ 363212 5715326]
+ [ 363084 5715454]
+ [ 363212 5715454]]
+[[ 363212 5715454]
+ [ 363340 5715454]
+ [ 363212 5715582]
+ [ 363340 5715582]]
+```
+
+``` python
+process_area = process_area_1 & process_area_2
+
+print(process_area.coordinates)
+```
+
+``` title="Output"
+[[ 363212 5715454]]
+```
+
+We can visualize the process area given the tile size.<br />
+The red polygons represent the first process area and the blue polygons represent the second process area.
+
+<iframe src="../maps/process_area_and.html" width="100%" height="300px"></iframe>
 
 ---
 
