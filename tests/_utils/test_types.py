@@ -486,8 +486,8 @@ def test_process_area_to_gdf(
     epsg_code = 25832
     tile_size = 128
     gdf = process_area.to_gdf(
-        epsg_code=epsg_code,
         tile_size=tile_size,
+        epsg_code=epsg_code,
     )
     expected_geometry = [
         box(-128, -128, 0, 0),
