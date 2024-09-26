@@ -57,10 +57,12 @@ jobs:
           pip-audit
 
       - name: Convert notebooks to markdown
+        if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.12'
         run: |
           find . -name "*.ipynb" -exec jupyter nbconvert --to markdown {} \;
 
       - name: Check links
+        if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.12'
         uses: lycheeverse/lychee-action@v1
         with:
           args: |
