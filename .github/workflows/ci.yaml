@@ -61,7 +61,7 @@ jobs:
         run: |
           find . -name "*.ipynb" -exec jupyter nbconvert --to markdown {} \;
 
-      - name: Check links
+      - name: Check links with lychee
         if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.12'
         uses: lycheeverse/lychee-action@v1
         with:
