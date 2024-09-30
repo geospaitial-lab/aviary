@@ -36,6 +36,7 @@ jobs:
         with:
           args: |
             --exclude .*\/maps\/.*\.html$
+            --exclude-path docs/overrides/partials/copyright.html
             --exclude-path docs/overrides/partials/logo.html
             --user-agent curl
             .
