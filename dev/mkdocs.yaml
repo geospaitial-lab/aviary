@@ -111,6 +111,7 @@ theme:
         name: Switch to light mode
 
 plugins:
+  - privacy
   - search
   - mkdocstrings:
       handlers:
