@@ -147,12 +147,18 @@ extra:
   consent:
     title: Privacy consent
     description: |
-      We use third-party services (but no cookies) to improve the documentation and the user experience.<br />
+      We use third-party services (but <strong>no cookies</strong>)
+      to improve the documentation and the user experience.<br />
       You can change the privacy settings at any time.
       Have a look at our privacy policy for further information.
     cookies:
-      github: <a href="https://www.github.com">GitHub</a> for repository information
-      maps: <a href="https://leafletjs.com">Leaflet</a> and <a href="https://www.openstreetmap.org">OpenStreetMap</a> for interactive maps
+      github: |
+        <a href="https://www.github.com" target="_blank">GitHub</a>
+        for repository information
+      maps: |
+        <a href="https://www.leafletjs.com" target="_blank">Leaflet</a>
+        and <a href="https://www.openstreetmap.org" target="_blank">OpenStreetMap</a>
+        for interactive maps
     actions:
       - accept
       - reject
