@@ -144,6 +144,19 @@ markdown_extensions:
           case: lower
 
 extra:
+  consent:
+    title: Privacy consent
+    description: |
+      We use third-party services (but no cookies) to improve the documentation and the user experience.<br />
+      You can change the privacy settings at any time.
+      Have a look at our privacy policy for further information.
+    cookies:
+      github: <a href="https://www.github.com">GitHub</a> for repository information
+      maps: <a href="https://leafletjs.com">Leaflet</a> and <a href="https://www.openstreetmap.org">OpenStreetMap</a> for interactive maps
+    actions:
+      - accept
+      - reject
+      - manage
   generator: false
   social:
     - icon: simple/github
@@ -154,6 +167,9 @@ extra:
 extra_css:
   - stylesheets/color.css
   - stylesheets/extra.css
+
+extra_javascript:
+  - javascripts/consent.js
 
 copyright:
   © 2024 geospaitial lab
