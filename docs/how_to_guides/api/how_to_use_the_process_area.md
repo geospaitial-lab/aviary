@@ -60,7 +60,7 @@ print(process_area.coordinates)
 
 We can visualize the process area given the tile size.
 
-<iframe src="../maps/process_area.html" width="100%" height="300px"></iframe>
+<div id="process-area"></div>
 
 ---
 
@@ -86,7 +86,7 @@ print(process_area.coordinates)
 
 We can visualize the process area given the tile size.
 
-<iframe src="../maps/process_area_setter.html" width="100%" height="300px"></iframe>
+<div id="process-area-setter"></div>
 
 ---
 
@@ -175,7 +175,7 @@ print(process_area.coordinates)
 We can visualize the process area given the tile size.<br />
 The red polygon represents the bounding box.
 
-<iframe src="../maps/process_area_from_bounding_box.html" width="100%" height="300px"></iframe>
+<div id="process-area-from-bounding-box"></div>
 
 ---
 
@@ -213,7 +213,7 @@ print(process_area.coordinates)
 We can visualize the process area given the tile size.<br />
 The red polygon represents the bounding box.
 
-<iframe src="../maps/process_area_from_bounding_box_tile_size.html" width="100%" height="300px"></iframe>
+<div id="process-area-from-bounding-box-tile-size"></div>
 
 ---
 
@@ -252,7 +252,7 @@ print(process_area.coordinates)
 We can visualize the process area given the tile size.<br />
 The red polygon represents the bounding box.
 
-<iframe src="../maps/process_area_from_bounding_box_quantize.html" width="100%" height="300px"></iframe>
+<div id="process-area-from-bounding-box-quantize"></div>
 
 ---
 
@@ -288,7 +288,7 @@ print(process_area.coordinates)
 We can visualize the process area given the tile size.<br />
 The red polygon represents the geodataframe.
 
-<iframe src="../maps/process_area_from_gdf.html" width="100%" height="300px"></iframe>
+<div id="process-area-from-gdf"></div>
 
 ---
 
@@ -322,7 +322,7 @@ print(process_area.coordinates)
 We can visualize the process area given the tile size.<br />
 The red polygons represent the districts.
 
-<iframe src="../maps/process_area_from_gdf_districts.html" width="100%" height="300px"></iframe>
+<div id="process-area-from-gdf-districts"></div>
 
 ---
 
@@ -352,7 +352,7 @@ print(process_area.coordinates)
 
 We can visualize the process area given the tile size.
 
-<iframe src="../maps/process_area.html" width="100%" height="300px"></iframe>
+<div id="process-area"></div>
 
 ---
 
@@ -418,7 +418,7 @@ print(process_area.coordinates)
 We can visualize the process area given the tile size.<br />
 The red polygons represent the first process area and the blue polygons represent the second process area.
 
-<iframe src="../maps/process_area_add.html" width="100%" height="300px"></iframe>
+<div id="process-area-add"></div>
 
 ---
 
@@ -477,7 +477,7 @@ print(process_area.coordinates)
 We can visualize the process area given the tile size.<br />
 The red polygons represent the first process area and the blue polygons represent the second process area.
 
-<iframe src="../maps/process_area_sub.html" width="100%" height="300px"></iframe>
+<div id="process-area-sub"></div>
 
 ---
 
@@ -534,7 +534,7 @@ print(process_area.coordinates)
 We can visualize the process area given the tile size.<br />
 The red polygons represent the first process area and the blue polygons represent the second process area.
 
-<iframe src="../maps/process_area_and.html" width="100%" height="300px"></iframe>
+<div id="process-area-and"></div>
 
 ---
 
@@ -581,7 +581,7 @@ print(process_area.coordinates)
 
 We can visualize the process area given the tile size.
 
-<iframe src="../maps/process_area_append.html" width="100%" height="300px"></iframe>
+<div id="process-area-append"></div>
 
 ---
 
@@ -711,7 +711,7 @@ print(process_area.coordinates)
 We can visualize the process area given the tile size.<br />
 The red polygon represents the geodataframe.
 
-<iframe src="../maps/process_area_filter_difference.html" width="100%" height="300px"></iframe>
+<div id="process-area-filter-difference"></div>
 
 ---
 
@@ -766,7 +766,7 @@ print(process_area.coordinates)
 We can visualize the process area given the tile size.<br />
 The red polygon represents the geodataframe.
 
-<iframe src="../maps/process_area_filter_intersection.html" width="100%" height="300px"></iframe>
+<div id="process-area-filter-intersection"></div>
 
 ---
 
