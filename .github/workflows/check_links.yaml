@@ -4,6 +4,12 @@ on:
   workflow_dispatch:
   schedule:
     - cron: '0 0 * * *'
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
 
 permissions:
   contents: read
@@ -40,9 +46,14 @@ jobs:
             --exclude-path docs/overrides/partials/logo.html
             --user-agent curl
             .
+          fail: |
+            ${{ github.event_name == 'pull_request' || github.event_name == 'push' }}
 
       - name: Create issue
-        if: env.lychee_exit_code != 0
+        if: |
+          env.lychee_exit_code != 0 &&
+          github.event_name != 'pull_request' &&
+          github.event_name != 'push'
         uses: peter-evans/create-issue-from-file@v5
         with:
           title: 'Check links failed'
