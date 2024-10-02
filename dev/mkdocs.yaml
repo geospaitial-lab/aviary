@@ -94,6 +94,8 @@ theme:
     - navigation.instant.progress
     - navigation.tabs
     - navigation.top
+    - search.highlight
+    - search.share
   palette:
     - media: '(prefers-color-scheme: light)'
       scheme: default
