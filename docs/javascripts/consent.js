@@ -32,6 +32,19 @@ const showMap = (path, containerId) => {
     iframe.height = '300px';
     iframe.style.border = 'none';
 
+    iframe.onload = () => {
+      const openStreetMapAttribution = iframe.contentDocument.querySelector(".leaflet-control-attribution a[href='https://www.openstreetmap.org/copyright']");
+      if (openStreetMapAttribution) {
+        openStreetMapAttribution.setAttribute('target', '_blank');
+      }
+
+      const leafletAttribution = iframe.contentDocument.querySelector(".leaflet-control-attribution a[href='https://leafletjs.com']");
+      if (leafletAttribution) {
+        leafletAttribution.setAttribute('href', 'https://www.leafletjs.com');
+        leafletAttribution.setAttribute('target', '_blank');
+      }
+    };
+
     container.appendChild(iframe);
   }
 };
