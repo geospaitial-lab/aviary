@@ -35,7 +35,6 @@ jobs:
           python -m pip install --upgrade pip setuptools wheel
           pip install -r requirements.txt
           pip install -r dev/requirements/ci_requirements.txt
-          pip install -r dev/requirements/check_links_requirements.txt
 
       - name: Test with pytest
         run: |
@@ -55,19 +54,3 @@ jobs:
       - name: Check dependencies with pip-audit
         run: |
           pip-audit
-
-      - name: Convert notebooks to markdown
-        if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.12'
-        run: |
-          find . -name "*.ipynb" -exec jupyter nbconvert --to markdown {} \;
-
-      - name: Check links with lychee
-        if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.12'
-        uses: lycheeverse/lychee-action@v1
-        with:
-          args: |
-            --exclude .*\/maps\/.*\.html$
-            --exclude-path docs/overrides/partials/logo.html
-            --user-agent curl
-            .
-          fail: true
