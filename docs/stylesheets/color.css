@@ -36,6 +36,21 @@
   --doc-symbol-module-bg-color: #1982C41A;
 }
 
+[data-md-color-scheme=default] {
+  .md-typeset .admonition,
+  .md-typeset details {
+    border-color: #1982C4;
+  }
+  .md-typeset .admonition > .admonition-title,
+  .md-typeset details > summary {
+    background-color: #1982C41A;
+  }
+  .md-typeset .admonition > .admonition-title::before,
+  .md-typeset details > summary::before {
+    background-color: #1982C4;
+  }
+}
+
 [data-md-color-scheme=slate] {
   --md-default-fg-color: hsla(0, 0%, 90%, 0.82);
   --md-default-fg-color--light: hsla(0, 0%, 90%, 0.56);
@@ -87,4 +102,19 @@
   --doc-symbol-method-bg-color: #6E9A3C1A;
   --doc-symbol-class-bg-color: #2F7CAC1A;
   --doc-symbol-module-bg-color: #2F7CAC1A;
+}
+
+[data-md-color-scheme=slate] {
+  .md-typeset .admonition,
+  .md-typeset details {
+    border-color: #2F7CAC;
+  }
+  .md-typeset .admonition > .admonition-title,
+  .md-typeset details > summary {
+    background-color: #2F7CAC1A;
+  }
+  .md-typeset .admonition > .admonition-title::before,
+  .md-typeset details > summary::before {
+    background-color: #2F7CAC;
+  }
 }
