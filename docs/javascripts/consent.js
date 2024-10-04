@@ -38,6 +38,11 @@ const showMap = (path, containerId) => {
         openStreetMapAttribution.setAttribute('target', '_blank');
       }
 
+      const geobasisNRWAttribution = iframe.contentDocument.querySelector(".leaflet-control-attribution a[href='https://www.geobasis.nrw.de']");
+      if (geobasisNRWAttribution) {
+        geobasisNRWAttribution.setAttribute('target', '_blank');
+      }
+
       const leafletAttribution = iframe.contentDocument.querySelector(".leaflet-control-attribution a[href='https://leafletjs.com']");
       if (leafletAttribution) {
         leafletAttribution.setAttribute('href', 'https://www.leafletjs.com');
