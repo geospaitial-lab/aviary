@@ -158,8 +158,9 @@ extra:
         <a href="https://www.github.com" target="_blank">GitHub</a>
         for repository information
       maps: |
-        <a href="https://www.leafletjs.com" target="_blank">Leaflet</a>
-        and <a href="https://www.openstreetmap.org" target="_blank">OpenStreetMap</a>
+        <a href="https://www.leafletjs.com" target="_blank">Leaflet</a>,
+        <a href="https://www.openstreetmap.org" target="_blank">OpenStreetMap</a>
+        and <a href="https://www.bezreg-koeln.nrw.de/geobasis-nrw" target="_blank">Geobasis NRW</a>
         for interactive maps
     actions:
       - accept
