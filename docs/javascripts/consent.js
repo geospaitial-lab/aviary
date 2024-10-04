@@ -38,7 +38,7 @@ const showMap = (path, containerId) => {
         openStreetMapAttribution.setAttribute('target', '_blank');
       }
 
-      const geobasisNRWAttribution = iframe.contentDocument.querySelector(".leaflet-control-attribution a[href='https://www.geobasis.nrw.de']");
+      const geobasisNRWAttribution = iframe.contentDocument.querySelector(".leaflet-control-attribution a[href='https://www.bezreg-koeln.nrw.de/geobasis-nrw']");
       if (geobasisNRWAttribution) {
         geobasisNRWAttribution.setAttribute('target', '_blank');
       }
