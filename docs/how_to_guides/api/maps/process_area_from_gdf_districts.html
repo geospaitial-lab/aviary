@@ -68,6 +68,10 @@
 
             tile_layer_fcf5c03846ed44add76686adc0672ac4.addTo(map_a1c833ded2c42ecdf7fb7b660bc4d8a5);
 
+            var macro_element_690b053a4d90ae20ae55235aa837ac09 = L.tileLayer.wms(
+                "https://www.wms.nrw.de/geobasis/wms_nw_dop",
+                {"attribution": "\u003ca href=\"https://www.bezreg-koeln.nrw.de/geobasis-nrw\"\u003eGeobasis NRW\u003c/a\u003e", "format": "image/png", "layers": "nw_dop_rgb", "styles": "", "transparent": true, "version": "1.3.0"}
+            );
 
         function geo_json_9474795bf52554cc217810f266e15941_styler(feature) {
             switch(feature.id) {
@@ -123,6 +127,20 @@
 
 
             geo_json_a45ee83c342a40beeceb7455d1ac7ef9.addTo(map_a1c833ded2c42ecdf7fb7b660bc4d8a5);
+
+
+            var layer_control_c44349bb3ab7c195e94a2647bd82d9a3_layers = {
+                base_layers : {
+                },
+                overlays :  {
+                    "Orthophotos" : macro_element_690b053a4d90ae20ae55235aa837ac09,
+                },
+            };
+            let layer_control_c44349bb3ab7c195e94a2647bd82d9a3 = L.control.layers(
+                layer_control_c44349bb3ab7c195e94a2647bd82d9a3_layers.base_layers,
+                layer_control_c44349bb3ab7c195e94a2647bd82d9a3_layers.overlays,
+                {"autoZIndex": true, "collapsed": false, "position": "topright"}
+            ).addTo(map_a1c833ded2c42ecdf7fb7b660bc4d8a5);
 
 </script>
 </html>
