@@ -4,10 +4,10 @@ Follow along this step-by-step guide to learn about the [`ProcessArea`](../../ap
 
 ???+ note "Open in Google Colab"
     Open the how-to guide as an interactive
-    [notebook](https://githubtocolab.com/geospaitial-lab/aviary/blob/main/docs/how_to_guides/api/notebooks/how_to_use_the_process_area.ipynb)
+    [notebook](https://www.githubtocolab.com/geospaitial-lab/aviary/blob/main/docs/how_to_guides/api/notebooks/how_to_use_the_process_area.ipynb)
     in [Google Colab](https://colab.google)
     or download the
-    [notebook](https://github.com/geospaitial-lab/aviary/blob/main/docs/how_to_guides/api/notebooks/how_to_use_the_process_area.ipynb) to run it locally.
+    [notebook](https://www.github.com/geospaitial-lab/aviary/blob/main/docs/how_to_guides/api/notebooks/how_to_use_the_process_area.ipynb) to run it locally.
 
 ### Create a process area
 

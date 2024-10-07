@@ -152,7 +152,7 @@ def test_vrt_fetcher_call(
 
 
 def test_wms_fetcher_init() -> None:
-    url = 'https://test.com'
+    url = 'https://www.test.com'
     version = WMSVersion.V1_3_0
     layer = 'test_layer'
     epsg_code = 25832
@@ -188,7 +188,7 @@ def test_wms_fetcher_init() -> None:
 
 
 def test_wms_fetcher_from_config() -> None:
-    url = 'https://test.com'
+    url = 'https://www.test.com'
     version = WMSVersion.V1_3_0
     layer = 'test_layer'
     epsg_code = 25832

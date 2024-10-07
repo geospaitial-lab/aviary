@@ -6,7 +6,7 @@ authors:
     family-names: Maryniak
     email: marius.maryniak@w-hs.de
   - name: geospaitial lab
-repository-code: 'https://github.com/geospaitial-lab/aviary'
+repository-code: 'https://www.github.com/geospaitial-lab/aviary'
 abstract: >-
   Composable inference and postprocessing pipeline for
   remote sensing data
