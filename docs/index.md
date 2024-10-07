@@ -68,6 +68,6 @@ to get started.
 
 ## About
 
-aviary is developed by the [geospaitial lab](https://github.com/geospaitial-lab)
-at the [Westfälische Hochschule - Westphalian University of Applied Sciences](https://w-hs.de)
+aviary is developed by the [geospaitial lab](https://www.github.com/geospaitial-lab)
+at the [Westfälische Hochschule - Westphalian University of Applied Sciences](https://www.w-hs.de)
 in Gelsenkirchen, Germany.

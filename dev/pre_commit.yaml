@@ -1,5 +1,5 @@
 repos:
-- repo: https://github.com/pre-commit/pre-commit-hooks
+- repo: https://www.github.com/pre-commit/pre-commit-hooks
   rev: v4.6.0
   hooks:
     - id: check-added-large-files
@@ -9,7 +9,7 @@ repos:
     - id: debug-statements
     - id: end-of-file-fixer
     - id: trailing-whitespace
-- repo: https://github.com/astral-sh/ruff-pre-commit
+- repo: https://www.github.com/astral-sh/ruff-pre-commit
   rev: v0.3.7
   hooks:
     - id: ruff

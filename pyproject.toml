@@ -35,7 +35,7 @@ dynamic = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/geospaitial-lab/aviary"
+Homepage = "https://www.github.com/geospaitial-lab/aviary"
 Documentation = "https://geospaitial-lab.github.io/aviary"
 
 [project.scripts]

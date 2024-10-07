@@ -102,7 +102,7 @@ def vrt_fetcher() -> VRTFetcher:
 
 @pytest.fixture(scope='session')
 def wms_fetcher() -> WMSFetcher:
-    url = 'https://test.com'
+    url = 'https://www.test.com'
     version = WMSVersion.V1_3_0
     layer = 'test_layer'
     epsg_code = 25832

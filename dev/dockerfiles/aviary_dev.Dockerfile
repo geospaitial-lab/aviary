@@ -11,8 +11,8 @@ LABEL org.opencontainers.image.title="aviary" \
     org.opencontainers.image.authors="Marius Maryniak (marius.maryniak@w-hs.de)" \
     org.opencontainers.image.licenses="GPL-3.0" \
     org.opencontainers.image.version="dev" \
-    org.opencontainers.image.url="https://github.com/geospaitial-lab/aviary" \
-    org.opencontainers.image.source="https://github.com/geospaitial-lab/aviary" \
+    org.opencontainers.image.url="https://www.github.com/geospaitial-lab/aviary" \
+    org.opencontainers.image.source="https://www.github.com/geospaitial-lab/aviary" \
     org.opencontainers.image.documentation="https://geospaitial-lab.github.io/aviary"
 
 RUN python -m pip install --upgrade pip setuptools wheel && \
