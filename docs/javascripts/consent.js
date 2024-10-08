@@ -33,20 +33,38 @@ const showMap = (path, containerId) => {
     iframe.style.border = 'none';
 
     iframe.onload = () => {
-      const openStreetMapAttribution = iframe.contentDocument.querySelector(".leaflet-control-attribution a[href='https://www.openstreetmap.org/copyright']");
-      if (openStreetMapAttribution) {
-        openStreetMapAttribution.setAttribute('target', '_blank');
-      }
+      const setAttributionLinksToOpenInNewTab = () => {
+        const openStreetMapAttribution = iframe.contentDocument.querySelector(".leaflet-control-attribution a[href='https://www.openstreetmap.org/copyright']");
+        if (openStreetMapAttribution) {
+          openStreetMapAttribution.setAttribute('target', '_blank');
+        }
 
-      const geobasisNRWAttribution = iframe.contentDocument.querySelector(".leaflet-control-attribution a[href='https://www.bezreg-koeln.nrw.de/geobasis-nrw']");
-      if (geobasisNRWAttribution) {
-        geobasisNRWAttribution.setAttribute('target', '_blank');
-      }
+        const geobasisNRWAttribution = iframe.contentDocument.querySelector(".leaflet-control-attribution a[href='https://www.bezreg-koeln.nrw.de/geobasis-nrw']");
+        if (geobasisNRWAttribution) {
+          geobasisNRWAttribution.setAttribute('target', '_blank');
+        }
 
-      const leafletAttribution = iframe.contentDocument.querySelector(".leaflet-control-attribution a[href='https://leafletjs.com']");
-      if (leafletAttribution) {
-        leafletAttribution.setAttribute('href', 'https://www.leafletjs.com');
-        leafletAttribution.setAttribute('target', '_blank');
+        const leafletAttribution = iframe.contentDocument.querySelector(".leaflet-control-attribution a[href='https://leafletjs.com']");
+        if (leafletAttribution) {
+          leafletAttribution.setAttribute('href', 'https://www.leafletjs.com');
+          leafletAttribution.setAttribute('target', '_blank');
+        }
+      };
+
+      setAttributionLinksToOpenInNewTab();
+
+      const attributionContainer = iframe.contentDocument.querySelector('.leaflet-control-attribution');
+
+      if (attributionContainer) {
+        const observer = new MutationObserver(() => {
+          setAttributionLinksToOpenInNewTab();
+        });
+
+        observer.observe(attributionContainer, { childList: true, subtree: true });
+
+        iframe.addEventListener('unload', () => {
+          observer.disconnect();
+        });
       }
     };
 
