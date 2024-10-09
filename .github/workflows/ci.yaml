@@ -4,9 +4,17 @@ on:
   pull_request:
     branches:
       - main
+    paths:
+      - '**/*requirements.txt'
+      - '**/*.py'
+      - 'pyproject.toml'
   push:
     branches:
       - main
+    paths:
+      - '**/*requirements.txt'
+      - '**/*.py'
+      - 'pyproject.toml'
 
 env:
   UV_SYSTEM_PYTHON: 1

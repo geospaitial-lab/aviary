@@ -7,9 +7,17 @@ on:
   pull_request:
     branches:
       - main
+    paths:
+      - '**/*.html'
+      - '**/*.ipynb'
+      - '**/*.md'
   push:
     branches:
       - main
+    paths:
+      - '**/*.html'
+      - '**/*.ipynb'
+      - '**/*.md'
 
 permissions:
   contents: read

@@ -7,9 +7,13 @@ on:
   pull_request:
     branches:
       - main
+    paths:
+      - '**/*requirements.txt'
   push:
     branches:
       - main
+    paths:
+      - '**/*requirements.txt'
 
 env:
   UV_SYSTEM_PYTHON: 1
