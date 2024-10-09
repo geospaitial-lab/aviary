@@ -94,6 +94,7 @@ theme:
     - navigation.instant.progress
     - navigation.tabs
     - navigation.top
+    - navigation.tracking
     - search.highlight
     - search.share
   palette:
@@ -144,6 +145,8 @@ markdown_extensions:
       slugify: !!python/object/apply:pymdownx.slugs.slugify
         kwds:
           case: lower
+  - toc:
+      anchorlink: true
 
 extra:
   consent:
