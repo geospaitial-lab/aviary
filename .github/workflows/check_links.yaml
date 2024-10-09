@@ -7,9 +7,19 @@ on:
   pull_request:
     branches:
       - main
+    paths:
+      - '**/*.html'
+      - '**/*.ipynb'
+      - '**/*.md'
+      - '.github/workflows/check_links.yaml'
   push:
     branches:
       - main
+    paths:
+      - '**/*.html'
+      - '**/*.ipynb'
+      - '**/*.md'
+      - '.github/workflows/check_links.yaml'
 
 permissions:
   contents: read

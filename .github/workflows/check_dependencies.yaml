@@ -7,9 +7,15 @@ on:
   pull_request:
     branches:
       - main
+    paths:
+      - '**/*requirements.txt'
+      - '.github/workflows/check_dependencies.yaml'
   push:
     branches:
       - main
+    paths:
+      - '**/*requirements.txt'
+      - '.github/workflows/check_dependencies.yaml'
 
 env:
   UV_SYSTEM_PYTHON: 1

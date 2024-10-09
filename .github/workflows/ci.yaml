@@ -4,9 +4,19 @@ on:
   pull_request:
     branches:
       - main
+    paths:
+      - '**/*requirements.txt'
+      - '**/*.py'
+      - '.github/workflows/ci.yaml'
+      - 'pyproject.toml'
   push:
     branches:
       - main
+    paths:
+      - '**/*requirements.txt'
+      - '**/*.py'
+      - '.github/workflows/ci.yaml'
+      - 'pyproject.toml'
 
 env:
   UV_SYSTEM_PYTHON: 1
