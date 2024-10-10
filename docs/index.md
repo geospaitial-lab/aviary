@@ -52,6 +52,17 @@ If you just want to use the pre-built pipelines with the command-line interface,
     Have a look at the [installation guide](how_to_guides/installation/how_to_install_aviary_with_pip.md)
     for further information.
 
+=== "uv"
+
+    ```
+    uv pip install geospaitial-lab-aviary
+    ```
+
+    Note that aviary requires Python 3.10 or later.
+
+    Have a look at the [installation guide](how_to_guides/installation/how_to_install_aviary_with_uv.md)
+    for further information.
+
 === "Docker"
 
     ```
