@@ -237,7 +237,7 @@ num_workers: 4
 
 To run the segmentation pipeline, run the following command:
 
-=== "pip"
+=== "pip and uv"
 
     ```
     aviary segmentation-pipeline path/to/config.yaml

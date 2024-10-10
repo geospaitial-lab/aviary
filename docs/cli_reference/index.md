@@ -7,7 +7,7 @@ without writing any code, requiring only a declarative configuration file that s
 
 To see the available options and commands of the CLI, run the following command:
 
-=== "pip"
+=== "pip and uv"
 
     ```
     aviary
