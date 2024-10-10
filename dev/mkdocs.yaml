@@ -148,6 +148,7 @@ markdown_extensions:
           case: lower
   - toc:
       anchorlink: true
+      title: On this page
 
 extra:
   consent:
