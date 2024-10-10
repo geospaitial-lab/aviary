@@ -59,8 +59,8 @@ jobs:
 
   check_release_dependencies:
     if: |
-      github.event_name != 'pull_request' &&
-      github.event_name != 'push'
+      github.event_name == 'workflow_dispatch' ||
+      github.event_name == 'schedule'
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
