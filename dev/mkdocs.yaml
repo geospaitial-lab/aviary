@@ -182,6 +182,7 @@ extra_css:
 
 extra_javascript:
   - javascripts/consent.js
+  - javascripts/open_links_in_new_tab.js
 
 extra_templates:
   - how_to_guides/api/maps/bounding_box.html
