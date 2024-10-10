@@ -65,6 +65,17 @@ Note that aviary requires Python 3.10 or later.
 Have a look at the [installation guide](https://geospaitial-lab.github.io/aviary/how_to_guides/installation/how_to_install_aviary_with_pip)
 for further information.
 
+### Installation with uv
+
+```
+uv pip install geospaitial-lab-aviary
+```
+
+Note that aviary requires Python 3.10 or later.
+
+Have a look at the [installation guide](https://geospaitial-lab.github.io/aviary/how_to_guides/installation/how_to_install_aviary_with_uv)
+for further information.
+
 ### Installation with Docker
 
 ```

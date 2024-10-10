@@ -1,6 +1,6 @@
 ## How to install aviary with pip
 
-Follow along this step-by-step guide to install aviary using a virtual environment.
+Follow along this step-by-step guide to install aviary using pip and a virtual environment.
 
 ### Step 1: Install Python
 

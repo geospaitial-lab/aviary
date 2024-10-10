@@ -116,7 +116,7 @@ path: path/to/your/postprocessed_output.gpkg
 
 To run the postprocessing pipeline, run the following command:
 
-=== "pip"
+=== "pip and uv"
 
     ```
     aviary postprocessing-pipeline path/to/config.yaml

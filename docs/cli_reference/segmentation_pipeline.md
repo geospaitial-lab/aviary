@@ -46,7 +46,7 @@ Note that each class has its own configuration, which can be found in the
 
 To run the segmentation pipeline, run the following command:
 
-=== "pip"
+=== "pip and uv"
 
     ```
     aviary segmentation-pipeline path/to/config.yaml
