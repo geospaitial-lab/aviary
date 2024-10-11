@@ -1,7 +1,9 @@
 ## Tests
 
-The tests are based on [pytest](https://docs.pytest.org)
-and [pytest-cov](https://pytest-cov.readthedocs.io).
+The tests are based on [pytest] and [pytest-cov].
+
+  [pytest]: https://docs.pytest.org
+  [pytest-cov]: https://pytest-cov.readthedocs.io
 
 ## Run the tests locally
 

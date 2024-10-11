@@ -1,10 +1,14 @@
 ## Documentation
 
-The documentation is built with [MkDocs](https://www.mkdocs.org)
-and the [Material for MkDocs](https://squidfunk.github.io/mkdocs-material) theme.<br />
-The API reference is generated with [mkdocstrings](https://mkdocstrings.github.io).
+The documentation is built with [MkDocs] and the [Material for MkDocs] theme.<br />
+The API reference is generated with [mkdocstrings].
 
-The docs are built and deployed automatically on new releases with the [docs workflow](../.github/workflows/docs.yaml).
+The docs are built and deployed automatically on new releases with the [docs workflow].
+
+  [MkDocs]: https://www.mkdocs.org
+  [Material for MkDocs]: https://squidfunk.github.io/mkdocs-material
+  [mkdocstrings]: https://mkdocstrings.github.io
+  [docs workflow]: ../.github/workflows/docs.yaml
 
 ## Build the docs locally
 
