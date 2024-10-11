@@ -2,20 +2,23 @@
 
 Follow along this step-by-step guide to install aviary using Docker.
 
-Note that with Docker, you can use only the [**command-line interface (CLI)**](../../cli_reference/index.md)
-of aviary.<br />
-If you want to use the [Python API](../../api_reference/index.md)
-to build a custom pipeline, you need to install the package locally.
-Have a look at the [how-to guide](how_to_install_aviary_with_pip.md) for further information.
+Note that with Docker, you can use only the [**command-line interface (CLI)**] of aviary.<br />
+If you want to use the [Python API] to build a custom pipeline, you need to install the package locally.
+Have a look at the [how-to guide] for further information.
+
+  [**command-line interface (CLI)**]: ../../cli_reference/index.md
+  [Python API]: ../../api_reference/index.md
+  [how-to guide]: how_to_install_aviary_with_pip.md
 
 ### Step 1: Install Docker
 
 First, make sure you have Docker installed.
 
-If you don't have Docker installed, you can download the latest version from the
-[official Docker website](https://www.docker.com).
-If you need help installing Docker, you can refer to the
-[official Docker installation guide](https://docs.docker.com/get-docker).
+If you don't have Docker installed, you can download the latest version from the [official Docker website].
+If you need help installing Docker, you can refer to the [official Docker installation guide].
+
+  [official Docker website]: https://www.docker.com
+  [official Docker installation guide]: https://docs.docker.com/get-docker
 
 ---
 

@@ -15,10 +15,11 @@ python --version
 To use aviary, you need at least Python 3.10.
 
 If you don't have Python installed or need to upgrade to a newer version,
-you can download the latest version from the
-[official Python website](https://www.python.org).
-If you need help installing Python, you can refer to the
-[official Python installation guide](https://wiki.python.org/moin/BeginnersGuide/Download).
+you can download the latest version from the [official Python website].
+If you need help installing Python, you can refer to the [official Python installation guide].
+
+  [official Python website]: https://www.python.org
+  [official Python installation guide]: https://wiki.python.org/moin/BeginnersGuide/Download
 
 ---
 

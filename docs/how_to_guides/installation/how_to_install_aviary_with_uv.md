@@ -6,10 +6,11 @@ Follow along this step-by-step guide to install aviary using uv and a virtual en
 
 First, make sure you have uv installed.
 
-If you don't have uv installed, you can download the latest version from the
-[official uv website](https://docs.astral.sh/uv).
-If you need help installing uv, you can refer to the
-[official uv installation guide](https://docs.astral.sh/uv/getting-started/installation).
+If you don't have uv installed, you can download the latest version from the [official uv website].
+If you need help installing uv, you can refer to the [official uv installation guide].
+
+  [official uv website]: https://docs.astral.sh/uv
+  [official uv installation guide]: https://docs.astral.sh/uv/getting-started/installation
 
 ---
 
