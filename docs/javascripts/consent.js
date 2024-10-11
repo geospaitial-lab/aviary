@@ -37,17 +37,20 @@ const showMap = (path, containerId) => {
         const openStreetMapAttribution = iframe.contentDocument.querySelector(".leaflet-control-attribution a[href='https://www.openstreetmap.org/copyright']");
         if (openStreetMapAttribution) {
           openStreetMapAttribution.setAttribute('target', '_blank');
+          openStreetMapAttribution.setAttribute('rel', 'noopener noreferrer');
         }
 
         const geobasisNRWAttribution = iframe.contentDocument.querySelector(".leaflet-control-attribution a[href='https://www.bezreg-koeln.nrw.de/geobasis-nrw']");
         if (geobasisNRWAttribution) {
           geobasisNRWAttribution.setAttribute('target', '_blank');
+          geobasisNRWAttribution.setAttribute('rel', 'noopener noreferrer');
         }
 
         const leafletAttribution = iframe.contentDocument.querySelector(".leaflet-control-attribution a[href='https://leafletjs.com']");
         if (leafletAttribution) {
           leafletAttribution.setAttribute('href', 'https://www.leafletjs.com');
           leafletAttribution.setAttribute('target', '_blank');
+          leafletAttribution.setAttribute('rel', 'noopener noreferrer');
         }
       };
 

@@ -160,11 +160,11 @@ extra:
       Have a look at our privacy policy for further information.
     cookies:
       github: |
-        <a href="https://www.github.com" target="_blank">GitHub</a>
+        <a href="https://www.github.com" target="_blank" rel="noopener noreferrer">GitHub</a>
         for repository information
       maps: |
-        <a href="https://www.openstreetmap.org" target="_blank">OpenStreetMap</a>
-        and <a href="https://www.bezreg-koeln.nrw.de/geobasis-nrw" target="_blank">Geobasis NRW</a>
+        <a href="https://www.openstreetmap.org" target="_blank" rel="noopener noreferrer">OpenStreetMap</a>
+        and <a href="https://www.bezreg-koeln.nrw.de/geobasis-nrw" target="_blank" rel="noopener noreferrer">Geobasis NRW</a>
         for interactive maps
     actions:
       - accept
