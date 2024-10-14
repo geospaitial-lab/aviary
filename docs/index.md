@@ -49,8 +49,7 @@ If you just want to use the pre-built pipelines with the command-line interface,
 
     Note that aviary requires Python 3.10 or later.
 
-    Have a look at the [installation guide](how_to_guides/installation/how_to_install_aviary_with_pip.md)
-    for further information.
+    Have a look at the [installation guide][installation guide pip] for further information.
 
 === "uv"
 
@@ -60,8 +59,7 @@ If you just want to use the pre-built pipelines with the command-line interface,
 
     Note that aviary requires Python 3.10 or later.
 
-    Have a look at the [installation guide](how_to_guides/installation/how_to_install_aviary_with_uv.md)
-    for further information.
+    Have a look at the [installation guide][installation guide uv] for further information.
 
 === "Docker"
 
@@ -69,16 +67,23 @@ If you just want to use the pre-built pipelines with the command-line interface,
     docker pull ghcr.io/geospaitial-lab/aviary
     ```
 
-    Have a look at the [installation guide](how_to_guides/installation/how_to_install_aviary_with_docker.md)
-    for further information.
+    Have a look at the [installation guide][installation guide docker] for further information.
+
+  [installation guide pip]: how_to_guides/installation/how_to_install_aviary_with_pip.md
+  [installation guide uv]: how_to_guides/installation/how_to_install_aviary_with_uv.md
+  [installation guide docker]: how_to_guides/installation/how_to_install_aviary_with_docker.md
 
 ## Next steps
 
-Have a look at the [how-to guides](how_to_guides/index.md)
-to get started.
+Have a look at the [how-to guides] to get started.
+
+  [how-to guides]: how_to_guides/index.md
 
 ## About
 
-aviary is developed by the [geospaitial lab](https://www.github.com/geospaitial-lab)
-at the [Westfälische Hochschule - Westphalian University of Applied Sciences](https://www.w-hs.de)
+aviary is developed by the [geospaitial lab]
+at the [Westfälische Hochschule - Westphalian University of Applied Sciences]
 in Gelsenkirchen, Germany.
+
+  [geospaitial lab]: https://www.github.com/geospaitial-lab
+  [Westfälische Hochschule - Westphalian University of Applied Sciences]: https://www.w-hs.de

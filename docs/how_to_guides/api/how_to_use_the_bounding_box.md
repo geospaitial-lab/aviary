@@ -1,21 +1,24 @@
 ## How to use the bounding box
 
-Follow along this step-by-step guide to learn about the [`BoundingBox`](../../api_reference/bounding_box.md).
+Follow along this step-by-step guide to learn about the [`BoundingBox`].
 
 ???+ note "Open in Google Colab"
-    Open the how-to guide as an interactive
-    [notebook](https://www.githubtocolab.com/geospaitial-lab/aviary/blob/main/docs/how_to_guides/api/notebooks/how_to_use_the_bounding_box.ipynb)
-    in [Google Colab](https://colab.google)
-    or download the
-    [notebook](https://www.github.com/geospaitial-lab/aviary/blob/main/docs/how_to_guides/api/notebooks/how_to_use_the_bounding_box.ipynb) to run it locally.
+    Open the how-to guide as an interactive [notebook][notebook colab] in [Google Colab]
+    or download the [notebook][notebook github] to run it locally.
+
+  [`BoundingBox`]: ../../api_reference/bounding_box.md
+  [notebook colab]: https://www.githubtocolab.com/geospaitial-lab/aviary/blob/main/docs/how_to_guides/api/notebooks/how_to_use_the_bounding_box.ipynb
+  [Google Colab]: https://colab.google
+  [notebook github]: https://www.github.com/geospaitial-lab/aviary/blob/main/docs/how_to_guides/api/notebooks/how_to_use_the_bounding_box.ipynb
 
 ### Create a bounding box
 
 A bounding box specifies the spatial extent of an area of interest.
 
-You can pass the coordinates to the initializer of the
-[`BoundingBox`](../../api_reference/bounding_box.md).<br />
+You can pass the coordinates to the initializer of the [`BoundingBox`].<br />
 You can access the coordinates of the bounding box with the `x_min`, `y_min`, `x_max` and `y_max` attributes.
+
+  [`BoundingBox`]: ../../api_reference/bounding_box.md
 
 ``` python
 import aviary
@@ -143,8 +146,9 @@ for coordinate in bounding_box:
 
 #### Create a bounding box from a geodataframe
 
-You can create a bounding box from a geodataframe with the
-[`from_gdf`](../../api_reference/bounding_box.md#aviary.BoundingBox.from_gdf) class method.
+You can create a bounding box from a geodataframe with the [`from_gdf`] class method.
+
+  [`from_gdf`]: ../../api_reference/bounding_box.md#aviary.BoundingBox.from_gdf
 
 ``` python
 import geopandas as gpd
@@ -208,8 +212,9 @@ The red polygons represent the districts.
 
 ### Buffer the bounding box
 
-You can expand the bounding box with the
-[`buffer`](../../api_reference/bounding_box.md#aviary.BoundingBox.buffer) method.
+You can expand the bounding box with the [`buffer`] method.
+
+  [`buffer`]: ../../api_reference/bounding_box.md#aviary.BoundingBox.buffer
 
 ``` python
 bounding_box = aviary.BoundingBox(
@@ -255,8 +260,9 @@ The red polygon represents the original bounding box.
 
 ---
 
-You can also shrink the bounding box with the
-[`buffer`](../../api_reference/bounding_box.md#aviary.BoundingBox.buffer) method.
+You can also shrink the bounding box with the [`buffer`] method.
+
+  [`buffer`]: ../../api_reference/bounding_box.md#aviary.BoundingBox.buffer
 
 ``` python
 bounding_box = aviary.BoundingBox(
@@ -304,8 +310,9 @@ The red polygon represents the original bounding box.
 
 ### Quantize the bounding box
 
-You can align the bounding box to a grid with the
-[`quantize`](../../api_reference/bounding_box.md#aviary.BoundingBox.quantize) method.
+You can align the bounding box to a grid with the [`quantize`] method.
+
+  [`quantize`]: ../../api_reference/bounding_box.md#aviary.BoundingBox.quantize
 
 ``` python
 bounding_box = aviary.BoundingBox(
@@ -353,8 +360,9 @@ The red polygon represents the original bounding box.
 
 ### Convert the bounding box to a geodataframe
 
-You can convert the bounding box to a geodataframe with the
-[`to_gdf`](../../api_reference/bounding_box.md#aviary.BoundingBox.to_gdf) method.
+You can convert the bounding box to a geodataframe with the [`to_gdf`] method.
+
+  [`to_gdf`]: ../../api_reference/bounding_box.md#aviary.BoundingBox.to_gdf
 
 ``` python
 bounding_box = aviary.BoundingBox(

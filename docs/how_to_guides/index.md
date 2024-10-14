@@ -9,13 +9,17 @@ You can choose from the following categories:
 
 <div class="grid cards" markdown>
 
--   [**Installation**](installation/how_to_install_aviary_with_pip.md)<br />
+-   [**Installation**]<br />
     How to install aviary
 
--   [**API**](api/how_to_use_the_bounding_box.md)<br />
+-   [**API**]<br />
     How to use the Python API
 
--   [**CLI**](cli/how_to_run_the_segmentation_pipeline.md)<br />
+-   [**CLI**]<br />
     How to run a pre-built pipeline with the command-line interface (CLI)
 
 </div>
+
+  [**Installation**]: installation/how_to_install_aviary_with_pip.md
+  [**API**]: api/how_to_use_the_bounding_box.md
+  [**CLI**]: cli/how_to_run_the_segmentation_pipeline.md

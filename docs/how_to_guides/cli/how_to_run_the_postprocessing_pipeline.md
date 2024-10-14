@@ -1,10 +1,12 @@
 ## How to run the postprocessing pipeline
 
-Follow along this step-by-step guide to run the [postprocessing pipeline](../../cli_reference/postprocessing_pipeline.md)
-with the command-line interface (CLI).
+Follow along this step-by-step guide to run the [postprocessing pipeline] with the command-line interface (CLI).
 
 In this example, we will postprocess the resulting geodataframe of the segmentation pipeline,
-as described in the previous [how-to guide](how_to_run_the_segmentation_pipeline.md).
+as described in the previous [how-to guide].
+
+  [postprocessing pipeline]: ../../cli_reference/postprocessing_pipeline.md
+  [how-to guide]: how_to_run_the_segmentation_pipeline.md
 
 ### Step 1: Create a configuration file
 
@@ -24,9 +26,7 @@ gdf: path/to/your/output.gpkg
 
 ### Step 3: Configure the geodata postprocessor
 
-To postprocess the geodata,
-we will use the [`CompositePostprocessor`](../../api_reference/geodata/geodata_postprocessor/composite_postprocessor.md)
-with the following configuration:
+To postprocess the geodata, we will use the [`CompositePostprocessor`] with the following configuration:
 
 ``` yaml title="config.yaml"
 geodata_postprocessor:
@@ -61,14 +61,17 @@ This configuration will postprocess the geodataframe by:
 - Simplifying the polygons with a tolerance of 0.2 meters
 - Renaming the field `class` to `type`
 - Mapping the values `1` and `2` to `buildings` and `impervious surfaces`
-  as stated in the [mapping of the values](../../aviary/index.md#mapping-of-the-values) of the model
+  as stated in the [mapping of the values] of the model
 
 Note that there are alternative ways to postprocess the geodata.
-You can choose from a collection of [geodata postprocessors](../../api_reference/geodata/geodata_postprocessor/geodata_postprocessor.md)
-and compose them as needed.
+You can choose from a collection of [geodata postprocessors] and compose them as needed.
 
-Have a look at the [API reference](../../api_reference/geodata/geodata_postprocessor/composite_postprocessor.md#aviary.geodata.CompositePostprocessorConfig)
-for more details on the configuration options.
+Have a look at the [API reference] for more details on the configuration options.
+
+  [`CompositePostprocessor`]: ../../api_reference/geodata/geodata_postprocessor/composite_postprocessor.md
+  [mapping of the values]: ../../aviary/index.md#mapping-of-the-values
+  [geodata postprocessors]: ../../api_reference/geodata/geodata_postprocessor/geodata_postprocessor.md
+  [API reference]: ../../api_reference/geodata/geodata_postprocessor/composite_postprocessor.md#aviary.geodata.CompositePostprocessorConfig
 
 ---
 

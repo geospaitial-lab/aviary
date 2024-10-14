@@ -9,18 +9,28 @@
 
 <div align="center">
 
-[![CI](https://img.shields.io/github/actions/workflow/status/geospaitial-lab/aviary/ci.yaml?branch=main&color=black&label=CI&logo=GitHub)](https://www.github.com/geospaitial-lab/aviary/actions/workflows/ci.yaml)
-[![Coverage](https://img.shields.io/codecov/c/github/geospaitial-lab/aviary/main?color=black&label=Coverage&logo=codecov&logoColor=white)](https://app.codecov.io/gh/geospaitial-lab/aviary)
-[![Docs](https://img.shields.io/github/actions/workflow/status/geospaitial-lab/aviary/docs.yaml?branch=main&color=black&label=Docs&logo=materialformkdocs&logoColor=white)](https://geospaitial-lab.github.io/aviary)
+[![CI][CI Badge]][CI]
+[![Coverage][Coverage Badge]][Coverage]
+[![Docs][Docs Badge]][Docs]
 
 </div>
 
 <div align="center">
 
-[![PyPI version](https://img.shields.io/pypi/v/geospaitial-lab-aviary?color=black&label=PyPI)](https://www.pypi.org/project/geospaitial-lab-aviary)
-[![Python version](https://img.shields.io/pypi/pyversions/geospaitial-lab-aviary?color=black&label=Python)](https://www.pypi.org/project/geospaitial-lab-aviary)
+[![PyPI version][PyPI version Badge]][PyPI]
+[![Python version][Python version Badge]][PyPI]
 
 </div>
+
+  [CI Badge]: https://img.shields.io/github/actions/workflow/status/geospaitial-lab/aviary/ci.yaml?branch=main&color=black&label=CI&logo=GitHub
+  [CI]: https://www.github.com/geospaitial-lab/aviary/actions/workflows/ci.yaml
+  [Coverage Badge]: https://img.shields.io/codecov/c/github/geospaitial-lab/aviary/main?color=black&label=Coverage&logo=codecov&logoColor=white
+  [Coverage]: https://app.codecov.io/gh/geospaitial-lab/aviary
+  [Docs Badge]: https://img.shields.io/github/actions/workflow/status/geospaitial-lab/aviary/docs.yaml?branch=main&color=black&label=Docs&logo=materialformkdocs&logoColor=white
+  [Docs]: https://geospaitial-lab.github.io/aviary
+  [PyPI version Badge]: https://img.shields.io/pypi/v/geospaitial-lab-aviary?color=black&label=PyPI
+  [Python version Badge]: https://img.shields.io/pypi/pyversions/geospaitial-lab-aviary?color=black&label=Python
+  [PyPI]: https://www.pypi.org/project/geospaitial-lab-aviary
 
 aviary provides composable components for building inference and postprocessing pipelines
 for remote sensing data.
@@ -62,8 +72,9 @@ pip install geospaitial-lab-aviary
 
 Note that aviary requires Python 3.10 or later.
 
-Have a look at the [installation guide](https://geospaitial-lab.github.io/aviary/how_to_guides/installation/how_to_install_aviary_with_pip)
-for further information.
+Have a look at the [installation guide][installation guide pip] for further information.
+
+  [installation guide pip]: https://geospaitial-lab.github.io/aviary/how_to_guides/installation/how_to_install_aviary_with_pip
 
 ### Installation with uv
 
@@ -73,8 +84,9 @@ uv pip install geospaitial-lab-aviary
 
 Note that aviary requires Python 3.10 or later.
 
-Have a look at the [installation guide](https://geospaitial-lab.github.io/aviary/how_to_guides/installation/how_to_install_aviary_with_uv)
-for further information.
+Have a look at the [installation guide][installation guide uv] for further information.
+
+  [installation guide uv]: https://geospaitial-lab.github.io/aviary/how_to_guides/installation/how_to_install_aviary_with_uv
 
 ### Installation with Docker
 
@@ -82,20 +94,27 @@ for further information.
 docker pull ghcr.io/geospaitial-lab/aviary
 ```
 
-Have a look at the [installation guide](https://geospaitial-lab.github.io/aviary/how_to_guides/installation/how_to_install_aviary_with_docker)
-for further information.
+Have a look at the [installation guide][installation guide docker] for further information.
+
+  [installation guide docker]: https://geospaitial-lab.github.io/aviary/how_to_guides/installation/how_to_install_aviary_with_docker
 
 ## Next steps
 
-Have a look at the [how-to guides](https://geospaitial-lab.github.io/aviary/how_to_guides)
-to get started.
+Have a look at the [how-to guides] to get started.
+
+  [how-to guides]: https://geospaitial-lab.github.io/aviary/how_to_guides
 
 ## Documentation
 
-The full documentation is available at [geospaitial-lab.github.io/aviary](https://geospaitial-lab.github.io/aviary).
+The full documentation is available at [geospaitial-lab.github.io/aviary].
+
+  [geospaitial-lab.github.io/aviary]: https://geospaitial-lab.github.io/aviary
 
 ## About
 
-aviary is developed by the [geospaitial lab](https://www.github.com/geospaitial-lab)
-at the [Westfälische Hochschule - Westphalian University of Applied Sciences](https://www.w-hs.de)
+aviary is developed by the [geospaitial lab]
+at the [Westfälische Hochschule - Westphalian University of Applied Sciences]
 in Gelsenkirchen, Germany.
+
+  [geospaitial lab]: https://www.github.com/geospaitial-lab
+  [Westfälische Hochschule - Westphalian University of Applied Sciences]: https://www.w-hs.de

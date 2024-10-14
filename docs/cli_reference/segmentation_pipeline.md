@@ -7,11 +7,11 @@
 The segmentation pipeline is a pre-built pipeline designed to run a segmentation model on your data.
 It consists of the following components:
 
-- A [`DataFetcher`](../api_reference/data/data_fetcher/data_fetcher.md) to fetch data from a source
-- A [`ProcessArea`](../api_reference/process_area.md) to specify the area of interest
-- A [`DataPreprocessor`](../api_reference/data/data_preprocessor/data_preprocessor.md) to preprocess the fetched data
-- A [`SegmentationModel`](../api_reference/inference/model/segmentation_model.md) to do the inference on the preprocessed data
-- An [`SegmentationExporter`](../api_reference/inference/exporter/segmentation_exporter.md) to export the predictions dynamically as geospatial data
+- A [`DataFetcher`] to fetch data from a source
+- A [`ProcessArea`] to specify the area of interest
+- A [`DataPreprocessor`] to preprocess the fetched data
+- A [`SegmentationModel`] to do the inference on the preprocessed data
+- An [`SegmentationExporter`] to export the predictions dynamically as geospatial data
 
 These components are set up in a configuration file (.yaml file) that is passed to the pipeline.<br />
 The configuration file must have the following structure:
@@ -41,8 +41,7 @@ num_workers: 4
 
 The `name` field must be the name of the class that you want to use for the component.<br />
 The `config` field must contain its corresponding configuration.<br />
-Note that each class has its own configuration, which can be found in the
-[API reference](../api_reference/pipeline/segmentation_pipeline.md#aviary.pipeline.SegmentationPipelineConfig).
+Note that each class has its own configuration, which can be found in the [API reference].
 
 To run the segmentation pipeline, run the following command:
 
@@ -74,9 +73,17 @@ To run the segmentation pipeline, run the following command:
     -v path/to/file:/aviary/file
     ```
 
+  [`DataFetcher`]: ../api_reference/data/data_fetcher/data_fetcher.md
+  [`ProcessArea`]: ../api_reference/process_area.md
+  [`DataPreprocessor`]: ../api_reference/data/data_preprocessor/data_preprocessor.md
+  [`SegmentationModel`]: ../api_reference/inference/model/segmentation_model.md
+  [`SegmentationExporter`]: ../api_reference/inference/exporter/segmentation_exporter.md
+  [API reference]: ../api_reference/pipeline/segmentation_pipeline.md#aviary.pipeline.SegmentationPipelineConfig
+
 ---
 
 ## Next steps
 
-Have a look at the [how-to guide](../how_to_guides/cli/how_to_run_the_segmentation_pipeline.md)
-on how to run the segmentation pipeline with an example configuration file.
+Have a look at the [how-to guide] on how to run the segmentation pipeline with an example configuration file.
+
+  [how-to guide]: ../how_to_guides/cli/how_to_run_the_segmentation_pipeline.md
