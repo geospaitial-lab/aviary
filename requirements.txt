@@ -8,6 +8,6 @@ rasterio==1.4.1
 requests==2.32.3
 rich==13.9.2
 shapely==2.0.6
-simplification==0.7.12
+simplification==0.7.13
 topojson==1.9
 typer==0.12.5
