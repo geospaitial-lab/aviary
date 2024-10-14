@@ -2,16 +2,17 @@ FROM python:3.12-slim as builder
 
 WORKDIR /aviary
 
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
 COPY . .
 
-RUN python -m pip install --upgrade pip setuptools wheel && \
-    pip wheel --no-cache-dir --no-deps --wheel-dir wheels .
+RUN uv venv venv && \
+    . venv/bin/activate && \
+    uv pip install --upgrade pip setuptools wheel && \
+    uv build --wheel --no-cache .
 
 FROM python:3.12-slim as runner
 
 WORKDIR /aviary
-
-COPY --from=builder /aviary/wheels wheels
 
 ENV PYTHONUNBUFFERED 1
 
@@ -26,11 +27,18 @@ LABEL org.opencontainers.image.title="aviary" \
     org.opencontainers.image.source="https://www.github.com/geospaitial-lab/aviary" \
     org.opencontainers.image.documentation="https://geospaitial-lab.github.io/aviary"
 
-RUN python -m pip install --upgrade pip setuptools wheel && \
-    pip install --no-cache-dir wheels/* && \
-    rm -rf wheels && \
+COPY --from=builder /bin/uv /bin/uv
+COPY --from=builder /aviary/venv /aviary/venv
+COPY --from=builder /aviary/dist /aviary/dist
+
+RUN uv venv venv && \
+    . venv/bin/activate && \
+    uv pip install --no-cache dist/* && \
+    rm -rf dist && \
     adduser --disabled-password --gecos "" aviary_user
 
 USER aviary_user
+
+ENV PATH="/aviary/venv/bin:$PATH"
 
 ENTRYPOINT ["aviary"]
