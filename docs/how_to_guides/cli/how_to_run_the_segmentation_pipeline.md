@@ -1,15 +1,17 @@
 ## How to run the segmentation pipeline
 
-Follow along this step-by-step guide to run the [segmentation pipeline](../../cli_reference/segmentation_pipeline.md)
-with the command-line interface (CLI).
+Follow along this step-by-step guide to run the [segmentation pipeline] with the command-line interface (CLI).
 
-In this example, we will run the segmentation model [sparrow](../../aviary/index.md#sparrow)
+In this example, we will run the segmentation model [sparrow]
 on digital orthophotos to detect and classify impervious surfaces.<br />
-Assume the data is stored in a virtual raster (.vrt file) and
-meets the [requirements](../../aviary/index.md#requirements)
-of the model (i.e. 4 channels with RGB (red, green, blue) and NIR (near-infrared) and
+Assume the data is stored in a virtual raster (.vrt file) and meets the [requirements] of the model
+(i.e. 4 channels with RGB (red, green, blue) and NIR (near-infrared) and
 a ground sampling distance of at least 0.2m).<br />
 Please consider using leaf-off orthophotos for the best results.
+
+  [segmentation pipeline]: ../../cli_reference/segmentation_pipeline.md
+  [sparrow]: ../../aviary/index.md#sparrow
+  [requirements]: ../../aviary/index.md#requirements
 
 ### Step 1: Create a configuration file
 
@@ -21,9 +23,7 @@ In the next steps, we will add the configuration of each component of the pipeli
 
 ### Step 2: Configure the data fetcher
 
-To fetch the data from the virtual raster,
-we will use the [`VRTFetcher`](../../api_reference/data/data_fetcher/vrt_fetcher.md)
-with the following configuration:
+To fetch the data from the virtual raster, we will use the [`VRTFetcher`] with the following configuration:
 
 ``` yaml title="config.yaml"
 data_fetcher:
@@ -46,16 +46,16 @@ given a ground sampling distance of 0.2 meters.
     - The data is automatically resampled to the specified ground sampling distance
     - You may need to adjust the tile size and the buffer size depending on the available resources
 
-Have a look at the [API reference](../../api_reference/data/data_fetcher/vrt_fetcher.md#aviary.data.VRTFetcherConfig)
-for more details on the configuration options.
+Have a look at the [API reference][API reference VRTFetcher] for more details on the configuration options.
+
+  [`VRTFetcher`]: ../../api_reference/data/data_fetcher/vrt_fetcher.md
+  [API reference VRTFetcher]: ../../api_reference/data/data_fetcher/vrt_fetcher.md#aviary.data.VRTFetcherConfig
 
 ---
 
 ### Step 3: Configure the process area
 
-To specify the area of interest,
-we will use the [`ProcessArea`](../../api_reference/process_area.md)
-with the following configuration:
+To specify the area of interest, we will use the [`ProcessArea`] with the following configuration:
 
 ``` yaml title="config.yaml"
 process_area:
@@ -73,22 +73,23 @@ in the area of interest.
     - You might need to exclude tiles that are already processed in a previous run
       by specifying the path to the JSON file named `processed_coordinates.json`
       containing the coordinates of the bottom left corner of the processed tiles
-      (this file is created automatically by the [exporter](#step-6-configure-the-exporter) in the output directory)
+      (this file is created automatically by the [exporter] in the output directory)
 
 Note that there are alternative ways to specify the area of interest,
 e.g. by providing a path to a geodataframe (geopackage or shapefile)
 containing the area of interest as a single polygon or a set of polygons.
 
-Have a look at the [API reference](../../api_reference/process_area.md#aviary.ProcessAreaConfig)
-for more details on the configuration options.
+Have a look at the [API reference][API reference ProcessArea] for more details on the configuration options.
+
+  [`ProcessArea`]: ../../api_reference/process_area.md
+  [exporter]: #step-6-configure-the-exporter
+  [API reference ProcessArea]: ../../api_reference/process_area.md#aviary.ProcessAreaConfig
 
 ---
 
 ### Step 4: Configure the data preprocessor
 
-To preprocess the fetched data,
-we will use the [`NormalizePreprocessor`](../../api_reference/data/data_preprocessor/normalize_preprocessor.md)
-with the following configuration:
+To preprocess the fetched data, we will use the [`NormalizePreprocessor`] with the following configuration:
 
 ``` yaml title="config.yaml"
 data_preprocessor:
@@ -98,8 +99,7 @@ data_preprocessor:
     max_values: [255.0, 255.0, 255.0, 255.0]
 ```
 
-This configuration will scale the data to a range of 0 to 1
-as stated in the [requirements](../../aviary/index.md#requirements) of the model.<br />
+This configuration will scale the data to a range of 0 to 1 as stated in the [requirements] of the model.<br />
 The data is assumed to be of data type `uint8` (8-bit unsigned integer),
 where the minimum value is 0 and the maximum value is 255.
 
@@ -107,16 +107,17 @@ where the minimum value is 0 and the maximum value is 255.
 
     - The minimum and maximum values are specified for each channel (red, green, blue, near-infrared)
 
-Have a look at the [API reference](../../api_reference/data/data_preprocessor/normalize_preprocessor.md#aviary.data.NormalizePreprocessorConfig)
-for more details on the configuration options.
+Have a look at the [API reference][API reference NormalizePreprocessor] for more details on the configuration options.
+
+  [`NormalizePreprocessor`]: ../../api_reference/data/data_preprocessor/normalize_preprocessor.md
+  [requirements]: ../../aviary/index.md#requirements
+  [API reference NormalizePreprocessor]: ../../api_reference/data/data_preprocessor/normalize_preprocessor.md#aviary.data.NormalizePreprocessorConfig
 
 ---
 
 ### Step 5: Configure the model
 
-To do the inference on the preprocessed data,
-we will use the [`ONNXSegmentationModel`](../../api_reference/inference/model/onnx_segmentation_model.md)
-with the following configuration:
+To do the inference on the preprocessed data, we will use the [`ONNXSegmentationModel`] with the following configuration:
 
 ``` yaml title="config.yaml"
 model:
@@ -135,15 +136,16 @@ This configuration will download the weights of the model sparrow.
     - The buffer size must match the buffer size of the data fetcher
     - The buffer is removed from the predictions after the inference
 
-Have a look at the [API reference](../../api_reference/inference/model/segmentation_model.md#aviary.inference.SegmentationModelConfig)
-for more details on the configuration options.
+Have a look at the [API reference][API reference SegmentationModel] for more details on the configuration options.
+
+  [`ONNXSegmentationModel`]: ../../api_reference/inference/model/onnx_segmentation_model.md
+  [API reference SegmentationModel]: ../../api_reference/inference/model/segmentation_model.md#aviary.inference.SegmentationModelConfig
 
 ---
 
 ### Step 6: Configure the exporter
 
-To export the predictions dynamically as geospatial data,
-we will use the [`SegmentationExporter`](../../api_reference/inference/exporter/segmentation_exporter.md)
+To export the predictions dynamically as geospatial data, we will use the [`SegmentationExporter`]
 with the following configuration:
 
 ``` yaml title="config.yaml"
@@ -169,8 +171,10 @@ named `processed_coordinates.json`.
     - The ground sampling distance must match the ground sampling distance of the data fetcher
     - You may need to adjust the number of workers depending on the available resources and the number of tiles per batch
 
-Have a look at the [API reference](../../api_reference/inference/exporter/segmentation_exporter.md#aviary.inference.SegmentationExporterConfig)
-for more details on the configuration options.
+Have a look at the [API reference][API reference SegmentationExporter] for more details on the configuration options.
+
+  [`SegmentationExporter`]: ../../api_reference/inference/exporter/segmentation_exporter.md
+  [API reference SegmentationExporter]: ../../api_reference/inference/exporter/segmentation_exporter.md#aviary.inference.SegmentationExporterConfig
 
 ---
 
@@ -273,5 +277,6 @@ a JSON file named `processed_coordinates.json` containing the coordinates of the
 
 ## Next steps
 
-Have a look at the [how-to guide](how_to_run_the_postprocessing_pipeline.md)
-on how to run the postprocessing pipeline on the resulting geodataframe.
+Have a look at the [how-to guide] on how to run the postprocessing pipeline on the resulting geodataframe.
+
+  [how-to guide]: how_to_run_the_postprocessing_pipeline.md
