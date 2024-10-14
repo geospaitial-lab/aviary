@@ -23,10 +23,13 @@ You can choose from the following pipelines:
 
 <div class="grid cards" markdown>
 
--   [**Segmentation pipeline**](segmentation_pipeline.md)<br />
+-   [**Segmentation pipeline**]<br />
     Run a segmentation model on your data
 
--   [**Postprocessing pipeline**](postprocessing_pipeline.md)<br />
+-   [**Postprocessing pipeline**]<br />
     Postprocess geospatial data
 
 </div>
+
+  [**Segmentation pipeline**]: segmentation_pipeline.md
+  [**Postprocessing pipeline**]: postprocessing_pipeline.md

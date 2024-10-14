@@ -34,9 +34,7 @@ so canopies don't cover buildings or impervious surfaces.
 
 ### Create the model with the Python API
 
-If you want to use the [Python API](../api_reference/index.md),
-you can create an [`ONNXSegmentationModel`](../api_reference/inference/model/onnx_segmentation_model.md)
-as follows:
+If you want to use the [Python API], you can create an [`ONNXSegmentationModel`] as follows:
 
 ``` python
 from aviary.inference import ONNXSegmentationModel
@@ -44,12 +42,14 @@ from aviary.inference import ONNXSegmentationModel
 model = ONNXSegmentationModel.from_aviary('sparrow')
 ```
 
+  [Python API]: ../api_reference/index.md
+  [`ONNXSegmentationModel`]: ../api_reference/inference/model/onnx_segmentation_model.md
+
 ---
 
 ### Create the model with the CLI
 
-If you want to use the [command-line interface (CLI)](../cli_reference/segmentation_pipeline.md),
-you can use the following configuration:
+If you want to use the [command-line interface (CLI)], you can use the following configuration:
 
 ``` yaml title="config.yaml"
 model:
@@ -58,9 +58,12 @@ model:
     name: sparrow
 ```
 
+  [command-line interface (CLI)]: ../cli_reference/segmentation_pipeline.md
+
 ---
 
 ### Next steps
 
-Have a look at the [how-to guide](../how_to_guides/cli/how_to_run_the_segmentation_pipeline.md)
-on how to run the segmentation pipeline with the CLI using sparrow.
+Have a look at the [how-to guide] on how to run the segmentation pipeline with the CLI using sparrow.
+
+  [how-to guide]: ../how_to_guides/cli/how_to_run_the_segmentation_pipeline.md
