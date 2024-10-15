@@ -7,11 +7,11 @@
 The segmentation pipeline is a pre-built pipeline designed to run a segmentation model on your data.
 It consists of the following components:
 
-- A [`DataFetcher`] to fetch data from a source
-- A [`ProcessArea`] to specify the area of interest
-- A [`DataPreprocessor`] to preprocess the fetched data
-- A [`SegmentationModel`] to do the inference on the preprocessed data
-- An [`SegmentationExporter`] to export the predictions dynamically as geospatial data
+- A [`DataFetcher`][DataFetcher] to fetch data from a source
+- A [`ProcessArea`][ProcessArea] to specify the area of interest
+- A [`DataPreprocessor`][DataPreprocessor] to preprocess the fetched data
+- A [`SegmentationModel`][SegmentationModel] to do the inference on the preprocessed data
+- An [`SegmentationExporter`][SegmentationExporter] to export the predictions dynamically as geospatial data
 
 These components are set up in a configuration file (.yaml file) that is passed to the pipeline.<br />
 The configuration file must have the following structure:
@@ -73,11 +73,11 @@ To run the segmentation pipeline, run the following command:
     -v path/to/file:/aviary/file
     ```
 
-  [`DataFetcher`]: ../api_reference/data/data_fetcher/data_fetcher.md
-  [`ProcessArea`]: ../api_reference/process_area.md
-  [`DataPreprocessor`]: ../api_reference/data/data_preprocessor/data_preprocessor.md
-  [`SegmentationModel`]: ../api_reference/inference/model/segmentation_model.md
-  [`SegmentationExporter`]: ../api_reference/inference/exporter/segmentation_exporter.md
+  [DataFetcher]: ../api_reference/data/data_fetcher/data_fetcher.md
+  [ProcessArea]: ../api_reference/process_area.md
+  [DataPreprocessor]: ../api_reference/data/data_preprocessor/data_preprocessor.md
+  [SegmentationModel]: ../api_reference/inference/model/segmentation_model.md
+  [SegmentationExporter]: ../api_reference/inference/exporter/segmentation_exporter.md
   [API reference]: ../api_reference/pipeline/segmentation_pipeline.md#aviary.pipeline.SegmentationPipelineConfig
 
 ---

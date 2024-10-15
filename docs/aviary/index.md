@@ -34,7 +34,7 @@ so canopies don't cover buildings or impervious surfaces.
 
 ### Create the model with the Python API
 
-If you want to use the [Python API], you can create an [`ONNXSegmentationModel`] as follows:
+If you want to use the [Python API], you can create an [`ONNXSegmentationModel`][ONNXSegmentationModel] as follows:
 
 ``` python
 from aviary.inference import ONNXSegmentationModel
@@ -43,7 +43,7 @@ model = ONNXSegmentationModel.from_aviary('sparrow')
 ```
 
   [Python API]: ../api_reference/index.md
-  [`ONNXSegmentationModel`]: ../api_reference/inference/model/onnx_segmentation_model.md
+  [ONNXSegmentationModel]: ../api_reference/inference/model/onnx_segmentation_model.md
 
 ---
 
