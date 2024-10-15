@@ -8,7 +8,7 @@ The postprocessing pipeline is a pre-built pipeline designed to postprocess geos
 It consists of the following components:
 
 - A path to the geodataframe
-- A [`GeodataPostprocessor`] to postprocess the geodata
+- A [`GeodataPostprocessor`][GeodataPostprocessor] to postprocess the geodata
 - A path to export the geodataframe
 
 These components are set up in a configuration file (.yaml file) that is passed to the pipeline.<br />
@@ -58,7 +58,7 @@ To run the postprocessing pipeline, run the following command:
     -v path/to/file:/aviary/file
     ```
 
-  [`GeodataPostprocessor`]: ../api_reference/geodata/geodata_postprocessor/geodata_postprocessor.md
+  [GeodataPostprocessor]: ../api_reference/geodata/geodata_postprocessor/geodata_postprocessor.md
   [API reference]: ../api_reference/pipeline/postprocessing_pipeline.md#aviary.pipeline.PostprocessingPipelineConfig
 
 ---
