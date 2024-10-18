@@ -220,7 +220,7 @@ class FieldNamePostprocessor(GeodataPostprocessor):
 
     def __init__(
         self,
-        mapping: dict,
+        mapping: dict[str, str],
     ) -> None:
         """
         Parameters:
@@ -268,7 +268,7 @@ class FieldNamePostprocessorConfig(pydantic.BaseModel):
     Attributes:
         mapping: mapping of the field names (old field name: new field name)
     """
-    mapping: dict
+    mapping: dict[str, str]
 
 
 class FillPostprocessor(GeodataPostprocessor):

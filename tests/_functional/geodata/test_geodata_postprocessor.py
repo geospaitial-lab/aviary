@@ -34,7 +34,7 @@ def test_composite_postprocessor() -> None:
 @pytest.mark.parametrize(('gdf', 'mapping', 'expected'), data_test_field_name_postprocessor)
 def test_field_name_postprocessor(
     gdf: gpd.GeoDataFrame,
-    mapping: dict,
+    mapping: dict[str, str],
     expected: gpd.GeoDataFrame,
 ) -> None:
     postprocessed_gdf = field_name_postprocessor(
