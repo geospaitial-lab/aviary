@@ -58,7 +58,7 @@ def composite_postprocessor(
 
 def field_name_postprocessor(
     gdf: gpd.GeoDataFrame,
-    mapping: dict,
+    mapping: dict[str, str],
 ) -> gpd.GeoDataFrame:
     """Postprocesses the geodata by renaming the fields.
 
