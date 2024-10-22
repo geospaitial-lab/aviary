@@ -66,6 +66,7 @@ def test__segmentation_exporter_task(
     mocked__export_coordinates_json.assert_called_once_with(
         x_min=x_min,
         y_min=y_min,
+        tile_size=tile_size,
         path=path,
         json_name=json_name,
     )
