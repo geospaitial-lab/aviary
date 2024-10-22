@@ -118,6 +118,7 @@ def _segmentation_exporter_task(
     _export_coordinates_json(
         x_min=x_min,
         y_min=y_min,
+        tile_size=tile_size,
         path=path,
         json_name=json_name,
     )
@@ -151,6 +152,7 @@ def _export_gdf(
 def _export_coordinates_json(
     x_min: Coordinate,
     y_min: Coordinate,
+    tile_size: TileSize,
     path: Path,
     json_name: str = 'processed_coordinates.json',
 ) -> None:
@@ -159,6 +161,7 @@ def _export_coordinates_json(
     Parameters:
         x_min: minimum x coordinate
         y_min: minimum y coordinate
+        tile_size: tile size in meters
         path: path to the output directory
         json_name: name of the JSON file containing the coordinates of the processed tiles
     """
@@ -171,7 +174,7 @@ def _export_coordinates_json(
                 json_string = json.load(file)
             process_area = ProcessArea.from_json(json_string)
         except FileNotFoundError:
-            process_area = ProcessArea()
+            process_area = ProcessArea(tile_size=tile_size)
 
         process_area = process_area.append(coordinates)
         json_string = process_area.to_json()
