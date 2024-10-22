@@ -533,12 +533,36 @@ def test_process_area_append(
     assert process_area.tile_size == expected_tile_size
 
 
+def test_process_area_append_duplicate(
+    process_area: ProcessArea,
+) -> None:
+    other_coordinates = (0, 0)
+    process_area = process_area.append(other_coordinates)
+    expected_coordinates = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32)
+    expected_tile_size = 128
+
+    np.testing.assert_array_equal(process_area.coordinates, expected_coordinates)
+    assert process_area.tile_size == expected_tile_size
+
+
 def test_process_area_append_inplace(
     process_area: ProcessArea,
 ) -> None:
     other_coordinates = (128, -128)
     process_area.append(other_coordinates, inplace=True)
     expected_coordinates = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0], [128, -128]], dtype=np.int32)
+    expected_tile_size = 128
+
+    np.testing.assert_array_equal(process_area.coordinates, expected_coordinates)
+    assert process_area.tile_size == expected_tile_size
+
+
+def test_process_area_append_duplicate_inplace(
+    process_area: ProcessArea,
+) -> None:
+    other_coordinates = (0, 0)
+    process_area.append(other_coordinates, inplace=True)
+    expected_coordinates = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32)
     expected_tile_size = 128
 
     np.testing.assert_array_equal(process_area.coordinates, expected_coordinates)
