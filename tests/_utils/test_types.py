@@ -1,3 +1,5 @@
+import re
+
 import geopandas as gpd
 import geopandas.testing
 import numpy as np
@@ -440,6 +442,21 @@ def test_process_area_add(
     assert process_area.tile_size == expected_tile_size
 
 
+def test_process_area_add_exception(
+    process_area: ProcessArea,
+) -> None:
+    other_coordinates = np.array([[128, -128], [128, 0]], dtype=np.int32)
+    other_tile_size = 64
+    other_process_area = ProcessArea(
+        coordinates=other_coordinates,
+        tile_size=other_tile_size,
+    )
+    message = re.escape('Invalid tile size! The tile sizes of the process areas must be equal.')
+
+    with pytest.raises(AviaryUserError, match=message):
+        _ = process_area + other_process_area
+
+
 def test_process_area_sub(
     process_area: ProcessArea,
 ) -> None:
@@ -457,6 +474,21 @@ def test_process_area_sub(
     assert process_area.tile_size == expected_tile_size
 
 
+def test_process_area_sub_exception(
+    process_area: ProcessArea,
+) -> None:
+    other_coordinates = np.array([[-128, 0], [0, 0], [128, -128], [128, 0]], dtype=np.int32)
+    other_tile_size = 64
+    other_process_area = ProcessArea(
+        coordinates=other_coordinates,
+        tile_size=other_tile_size,
+    )
+    message = re.escape('Invalid tile size! The tile sizes of the process areas must be equal.')
+
+    with pytest.raises(AviaryUserError, match=message):
+        _ = process_area - other_process_area
+
+
 def test_process_area_and(
     process_area: ProcessArea,
 ) -> None:
@@ -472,6 +504,21 @@ def test_process_area_and(
 
     np.testing.assert_array_equal(process_area.coordinates, expected_coordinates)
     assert process_area.tile_size == expected_tile_size
+
+
+def test_process_area_and_exception(
+    process_area: ProcessArea,
+) -> None:
+    other_coordinates = np.array([[-128, 0], [0, 0], [128, -128], [128, 0]], dtype=np.int32)
+    other_tile_size = 64
+    other_process_area = ProcessArea(
+        coordinates=other_coordinates,
+        tile_size=other_tile_size,
+    )
+    message = re.escape('Invalid tile size! The tile sizes of the process areas must be equal.')
+
+    with pytest.raises(AviaryUserError, match=message):
+        _ = process_area & other_process_area
 
 
 def test_process_area_append(
