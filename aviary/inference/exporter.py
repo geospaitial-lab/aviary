@@ -58,8 +58,8 @@ class SegmentationExporter(FromConfigMixin):
     in the field `field_name` as the pixel value of the prediction.
     The segmentation exporter creates a geopackage named `output.gpkg` and exports the geodataframe
     of each tile dynamically.
-    The coordinates of the bottom left corner of the processed tiles are exported dynamically to a JSON file
-    named `processed_coordinates.json`.
+    The coordinates of the bottom left corner of the processed tiles and the tile size are exported dynamically
+    to a JSON file named `processed_coordinates.json`.
 
     Notes:
         - The segmentation exporter uses multiple threads to vectorize and export the predictions
