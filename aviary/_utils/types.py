@@ -948,30 +948,18 @@ class ProcessArea(Iterable[Coordinates]):
 
     def to_gdf(
         self,
-        tile_size: TileSize,
         epsg_code: EPSGCode,
     ) -> gpd.GeoDataFrame:
         """Converts the process area to a geodataframe.
 
         Parameters:
-            tile_size: tile size in meters
             epsg_code: EPSG code
 
         Returns:
             geodataframe
-
-        Raises:
-            AviaryUserError: Invalid tile size (`tile_size` <= 0)
         """
-        if tile_size <= 0:
-            message = (
-                'Invalid tile size! '
-                'tile_size must be positive.'
-            )
-            raise AviaryUserError(message)
-
         geometry = [
-            box(x_min, y_min, x_min + tile_size, y_min + tile_size)
+            box(x_min, y_min, x_min + self._tile_size, y_min + self._tile_size)
             for x_min, y_min in self._coordinates
         ]
         return gpd.GeoDataFrame(
