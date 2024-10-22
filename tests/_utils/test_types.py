@@ -428,7 +428,7 @@ def test_process_area_iter(
 def test_process_area_add(
     process_area: ProcessArea,
 ) -> None:
-    other_coordinates = np.array([[128, -128], [128, 0]], dtype=np.int32)
+    other_coordinates = np.array([[-128, 0], [0, 0], [128, -128], [128, 0]], dtype=np.int32)
     other_tile_size = 128
     other_process_area = ProcessArea(
         coordinates=other_coordinates,
@@ -445,7 +445,7 @@ def test_process_area_add(
 def test_process_area_add_exception(
     process_area: ProcessArea,
 ) -> None:
-    other_coordinates = np.array([[128, -128], [128, 0]], dtype=np.int32)
+    other_coordinates = np.array([[-128, 0], [0, 0], [128, -128], [128, 0]], dtype=np.int32)
     other_tile_size = 64
     other_process_area = ProcessArea(
         coordinates=other_coordinates,
