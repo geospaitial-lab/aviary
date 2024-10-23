@@ -1,3 +1,5 @@
+import re
+
 import geopandas as gpd
 import geopandas.testing
 import numpy as np
@@ -16,6 +18,7 @@ from aviary._utils.types import (
     CoordinatesSet,
     InterpolationMode,
     ProcessArea,
+    TileSize,
 )
 from tests._utils.data.data_test_types import (
     data_test_bounding_box_buffer,
@@ -240,15 +243,20 @@ def test_interpolation_mode_to_rio() -> None:
 
 def test_process_area_init() -> None:
     coordinates = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32)
+    tile_size = 128
     process_area = ProcessArea(
         coordinates=coordinates,
+        tile_size=tile_size,
     )
 
     np.testing.assert_array_equal(process_area.coordinates, coordinates)
+    assert process_area.tile_size == tile_size
 
     coordinates = None
+    tile_size = 128
     process_area = ProcessArea(
         coordinates=coordinates,
+        tile_size=tile_size,
     )
     expected = np.empty(
         shape=(0, 2),
@@ -256,16 +264,19 @@ def test_process_area_init() -> None:
     )
 
     np.testing.assert_array_equal(process_area.coordinates, expected)
+    assert process_area.tile_size == tile_size
 
 
-@pytest.mark.parametrize(('coordinates', 'message'), data_test_process_area_init_exceptions)
+@pytest.mark.parametrize(('coordinates', 'tile_size', 'message'), data_test_process_area_init_exceptions)
 def test_process_area_init_exceptions(
     coordinates: CoordinatesSet,
+    tile_size: TileSize,
     message: str,
 ) -> None:
     with pytest.raises(AviaryUserError, match=message):
         _ = ProcessArea(
             coordinates=coordinates,
+            tile_size=tile_size,
         )
 
 
@@ -273,9 +284,12 @@ def test_process_area_properties(
     process_area: ProcessArea,
 ) -> None:
     coordinates = np.array([[128, -128], [128, 0]], dtype=np.int32)
+    tile_size = 64
     process_area.coordinates = coordinates
+    process_area.tile_size = tile_size
 
     np.testing.assert_array_equal(process_area.coordinates, coordinates)
+    assert process_area.tile_size == tile_size
 
 
 @pytest.mark.parametrize(('property_', 'value', 'message'), data_test_process_area_properties_exceptions)
@@ -310,6 +324,7 @@ def test_process_area_from_bounding_box() -> None:
     expected = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32)
 
     np.testing.assert_array_equal(process_area.coordinates, expected)
+    assert process_area.tile_size == tile_size
 
 
 def test_process_area_from_gdf() -> None:
@@ -329,27 +344,32 @@ def test_process_area_from_gdf() -> None:
     expected = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32)
 
     np.testing.assert_array_equal(process_area.coordinates, expected)
+    assert process_area.tile_size == tile_size
 
 
 def test_process_area_from_json() -> None:
-    json_string = '[[-128, -128], [0, -128], [-128, 0], [0, 0]]'
+    json_string = '{"coordinates": [[-128, -128], [0, -128], [-128, 0], [0, 0]], "tile_size": 128}'
     process_area = ProcessArea.from_json(
         json_string=json_string,
     )
-    expected = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32)
+    expected_coordinates = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32)
+    expected_tile_size = 128
 
-    np.testing.assert_array_equal(process_area.coordinates, expected)
+    np.testing.assert_array_equal(process_area.coordinates, expected_coordinates)
+    assert process_area.tile_size == expected_tile_size
 
-    json_string = '[]'
+    json_string = '{"coordinates": [], "tile_size": 128}'
     process_area = ProcessArea.from_json(
         json_string=json_string,
     )
-    expected = np.empty(
+    expected_coordinates = np.empty(
         shape=(0, 2),
         dtype=np.int32,
     )
+    expected_tile_size = 128
 
-    np.testing.assert_array_equal(process_area.coordinates, expected)
+    np.testing.assert_array_equal(process_area.coordinates, expected_coordinates)
+    assert process_area.tile_size == expected_tile_size
 
 
 def test_process_area_len(
@@ -408,40 +428,97 @@ def test_process_area_iter(
 def test_process_area_add(
     process_area: ProcessArea,
 ) -> None:
-    other_coordinates = np.array([[128, -128], [128, 0]], dtype=np.int32)
+    other_coordinates = np.array([[-128, 0], [0, 0], [128, -128], [128, 0]], dtype=np.int32)
+    other_tile_size = 128
     other_process_area = ProcessArea(
         coordinates=other_coordinates,
+        tile_size=other_tile_size,
     )
     process_area = process_area + other_process_area
-    expected = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0], [128, -128], [128, 0]], dtype=np.int32)
+    expected_coordinates = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0], [128, -128], [128, 0]], dtype=np.int32)
+    expected_tile_size = 128
 
-    np.testing.assert_array_equal(process_area.coordinates, expected)
+    np.testing.assert_array_equal(process_area.coordinates, expected_coordinates)
+    assert process_area.tile_size == expected_tile_size
+
+
+def test_process_area_add_exception(
+    process_area: ProcessArea,
+) -> None:
+    other_coordinates = np.array([[-128, 0], [0, 0], [128, -128], [128, 0]], dtype=np.int32)
+    other_tile_size = 64
+    other_process_area = ProcessArea(
+        coordinates=other_coordinates,
+        tile_size=other_tile_size,
+    )
+    message = re.escape('Invalid tile size! The tile sizes of the process areas must be equal.')
+
+    with pytest.raises(AviaryUserError, match=message):
+        _ = process_area + other_process_area
 
 
 def test_process_area_sub(
     process_area: ProcessArea,
 ) -> None:
     other_coordinates = np.array([[-128, 0], [0, 0], [128, -128], [128, 0]], dtype=np.int32)
+    other_tile_size = 128
     other_process_area = ProcessArea(
         coordinates=other_coordinates,
+        tile_size=other_tile_size,
     )
     process_area = process_area - other_process_area
-    expected = np.array([[-128, -128], [0, -128]], dtype=np.int32)
+    expected_coordinates = np.array([[-128, -128], [0, -128]], dtype=np.int32)
+    expected_tile_size = 128
 
-    np.testing.assert_array_equal(process_area.coordinates, expected)
+    np.testing.assert_array_equal(process_area.coordinates, expected_coordinates)
+    assert process_area.tile_size == expected_tile_size
+
+
+def test_process_area_sub_exception(
+    process_area: ProcessArea,
+) -> None:
+    other_coordinates = np.array([[-128, 0], [0, 0], [128, -128], [128, 0]], dtype=np.int32)
+    other_tile_size = 64
+    other_process_area = ProcessArea(
+        coordinates=other_coordinates,
+        tile_size=other_tile_size,
+    )
+    message = re.escape('Invalid tile size! The tile sizes of the process areas must be equal.')
+
+    with pytest.raises(AviaryUserError, match=message):
+        _ = process_area - other_process_area
 
 
 def test_process_area_and(
     process_area: ProcessArea,
 ) -> None:
     other_coordinates = np.array([[-128, 0], [0, 0], [128, -128], [128, 0]], dtype=np.int32)
+    other_tile_size = 128
     other_process_area = ProcessArea(
         coordinates=other_coordinates,
+        tile_size=other_tile_size,
     )
     process_area = process_area & other_process_area
-    expected = np.array([[-128, 0], [0, 0]], dtype=np.int32)
+    expected_coordinates = np.array([[-128, 0], [0, 0]], dtype=np.int32)
+    expected_tile_size = 128
 
-    np.testing.assert_array_equal(process_area.coordinates, expected)
+    np.testing.assert_array_equal(process_area.coordinates, expected_coordinates)
+    assert process_area.tile_size == expected_tile_size
+
+
+def test_process_area_and_exception(
+    process_area: ProcessArea,
+) -> None:
+    other_coordinates = np.array([[-128, 0], [0, 0], [128, -128], [128, 0]], dtype=np.int32)
+    other_tile_size = 64
+    other_process_area = ProcessArea(
+        coordinates=other_coordinates,
+        tile_size=other_tile_size,
+    )
+    message = re.escape('Invalid tile size! The tile sizes of the process areas must be equal.')
+
+    with pytest.raises(AviaryUserError, match=message):
+        _ = process_area & other_process_area
 
 
 def test_process_area_append(
@@ -450,11 +527,22 @@ def test_process_area_append(
     other_coordinates = (128, -128)
     process_area = process_area.append(other_coordinates)
     expected_coordinates = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0], [128, -128]], dtype=np.int32)
-    expected = ProcessArea(
-        coordinates=expected_coordinates,
-    )
+    expected_tile_size = 128
 
-    np.testing.assert_array_equal(process_area.coordinates, expected.coordinates)
+    np.testing.assert_array_equal(process_area.coordinates, expected_coordinates)
+    assert process_area.tile_size == expected_tile_size
+
+
+def test_process_area_append_duplicate(
+    process_area: ProcessArea,
+) -> None:
+    other_coordinates = (0, 0)
+    process_area = process_area.append(other_coordinates)
+    expected_coordinates = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32)
+    expected_tile_size = 128
+
+    np.testing.assert_array_equal(process_area.coordinates, expected_coordinates)
+    assert process_area.tile_size == expected_tile_size
 
 
 def test_process_area_append_inplace(
@@ -463,11 +551,22 @@ def test_process_area_append_inplace(
     other_coordinates = (128, -128)
     process_area.append(other_coordinates, inplace=True)
     expected_coordinates = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0], [128, -128]], dtype=np.int32)
-    expected = ProcessArea(
-        coordinates=expected_coordinates,
-    )
+    expected_tile_size = 128
 
-    np.testing.assert_array_equal(process_area.coordinates, expected.coordinates)
+    np.testing.assert_array_equal(process_area.coordinates, expected_coordinates)
+    assert process_area.tile_size == expected_tile_size
+
+
+def test_process_area_append_duplicate_inplace(
+    process_area: ProcessArea,
+) -> None:
+    other_coordinates = (0, 0)
+    process_area.append(other_coordinates, inplace=True)
+    expected_coordinates = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32)
+    expected_tile_size = 128
+
+    np.testing.assert_array_equal(process_area.coordinates, expected_coordinates)
+    assert process_area.tile_size == expected_tile_size
 
 
 @pytest.mark.skip(reason='Not implemented')
@@ -484,9 +583,7 @@ def test_process_area_to_gdf(
     process_area: ProcessArea,
 ) -> None:
     epsg_code = 25832
-    tile_size = 128
     gdf = process_area.to_gdf(
-        tile_size=tile_size,
         epsg_code=epsg_code,
     )
     expected_geometry = [
@@ -508,6 +605,6 @@ def test_process_area_to_json(
     process_area: ProcessArea,
 ) -> None:
     json_string = process_area.to_json()
-    expected = '[[-128, -128], [0, -128], [-128, 0], [0, 0]]'
+    expected = '{"coordinates": [[-128, -128], [0, -128], [-128, 0], [0, 0]], "tile_size": 128}'
 
     assert json_string == expected
