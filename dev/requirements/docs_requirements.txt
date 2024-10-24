@@ -1,5 +1,3 @@
 folium==0.18.0
-geopandas==1.0.1
 mkdocs-material==9.5.42
 mkdocstrings-python==1.12.2
-shapely==2.0.6
