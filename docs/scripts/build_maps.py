@@ -42,7 +42,7 @@ def build_bounding_box_map() -> None:
         x_max=363340,
         y_max=5715582,
     )
-    bounding_box_gdf = bounding_box.to_gdf(25832)
+    bounding_box_gdf = bounding_box.to_gdf(epsg_code=25832)
     bounding_box_style = {
         'fillOpacity': .2,
         'color': 'black',
@@ -71,7 +71,7 @@ def build_bounding_box_setter_map() -> None:
         x_max=363276,
         y_max=5715518,
     )
-    bounding_box_gdf = bounding_box.to_gdf(25832)
+    bounding_box_gdf = bounding_box.to_gdf(epsg_code=25832)
     bounding_box_style = {
         'fillOpacity': .2,
         'color': 'black',
@@ -100,7 +100,7 @@ def build_bounding_box_from_gdf_map() -> None:
     )
 
     bounding_box = aviary.BoundingBox.from_gdf(gdf=gdf)
-    bounding_box_gdf = bounding_box.to_gdf(25832)
+    bounding_box_gdf = bounding_box.to_gdf(epsg_code=25832)
     bounding_box_style = {
         'fillOpacity': .2,
         'color': 'black',
@@ -136,7 +136,7 @@ def build_bounding_box_from_gdf_districts_map() -> None:
     gdf = gpd.read_file('docs/how_to_guides/api/data/districts.geojson')
 
     bounding_box = aviary.BoundingBox.from_gdf(gdf=gdf)
-    bounding_box_gdf = bounding_box.to_gdf(25832)
+    bounding_box_gdf = bounding_box.to_gdf(epsg_code=25832)
     bounding_box_style = {
         'fillOpacity': .2,
         'color': 'black',
@@ -178,7 +178,7 @@ def build_bounding_box_buffer_1_map() -> None:
     )
 
     buffered_bounding_box = bounding_box.buffer(buffer_size=64)
-    buffered_bounding_box_gdf = buffered_bounding_box.to_gdf(25832)
+    buffered_bounding_box_gdf = buffered_bounding_box.to_gdf(epsg_code=25832)
     buffered_bounding_box_style = {
         'fillOpacity': .2,
         'color': 'black',
@@ -190,7 +190,7 @@ def build_bounding_box_buffer_1_map() -> None:
         style=buffered_bounding_box_style,
     )
 
-    bounding_box_gdf = bounding_box.to_gdf(25832)
+    bounding_box_gdf = bounding_box.to_gdf(epsg_code=25832)
     bounding_box_style = {
         'fillOpacity': 0,
         'color': '#FF595E',
@@ -221,7 +221,7 @@ def build_bounding_box_buffer_2_map() -> None:
     )
 
     buffered_bounding_box = bounding_box.buffer(buffer_size=-64)
-    buffered_bounding_box_gdf = buffered_bounding_box.to_gdf(25832)
+    buffered_bounding_box_gdf = buffered_bounding_box.to_gdf(epsg_code=25832)
     buffered_bounding_box_style = {
         'fillOpacity': .2,
         'color': 'black',
@@ -233,7 +233,7 @@ def build_bounding_box_buffer_2_map() -> None:
         style=buffered_bounding_box_style,
     )
 
-    bounding_box_gdf = bounding_box.to_gdf(25832)
+    bounding_box_gdf = bounding_box.to_gdf(epsg_code=25832)
     bounding_box_style = {
         'fillOpacity': 0,
         'color': '#FF595E',
@@ -264,7 +264,7 @@ def build_bounding_box_quantize_map() -> None:
     )
 
     quantized_bounding_box = bounding_box.quantize(value=128)
-    quantized_bounding_box_gdf = quantized_bounding_box.to_gdf(25832)
+    quantized_bounding_box_gdf = quantized_bounding_box.to_gdf(epsg_code=25832)
     quantized_bounding_box_style = {
         'fillOpacity': .2,
         'color': 'black',
@@ -276,7 +276,7 @@ def build_bounding_box_quantize_map() -> None:
         style=quantized_bounding_box_style,
     )
 
-    bounding_box_gdf = bounding_box.to_gdf(25832)
+    bounding_box_gdf = bounding_box.to_gdf(epsg_code=25832)
     bounding_box_style = {
         'fillOpacity': 0,
         'color': '#FF595E',
