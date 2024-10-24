@@ -57,8 +57,9 @@ jobs:
 
       - name: DEBUG
         run: |
-          pwd
-          ls .
+          ls docs
+          ls docs/how_to_guides
+          ls docs/how_to_guides/api
           ls docs/how_to_guides/api/maps
 
       - name: Build docs
@@ -100,8 +101,9 @@ jobs:
 
       - name: DEBUG
         run: |
-          pwd
-          ls .
+          ls docs
+          ls docs/how_to_guides
+          ls docs/how_to_guides/api
           ls docs/how_to_guides/api/maps
 
       - name: Build and deploy docs
