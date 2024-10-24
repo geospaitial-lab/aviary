@@ -24,6 +24,12 @@ or:
 uv pip install -r dev/requirements.txt
 ```
 
+Build the maps:
+
+```
+python -m docs.scripts.build_maps
+```
+
 Build the docs:
 
 ```
