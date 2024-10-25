@@ -578,12 +578,12 @@ def build_process_area_from_gdf_districts_map() -> None:
 
     process_area = aviary.ProcessArea.from_gdf(
         gdf=gdf,
-        tile_size=128,
+        tile_size=256,
         quantize=True,
     )
 
     process_area_gdf = process_area.to_gdf(
-        tile_size=128,
+        tile_size=256,
         epsg_code=25832,
     )
     process_area_style = {
