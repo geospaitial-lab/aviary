@@ -55,10 +55,6 @@ jobs:
         run: |
           python -m docs.scripts.build_maps
 
-      - name: DEBUG
-        run: |
-          ls docs/how_to_guides/api/maps
-
       - name: Build docs
         run: |
           mkdocs build -f dev/mkdocs.yaml
@@ -95,10 +91,6 @@ jobs:
       - name: Build maps
         run: |
           python -m docs.scripts.build_maps
-
-      - name: DEBUG
-        run: |
-          ls docs/how_to_guides/api/maps
 
       - name: Build and deploy docs
         run: |
