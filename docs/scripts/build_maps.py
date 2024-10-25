@@ -170,7 +170,7 @@ def build_bounding_box_from_gdf_districts_map() -> None:
     build_map(
         layers=layers,
         path=path,
-        zoom_start=12,
+        zoom_start=11,
     )
 
 
@@ -613,7 +613,7 @@ def build_process_area_from_gdf_districts_map() -> None:
     build_map(
         layers=layers,
         path=path,
-        zoom_start=12,
+        zoom_start=11,
     )
 
 
