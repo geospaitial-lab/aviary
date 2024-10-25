@@ -57,7 +57,8 @@ def build_bounding_box_map() -> None:
     )
 
     layers = [bounding_box_layer]
-    path = Path(__file__).parents[1] / 'how_to_guides' / 'api' / 'maps' / 'bounding_box.html'
+    dir_path = Path(__file__).parents[1] / 'how_to_guides' / 'api' / 'maps'
+    path = dir_path / 'bounding_box.html'
 
     build_map(
         layers=layers,
@@ -86,7 +87,8 @@ def build_bounding_box_setter_map() -> None:
     )
 
     layers = [bounding_box_layer]
-    path = Path(__file__).parents[1] / 'how_to_guides' / 'api' / 'maps' / 'bounding_box_setter.html'
+    dir_path = Path(__file__).parents[1] / 'how_to_guides' / 'api' / 'maps'
+    path = dir_path / 'bounding_box_setter.html'
 
     build_map(
         layers=layers,
@@ -125,7 +127,8 @@ def build_bounding_box_from_gdf_map() -> None:
     )
 
     layers = [bounding_box_layer, gdf_layer]
-    path = Path(__file__).parents[1] / 'how_to_guides' / 'api' / 'maps' / 'bounding_box_from_gdf.html'
+    dir_path = Path(__file__).parents[1] / 'how_to_guides' / 'api' / 'maps'
+    path = dir_path / 'bounding_box_from_gdf.html'
 
     build_map(
         layers=layers,
@@ -161,7 +164,8 @@ def build_bounding_box_from_gdf_districts_map() -> None:
     )
 
     layers = [bounding_box_layer, gdf_layer]
-    path = Path(__file__).parents[1] / 'how_to_guides' / 'api' / 'maps' / 'bounding_box_from_gdf_districts.html'
+    dir_path = Path(__file__).parents[1] / 'how_to_guides' / 'api' / 'maps'
+    path = dir_path / 'bounding_box_from_gdf_districts.html'
 
     build_map(
         layers=layers,
@@ -204,7 +208,8 @@ def build_bounding_box_buffer_1_map() -> None:
     )
 
     layers = [buffered_bounding_box_layer, bounding_box_layer]
-    path = Path(__file__).parents[1] / 'how_to_guides' / 'api' / 'maps' / 'bounding_box_buffer_1.html'
+    dir_path = Path(__file__).parents[1] / 'how_to_guides' / 'api' / 'maps'
+    path = dir_path / 'bounding_box_buffer_1.html'
 
     build_map(
         layers=layers,
@@ -246,7 +251,8 @@ def build_bounding_box_buffer_2_map() -> None:
     )
 
     layers = [buffered_bounding_box_layer, bounding_box_layer]
-    path = Path(__file__).parents[1] / 'how_to_guides' / 'api' / 'maps' / 'bounding_box_buffer_2.html'
+    dir_path = Path(__file__).parents[1] / 'how_to_guides' / 'api' / 'maps'
+    path = dir_path / 'bounding_box_buffer_2.html'
 
     build_map(
         layers=layers,
@@ -288,7 +294,8 @@ def build_bounding_box_quantize_map() -> None:
     )
 
     layers = [quantized_bounding_box_layer, bounding_box_layer]
-    path = Path(__file__).parents[1] / 'how_to_guides' / 'api' / 'maps' / 'bounding_box_quantize.html'
+    dir_path = Path(__file__).parents[1] / 'how_to_guides' / 'api' / 'maps'
+    path = dir_path / 'bounding_box_quantize.html'
 
     build_map(
         layers=layers,
@@ -324,7 +331,8 @@ def build_process_area_map() -> None:
     )
 
     layers = [process_area_layer]
-    path = Path(__file__).parents[1] / 'how_to_guides' / 'api' / 'maps' / 'process_area.html'
+    dir_path = Path(__file__).parents[1] / 'how_to_guides' / 'api' / 'maps'
+    path = dir_path / 'process_area.html'
 
     build_map(
         layers=layers,
@@ -358,7 +366,8 @@ def build_process_area_setter_map() -> None:
     )
 
     layers = [process_area_layer]
-    path = Path(__file__).parents[1] / 'how_to_guides' / 'api' / 'maps' / 'process_area_setter.html'
+    dir_path = Path(__file__).parents[1] / 'how_to_guides' / 'api' / 'maps'
+    path = dir_path / 'process_area_setter.html'
 
     build_map(
         layers=layers,
@@ -407,7 +416,8 @@ def build_process_area_from_bounding_box_map() -> None:
     )
 
     layers = [process_area_layer, bounding_box_layer]
-    path = Path(__file__).parents[1] / 'how_to_guides' / 'api' / 'maps' / 'process_area_from_bounding_box.html'
+    dir_path = Path(__file__).parents[1] / 'how_to_guides' / 'api' / 'maps'
+    path = dir_path / 'process_area_from_bounding_box.html'
 
     build_map(
         layers=layers,
@@ -456,7 +466,8 @@ def build_process_area_from_bounding_box_tile_size_map() -> None:
     )
 
     layers = [process_area_layer, bounding_box_layer]
-    path = Path(__file__).parents[1] / 'how_to_guides' / 'api' / 'maps' / 'process_area_from_bounding_box_tile_size.html'
+    dir_path = Path(__file__).parents[1] / 'how_to_guides' / 'api' / 'maps'
+    path = dir_path / 'process_area_from_bounding_box_tile_size.html'
 
     build_map(
         layers=layers,
@@ -505,7 +516,8 @@ def build_process_area_from_bounding_box_quantize_map() -> None:
     )
 
     layers = [process_area_layer, bounding_box_layer]
-    path = Path(__file__).parents[1] / 'how_to_guides' / 'api' / 'maps' / 'process_area_from_bounding_box_quantize.html'
+    dir_path = Path(__file__).parents[1] / 'how_to_guides' / 'api' / 'maps'
+    path = dir_path / 'process_area_from_bounding_box_quantize.html'
 
     build_map(
         layers=layers,
@@ -551,7 +563,8 @@ def build_process_area_from_gdf_map() -> None:
     )
 
     layers = [process_area_layer, gdf_layer]
-    path = Path(__file__).parents[1] / 'how_to_guides' / 'api' / 'maps' / 'process_area_from_gdf.html'
+    dir_path = Path(__file__).parents[1] / 'how_to_guides' / 'api' / 'maps'
+    path = dir_path / 'process_area_from_gdf.html'
 
     build_map(
         layers=layers,
@@ -594,7 +607,8 @@ def build_process_area_from_gdf_districts_map() -> None:
     )
 
     layers = [process_area_layer, gdf_layer]
-    path = Path(__file__).parents[1] / 'how_to_guides' / 'api' / 'maps' / 'process_area_from_gdf_districts.html'
+    dir_path = Path(__file__).parents[1] / 'how_to_guides' / 'api' / 'maps'
+    path = dir_path / 'process_area_from_gdf_districts.html'
 
     build_map(
         layers=layers,
@@ -672,7 +686,8 @@ def build_process_area_add_map() -> None:
     )
 
     layers = [process_area_layer, process_area_1_layer, process_area_2_layer]
-    path = Path(__file__).parents[1] / 'how_to_guides' / 'api' / 'maps' / 'process_area_add.html'
+    dir_path = Path(__file__).parents[1] / 'how_to_guides' / 'api' / 'maps'
+    path = dir_path / 'process_area_add.html'
 
     build_map(
         layers=layers,
@@ -749,7 +764,8 @@ def build_process_area_sub_map() -> None:
     )
 
     layers = [process_area_layer, process_area_1_layer, process_area_2_layer]
-    path = Path(__file__).parents[1] / 'how_to_guides' / 'api' / 'maps' / 'process_area_sub.html'
+    dir_path = Path(__file__).parents[1] / 'how_to_guides' / 'api' / 'maps'
+    path = dir_path / 'process_area_sub.html'
 
     build_map(
         layers=layers,
@@ -826,7 +842,8 @@ def build_process_area_and_map() -> None:
     )
 
     layers = [process_area_layer, process_area_1_layer, process_area_2_layer]
-    path = Path(__file__).parents[1] / 'how_to_guides' / 'api' / 'maps' / 'process_area_and.html'
+    dir_path = Path(__file__).parents[1] / 'how_to_guides' / 'api' / 'maps'
+    path = dir_path / 'process_area_and.html'
 
     build_map(
         layers=layers,
@@ -863,7 +880,8 @@ def build_process_area_append_map() -> None:
     )
 
     layers = [process_area_layer]
-    path = Path(__file__).parents[1] / 'how_to_guides' / 'api' / 'maps' / 'process_area_append.html'
+    dir_path = Path(__file__).parents[1] / 'how_to_guides' / 'api' / 'maps'
+    path = dir_path / 'process_area_append.html'
 
     build_map(
         layers=layers,
@@ -921,7 +939,8 @@ def build_process_area_filter_difference_map() -> None:
     )
 
     layers = [process_area_layer, gdf_layer]
-    path = Path(__file__).parents[1] / 'how_to_guides' / 'api' / 'maps' / 'process_area_filter_difference.html'
+    dir_path = Path(__file__).parents[1] / 'how_to_guides' / 'api' / 'maps'
+    path = dir_path / 'process_area_filter_difference.html'
 
     build_map(
         layers=layers,
@@ -979,7 +998,8 @@ def build_process_area_filter_intersection_map() -> None:
     )
 
     layers = [process_area_layer, gdf_layer]
-    path = Path(__file__).parents[1] / 'how_to_guides' / 'api' / 'maps' / 'process_area_filter_intersection.html'
+    dir_path = Path(__file__).parents[1] / 'how_to_guides' / 'api' / 'maps'
+    path = dir_path / 'process_area_filter_intersection.html'
 
     build_map(
         layers=layers,
