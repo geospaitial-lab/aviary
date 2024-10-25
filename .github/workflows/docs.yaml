@@ -49,7 +49,11 @@ jobs:
       - name: Install dependencies
         run: |
           uv pip install --upgrade pip setuptools wheel
-          uv pip install -r dev/requirements/docs_requirements.txt
+          uv pip install -r requirements.txt -r dev/requirements/docs_requirements.txt
+
+      - name: Build maps
+        run: |
+          python -m docs.scripts.build_maps
 
       - name: Build docs
         run: |
@@ -82,7 +86,11 @@ jobs:
       - name: Install dependencies
         run: |
           uv pip install --upgrade pip setuptools wheel
-          uv pip install -r dev/requirements/docs_requirements.txt
+          uv pip install -r requirements.txt -r dev/requirements/docs_requirements.txt
+
+      - name: Build maps
+        run: |
+          python -m docs.scripts.build_maps
 
       - name: Build and deploy docs
         run: |
