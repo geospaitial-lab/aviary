@@ -5,9 +5,11 @@ from pathlib import Path
 
 import folium
 import geopandas as gpd
+import numpy as np
 from shapely.geometry import box
 
 import aviary
+from aviary.geodata import GeospatialFilter
 
 
 def build_maps() -> None:
@@ -19,19 +21,19 @@ def build_maps() -> None:
     build_bounding_box_buffer_1_map()
     build_bounding_box_buffer_2_map()
     build_bounding_box_quantize_map()
-    # build_process_area_map()  # noqa: ERA001
-    # build_process_area_setter_map()  # noqa: ERA001
-    # build_process_area_from_bounding_box_map()  # noqa: ERA001
-    # build_process_area_from_bounding_box_tile_size_map()  # noqa: ERA001
-    # build_process_area_from_bounding_box_quantize_map()  # noqa: ERA001
-    # build_process_area_from_gdf_map()  # noqa: ERA001
-    # build_process_area_from_gdf_districts_map()  # noqa: ERA001
-    # build_process_area_add_map()  # noqa: ERA001
-    # build_process_area_sub_map()  # noqa: ERA001
-    # build_process_area_and_map()  # noqa: ERA001
-    # build_process_area_append_map()  # noqa: ERA001
-    # build_process_area_filter_difference_map()  # noqa: ERA001
-    # build_process_area_filter_intersection_map()  # noqa: ERA001
+    build_process_area_map()
+    build_process_area_setter_map()
+    build_process_area_from_bounding_box_map()
+    build_process_area_from_bounding_box_tile_size_map()
+    build_process_area_from_bounding_box_quantize_map()
+    build_process_area_from_gdf_map()
+    build_process_area_from_gdf_districts_map()
+    build_process_area_add_map()
+    build_process_area_sub_map()
+    build_process_area_and_map()
+    build_process_area_append_map()
+    build_process_area_filter_difference_map()
+    build_process_area_filter_intersection_map()
 
 
 def build_bounding_box_map() -> None:
@@ -287,6 +289,697 @@ def build_bounding_box_quantize_map() -> None:
 
     layers = [quantized_bounding_box_layer, bounding_box_layer]
     path = Path(__file__).parents[1] / 'how_to_guides' / 'api' / 'maps' / 'bounding_box_quantize.html'
+
+    build_map(
+        layers=layers,
+        path=path,
+    )
+
+
+def build_process_area_map() -> None:
+    """Builds the process_area map."""
+    coordinates = np.array(
+        [
+            [363084, 5715326],
+            [363212, 5715326],
+            [363084, 5715454],
+            [363212, 5715454],
+        ],
+        dtype=np.int32,
+    )
+    process_area = aviary.ProcessArea(coordinates=coordinates)
+
+    process_area_gdf = process_area.to_gdf(
+        tile_size=128,
+        epsg_code=25832,
+    )
+    process_area_style = {
+        'fillOpacity': .2,
+        'color': 'black',
+        'weight': 2,
+    }
+    process_area_layer = Layer(
+        gdf=process_area_gdf,
+        style=process_area_style,
+    )
+
+    layers = [process_area_layer]
+    path = Path(__file__).parents[1] / 'how_to_guides' / 'api' / 'maps' / 'process_area.html'
+
+    build_map(
+        layers=layers,
+        path=path,
+    )
+
+
+def build_process_area_setter_map() -> None:
+    """Builds the process_area_setter map."""
+    coordinates = np.array(
+        [
+            [363084, 5715326],
+            [363212, 5715326],
+        ],
+        dtype=np.int32,
+    )
+    process_area = aviary.ProcessArea(coordinates=coordinates)
+
+    process_area_gdf = process_area.to_gdf(
+        tile_size=128,
+        epsg_code=25832,
+    )
+    process_area_style = {
+        'fillOpacity': .2,
+        'color': 'black',
+        'weight': 2,
+    }
+    process_area_layer = Layer(
+        gdf=process_area_gdf,
+        style=process_area_style,
+    )
+
+    layers = [process_area_layer]
+    path = Path(__file__).parents[1] / 'how_to_guides' / 'api' / 'maps' / 'process_area_setter.html'
+
+    build_map(
+        layers=layers,
+        path=path,
+    )
+
+
+def build_process_area_from_bounding_box_map() -> None:
+    """Builds the process_area_from_bounding_box map."""
+    bounding_box = aviary.BoundingBox(
+        x_min=363084,
+        y_min=5715326,
+        x_max=363340,
+        y_max=5715582,
+    )
+
+    process_area = aviary.ProcessArea.from_bounding_box(
+        bounding_box=bounding_box,
+        tile_size=128,
+        quantize=False,
+    )
+
+    process_area_gdf = process_area.to_gdf(
+        tile_size=128,
+        epsg_code=25832,
+    )
+    process_area_style = {
+        'fillOpacity': .2,
+        'color': 'black',
+        'weight': 2,
+    }
+    process_area_layer = Layer(
+        gdf=process_area_gdf,
+        style=process_area_style,
+    )
+
+    bounding_box_gdf = bounding_box.to_gdf(epsg_code=25832)
+    bounding_box_style = {
+        'fillOpacity': 0,
+        'color': '#FF595E',
+        'weight': 2,
+    }
+    bounding_box_layer = Layer(
+        gdf=bounding_box_gdf,
+        style=bounding_box_style,
+    )
+
+    layers = [process_area_layer, bounding_box_layer]
+    path = Path(__file__).parents[1] / 'how_to_guides' / 'api' / 'maps' / 'process_area_from_bounding_box.html'
+
+    build_map(
+        layers=layers,
+        path=path,
+    )
+
+
+def build_process_area_from_bounding_box_tile_size_map() -> None:
+    """Builds the process_area_from_bounding_box_tile_size map."""
+    bounding_box = aviary.BoundingBox(
+        x_min=363084,
+        y_min=5715326,
+        x_max=363340,
+        y_max=5715582,
+    )
+
+    process_area = aviary.ProcessArea.from_bounding_box(
+        bounding_box=bounding_box,
+        tile_size=96,
+        quantize=False,
+    )
+
+    process_area_gdf = process_area.to_gdf(
+        tile_size=96,
+        epsg_code=25832,
+    )
+    process_area_style = {
+        'fillOpacity': .2,
+        'color': 'black',
+        'weight': 2,
+    }
+    process_area_layer = Layer(
+        gdf=process_area_gdf,
+        style=process_area_style,
+    )
+
+    bounding_box_gdf = bounding_box.to_gdf(epsg_code=25832)
+    bounding_box_style = {
+        'fillOpacity': 0,
+        'color': '#FF595E',
+        'weight': 2,
+    }
+    bounding_box_layer = Layer(
+        gdf=bounding_box_gdf,
+        style=bounding_box_style,
+    )
+
+    layers = [process_area_layer, bounding_box_layer]
+    path = Path(__file__).parents[1] / 'how_to_guides' / 'api' / 'maps' / 'process_area_from_bounding_box_tile_size.html'
+
+    build_map(
+        layers=layers,
+        path=path,
+    )
+
+
+def build_process_area_from_bounding_box_quantize_map() -> None:
+    """Builds the process_area_from_bounding_box_quantize map."""
+    bounding_box = aviary.BoundingBox(
+        x_min=363084,
+        y_min=5715326,
+        x_max=363340,
+        y_max=5715582,
+    )
+
+    process_area = aviary.ProcessArea.from_bounding_box(
+        bounding_box=bounding_box,
+        tile_size=128,
+        quantize=True,
+    )
+
+    process_area_gdf = process_area.to_gdf(
+        tile_size=128,
+        epsg_code=25832,
+    )
+    process_area_style = {
+        'fillOpacity': .2,
+        'color': 'black',
+        'weight': 2,
+    }
+    process_area_layer = Layer(
+        gdf=process_area_gdf,
+        style=process_area_style,
+    )
+
+    bounding_box_gdf = bounding_box.to_gdf(epsg_code=25832)
+    bounding_box_style = {
+        'fillOpacity': 0,
+        'color': '#FF595E',
+        'weight': 2,
+    }
+    bounding_box_layer = Layer(
+        gdf=bounding_box_gdf,
+        style=bounding_box_style,
+    )
+
+    layers = [process_area_layer, bounding_box_layer]
+    path = Path(__file__).parents[1] / 'how_to_guides' / 'api' / 'maps' / 'process_area_from_bounding_box_quantize.html'
+
+    build_map(
+        layers=layers,
+        path=path,
+    )
+
+
+def build_process_area_from_gdf_map() -> None:
+    """Builds the process_area_from_gdf map."""
+    gdf = gpd.GeoDataFrame(
+        geometry=[box(363084, 5715326, 363340, 5715582)],
+        crs='EPSG:25832',
+    )
+
+    process_area = aviary.ProcessArea.from_gdf(
+        gdf=gdf,
+        tile_size=128,
+        quantize=False,
+    )
+
+    process_area_gdf = process_area.to_gdf(
+        tile_size=128,
+        epsg_code=25832,
+    )
+    process_area_style = {
+        'fillOpacity': .2,
+        'color': 'black',
+        'weight': 2,
+    }
+    process_area_layer = Layer(
+        gdf=process_area_gdf,
+        style=process_area_style,
+    )
+
+    gdf_style = {
+        'fillOpacity': 0,
+        'color': '#FF595E',
+        'weight': 2,
+    }
+    gdf_layer = Layer(
+        gdf=gdf,
+        style=gdf_style,
+    )
+
+    layers = [process_area_layer, gdf_layer]
+    path = Path(__file__).parents[1] / 'how_to_guides' / 'api' / 'maps' / 'process_area_from_gdf.html'
+
+    build_map(
+        layers=layers,
+        path=path,
+    )
+
+
+def build_process_area_from_gdf_districts_map() -> None:
+    """Builds the process_area_from_gdf_districts map."""
+    gdf = gpd.read_file('docs/how_to_guides/api/data/districts.geojson')
+
+    process_area = aviary.ProcessArea.from_gdf(
+        gdf=gdf,
+        tile_size=128,
+        quantize=True,
+    )
+
+    process_area_gdf = process_area.to_gdf(
+        tile_size=128,
+        epsg_code=25832,
+    )
+    process_area_style = {
+        'fillOpacity': .2,
+        'color': 'black',
+        'weight': 2,
+    }
+    process_area_layer = Layer(
+        gdf=process_area_gdf,
+        style=process_area_style,
+    )
+
+    gdf_style = {
+        'fillOpacity': 0,
+        'color': '#FF595E',
+        'weight': 2,
+    }
+    gdf_layer = Layer(
+        gdf=gdf,
+        style=gdf_style,
+    )
+
+    layers = [process_area_layer, gdf_layer]
+    path = Path(__file__).parents[1] / 'how_to_guides' / 'api' / 'maps' / 'process_area_from_gdf_districts.html'
+
+    build_map(
+        layers=layers,
+        path=path,
+        zoom_start=12,
+    )
+
+
+def build_process_area_add_map() -> None:
+    """Builds the process_area_add map."""
+    coordinates_1 = np.array(
+        [
+            [363084, 5715326],
+            [363212, 5715326],
+            [363084, 5715454],
+            [363212, 5715454],
+        ],
+        dtype=np.int32,
+    )
+    process_area_1 = aviary.ProcessArea(coordinates=coordinates_1)
+
+    coordinates_2 = np.array(
+        [
+            [363212, 5715454],
+            [363340, 5715454],
+            [363212, 5715582],
+            [363340, 5715582],
+        ],
+        dtype=np.int32,
+    )
+    process_area_2 = aviary.ProcessArea(coordinates=coordinates_2)
+
+    process_area = process_area_1 + process_area_2
+
+    process_area_gdf = process_area.to_gdf(
+        tile_size=128,
+        epsg_code=25832,
+    )
+    process_area_style = {
+        'fillOpacity': .2,
+        'color': 'black',
+        'weight': 2,
+    }
+    process_area_layer = Layer(
+        gdf=process_area_gdf,
+        style=process_area_style,
+    )
+
+    process_area_1_gdf = process_area_1.to_gdf(
+        tile_size=128,
+        epsg_code=25832,
+    )
+    process_area_1_style = {
+        'fillOpacity': 0,
+        'color': '#FF595E',
+        'weight': 2,
+    }
+    process_area_1_layer = Layer(
+        gdf=process_area_1_gdf,
+        style=process_area_1_style,
+    )
+
+    process_area_2_gdf = process_area_2.to_gdf(
+        tile_size=128,
+        epsg_code=25832,
+    )
+    process_area_2_style = {
+        'fillOpacity': 0,
+        'color': '#1982C4',
+        'weight': 2,
+    }
+    process_area_2_layer = Layer(
+        gdf=process_area_2_gdf,
+        style=process_area_2_style,
+    )
+
+    layers = [process_area_layer, process_area_1_layer, process_area_2_layer]
+    path = Path(__file__).parents[1] / 'how_to_guides' / 'api' / 'maps' / 'process_area_add.html'
+
+    build_map(
+        layers=layers,
+        path=path,
+    )
+
+
+def build_process_area_sub_map() -> None:
+    """Builds the process_area_sub map."""
+    coordinates_1 = np.array(
+        [
+            [363084, 5715326],
+            [363212, 5715326],
+            [363084, 5715454],
+            [363212, 5715454],
+        ],
+        dtype=np.int32,
+    )
+    process_area_1 = aviary.ProcessArea(coordinates=coordinates_1)
+
+    coordinates_2 = np.array(
+        [
+            [363212, 5715454],
+            [363340, 5715454],
+            [363212, 5715582],
+            [363340, 5715582],
+        ],
+        dtype=np.int32,
+    )
+    process_area_2 = aviary.ProcessArea(coordinates=coordinates_2)
+
+    process_area = process_area_1 - process_area_2
+
+    process_area_gdf = process_area.to_gdf(
+        tile_size=128,
+        epsg_code=25832,
+    )
+    process_area_style = {
+        'fillOpacity': .2,
+        'color': 'black',
+        'weight': 2,
+    }
+    process_area_layer = Layer(
+        gdf=process_area_gdf,
+        style=process_area_style,
+    )
+
+    process_area_1_gdf = process_area_1.to_gdf(
+        tile_size=128,
+        epsg_code=25832,
+    )
+    process_area_1_style = {
+        'fillOpacity': 0,
+        'color': '#FF595E',
+        'weight': 2,
+    }
+    process_area_1_layer = Layer(
+        gdf=process_area_1_gdf,
+        style=process_area_1_style,
+    )
+
+    process_area_2_gdf = process_area_2.to_gdf(
+        tile_size=128,
+        epsg_code=25832,
+    )
+    process_area_2_style = {
+        'fillOpacity': 0,
+        'color': '#1982C4',
+        'weight': 2,
+    }
+    process_area_2_layer = Layer(
+        gdf=process_area_2_gdf,
+        style=process_area_2_style,
+    )
+
+    layers = [process_area_layer, process_area_1_layer, process_area_2_layer]
+    path = Path(__file__).parents[1] / 'how_to_guides' / 'api' / 'maps' / 'process_area_sub.html'
+
+    build_map(
+        layers=layers,
+        path=path,
+    )
+
+
+def build_process_area_and_map() -> None:
+    """Builds the process_area_and map."""
+    coordinates_1 = np.array(
+        [
+            [363084, 5715326],
+            [363212, 5715326],
+            [363084, 5715454],
+            [363212, 5715454],
+        ],
+        dtype=np.int32,
+    )
+    process_area_1 = aviary.ProcessArea(coordinates=coordinates_1)
+
+    coordinates_2 = np.array(
+        [
+            [363212, 5715454],
+            [363340, 5715454],
+            [363212, 5715582],
+            [363340, 5715582],
+        ],
+        dtype=np.int32,
+    )
+    process_area_2 = aviary.ProcessArea(coordinates=coordinates_2)
+
+    process_area = process_area_1 & process_area_2
+
+    process_area_gdf = process_area.to_gdf(
+        tile_size=128,
+        epsg_code=25832,
+    )
+    process_area_style = {
+        'fillOpacity': .2,
+        'color': 'black',
+        'weight': 2,
+    }
+    process_area_layer = Layer(
+        gdf=process_area_gdf,
+        style=process_area_style,
+    )
+
+    process_area_1_gdf = process_area_1.to_gdf(
+        tile_size=128,
+        epsg_code=25832,
+    )
+    process_area_1_style = {
+        'fillOpacity': 0,
+        'color': '#FF595E',
+        'weight': 2,
+    }
+    process_area_1_layer = Layer(
+        gdf=process_area_1_gdf,
+        style=process_area_1_style,
+    )
+
+    process_area_2_gdf = process_area_2.to_gdf(
+        tile_size=128,
+        epsg_code=25832,
+    )
+    process_area_2_style = {
+        'fillOpacity': 0,
+        'color': '#1982C4',
+        'weight': 2,
+    }
+    process_area_2_layer = Layer(
+        gdf=process_area_2_gdf,
+        style=process_area_2_style,
+    )
+
+    layers = [process_area_layer, process_area_1_layer, process_area_2_layer]
+    path = Path(__file__).parents[1] / 'how_to_guides' / 'api' / 'maps' / 'process_area_and.html'
+
+    build_map(
+        layers=layers,
+        path=path,
+    )
+
+
+def build_process_area_append_map() -> None:
+    """Builds the process_area_append map."""
+    coordinates = np.array(
+        [
+            [363084, 5715326],
+            [363212, 5715326],
+            [363084, 5715454],
+            [363212, 5715454],
+            [363340, 5715582],
+        ],
+        dtype=np.int32,
+    )
+    process_area = aviary.ProcessArea(coordinates=coordinates)
+
+    process_area_gdf = process_area.to_gdf(
+        tile_size=128,
+        epsg_code=25832,
+    )
+    process_area_style = {
+        'fillOpacity': .2,
+        'color': 'black',
+        'weight': 2,
+    }
+    process_area_layer = Layer(
+        gdf=process_area_gdf,
+        style=process_area_style,
+    )
+
+    layers = [process_area_layer]
+    path = Path(__file__).parents[1] / 'how_to_guides' / 'api' / 'maps' / 'process_area_append.html'
+
+    build_map(
+        layers=layers,
+        path=path,
+    )
+
+
+def build_process_area_filter_difference_map() -> None:
+    """Builds the process_area_filter_difference map."""
+    coordinates = np.array(
+        [
+            [363084, 5715326],
+            [363212, 5715326],
+            [363084, 5715454],
+            [363212, 5715454],
+        ],
+        dtype=np.int32,
+    )
+    process_area = aviary.ProcessArea(coordinates=coordinates)
+
+    gdf = gpd.GeoDataFrame(
+        geometry=[box(363212, 5715454, 363468, 5715710)],
+        crs='EPSG:25832',
+    )
+
+    geospatial_filter = GeospatialFilter(
+        tile_size=128,
+        gdf=gdf,
+        mode=aviary.GeospatialFilterMode.DIFFERENCE,
+    )
+    process_area = process_area.filter(coordinates_filter=geospatial_filter)
+
+    process_area_gdf = process_area.to_gdf(
+        tile_size=128,
+        epsg_code=25832,
+    )
+    process_area_style = {
+        'fillOpacity': .2,
+        'color': 'black',
+        'weight': 2,
+    }
+    process_area_layer = Layer(
+        gdf=process_area_gdf,
+        style=process_area_style,
+    )
+
+    gdf_style = {
+        'fillOpacity': 0,
+        'color': '#FF595E',
+        'weight': 2,
+    }
+    gdf_layer = Layer(
+        gdf=gdf,
+        style=gdf_style,
+    )
+
+    layers = [process_area_layer, gdf_layer]
+    path = Path(__file__).parents[1] / 'how_to_guides' / 'api' / 'maps' / 'process_area_filter_difference.html'
+
+    build_map(
+        layers=layers,
+        path=path,
+    )
+
+
+def build_process_area_filter_intersection_map() -> None:
+    """Builds the process_area_filter_intersection map."""
+    coordinates = np.array(
+        [
+            [363084, 5715326],
+            [363212, 5715326],
+            [363084, 5715454],
+            [363212, 5715454],
+        ],
+        dtype=np.int32,
+    )
+    process_area = aviary.ProcessArea(coordinates=coordinates)
+
+    gdf = gpd.GeoDataFrame(
+        geometry=[box(363212, 5715454, 363468, 5715710)],
+        crs='EPSG:25832',
+    )
+
+    geospatial_filter = GeospatialFilter(
+        tile_size=128,
+        gdf=gdf,
+        mode=aviary.GeospatialFilterMode.INTERSECTION,
+    )
+    process_area = process_area.filter(coordinates_filter=geospatial_filter)
+
+    process_area_gdf = process_area.to_gdf(
+        tile_size=128,
+        epsg_code=25832,
+    )
+    process_area_style = {
+        'fillOpacity': .2,
+        'color': 'black',
+        'weight': 2,
+    }
+    process_area_layer = Layer(
+        gdf=process_area_gdf,
+        style=process_area_style,
+    )
+
+    gdf_style = {
+        'fillOpacity': 0,
+        'color': '#FF595E',
+        'weight': 2,
+    }
+    gdf_layer = Layer(
+        gdf=gdf,
+        style=gdf_style,
+    )
+
+    layers = [process_area_layer, gdf_layer]
+    path = Path(__file__).parents[1] / 'how_to_guides' / 'api' / 'maps' / 'process_area_filter_intersection.html'
 
     build_map(
         layers=layers,
