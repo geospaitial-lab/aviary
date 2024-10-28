@@ -6,7 +6,7 @@ pydantic==2.9.2
 pyyaml==6.0.2
 rasterio==1.4.1
 requests==2.32.3
-rich==13.9.2
+rich==13.9.3
 shapely==2.0.6
 simplification==0.7.13
 topojson==1.9
