@@ -142,7 +142,7 @@ print(coordinates_2)
 ```
 
 You can slice the process area to create a new process area of a subset of the coordinates with the index operator
-and the `:` operator.
+and the colon operator.
 
 ``` python
 sliced_process_area = process_area[:-1]
