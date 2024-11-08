@@ -712,6 +712,24 @@ class ProcessArea(Iterable[Coordinates]):
         )
         raise AviaryUserError(message)
 
+    def __eq__(
+        self,
+        other: ProcessArea,
+    ) -> bool:
+        """Compares the process areas.
+
+        Parameters:
+            other: other process area
+
+        Returns:
+            True if the process areas are equal, False otherwise
+        """
+        conditions = [
+            np.array_equal(self._coordinates, other.coordinates),
+            self._tile_size == other.tile_size,
+        ]
+        return all(conditions)
+
     def __len__(self) -> int:
         """Computes the number of coordinates.
 
