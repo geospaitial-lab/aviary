@@ -118,6 +118,36 @@ def test_bounding_box_from_gdf() -> None:
     assert bounding_box == expected
 
 
+def test_bounding_box_eq(
+    bounding_box: BoundingBox,
+) -> None:
+    other_x_min = -128
+    other_y_min = -128
+    other_x_max = 128
+    other_y_max = 128
+    other_bounding_box = BoundingBox(
+        x_min=other_x_min,
+        y_min=other_y_min,
+        x_max=other_x_max,
+        y_max=other_y_max,
+    )
+
+    assert bounding_box == other_bounding_box
+
+    other_x_min = -64
+    other_y_min = -64
+    other_x_max = 64
+    other_y_max = 64
+    other_bounding_box = BoundingBox(
+        x_min=other_x_min,
+        y_min=other_y_min,
+        x_max=other_x_max,
+        y_max=other_y_max,
+    )
+
+    assert bounding_box != other_bounding_box
+
+
 def test_bounding_box_len(
     bounding_box: BoundingBox,
 ) -> None:
