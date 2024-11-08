@@ -55,6 +55,19 @@ data_test_bounding_box_properties_exceptions = [
     ('y_max', -129, 'Invalid bounding box! y_min must be less than y_max.'),
 ]
 
+data_test_bounding_box_area = [
+    # test case 1: bounding box is in all quadrants
+    (BoundingBox(-128, -128, 128, 128), 65536),
+    # test case 2: bounding box is in the first quadrant
+    (BoundingBox(128, 128, 256, 256), 16384),
+    # test case 3: bounding box is in the second quadrant
+    (BoundingBox(-256, 128, -128, 256), 16384),
+    # test case 4: bounding box is in the third quadrant
+    (BoundingBox(-256, -256, -128, -128), 16384),
+    # test case 5: bounding box is in the fourth quadrant
+    (BoundingBox(128, -256, 256, -128), 16384),
+]
+
 data_test_bounding_box_quantize = [
     # test case 1: bounding box is in all quadrants, bounding box is divisible by value
     (BoundingBox(-128, -128, 128, 128), 128, BoundingBox(-128, -128, 128, 128)),
