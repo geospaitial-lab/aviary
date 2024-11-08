@@ -213,6 +213,14 @@ class BoundingBox(Iterable[Coordinate]):
 
         self._y_max = value
 
+    @property
+    def area(self) -> int:
+        """
+        Returns:
+            area in square meters
+        """
+        return (self._x_max - self._x_min) * (self._y_max - self._y_min)
+
     @classmethod
     def from_gdf(
         cls,
