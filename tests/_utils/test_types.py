@@ -372,6 +372,23 @@ def test_process_area_from_json() -> None:
     assert process_area.tile_size == expected_tile_size
 
 
+def test_process_area_eq(
+    process_area: ProcessArea,
+) -> None:
+    other_coordinates = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32)
+    other_tile_size = 128
+    other_process_area = ProcessArea(
+        coordinates=other_coordinates,
+        tile_size=other_tile_size,
+    )
+
+    assert process_area == other_process_area
+
+    other_process_area = ProcessArea(tile_size=other_tile_size)
+
+    assert process_area != other_process_area
+
+
 def test_process_area_len(
     process_area: ProcessArea,
 ) -> None:
