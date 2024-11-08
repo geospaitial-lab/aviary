@@ -187,8 +187,8 @@ extra_javascript:
 
 extra_templates:
   - how_to_guides/api/maps/bounding_box.html
-  - how_to_guides/api/maps/bounding_box_buffer_1.html
-  - how_to_guides/api/maps/bounding_box_buffer_2.html
+  - how_to_guides/api/maps/bounding_box_buffer_positive.html
+  - how_to_guides/api/maps/bounding_box_buffer_negative.html
   - how_to_guides/api/maps/bounding_box_from_gdf.html
   - how_to_guides/api/maps/bounding_box_from_gdf_districts.html
   - how_to_guides/api/maps/bounding_box_quantize.html

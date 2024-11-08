@@ -18,8 +18,8 @@ def build_maps() -> None:
     build_bounding_box_setter_map()
     build_bounding_box_from_gdf_map()
     build_bounding_box_from_gdf_districts_map()
-    build_bounding_box_buffer_1_map()
-    build_bounding_box_buffer_2_map()
+    build_bounding_box_buffer_positive_map()
+    build_bounding_box_buffer_negative_map()
     build_bounding_box_quantize_map()
     build_process_area_map()
     build_process_area_setter_coordinates_map()
@@ -175,8 +175,8 @@ def build_bounding_box_from_gdf_districts_map() -> None:
     )
 
 
-def build_bounding_box_buffer_1_map() -> None:
-    """Builds the bounding_box_buffer_1 map."""
+def build_bounding_box_buffer_positive_map() -> None:
+    """Builds the bounding_box_buffer_positive map."""
     bounding_box = aviary.BoundingBox(
         x_min=363084,
         y_min=5715326,
@@ -210,7 +210,7 @@ def build_bounding_box_buffer_1_map() -> None:
 
     layers = [buffered_bounding_box_layer, bounding_box_layer]
     dir_path = Path(__file__).parents[1] / 'how_to_guides' / 'api' / 'maps'
-    path = dir_path / 'bounding_box_buffer_1.html'
+    path = dir_path / 'bounding_box_buffer_positive.html'
 
     build_map(
         layers=layers,
@@ -218,8 +218,8 @@ def build_bounding_box_buffer_1_map() -> None:
     )
 
 
-def build_bounding_box_buffer_2_map() -> None:
-    """Builds the bounding_box_buffer_2 map."""
+def build_bounding_box_buffer_negative_map() -> None:
+    """Builds the bounding_box_buffer_negative map."""
     bounding_box = aviary.BoundingBox(
         x_min=363084,
         y_min=5715326,
@@ -253,7 +253,7 @@ def build_bounding_box_buffer_2_map() -> None:
 
     layers = [buffered_bounding_box_layer, bounding_box_layer]
     dir_path = Path(__file__).parents[1] / 'how_to_guides' / 'api' / 'maps'
-    path = dir_path / 'bounding_box_buffer_2.html'
+    path = dir_path / 'bounding_box_buffer_negative.html'
 
     build_map(
         layers=layers,
