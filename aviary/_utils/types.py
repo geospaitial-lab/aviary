@@ -551,6 +551,14 @@ class ProcessArea(Iterable[Coordinates]):
 
         self._coordinates = value
 
+    @property
+    def area(self) -> int:
+        """
+        Returns:
+            area in square meters
+        """
+        return len(self) * self._tile_size ** 2
+
     @classmethod
     def from_bounding_box(
         cls,
