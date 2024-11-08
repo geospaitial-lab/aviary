@@ -48,7 +48,7 @@ def segmentation_exporter(
         field_name: name of the field in the geodataframe
         ignore_background_class: if True, the background class is not additionally vectorized as a polygon of class 0
         gpkg_name: name of the geopackage
-        json_name: name of the JSON file containing the coordinates of the processed tiles
+        json_name: name of the JSON file containing the coordinates of the processed tiles and the tile size
         num_workers: number of workers
     """
     with ThreadPoolExecutor(max_workers=num_workers) as executor:
@@ -98,7 +98,7 @@ def _segmentation_exporter_task(
         field_name: name of the field in the geodataframe
         ignore_background_class: if True, the background class is not additionally vectorized as a polygon of class 0
         gpkg_name: name of the geopackage
-        json_name: name of the JSON file containing the coordinates of the processed tiles
+        json_name: name of the JSON file containing the coordinates of the processed tiles and the tile size
     """
     gdf = _vectorize_preds(
         preds=preds,
@@ -118,6 +118,7 @@ def _segmentation_exporter_task(
     _export_coordinates_json(
         x_min=x_min,
         y_min=y_min,
+        tile_size=tile_size,
         path=path,
         json_name=json_name,
     )
@@ -151,16 +152,18 @@ def _export_gdf(
 def _export_coordinates_json(
     x_min: Coordinate,
     y_min: Coordinate,
+    tile_size: TileSize,
     path: Path,
     json_name: str = 'processed_coordinates.json',
 ) -> None:
-    """Exports the coordinates of the processed tiles as a JSON file.
+    """Exports the coordinates of the processed tiles and the tile size as a JSON file.
 
     Parameters:
         x_min: minimum x coordinate
         y_min: minimum y coordinate
+        tile_size: tile size in meters
         path: path to the output directory
-        json_name: name of the JSON file containing the coordinates of the processed tiles
+        json_name: name of the JSON file containing the coordinates of the processed tiles and the tile size
     """
     coordinates = (x_min, y_min)
     json_path = path / json_name
@@ -171,7 +174,7 @@ def _export_coordinates_json(
                 json_string = json.load(file)
             process_area = ProcessArea.from_json(json_string)
         except FileNotFoundError:
-            process_area = ProcessArea()
+            process_area = ProcessArea(tile_size=tile_size)
 
         process_area = process_area.append(coordinates)
         json_string = process_area.to_json()

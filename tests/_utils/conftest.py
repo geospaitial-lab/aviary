@@ -25,6 +25,8 @@ def bounding_box() -> BoundingBox:
 @pytest.fixture(scope='function')
 def process_area() -> ProcessArea:
     coordinates = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32)
+    tile_size = 128
     return ProcessArea(
         coordinates=coordinates,
+        tile_size=tile_size,
     )

@@ -13,29 +13,35 @@ Follow along this step-by-step guide to learn about the [`ProcessArea`][ProcessA
 
 ### Create a process area
 
-A process area specifies the area of interest by a set of coordinates of the bottom left corner of each tile.
+A process area specifies the area of interest by a set of coordinates of the bottom left corner of each tile
+and the tile size.
 
-By default, a new instance of the [`ProcessArea`][ProcessArea] has no coordinates.<br />
+By default, a new instance of the [`ProcessArea`][ProcessArea] has no coordinates, just a tile size
+that you can pass to its initializer.<br />
 You can access the coordinates of the process area with the `coordinates` attribute,
 which is a numpy array of shape (n, 2) and data type int32.
+You can also access the tile size with the `tile_size` attribute.
 
   [ProcessArea]: ../../api_reference/process_area.md
 
 ``` python
 import aviary
 
-process_area = aviary.ProcessArea()
+process_area = aviary.ProcessArea(tile_size=128)
 
 print(process_area.coordinates)
+print(process_area.tile_size)
 ```
 
 ``` title="Output"
 []
+128
 ```
 
 ---
 
-If you already have the coordinates, you can pass them to the initializer of the [`ProcessArea`][ProcessArea].
+If you already have the coordinates, you can pass them with the tile size to the initializer
+of the [`ProcessArea`][ProcessArea].
 
   [ProcessArea]: ../../api_reference/process_area.md
 
@@ -51,9 +57,13 @@ coordinates = np.array(
     ],
     dtype=np.int32,
 )
-process_area = aviary.ProcessArea(coordinates=coordinates)
+process_area = aviary.ProcessArea(
+    coordinates=coordinates,
+    tile_size=128,
+)
 
 print(process_area.coordinates)
+print(process_area.tile_size)
 ```
 
 ``` title="Output"
@@ -61,9 +71,10 @@ print(process_area.coordinates)
  [ 363212 5715326]
  [ 363084 5715454]
  [ 363212 5715454]]
+128
 ```
 
-We can visualize the process area given the tile size.
+We can visualize the process area.
 
 <div id="process-area"></div>
 
@@ -89,9 +100,27 @@ print(process_area.coordinates)
  [ 363212 5715326]]
 ```
 
-We can visualize the process area given the tile size.
+We can visualize the process area.
 
-<div id="process-area-setter"></div>
+<div id="process-area-setter-coordinates"></div>
+
+---
+
+You can also set the tile size of an already created process area with the `tile_size` attribute.
+
+``` python
+process_area.tile_size = 64
+
+print(process_area.tile_size)
+```
+
+``` title="Output"
+64
+```
+
+We can visualize the process area.
+
+<div id="process-area-setter-tile-size"></div>
 
 ---
 
@@ -113,7 +142,7 @@ print(coordinates_2)
 ```
 
 You can slice the process area to create a new process area of a subset of the coordinates with the index operator
-and the `:` operator.
+and the colon operator.
 
 ``` python
 sliced_process_area = process_area[:-1]
@@ -169,6 +198,7 @@ process_area = aviary.ProcessArea.from_bounding_box(
 )
 
 print(process_area.coordinates)
+print(process_area.tile_size)
 ```
 
 ``` title="Output"
@@ -176,9 +206,10 @@ print(process_area.coordinates)
  [ 363212 5715326]
  [ 363084 5715454]
  [ 363212 5715454]]
+128
 ```
 
-We can visualize the process area given the tile size.<br />
+We can visualize the process area.<br />
 The red polygon represents the bounding box.
 
 <div id="process-area-from-bounding-box"></div>
@@ -202,6 +233,7 @@ process_area = aviary.ProcessArea.from_bounding_box(
 )
 
 print(process_area.coordinates)
+print(process_area.tile_size)
 ```
 
 ``` title="Output"
@@ -214,9 +246,10 @@ print(process_area.coordinates)
  [ 363084 5715518]
  [ 363180 5715518]
  [ 363276 5715518]]
+128
 ```
 
-We can visualize the process area given the tile size.<br />
+We can visualize the process area.<br />
 The red polygon represents the bounding box.
 
 <div id="process-area-from-bounding-box-tile-size"></div>
@@ -241,6 +274,7 @@ process_area = aviary.ProcessArea.from_bounding_box(
 )
 
 print(process_area.coordinates)
+print(process_area.tile_size)
 ```
 
 ``` title="Output"
@@ -253,9 +287,10 @@ print(process_area.coordinates)
  [ 363008 5715456]
  [ 363136 5715456]
  [ 363264 5715456]]
+128
 ```
 
-We can visualize the process area given the tile size.<br />
+We can visualize the process area.<br />
 The red polygon represents the bounding box.
 
 <div id="process-area-from-bounding-box-quantize"></div>
@@ -283,6 +318,7 @@ process_area = aviary.ProcessArea.from_gdf(
 )
 
 print(process_area.coordinates)
+print(process_area.tile_size)
 ```
 
 ``` title="Output"
@@ -290,9 +326,10 @@ print(process_area.coordinates)
  [ 363212 5715326]
  [ 363084 5715454]
  [ 363212 5715454]]
+128
 ```
 
-We can visualize the process area given the tile size.<br />
+We can visualize the process area.<br />
 The red polygon represents the geodataframe.
 
 <div id="process-area-from-gdf"></div>
@@ -314,6 +351,7 @@ process_area = aviary.ProcessArea.from_gdf(
 )
 
 print(process_area.coordinates)
+print(process_area.tile_size)
 ```
 
 ``` title="Output"
@@ -324,9 +362,10 @@ print(process_area.coordinates)
  [ 363008 5721856]
  [ 363264 5721856]
  [ 363520 5721856]]
+256
 ```
 
-We can visualize the process area given the tile size.<br />
+We can visualize the process area.<br />
 The red polygons represent the districts.
 
 <div id="process-area-from-gdf-districts"></div>
@@ -341,14 +380,17 @@ You can create a process area from a json string with the [`from_json`][from_jso
 
 ``` python
 json_string = (
+    '{"coordinates": '
     '[[363084, 5715326], '
     '[363212, 5715326], '
     '[363084, 5715454], '
-    '[363212, 5715454]]'
+    '[363212, 5715454]], '
+    '"tile_size": 128}'
 )
 process_area = aviary.ProcessArea.from_json(json_string=json_string)
 
 print(process_area.coordinates)
+print(process_area.tile_size)
 ```
 
 ``` title="Output"
@@ -356,9 +398,10 @@ print(process_area.coordinates)
  [ 363212 5715326]
  [ 363084 5715454]
  [ 363212 5715454]]
+128
 ```
 
-We can visualize the process area given the tile size.
+We can visualize the process area.
 
 <div id="process-area"></div>
 
@@ -379,7 +422,10 @@ coordinates_1 = np.array(
     ],
     dtype=np.int32,
 )
-process_area_1 = aviary.ProcessArea(coordinates=coordinates_1)
+process_area_1 = aviary.ProcessArea(
+    coordinates=coordinates_1,
+    tile_size=128,
+)
 
 coordinates_2 = np.array(
     [
@@ -390,10 +436,15 @@ coordinates_2 = np.array(
     ],
     dtype=np.int32,
 )
-process_area_2 = aviary.ProcessArea(coordinates=coordinates_2)
+process_area_2 = aviary.ProcessArea(
+    coordinates=coordinates_2,
+    tile_size=128,
+)
 
 print(process_area_1.coordinates)
+print(process_area_1.tile_size)
 print(process_area_2.coordinates)
+print(process_area_2.tile_size)
 ```
 
 ``` title="Output"
@@ -401,16 +452,19 @@ print(process_area_2.coordinates)
  [ 363212 5715326]
  [ 363084 5715454]
  [ 363212 5715454]]
+128
 [[ 363212 5715454]
  [ 363340 5715454]
  [ 363212 5715582]
  [ 363340 5715582]]
+128
 ```
 
 ``` python
 process_area = process_area_1 + process_area_2
 
 print(process_area.coordinates)
+print(process_area.tile_size)
 ```
 
 ``` title="Output"
@@ -421,9 +475,10 @@ print(process_area.coordinates)
  [ 363340 5715454]
  [ 363212 5715582]
  [ 363340 5715582]]
+128
 ```
 
-We can visualize the process area given the tile size.<br />
+We can visualize the process area.<br />
 The red polygons represent the first process area and the blue polygons represent the second process area.
 
 <div id="process-area-add"></div>
@@ -442,7 +497,10 @@ coordinates_1 = np.array(
     ],
     dtype=np.int32,
 )
-process_area_1 = aviary.ProcessArea(coordinates=coordinates_1)
+process_area_1 = aviary.ProcessArea(
+    coordinates=coordinates_1,
+    tile_size=128,
+)
 
 coordinates_2 = np.array(
     [
@@ -453,10 +511,15 @@ coordinates_2 = np.array(
     ],
     dtype=np.int32,
 )
-process_area_2 = aviary.ProcessArea(coordinates=coordinates_2)
+process_area_2 = aviary.ProcessArea(
+    coordinates=coordinates_2,
+    tile_size=128,
+)
 
 print(process_area_1.coordinates)
+print(process_area_1.tile_size)
 print(process_area_2.coordinates)
+print(process_area_2.tile_size)
 ```
 
 ``` title="Output"
@@ -464,25 +527,29 @@ print(process_area_2.coordinates)
  [ 363212 5715326]
  [ 363084 5715454]
  [ 363212 5715454]]
+128
 [[ 363212 5715454]
  [ 363340 5715454]
  [ 363212 5715582]
  [ 363340 5715582]]
+128
 ```
 
 ``` python
 process_area = process_area_1 - process_area_2
 
 print(process_area.coordinates)
+print(process_area.tile_size)
 ```
 
 ``` title="Output"
 [[ 363084 5715326]
  [ 363212 5715326]
  [ 363084 5715454]]
+128
 ```
 
-We can visualize the process area given the tile size.<br />
+We can visualize the process area.<br />
 The red polygons represent the first process area and the blue polygons represent the second process area.
 
 <div id="process-area-sub"></div>
@@ -501,7 +568,10 @@ coordinates_1 = np.array(
     ],
     dtype=np.int32,
 )
-process_area_1 = aviary.ProcessArea(coordinates=coordinates_1)
+process_area_1 = aviary.ProcessArea(
+    coordinates=coordinates_1,
+    tile_size=128,
+)
 
 coordinates_2 = np.array(
     [
@@ -512,10 +582,15 @@ coordinates_2 = np.array(
     ],
     dtype=np.int32,
 )
-process_area_2 = aviary.ProcessArea(coordinates=coordinates_2)
+process_area_2 = aviary.ProcessArea(
+    coordinates=coordinates_2,
+    tile_size=128,
+)
 
 print(process_area_1.coordinates)
+print(process_area_1.tile_size)
 print(process_area_2.coordinates)
+print(process_area_2.tile_size)
 ```
 
 ``` title="Output"
@@ -523,23 +598,27 @@ print(process_area_2.coordinates)
  [ 363212 5715326]
  [ 363084 5715454]
  [ 363212 5715454]]
+128
 [[ 363212 5715454]
  [ 363340 5715454]
  [ 363212 5715582]
  [ 363340 5715582]]
+128
 ```
 
 ``` python
 process_area = process_area_1 & process_area_2
 
 print(process_area.coordinates)
+print(process_area.tile_size)
 ```
 
 ``` title="Output"
 [[ 363212 5715454]]
+128
 ```
 
-We can visualize the process area given the tile size.<br />
+We can visualize the process area.<br />
 The red polygons represent the first process area and the blue polygons represent the second process area.
 
 <div id="process-area-and"></div>
@@ -562,9 +641,13 @@ coordinates = np.array(
     ],
     dtype=np.int32,
 )
-process_area = aviary.ProcessArea(coordinates=coordinates)
+process_area = aviary.ProcessArea(
+    coordinates=coordinates,
+    tile_size=128,
+)
 
 print(process_area.coordinates)
+print(process_area.tile_size)
 ```
 
 ``` title="Output"
@@ -572,12 +655,14 @@ print(process_area.coordinates)
  [ 363212 5715326]
  [ 363084 5715454]
  [ 363212 5715454]]
+128
 ```
 
 ``` python
 process_area = process_area.append((363340, 5715582))
 
 print(process_area.coordinates)
+print(process_area.tile_size)
 ```
 
 ``` title="Output"
@@ -586,9 +671,10 @@ print(process_area.coordinates)
  [ 363084 5715454]
  [ 363212 5715454]
  [ 363340 5715582]]
+128
 ```
 
-We can visualize the process area given the tile size.
+We can visualize the process area.
 
 <div id="process-area-append"></div>
 
@@ -600,6 +686,7 @@ If you want to append coordinates that already exist, the process area will not 
 process_area = process_area.append((363340, 5715582))
 
 print(process_area.coordinates)
+print(process_area.tile_size)
 ```
 
 ``` title="Output"
@@ -608,6 +695,7 @@ print(process_area.coordinates)
  [ 363084 5715454]
  [ 363212 5715454]
  [ 363340 5715582]]
+128
 ```
 
 ---
@@ -629,9 +717,13 @@ coordinates = np.array(
     ],
     dtype=np.int32,
 )
-process_area = aviary.ProcessArea(coordinates=coordinates)
+process_area = aviary.ProcessArea(
+    coordinates=coordinates,
+    tile_size=128,
+)
 
 print(process_area.coordinates)
+print(process_area.tile_size)
 ```
 
 ``` title="Output"
@@ -639,6 +731,7 @@ print(process_area.coordinates)
  [ 363212 5715326]
  [ 363084 5715454]
  [ 363212 5715454]]
+128
 ```
 
 ``` python
@@ -646,13 +739,16 @@ process_areas = process_area.chunk(num_chunks=2)
 
 for process_area in process_areas:
     print(process_area.coordinates)
+    print(process_area.tile_size)
 ```
 
 ``` title="Output"
 [[ 363084 5715326]
  [ 363212 5715326]]
+128
 [[ 363084 5715454]
  [ 363212 5715454]]
+128
 ```
 
 ---
@@ -680,7 +776,10 @@ coordinates = np.array(
     ],
     dtype=np.int32,
 )
-process_area = aviary.ProcessArea(coordinates=coordinates)
+process_area = aviary.ProcessArea(
+    coordinates=coordinates,
+    tile_size=128,
+)
 
 gdf = gpd.GeoDataFrame(
     geometry=[box(363212, 5715454, 363468, 5715710)],
@@ -688,6 +787,7 @@ gdf = gpd.GeoDataFrame(
 )
 
 print(process_area.coordinates)
+print(process_area.tile_size)
 print(gdf)
 ```
 
@@ -696,6 +796,7 @@ print(gdf)
  [ 363212 5715326]
  [ 363084 5715454]
  [ 363212 5715454]]
+128
                                             geometry
 0  POLYGON ((363468 5715454, 363468 5715710, 3632...
 ```
@@ -711,15 +812,17 @@ geospatial_filter = GeospatialFilter(
 process_area = process_area.filter(coordinates_filter=geospatial_filter)
 
 print(process_area.coordinates)
+print(process_area.tile_size)
 ```
 
 ``` title="Output"
 [[ 363084 5715326]
  [ 363212 5715326]
  [ 363084 5715454]]
+128
 ```
 
-We can visualize the process area given the tile size.<br />
+We can visualize the process area.<br />
 The red polygon represents the geodataframe.
 
 <div id="process-area-filter-difference"></div>
@@ -739,7 +842,10 @@ coordinates = np.array(
     ],
     dtype=np.int32,
 )
-process_area = aviary.ProcessArea(coordinates=coordinates)
+process_area = aviary.ProcessArea(
+    coordinates=coordinates,
+    tile_size=128,
+)
 
 gdf = gpd.GeoDataFrame(
     geometry=[box(363212, 5715454, 363468, 5715710)],
@@ -747,6 +853,7 @@ gdf = gpd.GeoDataFrame(
 )
 
 print(process_area.coordinates)
+print(process_area.tile_size)
 print(gdf)
 ```
 
@@ -755,6 +862,7 @@ print(gdf)
  [ 363212 5715326]
  [ 363084 5715454]
  [ 363212 5715454]]
+128
                                             geometry
 0  POLYGON ((363468 5715454, 363468 5715710, 3632...
 ```
@@ -768,13 +876,15 @@ geospatial_filter = GeospatialFilter(
 process_area = process_area.filter(coordinates_filter=geospatial_filter)
 
 print(process_area.coordinates)
+print(process_area.tile_size)
 ```
 
 ``` title="Output"
 [[ 363212 5715454]]
+128
 ```
 
-We can visualize the process area given the tile size.<br />
+We can visualize the process area.<br />
 The red polygon represents the geodataframe.
 
 <div id="process-area-filter-intersection"></div>
@@ -797,9 +907,13 @@ coordinates = np.array(
     ],
     dtype=np.int32,
 )
-process_area = aviary.ProcessArea(coordinates=coordinates)
+process_area = aviary.ProcessArea(
+    coordinates=coordinates,
+    tile_size=128,
+)
 
 print(process_area.coordinates)
+print(process_area.tile_size)
 ```
 
 ``` title="Output"
@@ -807,13 +921,11 @@ print(process_area.coordinates)
  [ 363212 5715326]
  [ 363084 5715454]
  [ 363212 5715454]]
+128
 ```
 
 ``` python
-gdf = process_area.to_gdf(
-    tile_size=128,
-    epsg_code=25832,
-)
+gdf = process_area.to_gdf(epsg_code=25832)
 
 print(gdf)
 ```
@@ -844,9 +956,13 @@ coordinates = np.array(
     ],
     dtype=np.int32,
 )
-process_area = aviary.ProcessArea(coordinates=coordinates)
+process_area = aviary.ProcessArea(
+    coordinates=coordinates,
+    tile_size=128,
+)
 
 print(process_area.coordinates)
+print(process_area.tile_size)
 ```
 
 ``` title="Output"
@@ -854,6 +970,7 @@ print(process_area.coordinates)
  [ 363212 5715326]
  [ 363084 5715454]
  [ 363212 5715454]]
+128
 ```
 
 ``` python
@@ -863,5 +980,5 @@ print(json_string)
 ```
 
 ``` title="Output"
-[[363084, 5715326], [363212, 5715326], [363084, 5715454], [363212, 5715454]]
+{"coordinates": [[363084, 5715326], [363212, 5715326], [363084, 5715454], [363212, 5715454]], "tile_size": 128}
 ```

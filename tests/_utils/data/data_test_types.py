@@ -99,17 +99,32 @@ data_test_process_area_init_exceptions = [
     # test case 1: coordinates has not 2 dimensions
     (
         np.ones(shape=(4, 2, 1), dtype=np.int32),
+        1,
         re.escape('Invalid coordinates! coordinates must be an array of shape (n, 2) and data type int32.'),
     ),
     # test case 2: coordinates has not 2 values in the second dimension
     (
         np.ones(shape=(4, 4), dtype=np.int32),
+        1,
         re.escape('Invalid coordinates! coordinates must be an array of shape (n, 2) and data type int32.'),
     ),
     # test case 3: coordinates is not of data type int32
     (
         np.ones(shape=(4, 2), dtype=np.float32),
+        1,
         re.escape('Invalid coordinates! coordinates must be an array of shape (n, 2) and data type int32.'),
+    ),
+    # test case 4: tile_size is 0
+    (
+        np.ones(shape=(4, 2), dtype=np.int32),
+        0,
+        re.escape('Invalid tile size! tile_size must be positive.'),
+    ),
+    # test case 5: tile_size is negative
+    (
+        np.ones(shape=(4, 2), dtype=np.int32),
+        -1,
+        re.escape('Invalid tile size! tile_size must be positive.'),
     ),
 ]
 
@@ -131,5 +146,17 @@ data_test_process_area_properties_exceptions = [
         'coordinates',
         np.ones(shape=(4, 2), dtype=np.float32),
         re.escape('Invalid coordinates! coordinates must be an array of shape (n, 2) and data type int32.'),
+    ),
+    # test case 4: tile_size is 0
+    (
+        'tile_size',
+        0,
+        re.escape('Invalid tile size! tile_size must be positive.'),
+    ),
+    # test case 5: tile_size is negative
+    (
+        'tile_size',
+        -1,
+        re.escape('Invalid tile size! tile_size must be positive.'),
     ),
 ]
