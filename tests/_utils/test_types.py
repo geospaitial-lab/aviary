@@ -21,6 +21,7 @@ from aviary._utils.types import (
     TileSize,
 )
 from tests._utils.data.data_test_types import (
+    data_test_bounding_box_area,
     data_test_bounding_box_buffer,
     data_test_bounding_box_buffer_exceptions,
     data_test_bounding_box_init_exceptions,
@@ -94,6 +95,14 @@ def test_bounding_box_properties_exceptions(
 ) -> None:
     with pytest.raises(AviaryUserError, match=message):
         setattr(bounding_box, property_, value)
+
+
+@pytest.mark.parametrize(('bounding_box', 'expected'), data_test_bounding_box_area)
+def test_bounding_box_area(
+    bounding_box: BoundingBox,
+    expected: int,
+) -> None:
+    assert bounding_box.area == expected
 
 
 def test_bounding_box_from_gdf() -> None:

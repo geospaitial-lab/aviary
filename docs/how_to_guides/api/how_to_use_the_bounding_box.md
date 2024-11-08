@@ -77,6 +77,18 @@ We can visualize the bounding box.
 
 ---
 
+You can access the area of the bounding box with the `area` attribute.
+
+``` python
+print(bounding_box.area)
+```
+
+``` title="Output"
+16384
+```
+
+---
+
 A bounding box is an iterable object, so it supports indexing, length and iteration.
 
 You can access the coordinates of the bounding box with the index operator.
