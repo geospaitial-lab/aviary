@@ -28,6 +28,7 @@ from tests._utils.data.data_test_types import (
     data_test_bounding_box_properties_exceptions,
     data_test_bounding_box_quantize,
     data_test_bounding_box_quantize_exceptions,
+    data_test_process_area_area,
     data_test_process_area_init_exceptions,
     data_test_process_area_properties_exceptions,
 )
@@ -340,6 +341,14 @@ def test_process_area_properties_exceptions(
 ) -> None:
     with pytest.raises(AviaryUserError, match=message):
         setattr(process_area, property_, value)
+
+
+@pytest.mark.parametrize(('process_area', 'expected'), data_test_process_area_area)
+def test_process_area_area(
+    process_area: ProcessArea,
+    expected: int,
+) -> None:
+    assert process_area.area == expected
 
 
 def test_process_area_from_bounding_box() -> None:

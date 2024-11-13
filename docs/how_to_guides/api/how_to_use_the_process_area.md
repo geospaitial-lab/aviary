@@ -124,6 +124,18 @@ We can visualize the process area.
 
 ---
 
+You can access the area of the process area with the `area` attribute.
+
+``` python
+print(process_area.area)
+```
+
+``` title="Output"
+8192
+```
+
+---
+
 A process area is an iterable object, so it supports indexing, length and iteration.
 
 You can access the coordinates of the process area with the index operator.
