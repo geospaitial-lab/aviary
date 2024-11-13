@@ -3,7 +3,10 @@ import re
 import numpy as np
 
 # noinspection PyProtectedMember
-from aviary._utils.types import BoundingBox
+from aviary._utils.types import (
+    BoundingBox,
+    ProcessArea,
+)
 
 data_test_bounding_box_buffer = [
     # test case 1: buffer_size is 0
@@ -171,5 +174,29 @@ data_test_process_area_properties_exceptions = [
         'tile_size',
         -1,
         re.escape('Invalid tile size! tile_size must be positive.'),
+    ),
+]
+
+data_test_process_area_area = [
+    # test case 1: process area has no tiles
+    (
+        ProcessArea(tile_size=128),
+        0,
+    ),
+    # test case 2: process area has one tile
+    (
+        ProcessArea(
+            coordinates=np.array([[-128, -128]], dtype=np.int32),
+            tile_size=128,
+        ),
+        16384,
+    ),
+    # test case 3: process area has four tiles
+    (
+        ProcessArea(
+            coordinates=np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32),
+            tile_size=128,
+        ),
+        65536,
     ),
 ]
