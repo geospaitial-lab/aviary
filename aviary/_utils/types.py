@@ -831,7 +831,7 @@ class ProcessArea(Iterable[Coordinates]):
         Yields:
             coordinates
         """
-        for x_min, y_min in self._coordinates:  # noqa: UP028
+        for x_min, y_min in self._coordinates:
             yield int(x_min), int(y_min)
 
     def __add__(
