@@ -242,6 +242,21 @@ class BoundingBox(Iterable[Coordinate]):
             y_max=ceil(y_max),
         )
 
+    def __repr__(self) -> str:
+        """Returns the string representation.
+
+        Returns:
+            string representation
+        """
+        return (
+            'BoundingBox(\n'
+            f'    x_min={self._x_min},\n'
+            f'    y_min={self._y_min},\n'
+            f'    x_max={self._x_max},\n'
+            f'    y_max={self._y_max},\n'
+            ')'
+        )
+
     def __len__(self) -> int:
         """Computes the number of coordinates.
 
