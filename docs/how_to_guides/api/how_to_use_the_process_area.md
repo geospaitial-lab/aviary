@@ -62,16 +62,14 @@ process_area = aviary.ProcessArea(
     tile_size=128,
 )
 
-print(process_area.coordinates)
-print(process_area.tile_size)
+print(process_area)
 ```
 
 ``` title="Output"
-[[ 363084 5715326]
- [ 363212 5715326]
- [ 363084 5715454]
- [ 363212 5715454]]
-128
+ProcessArea(
+    coordinates=[[363084, 5715326], [363212, 5715326], [363084, 5715454], [363212, 5715454]],
+    tile_size=128,
+)
 ```
 
 We can visualize the process area.
@@ -92,12 +90,14 @@ coordinates = np.array(
 )
 process_area.coordinates = coordinates
 
-print(process_area.coordinates)
+print(process_area)
 ```
 
 ``` title="Output"
-[[ 363084 5715326]
- [ 363212 5715326]]
+ProcessArea(
+    coordinates=[[363084, 5715326], [363212, 5715326]],
+    tile_size=128,
+)
 ```
 
 We can visualize the process area.
@@ -111,11 +111,14 @@ You can also set the tile size of an already created process area with the `tile
 ``` python
 process_area.tile_size = 64
 
-print(process_area.tile_size)
+print(process_area)
 ```
 
 ``` title="Output"
-64
+ProcessArea(
+    coordinates=[[363084, 5715326], [363212, 5715326]],
+    tile_size=64,
+)
 ```
 
 We can visualize the process area.
@@ -159,11 +162,14 @@ and the colon operator.
 ``` python
 sliced_process_area = process_area[:-1]
 
-print(sliced_process_area.coordinates)
+print(sliced_process_area)
 ```
 
 ``` title="Output"
-[[ 363084 5715326]]
+ProcessArea(
+    coordinates=[[363084, 5715326]],
+    tile_size=64,
+)
 ```
 
 A process area has a length, which is equal to the number of coordinates, i.e. the number of tiles.
@@ -209,16 +215,14 @@ process_area = aviary.ProcessArea.from_bounding_box(
     quantize=False,
 )
 
-print(process_area.coordinates)
-print(process_area.tile_size)
+print(process_area)
 ```
 
 ``` title="Output"
-[[ 363084 5715326]
- [ 363212 5715326]
- [ 363084 5715454]
- [ 363212 5715454]]
-128
+ProcessArea(
+    coordinates=[[363084, 5715326], [363212, 5715326], [363084, 5715454], [363212, 5715454]],
+    tile_size=128,
+)
 ```
 
 We can visualize the process area.<br />
@@ -244,21 +248,14 @@ process_area = aviary.ProcessArea.from_bounding_box(
     quantize=False,
 )
 
-print(process_area.coordinates)
-print(process_area.tile_size)
+print(process_area)
 ```
 
 ``` title="Output"
-[[ 363084 5715326]
- [ 363180 5715326]
- [ 363276 5715326]
- [ 363084 5715422]
- [ 363180 5715422]
- [ 363276 5715422]
- [ 363084 5715518]
- [ 363180 5715518]
- [ 363276 5715518]]
-128
+ProcessArea(
+    coordinates=[[363084, 5715326], [363180, 5715326], ..., [363180, 5715518], [363276, 5715518]],
+    tile_size=96,
+)
 ```
 
 We can visualize the process area.<br />
@@ -285,21 +282,14 @@ process_area = aviary.ProcessArea.from_bounding_box(
     quantize=True,
 )
 
-print(process_area.coordinates)
-print(process_area.tile_size)
+print(process_area)
 ```
 
 ``` title="Output"
-[[ 363008 5715200]
- [ 363136 5715200]
- [ 363264 5715200]
- [ 363008 5715328]
- [ 363136 5715328]
- [ 363264 5715328]
- [ 363008 5715456]
- [ 363136 5715456]
- [ 363264 5715456]]
-128
+ProcessArea(
+    coordinates=[[363008, 5715200], [363136, 5715200], ..., [363136, 5715456], [363264, 5715456]],
+    tile_size=128,
+)
 ```
 
 We can visualize the process area.<br />
@@ -329,16 +319,14 @@ process_area = aviary.ProcessArea.from_gdf(
     quantize=False,
 )
 
-print(process_area.coordinates)
-print(process_area.tile_size)
+print(process_area)
 ```
 
 ``` title="Output"
-[[ 363084 5715326]
- [ 363212 5715326]
- [ 363084 5715454]
- [ 363212 5715454]]
-128
+ProcessArea(
+    coordinates=[[363084, 5715326], [363212, 5715326], [363084, 5715454], [363212, 5715454]],
+    tile_size=128,
+)
 ```
 
 We can visualize the process area.<br />
@@ -362,19 +350,14 @@ process_area = aviary.ProcessArea.from_gdf(
     quantize=True,
 )
 
-print(process_area.coordinates)
-print(process_area.tile_size)
+print(process_area)
 ```
 
 ``` title="Output"
-[[ 364288 5713664]
- [ 364544 5713664]
- [ 364800 5713664]
- ...
- [ 363008 5721856]
- [ 363264 5721856]
- [ 363520 5721856]]
-256
+ProcessArea(
+    coordinates=[[364288, 5713664], [364544, 5713664], ..., [363264, 5721856], [363520, 5721856]],
+    tile_size=256,
+)
 ```
 
 We can visualize the process area.<br />
@@ -401,16 +384,14 @@ json_string = (
 )
 process_area = aviary.ProcessArea.from_json(json_string=json_string)
 
-print(process_area.coordinates)
-print(process_area.tile_size)
+print(process_area)
 ```
 
 ``` title="Output"
-[[ 363084 5715326]
- [ 363212 5715326]
- [ 363084 5715454]
- [ 363212 5715454]]
-128
+ProcessArea(
+    coordinates=[[363084, 5715326], [363212, 5715326], [363084, 5715454], [363212, 5715454]],
+    tile_size=128,
+)
 ```
 
 We can visualize the process area.
@@ -453,41 +434,32 @@ process_area_2 = aviary.ProcessArea(
     tile_size=128,
 )
 
-print(process_area_1.coordinates)
-print(process_area_1.tile_size)
-print(process_area_2.coordinates)
-print(process_area_2.tile_size)
+print(process_area_1)
+print(process_area_2)
 ```
 
 ``` title="Output"
-[[ 363084 5715326]
- [ 363212 5715326]
- [ 363084 5715454]
- [ 363212 5715454]]
-128
-[[ 363212 5715454]
- [ 363340 5715454]
- [ 363212 5715582]
- [ 363340 5715582]]
-128
+ProcessArea(
+    coordinates=[[363084, 5715326], [363212, 5715326], [363084, 5715454], [363212, 5715454]],
+    tile_size=128,
+)
+ProcessArea(
+    coordinates=[[363212, 5715454], [363340, 5715454], [363212, 5715582], [363340, 5715582]],
+    tile_size=128,
+)
 ```
 
 ``` python
 process_area = process_area_1 + process_area_2
 
-print(process_area.coordinates)
-print(process_area.tile_size)
+print(process_area)
 ```
 
 ``` title="Output"
-[[ 363084 5715326]
- [ 363212 5715326]
- [ 363084 5715454]
- [ 363212 5715454]
- [ 363340 5715454]
- [ 363212 5715582]
- [ 363340 5715582]]
-128
+ProcessArea(
+    coordinates=[[363084, 5715326], [363212, 5715326], ..., [363212, 5715582], [363340, 5715582]],
+    tile_size=128,
+)
 ```
 
 We can visualize the process area.<br />
@@ -528,37 +500,32 @@ process_area_2 = aviary.ProcessArea(
     tile_size=128,
 )
 
-print(process_area_1.coordinates)
-print(process_area_1.tile_size)
-print(process_area_2.coordinates)
-print(process_area_2.tile_size)
+print(process_area_1)
+print(process_area_2)
 ```
 
 ``` title="Output"
-[[ 363084 5715326]
- [ 363212 5715326]
- [ 363084 5715454]
- [ 363212 5715454]]
-128
-[[ 363212 5715454]
- [ 363340 5715454]
- [ 363212 5715582]
- [ 363340 5715582]]
-128
+ProcessArea(
+    coordinates=[[363084, 5715326], [363212, 5715326], [363084, 5715454], [363212, 5715454]],
+    tile_size=128,
+)
+ProcessArea(
+    coordinates=[[363212, 5715454], [363340, 5715454], [363212, 5715582], [363340, 5715582]],
+    tile_size=128,
+)
 ```
 
 ``` python
 process_area = process_area_1 - process_area_2
 
-print(process_area.coordinates)
-print(process_area.tile_size)
+print(process_area)
 ```
 
 ``` title="Output"
-[[ 363084 5715326]
- [ 363212 5715326]
- [ 363084 5715454]]
-128
+ProcessArea(
+    coordinates=[[363084, 5715326], [363212, 5715326], [363084, 5715454]],
+    tile_size=128,
+)
 ```
 
 We can visualize the process area.<br />
@@ -599,35 +566,32 @@ process_area_2 = aviary.ProcessArea(
     tile_size=128,
 )
 
-print(process_area_1.coordinates)
-print(process_area_1.tile_size)
-print(process_area_2.coordinates)
-print(process_area_2.tile_size)
+print(process_area_1)
+print(process_area_2)
 ```
 
 ``` title="Output"
-[[ 363084 5715326]
- [ 363212 5715326]
- [ 363084 5715454]
- [ 363212 5715454]]
-128
-[[ 363212 5715454]
- [ 363340 5715454]
- [ 363212 5715582]
- [ 363340 5715582]]
-128
+ProcessArea(
+    coordinates=[[363084, 5715326], [363212, 5715326], [363084, 5715454], [363212, 5715454]],
+    tile_size=128,
+)
+ProcessArea(
+    coordinates=[[363212, 5715454], [363340, 5715454], [363212, 5715582], [363340, 5715582]],
+    tile_size=128,
+)
 ```
 
 ``` python
 process_area = process_area_1 & process_area_2
 
-print(process_area.coordinates)
-print(process_area.tile_size)
+print(process_area)
 ```
 
 ``` title="Output"
-[[ 363212 5715454]]
-128
+ProcessArea(
+    coordinates=[[363212, 5715454]],
+    tile_size=128,
+)
 ```
 
 We can visualize the process area.<br />
@@ -658,32 +622,27 @@ process_area = aviary.ProcessArea(
     tile_size=128,
 )
 
-print(process_area.coordinates)
-print(process_area.tile_size)
+print(process_area)
 ```
 
 ``` title="Output"
-[[ 363084 5715326]
- [ 363212 5715326]
- [ 363084 5715454]
- [ 363212 5715454]]
-128
+ProcessArea(
+    coordinates=[[363084, 5715326], [363212, 5715326], [363084, 5715454], [363212, 5715454]],
+    tile_size=128,
+)
 ```
 
 ``` python
 process_area = process_area.append((363340, 5715582))
 
-print(process_area.coordinates)
-print(process_area.tile_size)
+print(process_area)
 ```
 
 ``` title="Output"
-[[ 363084 5715326]
- [ 363212 5715326]
- [ 363084 5715454]
- [ 363212 5715454]
- [ 363340 5715582]]
-128
+ProcessArea(
+    coordinates=[[363084, 5715326], [363212, 5715326], ..., [363212, 5715454], [363340, 5715582]],
+    tile_size=128,
+)
 ```
 
 We can visualize the process area.
@@ -697,17 +656,14 @@ If you want to append coordinates that already exist, the process area will not 
 ``` python
 process_area = process_area.append((363340, 5715582))
 
-print(process_area.coordinates)
-print(process_area.tile_size)
+print(process_area)
 ```
 
 ``` title="Output"
-[[ 363084 5715326]
- [ 363212 5715326]
- [ 363084 5715454]
- [ 363212 5715454]
- [ 363340 5715582]]
-128
+ProcessArea(
+    coordinates=[[363084, 5715326], [363212, 5715326], ..., [363212, 5715454], [363340, 5715582]],
+    tile_size=128,
+)
 ```
 
 ---
@@ -734,33 +690,32 @@ process_area = aviary.ProcessArea(
     tile_size=128,
 )
 
-print(process_area.coordinates)
-print(process_area.tile_size)
+print(process_area)
 ```
 
 ``` title="Output"
-[[ 363084 5715326]
- [ 363212 5715326]
- [ 363084 5715454]
- [ 363212 5715454]]
-128
+ProcessArea(
+    coordinates=[[363084, 5715326], [363212, 5715326], [363084, 5715454], [363212, 5715454]],
+    tile_size=128,
+)
 ```
 
 ``` python
 process_areas = process_area.chunk(num_chunks=2)
 
 for process_area in process_areas:
-    print(process_area.coordinates)
-    print(process_area.tile_size)
+    print(process_area)
 ```
 
 ``` title="Output"
-[[ 363084 5715326]
- [ 363212 5715326]]
-128
-[[ 363084 5715454]
- [ 363212 5715454]]
-128
+ProcessArea(
+    coordinates=[[363084, 5715326], [363212, 5715326]],
+    tile_size=128,
+)
+ProcessArea(
+    coordinates=[[363084, 5715454], [363212, 5715454]],
+    tile_size=128,
+)
 ```
 
 ---
@@ -798,17 +753,15 @@ gdf = gpd.GeoDataFrame(
     crs='EPSG:25832',
 )
 
-print(process_area.coordinates)
-print(process_area.tile_size)
+print(process_area)
 print(gdf)
 ```
 
 ``` title="Output"
-[[ 363084 5715326]
- [ 363212 5715326]
- [ 363084 5715454]
- [ 363212 5715454]]
-128
+ProcessArea(
+    coordinates=[[363084, 5715326], [363212, 5715326], [363084, 5715454], [363212, 5715454]],
+    tile_size=128,
+)
                                             geometry
 0  POLYGON ((363468 5715454, 363468 5715710, 3632...
 ```
@@ -823,15 +776,14 @@ geospatial_filter = GeospatialFilter(
 )
 process_area = process_area.filter(coordinates_filter=geospatial_filter)
 
-print(process_area.coordinates)
-print(process_area.tile_size)
+print(process_area)
 ```
 
 ``` title="Output"
-[[ 363084 5715326]
- [ 363212 5715326]
- [ 363084 5715454]]
-128
+ProcessArea(
+    coordinates=[[363084, 5715326], [363212, 5715326], [363084, 5715454]],
+    tile_size=128,
+)
 ```
 
 We can visualize the process area.<br />
@@ -864,17 +816,15 @@ gdf = gpd.GeoDataFrame(
     crs='EPSG:25832',
 )
 
-print(process_area.coordinates)
-print(process_area.tile_size)
+print(process_area)
 print(gdf)
 ```
 
 ``` title="Output"
-[[ 363084 5715326]
- [ 363212 5715326]
- [ 363084 5715454]
- [ 363212 5715454]]
-128
+ProcessArea(
+    coordinates=[[363084, 5715326], [363212, 5715326], [363084, 5715454], [363212, 5715454]],
+    tile_size=128,
+)
                                             geometry
 0  POLYGON ((363468 5715454, 363468 5715710, 3632...
 ```
@@ -887,13 +837,14 @@ geospatial_filter = GeospatialFilter(
 )
 process_area = process_area.filter(coordinates_filter=geospatial_filter)
 
-print(process_area.coordinates)
-print(process_area.tile_size)
+print(process_area)
 ```
 
 ``` title="Output"
-[[ 363212 5715454]]
-128
+ProcessArea(
+    coordinates=[[363212, 5715454]],
+    tile_size=128,
+)
 ```
 
 We can visualize the process area.<br />
@@ -924,16 +875,14 @@ process_area = aviary.ProcessArea(
     tile_size=128,
 )
 
-print(process_area.coordinates)
-print(process_area.tile_size)
+print(process_area)
 ```
 
 ``` title="Output"
-[[ 363084 5715326]
- [ 363212 5715326]
- [ 363084 5715454]
- [ 363212 5715454]]
-128
+ProcessArea(
+    coordinates=[[363084, 5715326], [363212, 5715326], [363084, 5715454], [363212, 5715454]],
+    tile_size=128,
+)
 ```
 
 ``` python
@@ -973,16 +922,14 @@ process_area = aviary.ProcessArea(
     tile_size=128,
 )
 
-print(process_area.coordinates)
-print(process_area.tile_size)
+print(process_area)
 ```
 
 ``` title="Output"
-[[ 363084 5715326]
- [ 363212 5715326]
- [ 363084 5715454]
- [ 363212 5715454]]
-128
+ProcessArea(
+    coordinates=[[363084, 5715326], [363212, 5715326], [363084, 5715454], [363212, 5715454]],
+    tile_size=128,
+)
 ```
 
 ``` python
