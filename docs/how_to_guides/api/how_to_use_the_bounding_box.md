@@ -58,17 +58,16 @@ bounding_box.y_min = 5715390
 bounding_box.x_max = 363276
 bounding_box.y_max = 5715518
 
-print(bounding_box.x_min)
-print(bounding_box.y_min)
-print(bounding_box.x_max)
-print(bounding_box.y_max)
+print(bounding_box)
 ```
 
 ``` title="Output"
-363148
-5715390
-363276
-5715518
+BoundingBox(
+    x_min=363148,
+    y_min=5715390,
+    x_max=363276,
+    y_max=5715518,
+)
 ```
 
 We can visualize the bounding box.
@@ -172,17 +171,16 @@ gdf = gpd.GeoDataFrame(
 )
 bounding_box = aviary.BoundingBox.from_gdf(gdf=gdf)
 
-print(bounding_box.x_min)
-print(bounding_box.y_min)
-print(bounding_box.x_max)
-print(bounding_box.y_max)
+print(bounding_box)
 ```
 
 ``` title="Output"
-363084
-5715326
-363340
-5715582
+BoundingBox(
+    x_min=363084,
+    y_min=5715326,
+    x_max=363340,
+    y_max=5715582,
+)
 ```
 
 We can visualize the bounding box.<br />
@@ -202,17 +200,16 @@ url = (
 gdf = gpd.read_file(url)
 bounding_box = aviary.BoundingBox.from_gdf(gdf=gdf)
 
-print(bounding_box.x_min)
-print(bounding_box.y_min)
-print(bounding_box.x_max)
-print(bounding_box.y_max)
+print(bounding_box)
 ```
 
 ``` title="Output"
-360695
-5713811
-367384
-5721922
+BoundingBox(
+    x_min=360695,
+    y_min=5713811,
+    x_max=367384,
+    y_max=5721922,
+)
 ```
 
 We can visualize the bounding box.<br />
@@ -236,33 +233,31 @@ bounding_box = aviary.BoundingBox(
     y_max=5715582,
 )
 
-print(bounding_box.x_min)
-print(bounding_box.y_min)
-print(bounding_box.x_max)
-print(bounding_box.y_max)
+print(bounding_box)
 ```
 
 ``` title="Output"
-363084
-5715326
-363340
-5715582
+BoundingBox(
+    x_min=363084,
+    y_min=5715326,
+    x_max=363340,
+    y_max=5715582,
+)
 ```
 
 ``` python
 buffered_bounding_box = bounding_box.buffer(buffer_size=64)
 
-print(buffered_bounding_box.x_min)
-print(buffered_bounding_box.y_min)
-print(buffered_bounding_box.x_max)
-print(buffered_bounding_box.y_max)
+print(buffered_bounding_box)
 ```
 
 ``` title="Output"
-363020
-5715262
-363404
-5715646
+BoundingBox(
+    x_min=363020,
+    y_min=5715262,
+    x_max=363404,
+    y_max=5715646,
+)
 ```
 
 We can visualize the bounding box.<br />
@@ -284,33 +279,31 @@ bounding_box = aviary.BoundingBox(
     y_max=5715582,
 )
 
-print(bounding_box.x_min)
-print(bounding_box.y_min)
-print(bounding_box.x_max)
-print(bounding_box.y_max)
+print(bounding_box)
 ```
 
 ``` title="Output"
-363084
-5715326
-363340
-5715582
+BoundingBox(
+    x_min=363084,
+    y_min=5715326,
+    x_max=363340,
+    y_max=5715582,
+)
 ```
 
 ``` python
 buffered_bounding_box = bounding_box.buffer(buffer_size=-64)
 
-print(buffered_bounding_box.x_min)
-print(buffered_bounding_box.y_min)
-print(buffered_bounding_box.x_max)
-print(buffered_bounding_box.y_max)
+print(buffered_bounding_box)
 ```
 
 ``` title="Output"
-363148
-5715390
-363276
-5715518
+BoundingBox(
+    x_min=363148,
+    y_min=5715390,
+    x_max=363276,
+    y_max=5715518,
+)
 ```
 
 We can visualize the bounding box.<br />
@@ -334,33 +327,31 @@ bounding_box = aviary.BoundingBox(
     y_max=5715582,
 )
 
-print(bounding_box.x_min)
-print(bounding_box.y_min)
-print(bounding_box.x_max)
-print(bounding_box.y_max)
+print(bounding_box)
 ```
 
 ``` title="Output"
-363084
-5715326
-363340
-5715582
+BoundingBox(
+    x_min=363084,
+    y_min=5715326,
+    x_max=363340,
+    y_max=5715582,
+)
 ```
 
 ``` python
 quantized_bounding_box = bounding_box.quantize(value=128)
 
-print(quantized_bounding_box.x_min)
-print(quantized_bounding_box.y_min)
-print(quantized_bounding_box.x_max)
-print(quantized_bounding_box.y_max)
+print(quantized_bounding_box)
 ```
 
 ``` title="Output"
-363008
-5715200
-363392
-5715584
+BoundingBox(
+    x_min=363008,
+    y_min=5715200,
+    x_max=363392,
+    y_max=5715584,
+)
 ```
 
 We can visualize the bounding box.<br />
@@ -384,17 +375,16 @@ bounding_box = aviary.BoundingBox(
     y_max=5715582,
 )
 
-print(bounding_box.x_min)
-print(bounding_box.y_min)
-print(bounding_box.x_max)
-print(bounding_box.y_max)
+print(bounding_box)
 ```
 
 ``` title="Output"
-363084
-5715326
-363340
-5715582
+BoundingBox(
+    x_min=363084,
+    y_min=5715326,
+    x_max=363340,
+    y_max=5715582,
+)
 ```
 
 ``` python
