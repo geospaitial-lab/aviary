@@ -823,7 +823,7 @@ class ProcessArea(Iterable[Coordinates]):
             )
 
         x_min, y_min = self._coordinates[index]
-        return x_min, y_min
+        return int(x_min), int(y_min)
 
     def __iter__(self) -> Iterator[Coordinates]:
         """Iterates over the coordinates.
@@ -831,8 +831,8 @@ class ProcessArea(Iterable[Coordinates]):
         Yields:
             coordinates
         """
-        for x_min, y_min in self._coordinates:  # noqa: UP028
-            yield x_min, y_min
+        for x_min, y_min in self._coordinates:
+            yield int(x_min), int(y_min)
 
     def __add__(
         self,
