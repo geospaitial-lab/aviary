@@ -743,6 +743,26 @@ class ProcessArea(Iterable[Coordinates]):
         )
         raise AviaryUserError(message)
 
+    def __repr__(self) -> str:
+        """Returns the string representation.
+
+        Returns:
+            string representation
+        """
+        max_coordinates = 4
+        coordinates = self._coordinates.tolist()
+
+        if len(coordinates) > max_coordinates:
+            coordinates = coordinates[:max_coordinates // 2] + [Ellipsis] + coordinates[-max_coordinates // 2:]
+
+        coordinates = str(coordinates).replace('Ellipsis', '...')
+        return (
+            'ProcessArea(\n'
+            f'    coordinates={coordinates},\n'
+            f'    tile_size={self._tile_size},\n'
+            ')'
+        )
+
     def __eq__(
         self,
         other: ProcessArea,
