@@ -1,9 +1,13 @@
 version: 2
+
 updates:
   - package-ecosystem: github-actions
     directory: /
     schedule:
       interval: weekly
+      day: monday
+      time: '00:00'
+      timezone: Europe/Berlin
     assignees:
       - mrsmrynk
     reviewers:
@@ -15,6 +19,9 @@ updates:
     directory: /
     schedule:
       interval: weekly
+      day: monday
+      time: '00:00'
+      timezone: Europe/Berlin
     assignees:
       - mrsmrynk
     reviewers:
