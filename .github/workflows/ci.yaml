@@ -52,7 +52,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Install latest dependencies
-        if: matrix.dependencies == latest
+        if: matrix.dependencies == 'latest'
         run: |
           uv pip install --upgrade pip setuptools wheel
           uv pip install -r requirements.txt -r dev/requirements/ci_requirements.txt
