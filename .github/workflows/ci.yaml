@@ -61,7 +61,7 @@ jobs:
         if: matrix.dependencies == 'lower-bounds'
         run: |
           uv pip install --upgrade pip setuptools wheel
-          uv pip install --resolution lowest -r requirements.txt -r dev/requirements/ci_requirements.txt
+          uv pip install --resolution lowest-direct -r requirements.txt -r dev/requirements/ci_requirements.txt
 
       - name: Test with pytest
         run: |
