@@ -11,7 +11,7 @@ from aviary._utils.types import (
     ProcessArea,
     ProcessAreaConfig,
 )
-from aviary.data.data_fetcher import (  # noqa: F401,TCH001
+from aviary.data.data_fetcher import (  # noqa: F401,TC001
     CompositeFetcher,
     CompositeFetcherConfig,
     VRTFetcher,
@@ -20,7 +20,7 @@ from aviary.data.data_fetcher import (  # noqa: F401,TCH001
     WMSFetcherConfig,
 )
 from aviary.data.data_loader import DataLoader
-from aviary.data.data_preprocessor import (  # noqa: F401,TCH001
+from aviary.data.data_preprocessor import (  # noqa: F401,TC001
     CompositePreprocessor,
     CompositePreprocessorConfig,
     NormalizePreprocessor,
@@ -29,11 +29,11 @@ from aviary.data.data_preprocessor import (  # noqa: F401,TCH001
     StandardizePreprocessorConfig,
 )
 from aviary.data.dataset import Dataset
-from aviary.inference.exporter import (  # noqa: TCH001
+from aviary.inference.exporter import (  # noqa: TC001
     SegmentationExporter,
     SegmentationExporterConfig,
 )
-from aviary.inference.model import (  # noqa: F401,TCH001
+from aviary.inference.model import (  # noqa: F401,TC001
     ONNXSegmentationModel,
     SegmentationModelConfig,
 )

@@ -1,12 +1,12 @@
 from __future__ import annotations
 
-from pathlib import Path  # noqa: TCH003
+from pathlib import Path  # noqa: TC003
 from typing import TYPE_CHECKING, cast
 
 import geopandas as gpd
 import pydantic
 
-from aviary.geodata.geodata_postprocessor import (  # noqa: F401,TCH001
+from aviary.geodata.geodata_postprocessor import (  # noqa: F401,TC001
     ClipPostprocessor,
     ClipPostprocessorConfig,
     CompositePostprocessor,
