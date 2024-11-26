@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from pathlib import Path  # noqa: TCH003
+from pathlib import Path  # noqa: TC003
 from typing import TYPE_CHECKING, Protocol
 
 import pydantic
@@ -16,7 +16,7 @@ from aviary._functional.inference.exporter import segmentation_exporter
 from aviary._utils.mixins import FromConfigMixin
 
 # noinspection PyProtectedMember
-from aviary._utils.types import (  # noqa: TCH001
+from aviary._utils.types import (  # noqa: TC001
     CoordinatesSet,
     EPSGCode,
     GroundSamplingDistance,

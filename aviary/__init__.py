@@ -14,7 +14,6 @@ from ._utils.types import (
 )
 
 __all__ = [
-    '__version__',
     'AviaryUserError',
     'AviaryUserWarning',
     'BoundingBox',
@@ -25,6 +24,7 @@ __all__ = [
     'ProcessAreaConfig',
     'SetFilterMode',
     'WMSVersion',
+    '__version__',
 ]
 
 __version__ = '0.3.3'

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from pathlib import Path  # noqa: TCH003
+from pathlib import Path  # noqa: TC003
 
 import geopandas as gpd
 import pydantic
