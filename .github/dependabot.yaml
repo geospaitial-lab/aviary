@@ -16,7 +16,7 @@ updates:
       - build
 
   - package-ecosystem: pip
-    directory: /
+    directory: /dev
     schedule:
       interval: weekly
       day: monday
