@@ -11,6 +11,7 @@ from math import ceil, floor
 from pathlib import Path  # noqa: TC003
 from typing import (
     TYPE_CHECKING,
+    ForwardRef,
     TypeAlias,
     cast,
     overload,
@@ -38,6 +39,8 @@ if TYPE_CHECKING:
     from aviary.geodata.coordinates_filter import CoordinatesFilter
 
 BufferSize: TypeAlias = int
+Channel = ForwardRef('Channel')
+Channels: TypeAlias = list[Channel | str]
 Coordinate: TypeAlias = int
 Coordinates: TypeAlias = tuple[Coordinate, Coordinate]
 CoordinatesSet: TypeAlias = npt.NDArray[np.int32]
@@ -421,6 +424,20 @@ class BoundingBox(Iterable[Coordinate]):
             geometry=[box(self._x_min, self._y_min, self._x_max, self._y_max)],
             crs=f'EPSG:{epsg_code}',
         )
+
+
+class Channel(Enum):
+    """
+    Attributes:
+        B: blue channel
+        G: green channel
+        NIR: near-infrared channel
+        R: red channel
+    """
+    B = 'b'
+    G = 'g'
+    NIR = 'nir'
+    R = 'r'
 
 
 class Device(Enum):
