@@ -1,46 +1,46 @@
-::: aviary._utils.types.BufferSize
+::: aviary.BufferSize
     options:
       show_symbol_type_heading: false
       show_symbol_type_toc: false
       show_labels: false
 
-::: aviary._utils.types.Channels
+::: aviary.Channels
     options:
       show_symbol_type_heading: false
       show_symbol_type_toc: false
       show_labels: false
 
-::: aviary._utils.types.Coordinate
+::: aviary.Coordinate
     options:
       show_symbol_type_heading: false
       show_symbol_type_toc: false
       show_labels: false
 
-::: aviary._utils.types.Coordinates
+::: aviary.Coordinates
     options:
       show_symbol_type_heading: false
       show_symbol_type_toc: false
       show_labels: false
 
-::: aviary._utils.types.CoordinatesSet
+::: aviary.CoordinatesSet
     options:
       show_symbol_type_heading: false
       show_symbol_type_toc: false
       show_labels: false
 
-::: aviary._utils.types.EPSGCode
+::: aviary.EPSGCode
     options:
       show_symbol_type_heading: false
       show_symbol_type_toc: false
       show_labels: false
 
-::: aviary._utils.types.GroundSamplingDistance
+::: aviary.GroundSamplingDistance
     options:
       show_symbol_type_heading: false
       show_symbol_type_toc: false
       show_labels: false
 
-::: aviary._utils.types.TileSize
+::: aviary.TileSize
     options:
       show_symbol_type_heading: false
       show_symbol_type_toc: false
