@@ -11,7 +11,6 @@ from math import ceil, floor
 from pathlib import Path  # noqa: TC003
 from typing import (
     TYPE_CHECKING,
-    ForwardRef,
     TypeAlias,
     cast,
     overload,
@@ -39,8 +38,6 @@ if TYPE_CHECKING:
     from aviary.geodata.coordinates_filter import CoordinatesFilter
 
 BufferSize: TypeAlias = int
-Channel = ForwardRef('Channel')
-Channels: TypeAlias = list[Channel | str]
 Coordinate: TypeAlias = int
 Coordinates: TypeAlias = tuple[Coordinate, Coordinate]
 CoordinatesSet: TypeAlias = npt.NDArray[np.int32]
@@ -438,6 +435,9 @@ class Channel(Enum):
     G = 'g'
     NIR = 'nir'
     R = 'r'
+
+
+Channels: TypeAlias = list[Channel | str]
 
 
 class Device(Enum):
