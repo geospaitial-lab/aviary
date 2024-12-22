@@ -40,8 +40,8 @@ __all__ = [
     'ProcessArea',
     'ProcessAreaConfig',
     'SetFilterMode',
-    'WMSVersion',
     'TileSize',
+    'WMSVersion',
     '__version__',
 ]
 
