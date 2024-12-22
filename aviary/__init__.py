@@ -4,6 +4,7 @@ from ._utils.exceptions import (
 )
 from ._utils.types import (
     BoundingBox,
+    Channel,
     Device,
     GeospatialFilterMode,
     InterpolationMode,
@@ -17,6 +18,7 @@ __all__ = [
     'AviaryUserError',
     'AviaryUserWarning',
     'BoundingBox',
+    'Channel',
     'Device',
     'GeospatialFilterMode',
     'InterpolationMode',

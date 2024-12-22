@@ -1,3 +1,7 @@
+::: aviary.Channel
+
+---
+
 ::: aviary.Device
 
 ---

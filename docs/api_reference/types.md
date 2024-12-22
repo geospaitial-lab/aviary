@@ -4,6 +4,12 @@
       show_symbol_type_toc: false
       show_labels: false
 
+::: aviary._utils.types.Channels
+    options:
+      show_symbol_type_heading: false
+      show_symbol_type_toc: false
+      show_labels: false
+
 ::: aviary._utils.types.Coordinate
     options:
       show_symbol_type_heading: false
