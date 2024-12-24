@@ -423,6 +423,23 @@ class BoundingBox(Iterable[Coordinate]):
         )
 
 
+class Channel(Enum):
+    """
+    Attributes:
+        B: blue channel
+        G: green channel
+        NIR: near-infrared channel
+        R: red channel
+    """
+    B = 'b'
+    G = 'g'
+    NIR = 'nir'
+    R = 'r'
+
+
+Channels: TypeAlias = list[Channel | str]
+
+
 class Device(Enum):
     """
     Attributes:
