@@ -1290,7 +1290,17 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
         """
         Returns:
             blue channel
+
+        Raises:
+            AviaryUserError: Invalid channel (the blue channel is not available)
         """
+        if Channel.B not in self._data:
+            message = (
+                'Invalid channel! '
+                'The blue channel is not available.'
+            )
+            raise AviaryUserError(message)
+
         return self._data[Channel.B]
 
     @property
@@ -1298,7 +1308,17 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
         """
         Returns:
             green channel
+
+        Raises:
+            AviaryUserError: Invalid channel (the green channel is not available)
         """
+        if Channel.G not in self._data:
+            message = (
+                'Invalid channel! '
+                'The green channel is not available.'
+            )
+            raise AviaryUserError(message)
+
         return self._data[Channel.G]
 
     @property
@@ -1306,7 +1326,17 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
         """
         Returns:
             near-infrared channel
+
+        Raises:
+            AviaryUserError: Invalid channel (the near-infrared channel is not available)
         """
+        if Channel.NIR not in self._data:
+            message = (
+                'Invalid channel! '
+                'The near-infrared channel is not available.'
+            )
+            raise AviaryUserError(message)
+
         return self._data[Channel.NIR]
 
     @property
@@ -1314,7 +1344,17 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
         """
         Returns:
             red channel
+
+        Raises:
+            AviaryUserError: Invalid channel (the red channel is not available)
         """
+        if Channel.R not in self._data:
+            message = (
+                'Invalid channel! '
+                'The red channel is not available.'
+            )
+            raise AviaryUserError(message)
+
         return self._data[Channel.R]
 
 
