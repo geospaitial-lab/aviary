@@ -1266,6 +1266,14 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
         """
         return self._tile_size ** 2
 
+    @property
+    def channels(self) -> Channels:
+        """
+        Returns:
+            channels
+        """
+        return list(self._data.keys())
+
 
 class WMSVersion(Enum):
     """
