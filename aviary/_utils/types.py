@@ -1258,6 +1258,14 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
         """
         return self._buffer_size
 
+    @property
+    def area(self) -> int:
+        """
+        Returns:
+            area in square meters
+        """
+        return self._tile_size ** 2
+
 
 class WMSVersion(Enum):
     """
