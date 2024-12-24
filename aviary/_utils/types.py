@@ -1285,6 +1285,38 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
             self._tile_size / self._ground_sampling_distance,
         )
 
+    @property
+    def b(self) -> npt.NDArray:
+        """
+        Returns:
+            blue channel
+        """
+        return self._data[Channel.B]
+
+    @property
+    def g(self) -> npt.NDArray:
+        """
+        Returns:
+            green channel
+        """
+        return self._data[Channel.G]
+
+    @property
+    def nir(self) -> npt.NDArray:
+        """
+        Returns:
+            near-infrared channel
+        """
+        return self._data[Channel.NIR]
+
+    @property
+    def r(self) -> npt.NDArray:
+        """
+        Returns:
+            red channel
+        """
+        return self._data[Channel.R]
+
 
 class WMSVersion(Enum):
     """
