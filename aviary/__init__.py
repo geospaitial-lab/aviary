@@ -18,6 +18,7 @@ from ._utils.types import (
     ProcessArea,
     ProcessAreaConfig,
     SetFilterMode,
+    Tile,
     TileSize,
     WMSVersion,
 )
@@ -40,6 +41,7 @@ __all__ = [
     'ProcessArea',
     'ProcessAreaConfig',
     'SetFilterMode',
+    'Tile',
     'TileSize',
     'WMSVersion',
     '__version__',

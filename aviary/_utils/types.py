@@ -1179,6 +1179,86 @@ class SetFilterMode(Enum):
     UNION = 'union'
 
 
+@dataclass
+class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
+    """A tile specifies the data and the spatial extent of a tile.
+
+    Attributes:
+        data: data
+        coordinates: coordinates (x_min, y_min) of the tile
+        tile_size: tile size in meters
+        ground_sampling_distance: ground sampling distance in meters
+        buffer_size: buffer size in meters
+    """
+    data: dict[Channel | str, npt.NDArray]
+    coordinates: Coordinates
+    tile_size: TileSize
+    ground_sampling_distance: GroundSamplingDistance
+    buffer_size: BufferSize
+
+    def __init__(
+        self,
+        data: dict[Channel | str, npt.NDArray],
+        coordinates: Coordinates,
+        tile_size: TileSize,
+        ground_sampling_distance: GroundSamplingDistance,
+        buffer_size: BufferSize,
+    ) -> None:
+        """
+        Parameters:
+            data: data
+            coordinates: coordinates (x_min, y_min) of the tile
+            tile_size: tile size in meters
+            ground_sampling_distance: ground sampling distance in meters
+            buffer_size: buffer size in meters
+        """
+        self._data = data
+        self._coordinates = coordinates
+        self._tile_size = tile_size
+        self._ground_sampling_distance = ground_sampling_distance
+        self._buffer_size = buffer_size
+
+    @property
+    def data(self) -> dict[Channel | str, npt.NDArray]:
+        """
+        Returns:
+            data
+        """
+        return self._data
+
+    @property
+    def coordinates(self) -> Coordinates:
+        """
+        Returns:
+            coordinates (x_min, y_min) of the tile
+        """
+        return self._coordinates
+
+    @property
+    def tile_size(self) -> TileSize:
+        """
+        Returns:
+            tile size in meters
+        """
+        return self._tile_size
+
+    @property
+    def ground_sampling_distance(self) -> GroundSamplingDistance:
+        """
+        Returns:
+            ground sampling distance in meters
+        """
+        return self._ground_sampling_distance
+
+    @property
+    def buffer_size(self) -> BufferSize:
+        """
+        Returns:
+            buffer size in meters
+        """
+        return self._buffer_size
+
+
 class WMSVersion(Enum):
     """
     Attributes:
