@@ -1274,6 +1274,17 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
         """
         return list(self._data.keys())
 
+    @property
+    def shape(self) -> tuple[int, int]:
+        """
+        Returns:
+            shape of the data
+        """
+        return (
+            self._tile_size / self._ground_sampling_distance,
+            self._tile_size / self._ground_sampling_distance,
+        )
+
 
 class WMSVersion(Enum):
     """
