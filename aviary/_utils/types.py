@@ -44,6 +44,7 @@ CoordinatesSet: TypeAlias = npt.NDArray[np.int32]
 EPSGCode: TypeAlias = int
 GroundSamplingDistance: TypeAlias = float
 TileSize: TypeAlias = int
+TimeStep: TypeAlias = int
 
 
 @dataclass
@@ -1275,6 +1276,22 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
         return set(self._data.keys())
 
     @property
+    def num_channels(self) -> int:
+        """
+        Returns:
+            number of channels
+        """
+        return len(self)
+
+    @property
+    def num_time_steps(self) -> int:
+        """
+        Returns:
+            number of time steps
+        """
+        return self.shape[-1]
+
+    @property
     def shape(self) -> tuple[int, int, int]:
         """
         Returns:
@@ -1353,6 +1370,14 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
             raise AviaryUserError(message)
 
         return self._data[Channel.R]
+
+    def __len__(self) -> int:
+        """Computes the number of channels.
+
+        Returns:
+            number of channels
+        """
+        return len(self._data)
 
 
 class WMSVersion(Enum):
