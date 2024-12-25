@@ -1264,7 +1264,7 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
         Returns:
             area in square meters
         """
-        return self._tile_size ** 2
+        return (self._tile_size + 2 * self._buffer_size) ** 2
 
     @property
     def channels(self) -> Channels:
