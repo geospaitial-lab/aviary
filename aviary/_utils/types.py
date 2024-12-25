@@ -1196,6 +1196,7 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
     tile_size: TileSize
     ground_sampling_distance: GroundSamplingDistance
     buffer_size: BufferSize
+    _valid_channels = [channel.value for channel in Channel]
 
     def __init__(
         self,
@@ -1378,6 +1379,33 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
             number of channels
         """
         return len(self._data)
+
+    def __getitem__(
+        self,
+        channel: Channel | str,
+    ) -> npt.NDArray:
+        """Returns the channel data.
+
+        Parameters:
+            channel: channel
+
+        Returns:
+            channel data
+
+        Raises:
+            AviaryUserError: Invalid channel (the channel is not available)
+        """
+        if isinstance(channel, str) and channel in self._valid_channels:
+            channel = Channel(channel)
+
+        if channel not in self._data:
+            message = (
+                'Invalid channel! '
+                f'The {channel} channel is not available.'
+            )
+            raise AviaryUserError(message)
+
+        return self._data[channel]
 
 
 class WMSVersion(Enum):
