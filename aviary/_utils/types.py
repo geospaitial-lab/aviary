@@ -1202,7 +1202,7 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
         coordinates: Coordinates,
         tile_size: TileSize,
         ground_sampling_distance: GroundSamplingDistance,
-        buffer_size: BufferSize,
+        buffer_size: BufferSize = 0,
     ) -> None:
         """
         Parameters:
