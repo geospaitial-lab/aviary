@@ -437,7 +437,7 @@ class Channel(Enum):
     R = 'r'
 
 
-Channels: TypeAlias = list[Channel | str]
+Channels: TypeAlias = set[Channel | str]
 
 
 class Device(Enum):
@@ -1272,18 +1272,15 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
         Returns:
             channels
         """
-        return list(self._data.keys())
+        return set(self._data.keys())
 
     @property
-    def shape(self) -> tuple[int, int]:
+    def shape(self) -> tuple[int, int, int]:
         """
         Returns:
             shape of the data
         """
-        return (
-            self._tile_size / self._ground_sampling_distance,
-            self._tile_size / self._ground_sampling_distance,
-        )
+        return next(iter(self._data.values())).shape
 
     @property
     def b(self) -> npt.NDArray:
