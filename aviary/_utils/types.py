@@ -1390,6 +1390,26 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
 
         return self._data[Channel.R]
 
+    def __repr__(self) -> str:
+        """Returns the string representation.
+
+        Returns:
+            string representation
+        """
+        data_repr = '\n'.join(
+            f'        {channel}: {data.shape},'
+            for channel, data in self
+        )
+        return (
+            'Tile(\n'
+            f'    data=\n{data_repr},\n'
+            f'    coordinates={self._coordinates},\n'
+            f'    tile_size={self._tile_size},\n'
+            f'    ground_sampling_distance={self._ground_sampling_distance},\n'
+            f'    buffer_size={self._buffer_size},\n'
+            ')'
+        )
+
     def __eq__(
         self,
         other: Tile,
