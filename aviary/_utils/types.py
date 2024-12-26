@@ -1388,7 +1388,7 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
         conditions = [
             isinstance(other, Tile),
             self._data.keys() == other.data.keys(),
-            all(np.array_equal(self._data[channel], other.data[channel]) for channel in self._data),
+            all(np.array_equal(self._data[channel], other.data[channel]) for channel in self.channels),
             self._coordinates == other.coordinates,
             self._tile_size == other.tile_size,
             self._ground_sampling_distance == other.ground_sampling_distance,
@@ -1422,7 +1422,7 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
         if isinstance(channel, str) and channel in self._valid_channels:
             channel = Channel(channel)
 
-        if channel not in self._data:
+        if channel not in self.channels:
             message = (
                 'Invalid channel! '
                 f'The {channel} channel is not available.'
