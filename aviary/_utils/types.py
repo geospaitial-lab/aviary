@@ -1267,7 +1267,24 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
         Returns:
             area in square meters
         """
-        return (self._tile_size + 2 * self._buffer_size) ** 2
+        return self.bounding_box.area
+
+    @property
+    def bounding_box(self) -> BoundingBox:
+        """
+        Returns:
+            bounding box
+        """
+        x_min, y_min = self._coordinates
+        x_max = x_min + self._tile_size
+        y_max = y_min + self._tile_size
+        bounding_box = BoundingBox(
+            x_min=x_min,
+            y_min=y_min,
+            x_max=x_max,
+            y_max=y_max,
+        )
+        return bounding_box.buffer(buffer_size=self._buffer_size)
 
     @property
     def channels(self) -> ChannelsSet:
