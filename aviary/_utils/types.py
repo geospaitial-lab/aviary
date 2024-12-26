@@ -1402,7 +1402,7 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
         )
         return (
             'Tile(\n'
-            f'    data=\n{data_repr},\n'
+            f'    data=\n{data_repr}\n'
             f'    coordinates={self._coordinates},\n'
             f'    tile_size={self._tile_size},\n'
             f'    ground_sampling_distance={self._ground_sampling_distance},\n'
