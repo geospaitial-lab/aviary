@@ -6,7 +6,7 @@ from collections.abc import (
     Iterator,
 )
 from dataclasses import dataclass, fields
-from enum import Enum
+from enum import Enum as BaseEnum
 from math import ceil, floor
 from pathlib import Path  # noqa: TC003
 from typing import (
@@ -45,6 +45,17 @@ EPSGCode: TypeAlias = int
 GroundSamplingDistance: TypeAlias = float
 TileSize: TypeAlias = int
 TimeStep: TypeAlias = int
+
+
+class Enum(BaseEnum):
+
+    def __str__(self) -> str:
+        """Returns the string representation.
+
+        Returns:
+            string representation
+        """
+        return self.value
 
 
 @dataclass
