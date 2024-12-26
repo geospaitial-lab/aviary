@@ -438,7 +438,8 @@ class Channel(Enum):
     R = 'r'
 
 
-Channels: TypeAlias = set[Channel | str]
+Channels: TypeAlias = list[Channel | str]
+ChannelsSet: TypeAlias = set[Channel | str]
 
 
 class Device(Enum):
@@ -1269,7 +1270,7 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
         return (self._tile_size + 2 * self._buffer_size) ** 2
 
     @property
-    def channels(self) -> Channels:
+    def channels(self) -> ChannelsSet:
         """
         Returns:
             channels
@@ -1406,6 +1407,130 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
             raise AviaryUserError(message)
 
         return self._data[channel]
+
+    def to_cir(
+        self,
+        time_step: TimeStep = 0,
+    ) -> npt.NDArray:
+        """Converts the tile to color-infrared data.
+
+        Parameters:
+            time_step: time step (supports negative indexing)
+
+        Returns:
+            color-infrared data
+        """
+        channels = [
+            Channel.NIR,
+            Channel.R,
+            Channel.G,
+        ]
+        return self.to_composite(
+            channels=channels,
+            time_step=time_step,
+        )
+
+    def to_composite(
+        self,
+        channels: Channels,
+        time_step: TimeStep = 0,
+    ) -> npt.NDArray:
+        """Converts the tile to composite data.
+
+        Parameters:
+            channels: channels
+            time_step: time step (supports negative indexing)
+
+        Returns:
+            composite data
+
+        Raises:
+            AviaryUserError: Invalid time step (`time_step` >= number of time steps)
+        """
+        channels = [
+            Channel(channel) if isinstance(channel, str) and channel in self._valid_channels else channel
+            for channel in channels
+        ]
+
+        if time_step >= self.num_time_steps:
+            message = (
+                'Invalid time step! '
+                f'time_step must be less than {self.num_time_steps}.'
+            )
+            raise AviaryUserError(message)
+
+        data = [
+            self._data[channel][..., time_step]
+            for channel in channels
+        ]
+        return np.stack(data, axis=-1)
+
+    def to_nir(
+        self,
+        time_step: TimeStep = 0,
+    ) -> npt.NDArray:
+        """Converts the tile to near-infrared data.
+
+        Parameters:
+            time_step: time step (supports negative indexing)
+
+        Returns:
+            near-infrared data
+        """
+        channels = [
+            Channel.NIR,
+            Channel.NIR,
+            Channel.NIR,
+        ]
+        return self.to_composite(
+            channels=channels,
+            time_step=time_step,
+        )
+
+    def to_rgb(
+        self,
+        time_step: TimeStep = 0,
+    ) -> npt.NDArray:
+        """Converts the data to rgb data.
+
+        Parameters:
+            time_step: time step (supports negative indexing)
+
+        Returns:
+            rgb data
+        """
+        channels = [
+            Channel.R,
+            Channel.G,
+            Channel.B,
+        ]
+        return self.to_composite(
+            channels=channels,
+            time_step=time_step,
+        )
+
+    def to_rgbi(
+        self,
+        time_step: TimeStep = 0,
+    ) -> npt.NDArray:
+        """Converts the tile to rgb-infrared data.
+
+        Parameters:
+            time_step: time step (supports negative indexing)
+
+        Returns:
+            rgb-infrared data
+        """
+        channels = [
+            Channel.R,
+            Channel.G,
+            Channel.B,
+            Channel.NIR,
+        ]
+        return self.to_composite(
+            channels=channels,
+            time_step=time_step,
+        )
 
 
 class WMSVersion(Enum):
