@@ -1448,6 +1448,15 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
 
         return self._data[channel]
 
+    def __iter__(self) -> Iterator[tuple[Channel | str, npt.NDArray]]:
+        """Iterates over the channels.
+
+        Yields:
+            channel and data
+        """
+        for channel, data in self._data.items():
+            yield channel, data
+
     def to_cir(
         self,
         time_step: TimeStep = 0,
