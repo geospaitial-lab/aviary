@@ -1326,72 +1326,32 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
         """
         Returns:
             blue channel
-
-        Raises:
-            AviaryUserError: Invalid channel (the blue channel is not available)
         """
-        if Channel.B not in self._data:
-            message = (
-                'Invalid channel! '
-                'The blue channel is not available.'
-            )
-            raise AviaryUserError(message)
-
-        return self._data[Channel.B]
+        return self[Channel.B]
 
     @property
     def g(self) -> npt.NDArray:
         """
         Returns:
             green channel
-
-        Raises:
-            AviaryUserError: Invalid channel (the green channel is not available)
         """
-        if Channel.G not in self._data:
-            message = (
-                'Invalid channel! '
-                'The green channel is not available.'
-            )
-            raise AviaryUserError(message)
-
-        return self._data[Channel.G]
+        return self[Channel.G]
 
     @property
     def nir(self) -> npt.NDArray:
         """
         Returns:
             near-infrared channel
-
-        Raises:
-            AviaryUserError: Invalid channel (the near-infrared channel is not available)
         """
-        if Channel.NIR not in self._data:
-            message = (
-                'Invalid channel! '
-                'The near-infrared channel is not available.'
-            )
-            raise AviaryUserError(message)
-
-        return self._data[Channel.NIR]
+        return self[Channel.NIR]
 
     @property
     def r(self) -> npt.NDArray:
         """
         Returns:
             red channel
-
-        Raises:
-            AviaryUserError: Invalid channel (the red channel is not available)
         """
-        if Channel.R not in self._data:
-            message = (
-                'Invalid channel! '
-                'The red channel is not available.'
-            )
-            raise AviaryUserError(message)
-
-        return self._data[Channel.R]
+        return self[Channel.R]
 
     def __repr__(self) -> str:
         """Returns the string representation.
