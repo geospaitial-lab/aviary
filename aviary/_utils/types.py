@@ -1373,6 +1373,29 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
 
         return self._data[Channel.R]
 
+    def __eq__(
+        self,
+        other: Tile,
+    ) -> bool:
+        """Compares the tiles.
+
+        Parameters:
+            other: other tile
+
+        Returns:
+            True if the tiles are equal, False otherwise
+        """
+        conditions = [
+            isinstance(other, Tile),
+            self._data.keys() == other.data.keys(),
+            all(np.array_equal(self._data[channel], other.data[channel]) for channel in self._data),
+            self._coordinates == other.coordinates,
+            self._tile_size == other.tile_size,
+            self._ground_sampling_distance == other.ground_sampling_distance,
+            self._buffer_size == other.buffer_size,
+        ]
+        return all(conditions)
+
     def __len__(self) -> int:
         """Computes the number of channels.
 
