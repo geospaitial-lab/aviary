@@ -1200,13 +1200,11 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
         data: data
         coordinates: coordinates (x_min, y_min) of the tile
         tile_size: tile size in meters
-        ground_sampling_distance: ground sampling distance in meters
         buffer_size: buffer size in meters
     """
     data: dict[Channel | str, npt.NDArray]
     coordinates: Coordinates
     tile_size: TileSize
-    ground_sampling_distance: GroundSamplingDistance
     buffer_size: BufferSize
     _valid_channels = [channel.value for channel in Channel]
 
@@ -1215,7 +1213,6 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
         data: dict[Channel | str, npt.NDArray],
         coordinates: Coordinates,
         tile_size: TileSize,
-        ground_sampling_distance: GroundSamplingDistance,
         buffer_size: BufferSize = 0,
     ) -> None:
         """
@@ -1223,13 +1220,11 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
             data: data
             coordinates: coordinates (x_min, y_min) of the tile
             tile_size: tile size in meters
-            ground_sampling_distance: ground sampling distance in meters
             buffer_size: buffer size in meters
         """
         self._data = data
         self._coordinates = coordinates
         self._tile_size = tile_size
-        self._ground_sampling_distance = ground_sampling_distance
         self._buffer_size = buffer_size
 
     @property
@@ -1255,14 +1250,6 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
             tile size in meters
         """
         return self._tile_size
-
-    @property
-    def ground_sampling_distance(self) -> GroundSamplingDistance:
-        """
-        Returns:
-            ground sampling distance in meters
-        """
-        return self._ground_sampling_distance
 
     @property
     def buffer_size(self) -> BufferSize:
@@ -1304,6 +1291,14 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
             channels
         """
         return set(self._data.keys())
+
+    @property
+    def ground_sampling_distance(self) -> GroundSamplingDistance:
+        """
+        Returns:
+            ground sampling distance in meters
+        """
+        return self._tile_size / self.shape[0]
 
     @property
     def num_channels(self) -> int:
@@ -1376,7 +1371,6 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
             f'    data=\n{data_repr}\n'
             f'    coordinates={self._coordinates},\n'
             f'    tile_size={self._tile_size},\n'
-            f'    ground_sampling_distance={self._ground_sampling_distance},\n'
             f'    buffer_size={self._buffer_size},\n'
             ')'
         )
@@ -1399,7 +1393,6 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
             all(np.array_equal(self._data[channel], other.data[channel]) for channel in self.channels),
             self._coordinates == other.coordinates,
             self._tile_size == other.tile_size,
-            self._ground_sampling_distance == other.ground_sampling_distance,
             self._buffer_size == other.buffer_size,
         ]
         return all(conditions)
