@@ -1306,6 +1306,14 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
         return set(self._data.keys())
 
     @property
+    def num_channels(self) -> int:
+        """
+        Returns:
+            number of channels
+        """
+        return len(self)
+
+    @property
     def num_time_steps(self) -> int:
         """
         Returns:
