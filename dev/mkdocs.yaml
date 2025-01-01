@@ -26,6 +26,7 @@ nav:
       - Enums: api_reference/enums.md
       - Exceptions: api_reference/exceptions.md
       - ProcessArea: api_reference/process_area.md
+      - Tile: api_reference/tile.md
       - Types: api_reference/types.md
     - aviary.data:
       - DataFetcher:

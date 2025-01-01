@@ -6,7 +6,7 @@ from collections.abc import (
     Iterator,
 )
 from dataclasses import dataclass, fields
-from enum import Enum
+from enum import Enum as BaseEnum
 from math import ceil, floor
 from pathlib import Path  # noqa: TC003
 from typing import (
@@ -44,6 +44,18 @@ CoordinatesSet: TypeAlias = npt.NDArray[np.int32]
 EPSGCode: TypeAlias = int
 GroundSamplingDistance: TypeAlias = float
 TileSize: TypeAlias = int
+TimeStep: TypeAlias = int
+
+
+class Enum(BaseEnum):
+
+    def __str__(self) -> str:
+        """Returns the string representation.
+
+        Returns:
+            string representation
+        """
+        return self.value
 
 
 @dataclass
@@ -421,6 +433,24 @@ class BoundingBox(Iterable[Coordinate]):
             geometry=[box(self._x_min, self._y_min, self._x_max, self._y_max)],
             crs=f'EPSG:{epsg_code}',
         )
+
+
+class Channel(Enum):
+    """
+    Attributes:
+        B: blue channel
+        G: green channel
+        NIR: near-infrared channel
+        R: red channel
+    """
+    B = 'b'
+    G = 'g'
+    NIR = 'nir'
+    R = 'r'
+
+
+Channels: TypeAlias = list[Channel | str]
+ChannelsSet: TypeAlias = set[Channel | str]
 
 
 class Device(Enum):
@@ -1160,6 +1190,380 @@ class SetFilterMode(Enum):
     DIFFERENCE = 'difference'
     INTERSECTION = 'intersection'
     UNION = 'union'
+
+
+@dataclass
+class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
+    """A tile specifies the data and the spatial extent of a tile.
+
+    Attributes:
+        data: data
+        coordinates: coordinates (x_min, y_min) of the tile
+        tile_size: tile size in meters
+        buffer_size: buffer size in meters
+    """
+    data: dict[Channel | str, npt.NDArray]
+    coordinates: Coordinates
+    tile_size: TileSize
+    buffer_size: BufferSize
+    _valid_channels = [channel.value for channel in Channel]
+
+    def __init__(
+        self,
+        data: dict[Channel | str, npt.NDArray],
+        coordinates: Coordinates,
+        tile_size: TileSize,
+        buffer_size: BufferSize = 0,
+    ) -> None:
+        """
+        Parameters:
+            data: data
+            coordinates: coordinates (x_min, y_min) of the tile
+            tile_size: tile size in meters
+            buffer_size: buffer size in meters
+        """
+        self._data = data
+        self._coordinates = coordinates
+        self._tile_size = tile_size
+        self._buffer_size = buffer_size
+
+    @property
+    def data(self) -> dict[Channel | str, npt.NDArray]:
+        """
+        Returns:
+            data
+        """
+        return self._data
+
+    @property
+    def coordinates(self) -> Coordinates:
+        """
+        Returns:
+            coordinates (x_min, y_min) of the tile
+        """
+        return self._coordinates
+
+    @property
+    def tile_size(self) -> TileSize:
+        """
+        Returns:
+            tile size in meters
+        """
+        return self._tile_size
+
+    @property
+    def buffer_size(self) -> BufferSize:
+        """
+        Returns:
+            buffer size in meters
+        """
+        return self._buffer_size
+
+    @property
+    def area(self) -> int:
+        """
+        Returns:
+            area in square meters
+        """
+        return self.bounding_box.area
+
+    @property
+    def bounding_box(self) -> BoundingBox:
+        """
+        Returns:
+            bounding box
+        """
+        x_min, y_min = self._coordinates
+        x_max = x_min + self._tile_size
+        y_max = y_min + self._tile_size
+        bounding_box = BoundingBox(
+            x_min=x_min,
+            y_min=y_min,
+            x_max=x_max,
+            y_max=y_max,
+        )
+        return bounding_box.buffer(buffer_size=self._buffer_size)
+
+    @property
+    def channels(self) -> ChannelsSet:
+        """
+        Returns:
+            channels
+        """
+        return set(self._data.keys())
+
+    @property
+    def ground_sampling_distance(self) -> GroundSamplingDistance:
+        """
+        Returns:
+            ground sampling distance in meters
+        """
+        return self._tile_size / self.shape[0]
+
+    @property
+    def num_channels(self) -> int:
+        """
+        Returns:
+            number of channels
+        """
+        return len(self)
+
+    @property
+    def num_time_steps(self) -> int:
+        """
+        Returns:
+            number of time steps
+        """
+        return self.shape[-1]
+
+    @property
+    def shape(self) -> tuple[int, int, int]:
+        """
+        Returns:
+            shape of the data
+        """
+        return next(iter(self._data.values())).shape
+
+    @property
+    def b(self) -> npt.NDArray:
+        """
+        Returns:
+            blue channel
+        """
+        return self[Channel.B]
+
+    @property
+    def g(self) -> npt.NDArray:
+        """
+        Returns:
+            green channel
+        """
+        return self[Channel.G]
+
+    @property
+    def nir(self) -> npt.NDArray:
+        """
+        Returns:
+            near-infrared channel
+        """
+        return self[Channel.NIR]
+
+    @property
+    def r(self) -> npt.NDArray:
+        """
+        Returns:
+            red channel
+        """
+        return self[Channel.R]
+
+    def __repr__(self) -> str:
+        """Returns the string representation.
+
+        Returns:
+            string representation
+        """
+        data_repr = '\n'.join(
+            f'        {channel}: {data.shape},'
+            for channel, data in self
+        )
+        return (
+            'Tile(\n'
+            f'    data=\n{data_repr}\n'
+            f'    coordinates={self._coordinates},\n'
+            f'    tile_size={self._tile_size},\n'
+            f'    buffer_size={self._buffer_size},\n'
+            ')'
+        )
+
+    def __eq__(
+        self,
+        other: Tile,
+    ) -> bool:
+        """Compares the tiles.
+
+        Parameters:
+            other: other tile
+
+        Returns:
+            True if the tiles are equal, False otherwise
+        """
+        conditions = [
+            isinstance(other, Tile),
+            self._data.keys() == other.data.keys(),
+            all(np.array_equal(self._data[channel], other.data[channel]) for channel in self.channels),
+            self._coordinates == other.coordinates,
+            self._tile_size == other.tile_size,
+            self._buffer_size == other.buffer_size,
+        ]
+        return all(conditions)
+
+    def __len__(self) -> int:
+        """Computes the number of channels.
+
+        Returns:
+            number of channels
+        """
+        return len(self._data)
+
+    def __getitem__(
+        self,
+        channel: Channel | str,
+    ) -> npt.NDArray:
+        """Returns the channel data.
+
+        Parameters:
+            channel: channel
+
+        Returns:
+            channel data
+
+        Raises:
+            AviaryUserError: Invalid channel (the channel is not available)
+        """
+        if isinstance(channel, str) and channel in self._valid_channels:
+            channel = Channel(channel)
+
+        if channel not in self.channels:
+            message = (
+                'Invalid channel! '
+                f'The {channel} channel is not available.'
+            )
+            raise AviaryUserError(message)
+
+        return self._data[channel]
+
+    def __iter__(self) -> Iterator[tuple[Channel | str, npt.NDArray]]:
+        """Iterates over the channels.
+
+        Yields:
+            channel and data
+        """
+        for channel, data in self._data.items():
+            yield channel, data
+
+    def to_cir(
+        self,
+        time_step: TimeStep = 0,
+    ) -> npt.NDArray:
+        """Converts the tile to color-infrared data.
+
+        Parameters:
+            time_step: time step (supports negative indexing)
+
+        Returns:
+            color-infrared data
+        """
+        channels = [
+            Channel.NIR,
+            Channel.R,
+            Channel.G,
+        ]
+        return self.to_composite(
+            channels=channels,
+            time_step=time_step,
+        )
+
+    def to_composite(
+        self,
+        channels: Channels,
+        time_step: TimeStep = 0,
+    ) -> npt.NDArray:
+        """Converts the tile to composite data.
+
+        Parameters:
+            channels: channels
+            time_step: time step (supports negative indexing)
+
+        Returns:
+            composite data
+
+        Raises:
+            AviaryUserError: Invalid time step (`time_step` >= number of time steps)
+        """
+        channels = [
+            Channel(channel) if isinstance(channel, str) and channel in self._valid_channels else channel
+            for channel in channels
+        ]
+
+        if time_step >= self.num_time_steps:
+            message = (
+                'Invalid time step! '
+                f'time_step must be less than {self.num_time_steps}.'
+            )
+            raise AviaryUserError(message)
+
+        data = [
+            self._data[channel][..., time_step]
+            for channel in channels
+        ]
+        return np.stack(data, axis=-1)
+
+    def to_nir(
+        self,
+        time_step: TimeStep = 0,
+    ) -> npt.NDArray:
+        """Converts the tile to near-infrared data.
+
+        Parameters:
+            time_step: time step (supports negative indexing)
+
+        Returns:
+            near-infrared data
+        """
+        channels = [
+            Channel.NIR,
+            Channel.NIR,
+            Channel.NIR,
+        ]
+        return self.to_composite(
+            channels=channels,
+            time_step=time_step,
+        )
+
+    def to_rgb(
+        self,
+        time_step: TimeStep = 0,
+    ) -> npt.NDArray:
+        """Converts the data to rgb data.
+
+        Parameters:
+            time_step: time step (supports negative indexing)
+
+        Returns:
+            rgb data
+        """
+        channels = [
+            Channel.R,
+            Channel.G,
+            Channel.B,
+        ]
+        return self.to_composite(
+            channels=channels,
+            time_step=time_step,
+        )
+
+    def to_rgbi(
+        self,
+        time_step: TimeStep = 0,
+    ) -> npt.NDArray:
+        """Converts the tile to rgb-infrared data.
+
+        Parameters:
+            time_step: time step (supports negative indexing)
+
+        Returns:
+            rgb-infrared data
+        """
+        channels = [
+            Channel.R,
+            Channel.G,
+            Channel.B,
+            Channel.NIR,
+        ]
+        return self.to_composite(
+            channels=channels,
+            time_step=time_step,
+        )
 
 
 class WMSVersion(Enum):
