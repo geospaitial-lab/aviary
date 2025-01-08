@@ -1206,7 +1206,7 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
     coordinates: Coordinates
     tile_size: TileSize
     buffer_size: BufferSize
-    _valid_channels = {channel.value for channel in Channel}
+    _valid_channels = frozenset(channel.value for channel in Channel)
 
     def __init__(
         self,
