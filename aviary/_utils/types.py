@@ -1433,8 +1433,7 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
         Yields:
             channel and data
         """
-        for channel, data in self._data.items():
-            yield channel, data
+        yield from self._data.items()
 
     def remove_buffer(
         self,
