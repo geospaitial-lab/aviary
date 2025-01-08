@@ -1436,6 +1436,46 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
         for channel, data in self._data.items():
             yield channel, data
 
+    def remove_buffer(
+        self,
+        inplace: bool = False,
+    ) -> Tile:
+        """Removes the buffer from the tile.
+
+        Parameters:
+            inplace: if True, the buffer is removed inplace
+
+        Returns:
+            tile
+        """
+        if self._buffer_size == 0:
+            if inplace:
+                return self
+
+            return Tile(
+                data=self._data,
+                coordinates=self._coordinates,
+                tile_size=self._tile_size,
+                buffer_size=self._buffer_size,
+            )
+
+        data = {
+            channel: data[self._buffer_size:-self._buffer_size, self._buffer_size:-self._buffer_size, :]
+            for channel, data in self
+        }
+
+        if inplace:
+            self._data = data
+            self._buffer_size = 0
+            return self
+
+        return Tile(
+            data=data,
+            coordinates=self._coordinates,
+            tile_size=self._tile_size,
+            buffer_size=0,
+        )
+
     def to_cir(
         self,
         time_step: TimeStep = 0,
