@@ -1324,38 +1324,6 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
         """
         return next(iter(self._data.values())).shape
 
-    @property
-    def b(self) -> npt.NDArray:
-        """
-        Returns:
-            blue channel
-        """
-        return self[Channel.B]
-
-    @property
-    def g(self) -> npt.NDArray:
-        """
-        Returns:
-            green channel
-        """
-        return self[Channel.G]
-
-    @property
-    def nir(self) -> npt.NDArray:
-        """
-        Returns:
-            near-infrared channel
-        """
-        return self[Channel.NIR]
-
-    @property
-    def r(self) -> npt.NDArray:
-        """
-        Returns:
-            red channel
-        """
-        return self[Channel.R]
-
     def __repr__(self) -> str:
         """Returns the string representation.
 
@@ -1404,6 +1372,33 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
             number of channels
         """
         return len(self._data)
+
+    def __getattr__(
+        self,
+        channel: str,
+    ) -> npt.NDArray:
+        """Returns the channel data.
+
+        Parameters:
+            channel: channel
+
+        Returns:
+            channel data
+
+        Raises:
+            AviaryUserError: Invalid channel (the channel is not available)
+        """
+        if channel in self._valid_channels:
+            channel = Channel(channel)
+
+        if channel not in self.channels:
+            message = (
+                'Invalid channel! '
+                f'The {channel} channel is not available.'
+            )
+            raise AviaryUserError(message)
+
+        return self[channel]
 
     def __getitem__(
         self,
