@@ -1206,7 +1206,7 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
     coordinates: Coordinates
     tile_size: TileSize
     buffer_size: BufferSize
-    _valid_channels = frozenset(channel.value for channel in Channel)
+    _built_in_channels = frozenset(channel.value for channel in Channel)
 
     def __init__(
         self,
@@ -1390,7 +1390,7 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
         Raises:
             AviaryUserError: Invalid channel (the channel is not available)
         """
-        if channel in self._valid_channels:
+        if channel in self._built_in_channels:
             channel = Channel(channel)
 
         if channel not in self.channels:
@@ -1417,7 +1417,7 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
         Raises:
             AviaryUserError: Invalid channel (the channel is not available)
         """
-        if isinstance(channel, str) and channel in self._valid_channels:
+        if isinstance(channel, str) and channel in self._built_in_channels:
             channel = Channel(channel)
 
         if channel not in self.channels:
@@ -1517,7 +1517,7 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
             AviaryUserError: Invalid time step (`time_step` >= number of time steps)
         """
         channels = [
-            Channel(channel) if isinstance(channel, str) and channel in self._valid_channels else channel
+            Channel(channel) if isinstance(channel, str) and channel in self._built_in_channels else channel
             for channel in channels
         ]
 
