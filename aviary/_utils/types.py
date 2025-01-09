@@ -1355,8 +1355,10 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
         Returns:
             True if the tiles are equal, False otherwise
         """
+        if not isinstance(other, Tile):
+            return False
+
         conditions = [
-            isinstance(other, Tile),
             self._data.keys() == other.data.keys(),
             all(np.array_equal(self._data[channel], other.data[channel]) for channel in self.channels),
             self._coordinates == other.coordinates,
