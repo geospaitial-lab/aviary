@@ -1227,6 +1227,70 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
         self._tile_size = tile_size
         self._buffer_size = buffer_size
 
+        self._validate()
+
+    def _validate(self) -> None:
+        """Validates the tile."""
+        self._cast_channels()
+        self._validate_data()
+        self._validate_tile_size()
+        self._validate_buffer_size()
+
+    def _cast_channels(self) -> None:
+        """Casts the channels to `Channel`."""
+        self._data = {
+            Channel(channel) if isinstance(channel, str) and channel in self._built_in_channels else channel: data
+            for channel, data in self
+        }
+
+    def _validate_data(self) -> None:
+        """Validates data.
+
+        Raises:
+            AviaryUserError: Invalid data (`data` of a channel is not an array of shape (n, n, t) or
+                does not match the shape of the other channels)
+        """
+        for channel, data in self:
+            conditions = [
+                data.ndim != 3,  # noqa: PLR2004
+                data.shape[0] != data.shape[1],
+                data.shape != self.shape,
+            ]
+
+            if any(conditions):
+                message = (
+                    'Invalid data! '
+                    f'data of the {channel} channel must be an array of shape (n, n, t) and '
+                    'match the shape of the other channels.'
+                )
+                raise AviaryUserError(message)
+
+    def _validate_tile_size(self) -> None:
+        """Validates tile_size.
+
+        Raises:
+            AviaryUserError: Invalid tile size (`tile_size` <= 0)
+        """
+        if self._tile_size <= 0:
+            message = (
+                'Invalid tile size! '
+                'tile_size must be positive.'
+            )
+            raise AviaryUserError(message)
+
+    def _validate_buffer_size(self) -> None:
+        """Validates buffer_size.
+
+        Raises:
+            AviaryUserError: Invalid buffer size (`buffer_size` < 0)
+        """
+        if self._buffer_size < 0:
+            message = (
+                'Invalid buffer size! '
+                'buffer_size must be non-negative.'
+            )
+            raise AviaryUserError(message)
+
     @property
     def data(self) -> dict[Channel | str, npt.NDArray]:
         """
