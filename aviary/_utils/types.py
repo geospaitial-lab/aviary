@@ -1298,7 +1298,7 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
         Returns:
             ground sampling distance in meters
         """
-        return self._tile_size / self.shape[0]
+        return (self._tile_size + 2 * self._buffer_size) / self.shape[0]
 
     @property
     def num_channels(self) -> int:
