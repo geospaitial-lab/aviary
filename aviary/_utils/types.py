@@ -1386,7 +1386,7 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
         Returns:
             shape of the data
         """
-        return next(iter(self._data.values())).shape
+        return next(iter(self))[1].shape
 
     def __repr__(self) -> str:
         """Returns the string representation.
