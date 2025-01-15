@@ -1424,7 +1424,10 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
 
         conditions = [
             self._data.keys() == other.data.keys(),
-            all(np.array_equal(self._data[channel], other.data[channel]) for channel in self.channels),
+            all(
+                np.array_equal(self._data[channel], other.data.get(channel, None))
+                for channel in self.channels
+            ),
             self._coordinates == other.coordinates,
             self._tile_size == other.tile_size,
             self._buffer_size == other.buffer_size,
