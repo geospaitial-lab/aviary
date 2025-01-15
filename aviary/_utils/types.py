@@ -1537,6 +1537,7 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
         if inplace:
             self._data = data
             self._buffer_size = 0
+            self._validate()
             return self
 
         return Tile(
