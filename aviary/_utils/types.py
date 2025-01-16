@@ -1599,7 +1599,7 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
             raise AviaryUserError(message)
 
         data = [
-            self._data[channel][..., time_step]
+            self[channel][..., time_step]
             for channel in channels
         ]
         return np.stack(data, axis=-1)
