@@ -1700,17 +1700,17 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
             )
             raise AviaryUserError(message)
 
-        channels = [
-            Channel(channel) if isinstance(channel, str) and channel in self._built_in_channels else channel
-            for channel in channels
-        ]
-
         if time_step >= self.num_time_steps:
             message = (
                 'Invalid time step! '
                 f'time_step must be less than {self.num_time_steps}.'
             )
             raise AviaryUserError(message)
+
+        channels = [
+            Channel(channel) if isinstance(channel, str) and channel in self._built_in_channels else channel
+            for channel in channels
+        ]
 
         data = [
             self[channel][..., time_step]
