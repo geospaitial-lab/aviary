@@ -1239,7 +1239,8 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
     def _cast_channels(self) -> None:
         """Casts the channels to `Channel`."""
         self._data = {
-            Channel(channel) if isinstance(channel, str) and channel in self._built_in_channels else channel: data
+            Channel(channel)
+            if isinstance(channel, str) and channel in self._built_in_channels else channel: data
             for channel, data in self
         }
 
