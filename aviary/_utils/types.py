@@ -1690,8 +1690,16 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
             composite data
 
         Raises:
+            AviaryUserError: Invalid channels (`channels` is an empty list)
             AviaryUserError: Invalid time step (`time_step` >= number of time steps)
         """
+        if not channels:
+            message = (
+                'Invalid channels! '
+                'channels must be a non-empty list.'
+            )
+            raise AviaryUserError(message)
+
         channels = [
             Channel(channel) if isinstance(channel, str) and channel in self._built_in_channels else channel
             for channel in channels
