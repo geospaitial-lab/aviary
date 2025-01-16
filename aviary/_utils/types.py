@@ -11,6 +11,7 @@ from math import ceil, floor
 from pathlib import Path  # noqa: TC003
 from typing import (
     TYPE_CHECKING,
+    Literal,
     TypeAlias,
     cast,
     overload,
@@ -1396,6 +1397,101 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
             shape of the data
         """
         return next(iter(self))[1].shape
+
+    @classmethod
+    def from_tiles(
+        cls,
+        tiles: list[Tile],
+        axis: Literal['channel', 'time_step'] = 'channel',
+    ) -> Tile:
+        """Creates a tile from tiles.
+
+        Parameters:
+            tiles: tiles
+            axis: axis to concatenate the tiles (`channel`, `time_step`)
+
+        Returns:
+            tile
+
+        Raises:
+            AviaryUserError: Invalid tiles (`tiles` is an empty list)
+            AviaryUserError: Invalid tiles (the coordinates, tile sizes and buffer sizes of the tiles are not equal)
+            AviaryUserError: Invalid tiles (the number of time steps of the tiles are not equal)
+            AviaryUserError: Invalid tiles (the channels of the tiles are not equal)
+            AviaryUserError: Invalid axis
+        """
+        if not tiles:
+            message = (
+                'Invalid tiles! '
+                'tiles must be a non-empty list.'
+            )
+            raise AviaryUserError(message)
+
+        coordinates = tiles[0].coordinates
+        tile_size = tiles[0].tile_size
+        buffer_size = tiles[0].buffer_size
+
+        for tile in tiles:
+            conditions = [
+                tile.coordinates != coordinates,
+                tile.tile_size != tile_size,
+                tile.buffer_size != buffer_size,
+            ]
+
+            if any(conditions):
+                message = (
+                    'Invalid tiles! '
+                    'The coordinates, tile sizes and buffer sizes of the tiles must be equal.'
+                )
+                raise AviaryUserError(message)
+
+        if axis == 'channel':
+            num_time_steps = tiles[0].num_time_steps
+
+            for tile in tiles:
+                if tile.num_time_steps != num_time_steps:
+                    message = (
+                        'Invalid tiles! '
+                        'The number of time steps of the tiles must be equal.'
+                    )
+                    raise AviaryUserError(message)
+
+            data = {}
+
+            for tile in tiles:
+                data.update(tile.data)
+
+            return cls(
+                data=data,
+                coordinates=coordinates,
+                tile_size=tile_size,
+                buffer_size=buffer_size,
+            )
+
+        if axis == 'time_step':
+            channels = tiles[0].channels
+
+            for tile in tiles:
+                if tile.channels != channels:
+                    message = (
+                        'Invalid tiles! '
+                        'The channels of the tiles must be equal.'
+                    )
+                    raise AviaryUserError(message)
+
+            data = {
+                channel: np.concatenate([tile[channel] for tile in tiles], axis=-1)
+                for channel in channels
+            }
+            return cls(
+                data=data,
+                coordinates=coordinates,
+                tile_size=tile_size,
+                buffer_size=buffer_size,
+            )
+
+        message = 'Invalid axis!'
+        raise AviaryUserError(message)
 
     def __repr__(self) -> str:
         """Returns the string representation.
