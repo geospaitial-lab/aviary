@@ -1250,7 +1250,7 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
         Raises:
             AviaryUserError: Invalid data (`data` is an empty dictionary)
             AviaryUserError: Invalid data (`data` of a channel is not an array of shape (n, n, t) or
-                does not match the shape of the other channels)
+                its shape is not equal to the shape of the other channels)
         """
         if not self._data:
             message = (
@@ -1270,7 +1270,7 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
                 message = (
                     'Invalid data! '
                     f'data of the {channel} channel must be an array of shape (n, n, t) and '
-                    'match the shape of the other channels.'
+                    'its shape must be equal to the shape of the other channels.'
                 )
                 raise AviaryUserError(message)
 
