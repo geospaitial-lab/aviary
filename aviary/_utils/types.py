@@ -1457,11 +1457,11 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
                     )
                     raise AviaryUserError(message)
 
-            data = {}
-
-            for tile in tiles:
-                data.update(tile.data)
-
+            data = {
+                channel: data
+                for tile in tiles
+                for channel, data in tile
+            }
             return cls(
                 data=data,
                 coordinates=coordinates,
