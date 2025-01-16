@@ -1427,9 +1427,10 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
             )
             raise AviaryUserError(message)
 
-        coordinates = tiles[0].coordinates
-        tile_size = tiles[0].tile_size
-        buffer_size = tiles[0].buffer_size
+        first_tile = tiles[0]
+        coordinates = first_tile.coordinates
+        tile_size = first_tile.tile_size
+        buffer_size = first_tile.buffer_size
 
         for tile in tiles:
             conditions = [
@@ -1446,7 +1447,7 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
                 raise AviaryUserError(message)
 
         if axis == 'channel':
-            num_time_steps = tiles[0].num_time_steps
+            num_time_steps = first_tile.num_time_steps
 
             for tile in tiles:
                 if tile.num_time_steps != num_time_steps:
@@ -1469,7 +1470,7 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
             )
 
         if axis == 'time_step':
-            channels = tiles[0].channels
+            channels = first_tile.channels
 
             for tile in tiles:
                 if tile.channels != channels:
