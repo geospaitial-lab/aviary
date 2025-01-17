@@ -1425,7 +1425,7 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
             AviaryUserError: Invalid channels (the number of channels is not equal to the number of channels
                 of the data)
         """
-        if data.ndim == 2:
+        if data.ndim == 2:  # noqa: PLR2004
             data = data[..., np.newaxis]
 
         conditions = [
