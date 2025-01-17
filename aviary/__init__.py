@@ -7,6 +7,7 @@ from ._utils.types import (
     BufferSize,
     Channel,
     Channels,
+    ChannelsSet,
     Coordinate,
     Coordinates,
     CoordinatesSet,
@@ -20,6 +21,7 @@ from ._utils.types import (
     SetFilterMode,
     Tile,
     TileSize,
+    TimeStep,
     WMSVersion,
 )
 
@@ -30,6 +32,7 @@ __all__ = [
     'BufferSize',
     'Channel',
     'Channels',
+    'ChannelsSet',
     'Coordinate',
     'Coordinates',
     'CoordinatesSet',
@@ -43,6 +46,7 @@ __all__ = [
     'SetFilterMode',
     'Tile',
     'TileSize',
+    'TimeStep',
     'WMSVersion',
     '__version__',
 ]
