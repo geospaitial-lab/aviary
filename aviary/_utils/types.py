@@ -1399,6 +1399,78 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
         return next(iter(self))[1].shape
 
     @classmethod
+    def from_composite(
+        cls,
+        data: npt.NDArray,
+        channels: Channels,
+        coordinates: Coordinates,
+        tile_size: TileSize,
+        buffer_size: BufferSize = 0,
+    ) -> Tile:
+        """Creates a tile from composite data.
+
+        Parameters:
+            data: composite data
+            channels: channels
+            coordinates: coordinates (x_min, y_min) of the tile
+            tile_size: tile size in meters
+            buffer_size: buffer size in meters
+
+        Returns:
+            tile
+
+        Raises:
+            AviaryUserError: Invalid data (`data` is not an array of shape (n, n, c))
+            AviaryUserError: Invalid channels (`channels` is an empty list)
+            AviaryUserError: Invalid channels (the number of channels is not equal to the number of channels
+                of the data)
+        """
+        if data.ndim == 2:
+            data = data[..., np.newaxis]
+
+        conditions = [
+            data.ndim != 3,  # noqa: PLR2004
+            data.shape[0] != data.shape[1],
+        ]
+
+        if any(conditions):
+            message = (
+                'Invalid data! '
+                'data must be an array of shape (n, n, c).'
+            )
+            raise AviaryUserError(message)
+
+        if not channels:
+            message = (
+                'Invalid channels! '
+                'channels must be a non-empty list.'
+            )
+            raise AviaryUserError(message)
+
+        if data.shape[-1] != len(channels):
+            message = (
+                'Invalid channels! '
+                'The number of channels must be equal to the number of channels of the data.'
+            )
+            raise AviaryUserError(message)
+
+        channels = [
+            Channel(channel) if isinstance(channel, str) and channel in cls._built_in_channels else channel
+            for channel in channels
+        ]
+
+        data = {
+            channel: data[..., i]
+            for i, channel in enumerate(channels)
+        }
+        return cls(
+            data=data,
+            coordinates=coordinates,
+            tile_size=tile_size,
+            buffer_size=buffer_size,
+        )
+
+    @classmethod
     def from_tiles(
         cls,
         tiles: list[Tile],
