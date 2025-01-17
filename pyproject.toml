@@ -77,8 +77,7 @@ target-version = "py310"
 [tool.ruff.lint]
 select = ["ALL"]
 ignore = [
-    "ANN101",  # rule has been deprecated
-    "ANN102",  # rule has been deprecated
+    "A005",
     "D100",
     "D104",
     "D205",
