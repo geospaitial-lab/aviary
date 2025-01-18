@@ -18,8 +18,7 @@ from aviary._functional.geodata.coordinates_filter import (
     set_filter,
 )
 
-# noinspection PyProtectedMember
-from aviary._utils.exceptions import AviaryUserError
+from aviary.core.exceptions import AviaryUserError
 
 # noinspection PyProtectedMember
 from aviary._utils.types import (

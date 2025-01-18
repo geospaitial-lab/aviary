@@ -16,8 +16,7 @@ from aviary._functional.inference.model import (
     onnx_segmentation_model,
 )
 
-# noinspection PyProtectedMember
-from aviary._utils.exceptions import AviaryUserError
+from aviary.core.exceptions import AviaryUserError
 
 # noinspection PyProtectedMember
 from aviary._utils.types import (

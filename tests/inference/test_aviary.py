@@ -1,7 +1,6 @@
 import pytest
 
-# noinspection PyProtectedMember
-from aviary._utils.exceptions import AviaryUserError
+from aviary.core.exceptions import AviaryUserError
 from aviary.inference.aviary import (
     Aviary,
     Channels,

@@ -33,7 +33,7 @@ from aviary._functional.geodata.coordinates_filter import (
 
 # noinspection PyProtectedMember
 from aviary._functional.geodata.grid_generator import compute_coordinates
-from aviary._utils.exceptions import AviaryUserError
+from aviary.core.exceptions import AviaryUserError
 
 if TYPE_CHECKING:
     from aviary.geodata.coordinates_filter import CoordinatesFilter

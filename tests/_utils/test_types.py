@@ -7,8 +7,7 @@ import pytest
 import rasterio as rio
 from shapely.geometry import box
 
-# noinspection PyProtectedMember
-from aviary._utils.exceptions import AviaryUserError
+from aviary.core.exceptions import AviaryUserError
 
 # noinspection PyProtectedMember
 from aviary._utils.types import (

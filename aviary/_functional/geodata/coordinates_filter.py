@@ -8,8 +8,7 @@ from numpy import typing as npt
 
 from aviary._functional.geodata.grid_generator import _generate_tiles
 
-# noinspection PyProtectedMember
-from aviary._utils.exceptions import AviaryUserError
+from aviary.core.exceptions import AviaryUserError
 
 if TYPE_CHECKING:
     # noinspection PyProtectedMember

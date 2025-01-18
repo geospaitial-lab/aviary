@@ -16,8 +16,7 @@ import rasterio as rio
 import rasterio.windows
 import requests
 
-# noinspection PyProtectedMember
-from aviary._utils.exceptions import AviaryUserError
+from aviary.core.exceptions import AviaryUserError
 
 # noinspection PyProtectedMember
 from aviary._utils.types import (

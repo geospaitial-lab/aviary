@@ -2,8 +2,7 @@ import numpy as np
 import numpy.typing as npt
 import onnxruntime as ort
 
-# noinspection PyProtectedMember
-from aviary._utils.exceptions import AviaryUserError
+from aviary.core.exceptions import AviaryUserError
 
 # noinspection PyProtectedMember
 from aviary._utils.types import (
