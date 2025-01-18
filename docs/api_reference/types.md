@@ -1,40 +1,58 @@
-::: aviary._utils.types.BufferSize
+::: aviary.BufferSize
     options:
       show_symbol_type_heading: false
       show_symbol_type_toc: false
       show_labels: false
 
-::: aviary._utils.types.Coordinate
+::: aviary.Channels
     options:
       show_symbol_type_heading: false
       show_symbol_type_toc: false
       show_labels: false
 
-::: aviary._utils.types.Coordinates
+::: aviary.ChannelsSet
     options:
       show_symbol_type_heading: false
       show_symbol_type_toc: false
       show_labels: false
 
-::: aviary._utils.types.CoordinatesSet
+::: aviary.Coordinate
     options:
       show_symbol_type_heading: false
       show_symbol_type_toc: false
       show_labels: false
 
-::: aviary._utils.types.EPSGCode
+::: aviary.Coordinates
     options:
       show_symbol_type_heading: false
       show_symbol_type_toc: false
       show_labels: false
 
-::: aviary._utils.types.GroundSamplingDistance
+::: aviary.CoordinatesSet
     options:
       show_symbol_type_heading: false
       show_symbol_type_toc: false
       show_labels: false
 
-::: aviary._utils.types.TileSize
+::: aviary.EPSGCode
+    options:
+      show_symbol_type_heading: false
+      show_symbol_type_toc: false
+      show_labels: false
+
+::: aviary.GroundSamplingDistance
+    options:
+      show_symbol_type_heading: false
+      show_symbol_type_toc: false
+      show_labels: false
+
+::: aviary.TileSize
+    options:
+      show_symbol_type_heading: false
+      show_symbol_type_toc: false
+      show_labels: false
+
+::: aviary.TimeStep
     options:
       show_symbol_type_heading: false
       show_symbol_type_toc: false
