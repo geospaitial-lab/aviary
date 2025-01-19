@@ -1,8 +1,7 @@
 import numpy as np
 import numpy.typing as npt
 
-# noinspection PyProtectedMember
-from aviary._utils.types import Coordinate
+from aviary.core.type_aliases import Coordinate
 
 
 def collate_batch(

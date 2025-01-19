@@ -1,7 +1,6 @@
 from unittest.mock import MagicMock, patch
 
-# noinspection PyProtectedMember
-from aviary._utils.types import BoundingBox
+from aviary.core.bounding_box import BoundingBox
 from aviary.geodata.grid_generator import GridGenerator
 
 

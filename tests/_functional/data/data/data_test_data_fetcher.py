@@ -1,10 +1,7 @@
 import numpy as np
 
-# noinspection PyProtectedMember
-from aviary._utils.types import (
-    BoundingBox,
-    WMSVersion,
-)
+from aviary.core.bounding_box import BoundingBox
+from aviary.core.enums import WMSVersion
 
 data_test__compute_tile_size_pixels = [
     # test case 1: buffer_size is 0

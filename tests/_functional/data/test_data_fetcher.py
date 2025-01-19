@@ -10,14 +10,13 @@ from aviary._functional.data.data_fetcher import (
     _permute_data,
 )
 
-# noinspection PyProtectedMember
-from aviary._utils.types import (
-    BoundingBox,
+from aviary.core.bounding_box import BoundingBox
+from aviary.core.enums import WMSVersion
+from aviary.core.type_aliases import (
     BufferSize,
     EPSGCode,
     GroundSamplingDistance,
     TileSize,
-    WMSVersion,
 )
 from tests._functional.data.data.data_test_data_fetcher import (
     data_test__compute_tile_size_pixels,

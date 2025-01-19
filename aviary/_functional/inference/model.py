@@ -4,10 +4,9 @@ import onnxruntime as ort
 
 from aviary.core.exceptions import AviaryUserError
 
-# noinspection PyProtectedMember
-from aviary._utils.types import (
+from aviary.core.enums import Device
+from aviary.core.type_aliases import (
     BufferSize,
-    Device,
     GroundSamplingDistance,
 )
 

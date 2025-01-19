@@ -5,8 +5,7 @@ import pytest
 
 import aviary.data.data_fetcher
 
-# noinspection PyProtectedMember
-from aviary._utils.types import (
+from aviary.core.enums import (
     InterpolationMode,
     WMSVersion,
 )

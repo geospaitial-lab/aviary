@@ -15,8 +15,7 @@ from aviary._functional.inference.exporter import segmentation_exporter
 # noinspection PyProtectedMember
 from aviary._utils.mixins import FromConfigMixin
 
-# noinspection PyProtectedMember
-from aviary._utils.types import (  # noqa: TC001
+from aviary.core.type_aliases import (  # noqa: TC001
     CoordinatesSet,
     EPSGCode,
     GroundSamplingDistance,

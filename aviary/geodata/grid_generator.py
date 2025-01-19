@@ -6,9 +6,8 @@ from aviary._functional.geodata.grid_generator import (
     generate_grid,
 )
 
-# noinspection PyProtectedMember
-from aviary._utils.types import (
-    BoundingBox,
+from aviary.core.bounding_box import BoundingBox
+from aviary.core.type_aliases import (
     CoordinatesSet,
     EPSGCode,
     TileSize,

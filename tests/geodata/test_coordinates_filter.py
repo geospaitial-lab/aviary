@@ -4,8 +4,7 @@ import geopandas as gpd
 import geopandas.testing
 import numpy as np
 
-# noinspection PyProtectedMember
-from aviary._utils.types import (
+from aviary.core.enums import (
     GeospatialFilterMode,
     SetFilterMode,
 )

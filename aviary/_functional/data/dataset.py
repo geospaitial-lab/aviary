@@ -6,8 +6,7 @@ if TYPE_CHECKING:
     import numpy.typing as npt
 
 if TYPE_CHECKING:
-    # noinspection PyProtectedMember
-    from aviary._utils.types import (
+    from aviary.core.type_aliases import (
         Coordinate,
         CoordinatesSet,
     )

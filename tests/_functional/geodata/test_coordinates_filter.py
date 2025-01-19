@@ -18,13 +18,9 @@ from aviary._functional.geodata.coordinates_filter import (
     set_filter,
 )
 
+from aviary.core.enums import SetFilterMode
 from aviary.core.exceptions import AviaryUserError
-
-# noinspection PyProtectedMember
-from aviary._utils.types import (
-    CoordinatesSet,
-    SetFilterMode,
-)
+from aviary.core.type_aliases import CoordinatesSet
 from tests._functional.geodata.data.data_test_coordinates_filter import (
     data_test__geospatial_filter_difference,
     data_test__geospatial_filter_intersection,

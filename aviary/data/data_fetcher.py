@@ -18,15 +18,16 @@ from aviary._functional.data.data_fetcher import (
 # noinspection PyProtectedMember
 from aviary._utils.mixins import FromConfigMixin
 
-# noinspection PyProtectedMember
-from aviary._utils.types import (
+from aviary.core.enums import (
+    InterpolationMode,
+    WMSVersion,
+)
+from aviary.core.type_aliases import (
     BufferSize,
     Coordinate,
     EPSGCode,
     GroundSamplingDistance,
-    InterpolationMode,
     TileSize,
-    WMSVersion,
 )
 
 

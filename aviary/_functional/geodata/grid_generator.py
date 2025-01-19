@@ -7,9 +7,8 @@ import numpy as np
 from shapely.geometry import Polygon, box
 
 if TYPE_CHECKING:
-    # noinspection PyProtectedMember
-    from aviary._utils.types import (
-        BoundingBox,
+    from aviary.core.bounding_box import BoundingBox
+    from aviary.core.type_aliases import (
         CoordinatesSet,
         EPSGCode,
         TileSize,

@@ -6,8 +6,7 @@ import numpy as np
 import pydantic
 from rich.progress import track
 
-# noinspection PyProtectedMember
-from aviary._utils.types import (
+from aviary.core.process_area import (
     ProcessArea,
     ProcessAreaConfig,
 )
