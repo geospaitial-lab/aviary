@@ -1,6 +1,8 @@
+import numpy as np
 import pytest
 
 from aviary.core.bounding_box import BoundingBox
+from aviary.core.process_area import ProcessArea
 
 
 @pytest.fixture(scope='function')
@@ -14,4 +16,14 @@ def bounding_box() -> BoundingBox:
         y_min=y_min,
         x_max=x_max,
         y_max=y_max,
+    )
+
+
+@pytest.fixture(scope='function')
+def process_area() -> ProcessArea:
+    coordinates = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32)
+    tile_size = 128
+    return ProcessArea(
+        coordinates=coordinates,
+        tile_size=tile_size,
     )
