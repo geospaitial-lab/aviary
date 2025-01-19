@@ -3,7 +3,7 @@ from enum import Enum as BaseEnum
 import rasterio as rio
 
 
-class Enum(BaseEnum):
+class Enum(BaseEnum):  # noqa: D101
 
     def __str__(self) -> str:
         """Returns the string representation.
