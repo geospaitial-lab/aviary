@@ -78,7 +78,6 @@ target-version = "py310"
 [tool.ruff.lint]
 select = ["ALL"]
 ignore = [
-    "A005",
     "D100",
     "D104",
     "D205",
