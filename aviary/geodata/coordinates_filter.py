@@ -12,7 +12,6 @@ from aviary._functional.geodata.coordinates_filter import (
     mask_filter,
     set_filter,
 )
-
 from aviary.core.enums import (
     GeospatialFilterMode,
     SetFilterMode,

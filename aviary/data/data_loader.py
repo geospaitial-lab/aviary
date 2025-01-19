@@ -13,7 +13,6 @@ import numpy.typing as npt
 
 # noinspection PyProtectedMember
 from aviary._functional.data.data_loader import collate_batch
-
 from aviary.core.type_aliases import Coordinate
 
 if TYPE_CHECKING:

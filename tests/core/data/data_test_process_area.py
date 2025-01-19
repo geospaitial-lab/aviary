@@ -4,7 +4,6 @@ import numpy as np
 
 from aviary.core.process_area import ProcessArea
 
-
 data_test_process_area_init_exceptions = [
     # test case 1: coordinates has not 2 dimensions
     (

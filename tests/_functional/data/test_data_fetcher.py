@@ -9,7 +9,6 @@ from aviary._functional.data.data_fetcher import (
     _get_wms_params,
     _permute_data,
 )
-
 from aviary.core.bounding_box import BoundingBox
 from aviary.core.enums import WMSVersion
 from aviary.core.type_aliases import (

@@ -2,9 +2,8 @@ import numpy as np
 import numpy.typing as npt
 import onnxruntime as ort
 
-from aviary.core.exceptions import AviaryUserError
-
 from aviary.core.enums import Device
+from aviary.core.exceptions import AviaryUserError
 from aviary.core.type_aliases import (
     BufferSize,
     GroundSamplingDistance,

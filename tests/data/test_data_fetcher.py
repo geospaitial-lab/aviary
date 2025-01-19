@@ -4,7 +4,6 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 import aviary.data.data_fetcher
-
 from aviary.core.enums import (
     InterpolationMode,
     WMSVersion,

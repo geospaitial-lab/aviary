@@ -15,10 +15,8 @@ from aviary._functional.inference.model import (
     get_providers,
     onnx_segmentation_model,
 )
-
-from aviary.core.exceptions import AviaryUserError
-
 from aviary.core.enums import Device
+from aviary.core.exceptions import AviaryUserError
 from aviary.core.type_aliases import (
     BufferSize,
     GroundSamplingDistance,

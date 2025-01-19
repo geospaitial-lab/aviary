@@ -17,7 +17,6 @@ from aviary._functional.data.data_fetcher import (
 
 # noinspection PyProtectedMember
 from aviary._utils.mixins import FromConfigMixin
-
 from aviary.core.enums import (
     InterpolationMode,
     WMSVersion,
