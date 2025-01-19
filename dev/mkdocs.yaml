@@ -27,7 +27,7 @@ nav:
       - Exceptions: api_reference/exceptions.md
       - ProcessArea: api_reference/process_area.md
       - Tile: api_reference/tile.md
-      - Types: api_reference/types.md
+      - Type Aliases: api_reference/type_aliases.md
     - aviary.data:
       - DataFetcher:
         - DataFetcher: api_reference/data/data_fetcher/data_fetcher.md
