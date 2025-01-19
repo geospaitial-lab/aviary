@@ -17,7 +17,7 @@ from aviary._functional.inference.model import (
 )
 from aviary.core.enums import Device
 from aviary.core.exceptions import AviaryUserError
-from aviary.core.type_aliases import (  # noqa: F401,TC001
+from aviary.core.type_aliases import (  # noqa: TC001
     BufferSize,
     GroundSamplingDistance,
 )

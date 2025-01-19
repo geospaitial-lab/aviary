@@ -21,7 +21,7 @@ from aviary.core.enums import (
     InterpolationMode,
     WMSVersion,
 )
-from aviary.core.type_aliases import (  # noqa: F401,TC001
+from aviary.core.type_aliases import (  # noqa: TC001
     BufferSize,
     Coordinate,
     EPSGCode,
