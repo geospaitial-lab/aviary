@@ -5,7 +5,10 @@ from collections.abc import (
     Iterator,
 )
 from dataclasses import dataclass
-from typing import Literal
+from typing import (
+    TYPE_CHECKING,
+    Literal,
+)
 
 import numpy as np
 import numpy.typing as npt
@@ -13,15 +16,17 @@ import numpy.typing as npt
 from aviary.core.bounding_box import BoundingBox
 from aviary.core.enums import Channel
 from aviary.core.exceptions import AviaryUserError
-from aviary.core.type_aliases import (
-    BufferSize,
-    Channels,
-    ChannelsSet,
-    Coordinates,
-    GroundSamplingDistance,
-    TileSize,
-    TimeStep,
-)
+
+if TYPE_CHECKING:
+    from aviary.core.type_aliases import (
+        BufferSize,
+        Channels,
+        ChannelsSet,
+        Coordinates,
+        GroundSamplingDistance,
+        TileSize,
+        TimeStep,
+    )
 
 
 @dataclass

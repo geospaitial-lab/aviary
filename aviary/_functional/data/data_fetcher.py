@@ -22,15 +22,15 @@ from aviary.core.enums import (
     WMSVersion,
 )
 from aviary.core.exceptions import AviaryUserError
-from aviary.core.type_aliases import (
-    BufferSize,
-    Coordinate,
-    EPSGCode,
-    GroundSamplingDistance,
-    TileSize,
-)
 
 if TYPE_CHECKING:
+    from aviary.core.type_aliases import (
+        BufferSize,
+        Coordinate,
+        EPSGCode,
+        GroundSamplingDistance,
+        TileSize,
+    )
     from aviary.data.data_fetcher import DataFetcher
 
 
