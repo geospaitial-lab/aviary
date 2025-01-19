@@ -1,8 +1,11 @@
 import numpy as np
+import numpy.typing as npt
 import pytest
 
 from aviary.core.bounding_box import BoundingBox
+from aviary.core.enums import Channel
 from aviary.core.process_area import ProcessArea
+from aviary.core.tile import Tile
 
 
 @pytest.fixture(scope='function')
@@ -27,3 +30,55 @@ def process_area() -> ProcessArea:
         coordinates=coordinates,
         tile_size=tile_size,
     )
+
+
+@pytest.fixture(scope='function')
+def tile(
+    tile_data: dict[Channel | str, npt.NDArray],
+) -> Tile:
+    data = tile_data
+    coordinates = (0, 0)
+    tile_size = 128
+    buffer_size = 16
+    return Tile(
+        data=data,
+        coordinates=coordinates,
+        tile_size=tile_size,
+        buffer_size=buffer_size,
+    )
+
+
+@pytest.fixture(scope='function')
+def tile_data() -> dict[Channel | str, npt.NDArray]:
+    data_r = np.full(
+        shape=(800, 800, 2),
+        fill_value=0,
+        dtype=np.uint8,
+    )
+    data_g = np.full(
+        shape=(800, 800, 2),
+        fill_value=1,
+        dtype=np.uint8,
+    )
+    data_b = np.full(
+        shape=(800, 800, 2),
+        fill_value=2,
+        dtype=np.uint8,
+    )
+    data_nir = np.full(
+        shape=(800, 800, 2),
+        fill_value=3,
+        dtype=np.uint8,
+    )
+    data_custom = np.full(
+        shape=(800, 800, 2),
+        fill_value=4,
+        dtype=np.uint8,
+    )
+    return {
+        Channel.R: data_r,
+        Channel.G: data_g,
+        Channel.B: data_b,
+        Channel.NIR: data_nir,
+        'custom': data_custom,
+    }
