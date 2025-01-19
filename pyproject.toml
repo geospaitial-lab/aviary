@@ -97,6 +97,9 @@ multiline-quotes = "single"
 "aviary/_cli/cli.py" = [
     "T201",
 ]
+"aviary/core/exceptions.py" = [
+    "D101",
+]
 "dev/scripts/*" = [
     "T201",
 ]
