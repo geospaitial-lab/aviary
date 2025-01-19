@@ -4,9 +4,8 @@ import geopandas as gpd
 import numpy as np
 import pytest
 
-# noinspection PyProtectedMember
-from aviary._utils.types import (
-    BoundingBox,
+from aviary.core.bounding_box import BoundingBox
+from aviary.core.enums import (
     GeospatialFilterMode,
     SetFilterMode,
 )

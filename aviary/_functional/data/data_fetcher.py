@@ -16,22 +16,21 @@ import rasterio as rio
 import rasterio.windows
 import requests
 
-# noinspection PyProtectedMember
-from aviary._utils.exceptions import AviaryUserError
-
-# noinspection PyProtectedMember
-from aviary._utils.types import (
-    BoundingBox,
-    BufferSize,
-    Coordinate,
-    EPSGCode,
-    GroundSamplingDistance,
+from aviary.core.bounding_box import BoundingBox
+from aviary.core.enums import (
     InterpolationMode,
-    TileSize,
     WMSVersion,
 )
+from aviary.core.exceptions import AviaryUserError
 
 if TYPE_CHECKING:
+    from aviary.core.type_aliases import (
+        BufferSize,
+        Coordinate,
+        EPSGCode,
+        GroundSamplingDistance,
+        TileSize,
+    )
     from aviary.data.data_fetcher import DataFetcher
 
 

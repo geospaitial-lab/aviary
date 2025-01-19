@@ -78,7 +78,6 @@ target-version = "py310"
 [tool.ruff.lint]
 select = ["ALL"]
 ignore = [
-    "A005",
     "D100",
     "D104",
     "D205",
@@ -97,6 +96,9 @@ multiline-quotes = "single"
 [tool.ruff.lint.per-file-ignores]
 "aviary/_cli/cli.py" = [
     "T201",
+]
+"aviary/core/exceptions.py" = [
+    "D101",
 ]
 "dev/scripts/*" = [
     "T201",

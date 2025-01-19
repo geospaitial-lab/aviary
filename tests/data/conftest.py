@@ -4,8 +4,7 @@ from unittest.mock import MagicMock
 import numpy as np
 import pytest
 
-# noinspection PyProtectedMember
-from aviary._utils.types import (
+from aviary.core.enums import (
     InterpolationMode,
     WMSVersion,
 )

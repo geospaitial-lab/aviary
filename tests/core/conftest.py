@@ -2,13 +2,10 @@ import numpy as np
 import numpy.typing as npt
 import pytest
 
-# noinspection PyProtectedMember
-from aviary._utils.types import (
-    BoundingBox,
-    Channel,
-    ProcessArea,
-    Tile,
-)
+from aviary.core.bounding_box import BoundingBox
+from aviary.core.enums import Channel
+from aviary.core.process_area import ProcessArea
+from aviary.core.tile import Tile
 
 
 @pytest.fixture(scope='function')

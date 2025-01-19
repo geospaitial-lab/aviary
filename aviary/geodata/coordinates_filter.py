@@ -12,12 +12,12 @@ from aviary._functional.geodata.coordinates_filter import (
     mask_filter,
     set_filter,
 )
-
-# noinspection PyProtectedMember
-from aviary._utils.types import (
-    CoordinatesSet,
+from aviary.core.enums import (
     GeospatialFilterMode,
     SetFilterMode,
+)
+from aviary.core.type_aliases import (
+    CoordinatesSet,
     TileSize,
 )
 

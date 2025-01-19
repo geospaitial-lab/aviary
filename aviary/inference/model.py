@@ -15,14 +15,10 @@ from aviary._functional.inference.model import (
     get_providers,
     onnx_segmentation_model,
 )
-
-# noinspection PyProtectedMember
-from aviary._utils.exceptions import AviaryUserError
-
-# noinspection PyProtectedMember
-from aviary._utils.types import (
+from aviary.core.enums import Device
+from aviary.core.exceptions import AviaryUserError
+from aviary.core.type_aliases import (  # noqa: TC001
     BufferSize,
-    Device,
     GroundSamplingDistance,
 )
 from aviary.inference.aviary import aviary

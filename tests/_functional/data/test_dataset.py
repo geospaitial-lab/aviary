@@ -8,9 +8,7 @@ from aviary._functional.data.dataset import (
     get_item,
     get_length,
 )
-
-# noinspection PyProtectedMember
-from aviary._utils.types import CoordinatesSet
+from aviary.core.type_aliases import CoordinatesSet
 from aviary.data.data_fetcher import DataFetcher
 from aviary.data.data_preprocessor import DataPreprocessor
 from tests._functional.data.data.data_test_dataset import data_test_get_length

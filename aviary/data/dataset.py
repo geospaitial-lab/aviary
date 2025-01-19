@@ -5,9 +5,7 @@ from aviary._functional.data.dataset import (
     get_item,
     get_length,
 )
-
-# noinspection PyProtectedMember
-from aviary._utils.types import (
+from aviary.core.type_aliases import (
     Coordinate,
     CoordinatesSet,
 )

@@ -9,13 +9,12 @@ import numpy.typing as npt
 import rasterio as rio
 import rasterio.features
 
-# noinspection PyProtectedMember
-from aviary._utils.types import (
+from aviary.core.process_area import ProcessArea
+from aviary.core.type_aliases import (
     Coordinate,
     CoordinatesSet,
     EPSGCode,
     GroundSamplingDistance,
-    ProcessArea,
     TileSize,
 )
 

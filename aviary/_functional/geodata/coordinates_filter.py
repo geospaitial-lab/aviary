@@ -7,17 +7,16 @@ import numpy as np
 from numpy import typing as npt
 
 from aviary._functional.geodata.grid_generator import _generate_tiles
-
-# noinspection PyProtectedMember
-from aviary._utils.exceptions import AviaryUserError
+from aviary.core.enums import (
+    GeospatialFilterMode,
+    SetFilterMode,
+)
+from aviary.core.exceptions import AviaryUserError
 
 if TYPE_CHECKING:
-    # noinspection PyProtectedMember
-    from aviary._utils.types import (
+    from aviary.core.type_aliases import (
         CoordinatesSet,
         EPSGCode,
-        GeospatialFilterMode,
-        SetFilterMode,
         TileSize,
     )
     from aviary.geodata.coordinates_filter import CoordinatesFilter
@@ -77,9 +76,6 @@ def geospatial_filter(
     Raises:
         AviaryUserError: Invalid geospatial filter mode
     """
-    # noinspection PyProtectedMember
-    from aviary._utils.types import GeospatialFilterMode
-
     epsg_code = gdf.crs.to_epsg()
     grid = _generate_grid(
         coordinates=coordinates,
@@ -225,9 +221,6 @@ def set_filter(
     Raises:
         AviaryUserError: Invalid set filter mode
     """
-    # noinspection PyProtectedMember
-    from aviary._utils.types import SetFilterMode
-
     if mode == SetFilterMode.DIFFERENCE:
         return _set_filter_difference(
             coordinates=coordinates,

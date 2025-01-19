@@ -1,8 +1,7 @@
 from dataclasses import dataclass
 from enum import Enum
 
-# noinspection PyProtectedMember
-from aviary._utils.exceptions import AviaryUserError
+from aviary.core.exceptions import AviaryUserError
 
 
 class Channels(Enum):
