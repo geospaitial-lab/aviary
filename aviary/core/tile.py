@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import copy
 from collections.abc import (
     Iterable,
     Iterator,
@@ -517,6 +518,40 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
             channel and data
         """
         yield from self._data.items()
+
+    def append_channel(
+        self,
+        data: npt.NDArray,
+        channel: Channel | str,
+        inplace: bool = False,
+    ) -> Tile:
+        """Appends the channel to the tile.
+
+        Parameters:
+            data: channel data
+            channel: channel
+            inplace: if True, the channel is appended inplace
+
+        Returns:
+            tile
+        """
+        if isinstance(channel, str) and channel in self._built_in_channels:
+            channel = Channel(channel)
+
+        if inplace:
+            self._data[channel] = data
+            self._validate()
+            return self
+
+        data_ = copy.deepcopy(self._data)
+        data_[channel] = data
+
+        return Tile(
+            data=data_,
+            coordinates=self._coordinates,
+            tile_size=self._tile_size,
+            buffer_size=self._buffer_size,
+        )
 
     def remove_buffer(
         self,
