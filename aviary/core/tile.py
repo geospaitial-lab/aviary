@@ -592,17 +592,18 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
 
         buffer_size = int(self._buffer_size / self.ground_sampling_distance)
 
-        data = {
-            channel: data[buffer_size:-buffer_size, buffer_size:-buffer_size, :]
-            for channel, data in self
-        }
-
         if inplace:
-            self._data = data
+            for channel, data in self:
+                self._data[channel] = data[buffer_size:-buffer_size, buffer_size:-buffer_size, :]
+
             self._buffer_size = 0
             self._validate()
             return self
 
+        data = {
+            channel: data[buffer_size:-buffer_size, buffer_size:-buffer_size, :]
+            for channel, data in self
+        }
         return Tile(
             data=data,
             coordinates=self._coordinates,
