@@ -595,6 +595,7 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
         if inplace:
             for channel, data in self:
                 self._data[channel] = data[buffer_size:-buffer_size, buffer_size:-buffer_size, :]
+
             self._buffer_size = 0
             self._validate()
             return self
@@ -603,7 +604,6 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
             channel: data[buffer_size:-buffer_size, buffer_size:-buffer_size, :]
             for channel, data in self
         }
-
         return Tile(
             data=data,
             coordinates=self._coordinates,
