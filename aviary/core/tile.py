@@ -534,9 +534,19 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
 
         Returns:
             tile
+
+        Raises:
+            AviaryUserError: Invalid channel (the channel is already available)
         """
         if isinstance(channel, str) and channel in self._built_in_channels:
             channel = Channel(channel)
+
+        if channel in self.channels:
+            message = (
+                'Invalid channel! '
+                f'The {channel} channel is already available.'
+            )
+            raise AviaryUserError(message)
 
         if inplace:
             self._data[channel] = data
