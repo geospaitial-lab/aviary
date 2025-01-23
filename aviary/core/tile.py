@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import warnings
 from collections.abc import (
     Iterable,
     Iterator,
@@ -15,7 +16,10 @@ import numpy.typing as npt
 
 from aviary.core.bounding_box import BoundingBox
 from aviary.core.enums import Channel
-from aviary.core.exceptions import AviaryUserError
+from aviary.core.exceptions import (
+    AviaryUserError,
+    AviaryUserWarning,
+)
 
 if TYPE_CHECKING:
     from aviary.core.type_aliases import (
@@ -604,6 +608,62 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
             coordinates=self._coordinates,
             tile_size=self._tile_size,
             buffer_size=0,
+        )
+
+    def remove_channel(
+        self,
+        channel: Channel | str,
+        inplace: bool = False,
+    ) -> Tile:
+        """Removes the channel from the tile.
+
+        Parameters:
+            channel: channel
+            inplace: if True, the channel is removed inplace
+
+        Returns:
+            tile
+        """
+        if isinstance(channel, str) and channel in self._built_in_channels:
+            channel = Channel(channel)
+
+        if channel not in self.channels:
+            message = (
+                'Invalid channel! '
+                f'The {channel} channel is not available. '
+                'The data is not modified.'
+            )
+            warnings.warn(
+                message=message,
+                category=AviaryUserWarning,
+                stacklevel=2,
+            )
+
+            if inplace:
+                return self
+
+            return Tile(
+                data=self._data,
+                coordinates=self._coordinates,
+                tile_size=self._tile_size,
+                buffer_size=self._buffer_size,
+            )
+
+        if inplace:
+            self._data.pop(channel)
+            self._validate()
+            return self
+
+        data = {
+            channel_: data
+            for channel_, data in self
+            if channel_ != channel
+        }
+        return Tile(
+            data=data,
+            coordinates=self._coordinates,
+            tile_size=self._tile_size,
+            buffer_size=self._buffer_size,
         )
 
     def to_cir(
