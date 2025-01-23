@@ -555,7 +555,6 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
 
         data_ = copy.deepcopy(self._data)
         data_[channel] = data
-
         return Tile(
             data=data_,
             coordinates=self._coordinates,
@@ -664,7 +663,6 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
             Channel(channel) if isinstance(channel, str) and channel in self._built_in_channels else channel
             for channel in channels
         ]
-
         data = [
             self[channel][..., time_step]
             for channel in channels
