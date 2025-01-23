@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import copy
 from collections.abc import (
     Iterable,
     Iterator,
@@ -553,8 +552,10 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
             self._validate()
             return self
 
-        data_ = copy.deepcopy(self._data)
-        data_[channel] = data
+        data_ = {
+            **self._data,
+            channel: data,
+        }
         return Tile(
             data=data_,
             coordinates=self._coordinates,
