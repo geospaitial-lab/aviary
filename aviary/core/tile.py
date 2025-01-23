@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import warnings
 from collections.abc import (
     Iterable,
     Iterator,
@@ -15,7 +16,10 @@ import numpy.typing as npt
 
 from aviary.core.bounding_box import BoundingBox
 from aviary.core.enums import Channel
-from aviary.core.exceptions import AviaryUserError
+from aviary.core.exceptions import (
+    AviaryUserError,
+    AviaryUserWarning,
+)
 
 if TYPE_CHECKING:
     from aviary.core.type_aliases import (
@@ -518,6 +522,51 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
         """
         yield from self._data.items()
 
+    def append_channel(
+        self,
+        data: npt.NDArray,
+        channel: Channel | str,
+        inplace: bool = False,
+    ) -> Tile:
+        """Appends the channel to the tile.
+
+        Parameters:
+            data: channel data
+            channel: channel
+            inplace: if True, the channel is appended inplace
+
+        Returns:
+            tile
+
+        Raises:
+            AviaryUserError: Invalid channel (the channel is already available)
+        """
+        if isinstance(channel, str) and channel in self._built_in_channels:
+            channel = Channel(channel)
+
+        if channel in self.channels:
+            message = (
+                'Invalid channel! '
+                f'The {channel} channel is already available.'
+            )
+            raise AviaryUserError(message)
+
+        if inplace:
+            self._data[channel] = data
+            self._validate()
+            return self
+
+        data_ = {
+            **self._data,
+            channel: data,
+        }
+        return Tile(
+            data=data_,
+            coordinates=self._coordinates,
+            tile_size=self._tile_size,
+            buffer_size=self._buffer_size,
+        )
+
     def remove_buffer(
         self,
         inplace: bool = False,
@@ -559,6 +608,62 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
             coordinates=self._coordinates,
             tile_size=self._tile_size,
             buffer_size=0,
+        )
+
+    def remove_channel(
+        self,
+        channel: Channel | str,
+        inplace: bool = False,
+    ) -> Tile:
+        """Removes the channel from the tile.
+
+        Parameters:
+            channel: channel
+            inplace: if True, the channel is removed inplace
+
+        Returns:
+            tile
+        """
+        if isinstance(channel, str) and channel in self._built_in_channels:
+            channel = Channel(channel)
+
+        if channel not in self.channels:
+            message = (
+                'Invalid channel! '
+                f'The {channel} channel is not available. '
+                'The data is not modified.'
+            )
+            warnings.warn(
+                message=message,
+                category=AviaryUserWarning,
+                stacklevel=2,
+            )
+
+            if inplace:
+                return self
+
+            return Tile(
+                data=self._data,
+                coordinates=self._coordinates,
+                tile_size=self._tile_size,
+                buffer_size=self._buffer_size,
+            )
+
+        if inplace:
+            self._data.pop(channel)
+            self._validate()
+            return self
+
+        data = {
+            channel_: data
+            for channel_, data in self
+            if channel_ != channel
+        }
+        return Tile(
+            data=data,
+            coordinates=self._coordinates,
+            tile_size=self._tile_size,
+            buffer_size=self._buffer_size,
         )
 
     def to_cir(
@@ -619,7 +724,6 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
             Channel(channel) if isinstance(channel, str) and channel in self._built_in_channels else channel
             for channel in channels
         ]
-
         data = [
             self[channel][..., time_step]
             for channel in channels
