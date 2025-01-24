@@ -18,45 +18,6 @@ data = np.array(
     dtype=np.uint8,
 )
 
-data_test__drop_channels = [
-    # test case 1: drop_channels is None
-    (
-        data,
-        None,
-        data,
-    ),
-    # test case 2: drop_channels is empty
-    (
-        data,
-        [],
-        data,
-    ),
-    # test case 3: drop_channels is not empty
-    (
-        data,
-        [0, 2],
-        np.array(
-            [
-                [[127], [0]],
-                [[255], [127]],
-            ],
-            dtype=np.uint8,
-        ),
-    ),
-    # test case 4: drop_channels contains a negative index
-    (
-        data,
-        [0, -1],
-        np.array(
-            [
-                [[127], [0]],
-                [[255], [127]],
-            ],
-            dtype=np.uint8,
-        ),
-    ),
-]
-
 data_test__get_wms_params = [
     # test case 1: WMS version is 1.3.0 and style is None
     (
