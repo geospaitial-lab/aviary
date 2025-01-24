@@ -10,7 +10,7 @@ from typing import (
 import pydantic
 
 # noinspection PyProtectedMember
-from aviary._functional.data.data_fetcher import (
+from aviary._functional.inference.tile_fetcher import (
     composite_fetcher,
     vrt_fetcher,
     wms_fetcher,

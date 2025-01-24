@@ -37,7 +37,7 @@ if TYPE_CHECKING:
         GroundSamplingDistance,
         TileSize,
     )
-    from aviary.data.data_fetcher import TileFetcher
+    from aviary.inference.tile_fetcher import TileFetcher
 
 
 def composite_fetcher(
