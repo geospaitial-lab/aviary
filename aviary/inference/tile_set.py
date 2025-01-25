@@ -1,5 +1,5 @@
 # noinspection PyProtectedMember
-from aviary._functional.data.dataset import (
+from aviary._functional.inference.tile_set import (
     get_item,
     get_length,
 )
