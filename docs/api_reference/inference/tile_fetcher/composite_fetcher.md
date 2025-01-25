@@ -6,4 +6,4 @@
 
 ---
 
-::: aviary.inference.DataFetcherConfig
+::: aviary.inference.TileFetcherConfig
