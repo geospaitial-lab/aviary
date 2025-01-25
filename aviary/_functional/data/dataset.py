@@ -3,57 +3,39 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    import numpy.typing as npt
-
-if TYPE_CHECKING:
-    from aviary.core.type_aliases import (
-        Coordinate,
-        CoordinatesSet,
-    )
-    from aviary.data.data_fetcher import DataFetcher
-    from aviary.data.data_preprocessor import DataPreprocessor
+    from aviary.core.process_area import ProcessArea
+    from aviary.core.tile import Tile
+    from aviary.inference.tile_fetcher import TileFetcher
 
 
 def get_item(
-    data_fetcher: DataFetcher,
-    coordinates: CoordinatesSet,
+    process_area: ProcessArea,
     index: int,
-    data_preprocessor: DataPreprocessor | None = None,
-) -> tuple[npt.NDArray, Coordinate, Coordinate]:
-    """Returns the sample.
+    tile_fetcher: TileFetcher,
+) -> Tile:
+    """Returns the tile.
 
     Parameters:
-        data_fetcher: data fetcher
-        coordinates: coordinates (x_min, y_min) of each tile
+        process_area: process area
         index: index of the tile
-        data_preprocessor: data preprocessor
+        tile_fetcher: tile fetcher
 
     Returns:
-        sample
+        tile
     """
-    x_min, y_min = coordinates[index]
-    data = data_fetcher(
-        x_min=x_min,
-        y_min=y_min,
-    )
-
-    if data_preprocessor is not None:
-        data = data_preprocessor(
-            data=data,
-        )
-
-    return data, x_min, y_min
+    coordinates = process_area[index]
+    return tile_fetcher(coordinates=coordinates)
 
 
 def get_length(
-    coordinates: CoordinatesSet,
+    process_area: ProcessArea,
 ) -> int:
-    """Computes the number of samples.
+    """Computes the number of tiles.
 
     Parameters:
-        coordinates: coordinates (x_min, y_min) of each tile
+        process_area: process area
 
     Returns:
-        number of samples
+        number of tiles
     """
-    return len(coordinates)
+    return len(process_area)
