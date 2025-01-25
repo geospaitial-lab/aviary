@@ -1,82 +1,71 @@
-import numpy.typing as npt
-
 # noinspection PyProtectedMember
 from aviary._functional.data.dataset import (
     get_item,
     get_length,
 )
-from aviary.core.type_aliases import (
-    Coordinate,
-    CoordinatesSet,
-)
-from aviary.data.data_fetcher import DataFetcher
-from aviary.data.data_preprocessor import DataPreprocessor
+from aviary.core.process_area import ProcessArea
+from aviary.core.tile import Tile
+from aviary.inference.tile_fetcher import TileFetcher
 
 
-class Dataset:
-    """A dataset is an iterable that returns a sample for each tile by calling the data fetcher and
-    the data preprocessor. The dataset is used by the data loader to fetch the samples for each batch.
+class TileSet:
+    """A tile set is an iterable that returns a tile for each coordinates of the process area
+    by calling the tile fetcher. The tile set is used by the tile loader to fetch the tiles for each batch.
 
     Notes:
-        - A sample contains the data, the minimum x coordinate and the minimum y coordinate of a tile
-        - The dataset is called concurrently by the data loader
+        - The tile set is called concurrently by the tile loader
 
     Examples:
-        Assume the data fetcher, the coordinates and the data preprocessor are already created.
+        Assume the process area and the tile fetcher are already created.
 
-        You can create a dataset and iterate over the samples.
+        You can create a tile set and iterate over the tiles.
 
-        >>> dataset = Dataset(
-        ...     data_fetcher=data_fetcher,
-        ...     coordinates=coordinates,
-        ...     data_preprocessor=data_preprocessor,
+        >>> tile_set = TileSet(
+        ...     process_area=process_area,
+        ...     tile_fetcher=tile_fetcher,
         ... )
         ...
-        >>> for data, x_min, y_min in dataset:
+        >>> for tile in tile_set:
         ...     ...
     """
 
     def __init__(
         self,
-        data_fetcher: DataFetcher,
-        coordinates: CoordinatesSet,
-        data_preprocessor: DataPreprocessor | None = None,
+        process_area: ProcessArea,
+        tile_fetcher: TileFetcher,
     ) -> None:
         """
         Parameters:
-            data_fetcher: data fetcher
-            coordinates: coordinates (x_min, y_min) of each tile
-            data_preprocessor: data preprocessor
+            process_area: process area
+            tile_fetcher: tile fetcher
         """
-        self.data_fetcher = data_fetcher
-        self.data_preprocessor = data_preprocessor
-        self.coordinates = coordinates
+        self._process_area = process_area
+        self._tile_fetcher = tile_fetcher
 
     def __len__(self) -> int:
-        """Computes the number of samples.
+        """Computes the number of tiles.
 
         Returns:
-            number of samples
+            number of tiles
         """
         return get_length(
-            coordinates=self.coordinates,
+            process_area=self._process_area,
         )
 
     def __getitem__(
         self,
         index: int,
-    ) -> tuple[npt.NDArray, Coordinate, Coordinate]:
-        """Returns the sample.
+    ) -> Tile:
+        """Returns the tile.
 
         Parameters:
             index: index of the tile
 
         Returns:
-            sample
+            tile
         """
         return get_item(
-            data_fetcher=self.data_fetcher,
-            coordinates=self.coordinates,
+            process_area=self._process_area,
             index=index,
-            data_preprocessor=self.data_preprocessor,
+            tile_fetcher=self._tile_fetcher,
         )
