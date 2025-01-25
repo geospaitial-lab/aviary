@@ -1,15 +1,16 @@
 from __future__ import annotations
 
 from pathlib import Path  # noqa: TC003
-from typing import TYPE_CHECKING, Protocol
+from typing import (
+    TYPE_CHECKING,
+    Literal,
+    Protocol,
+)
 
 import pydantic
 
-if TYPE_CHECKING:
-    import numpy.typing as npt
-
 # noinspection PyProtectedMember
-from aviary._functional.data.data_fetcher import (
+from aviary._functional.inference.tile_fetcher import (
     composite_fetcher,
     vrt_fetcher,
     wms_fetcher,
@@ -23,64 +24,70 @@ from aviary.core.enums import (
 )
 from aviary.core.type_aliases import (  # noqa: TC001
     BufferSize,
-    Coordinate,
+    Channels,
+    ChannelsSet,
+    Coordinates,
     EPSGCode,
     GroundSamplingDistance,
     TileSize,
 )
 
+if TYPE_CHECKING:
+    from aviary.core.tile import Tile
 
-class DataFetcher(Protocol):
-    """Protocol for data fetchers
 
-    Data fetchers are callables that fetch data from a source given a minimum x and y coordinate.
+class TileFetcher(Protocol):
+    """Protocol for tile fetchers
+
+    Tile fetchers are callables that fetch data from a source given a minimum x and y coordinate.
     These coordinates correspond to the bottom left corner of a tile.
-    The data fetcher is used by the dataset to fetch data for each tile.
+    The tile fetcher is used by the tile set to fetch data for each tile.
 
-    Currently implemented data fetchers:
-        - `CompositeFetcher`: Composes multiple data fetchers
-        - `VRTFetcher`: Fetches data from a virtual raster
-        - `WMSFetcher`: Fetches data from a web map service
+    Currently implemented tile fetchers:
+        - `CompositeFetcher`: Composes multiple tile fetchers
+        - `VRTFetcher`: Fetches a tile from a virtual raster
+        - `WMSFetcher`: Fetches a tile from a web map service
 
     Notes:
-        - Implementations must support concurrency (the data fetcher is called concurrently by the data loader)
+        - Implementations must support concurrency (the tile fetcher is called concurrently by the tile loader)
     """
 
     def __call__(
         self,
-        x_min: Coordinate,
-        y_min: Coordinate,
-    ) -> npt.NDArray:
-        """Fetches data from the source.
+        coordinates: Coordinates,
+    ) -> Tile:
+        """Fetches a tile from the source.
 
         Parameters:
-            x_min: minimum x coordinate
-            y_min: minimum y coordinate
+            coordinates: coordinates (x_min, y_min) of the tile
 
         Returns:
-            data
+            tile
         """
         ...
 
 
 class CompositeFetcher(FromConfigMixin):
-    """Data fetcher that composes multiple data fetchers
+    """Tile fetcher that composes multiple tile fetchers
 
-    Implements the `DataFetcher` protocol.
+    Implements the `TileFetcher` protocol.
     """
 
     def __init__(
         self,
-        data_fetchers: list[DataFetcher],
+        tile_fetchers: list[TileFetcher],
+        axis: Literal['channel', 'time_step'] = 'channel',
         num_workers: int = 1,
     ) -> None:
         """
         Parameters:
-            data_fetchers: data fetchers
+            tile_fetchers: tile fetchers
+            axis: axis to concatenate the tiles (`channel`, `time_step`)
             num_workers: number of workers
         """
-        self.data_fetchers = data_fetchers
-        self.num_workers = num_workers
+        self._tile_fetchers = tile_fetchers
+        self._axis = axis
+        self._num_workers = num_workers
 
     @classmethod
     def from_config(
@@ -95,37 +102,36 @@ class CompositeFetcher(FromConfigMixin):
         Returns:
             composite fetcher
         """
-        data_fetchers = []
+        tile_fetchers = []
 
-        for data_fetcher_config in config.data_fetchers_configs:
-            data_fetcher_class = globals()[data_fetcher_config.name]
-            data_fetcher = data_fetcher_class.from_config(data_fetcher_config.config)
-            data_fetchers.append(data_fetcher)
+        for tile_fetcher_config in config.tile_fetchers_configs:
+            tile_fetcher_class = globals()[tile_fetcher_config.name]
+            tile_fetcher = tile_fetcher_class.from_config(tile_fetcher_config.config)
+            tile_fetchers.append(tile_fetcher)
 
         return cls(
-            data_fetchers=data_fetchers,
+            tile_fetchers=tile_fetchers,
+            axis=config.axis,
             num_workers=config.num_workers,
         )
 
     def __call__(
         self,
-        x_min: Coordinate,
-        y_min: Coordinate,
-    ) -> npt.NDArray:
-        """Fetches data from the sources.
+        coordinates: Coordinates,
+    ) -> Tile:
+        """Fetches a tile from the sources.
 
         Parameters:
-            x_min: minimum x coordinate
-            y_min: minimum y coordinate
+            coordinates: coordinates (x_min, y_min) of the tile
 
         Returns:
-            data
+            tile
         """
         return composite_fetcher(
-            x_min=x_min,
-            y_min=y_min,
-            data_fetchers=self.data_fetchers,
-            num_workers=self.num_workers,
+            coordinates=coordinates,
+            tile_fetchers=self._tile_fetchers,
+            axis=self._axis,
+            num_workers=self._num_workers,
         )
 
 
@@ -133,55 +139,64 @@ class CompositeFetcherConfig(pydantic.BaseModel):
     """Configuration for the `from_config` class method of `CompositeFetcher`
 
     Attributes:
-        data_fetchers_configs: configurations of the data fetchers
+        tile_fetchers_configs: configurations of the tile fetchers
+        axis: axis to concatenate the tiles (`channel`, `time_step`)
         num_workers: number of workers
     """
-    data_fetchers_configs: list[DataFetcherConfig]
+    tile_fetchers_configs: list[TileFetcherConfig]
+    axis: Literal['channel', 'time_step'] = 'channel'
     num_workers: int = 1
 
 
-class DataFetcherConfig(pydantic.BaseModel):
-    """Configuration for data fetchers
+class TileFetcherConfig(pydantic.BaseModel):
+    """Configuration for tile fetchers
 
     Attributes:
-        name: name of the data fetcher
-        config: configuration of the data fetcher
+        name: name of the tile fetcher
+        config: configuration of the tile fetcher
     """
     name: str
-    config: VRTFetcherConfig | WMSFetcherConfig
+    config: (
+        CompositeFetcherConfig |
+        VRTFetcherConfig |
+        WMSFetcherConfig
+    )
 
 
 class VRTFetcher(FromConfigMixin):
-    """Data fetcher for virtual rasters
+    """Tile fetcher for virtual rasters
 
-    Implements the `DataFetcher` protocol.
+    Implements the `TileFetcher` protocol.
     """
     _FILL_VALUE = 0
 
     def __init__(
         self,
         path: Path,
+        channels: Channels,
         tile_size: TileSize,
         ground_sampling_distance: GroundSamplingDistance,
         interpolation_mode: InterpolationMode = InterpolationMode.BILINEAR,
         buffer_size: BufferSize = 0,
-        drop_channels: list[int] | None = None,
+        ignore_channels: ChannelsSet | None = None,
     ) -> None:
         """
         Parameters:
             path: path to the virtual raster (.vrt file)
+            channels: channels
             tile_size: tile size in meters
             ground_sampling_distance: ground sampling distance in meters
             interpolation_mode: interpolation mode (`BILINEAR` or `NEAREST`)
             buffer_size: buffer size in meters (specifies the area around the tile that is additionally fetched)
-            drop_channels: channel indices to drop (supports negative indexing)
+            ignore_channels: channels to ignore
         """
-        self.path = path
-        self.tile_size = tile_size
-        self.ground_sampling_distance = ground_sampling_distance
-        self.interpolation_mode = interpolation_mode
-        self.buffer_size = buffer_size
-        self.drop_channels = drop_channels
+        self._path = path
+        self._channels = channels
+        self._tile_size = tile_size
+        self._ground_sampling_distance = ground_sampling_distance
+        self._interpolation_mode = interpolation_mode
+        self._buffer_size = buffer_size
+        self._ignore_channels = ignore_channels
 
     @classmethod
     def from_config(
@@ -201,27 +216,25 @@ class VRTFetcher(FromConfigMixin):
 
     def __call__(
         self,
-        x_min: Coordinate,
-        y_min: Coordinate,
-    ) -> npt.NDArray:
-        """Fetches data from the virtual raster.
+        coordinates: Coordinates,
+    ) -> Tile:
+        """Fetches a tile from the virtual raster.
 
         Parameters:
-            x_min: minimum x coordinate
-            y_min: minimum y coordinate
+            coordinates: coordinates (x_min, y_min) of the tile
 
         Returns:
-            data
+            tile
         """
         return vrt_fetcher(
-            x_min=x_min,
-            y_min=y_min,
-            path=self.path,
-            tile_size=self.tile_size,
-            ground_sampling_distance=self.ground_sampling_distance,
-            interpolation_mode=self.interpolation_mode,
-            buffer_size=self.buffer_size,
-            drop_channels=self.drop_channels,
+            coordinates=coordinates,
+            path=self._path,
+            channels=self._channels,
+            tile_size=self._tile_size,
+            ground_sampling_distance=self._ground_sampling_distance,
+            interpolation_mode=self._interpolation_mode,
+            buffer_size=self._buffer_size,
+            ignore_channels=self._ignore_channels,
             fill_value=self._FILL_VALUE,
         )
 
@@ -231,24 +244,26 @@ class VRTFetcherConfig(pydantic.BaseModel):
 
     Attributes:
         path: path to the virtual raster (.vrt file)
+        channels: channels
         tile_size: tile size in meters
         ground_sampling_distance: ground sampling distance in meters
         interpolation_mode: interpolation mode ('bilinear' or 'nearest')
         buffer_size: buffer size in meters (specifies the area around the tile that is additionally fetched)
-        drop_channels: channel indices to drop (supports negative indexing)
+        ignore_channels: channels to ignore
     """
     path: Path
+    channels: Channels
     tile_size: TileSize
     ground_sampling_distance: GroundSamplingDistance
     interpolation_mode: InterpolationMode = InterpolationMode.BILINEAR
     buffer_size: BufferSize = 0
-    drop_channels: list[int] | None = None
+    ignore_channels: ChannelsSet | None = None
 
 
 class WMSFetcher(FromConfigMixin):
-    """Data fetcher for web map services
+    """Tile fetcher for web map services
 
-    Implements the `DataFetcher` protocol.
+    Implements the `TileFetcher` protocol.
     """
     _FILL_VALUE = '0x000000'
 
@@ -259,11 +274,12 @@ class WMSFetcher(FromConfigMixin):
         layer: str,
         epsg_code: EPSGCode,
         response_format: str,
+        channels: Channels,
         tile_size: TileSize,
         ground_sampling_distance: GroundSamplingDistance,
         style: str | None = None,
         buffer_size: BufferSize = 0,
-        drop_channels: list[int] | None = None,
+        ignore_channels: ChannelsSet | None = None,
     ) -> None:
         """
         Parameters:
@@ -272,22 +288,24 @@ class WMSFetcher(FromConfigMixin):
             layer: name of the layer
             epsg_code: EPSG code
             response_format: format of the response (MIME type, e.g., 'image/png')
+            channels: channels
             tile_size: tile size in meters
             ground_sampling_distance: ground sampling distance in meters
             style: name of the style
             buffer_size: buffer size in meters (specifies the area around the tile that is additionally fetched)
-            drop_channels: channel indices to drop (supports negative indexing)
+            ignore_channels: channels to ignore
         """
-        self.url = url
-        self.version = version
-        self.layer = layer
-        self.epsg_code = epsg_code
-        self.response_format = response_format
-        self.tile_size = tile_size
-        self.ground_sampling_distance = ground_sampling_distance
-        self.style = style
-        self.buffer_size = buffer_size
-        self.drop_channels = drop_channels
+        self._url = url
+        self._version = version
+        self._layer = layer
+        self._epsg_code = epsg_code
+        self._response_format = response_format
+        self._tile_size = tile_size
+        self._channels = channels
+        self._ground_sampling_distance = ground_sampling_distance
+        self._style = style
+        self._buffer_size = buffer_size
+        self._ignore_channels = ignore_channels
 
     @classmethod
     def from_config(
@@ -307,31 +325,29 @@ class WMSFetcher(FromConfigMixin):
 
     def __call__(
         self,
-        x_min: Coordinate,
-        y_min: Coordinate,
-    ) -> npt.NDArray:
-        """Fetches data from the web map service.
+        coordinates: Coordinates,
+    ) -> Tile:
+        """Fetches a tile from the web map service.
 
         Parameters:
-            x_min: minimum x coordinate
-            y_min: minimum y coordinate
+            coordinates: coordinates (x_min, y_min) of the tile
 
         Returns:
-            data
+            tile
         """
         return wms_fetcher(
-            x_min=x_min,
-            y_min=y_min,
-            url=self.url,
-            version=self.version,
-            layer=self.layer,
-            epsg_code=self.epsg_code,
-            response_format=self.response_format,
-            tile_size=self.tile_size,
-            ground_sampling_distance=self.ground_sampling_distance,
-            style=self.style,
-            buffer_size=self.buffer_size,
-            drop_channels=self.drop_channels,
+            coordinates=coordinates,
+            url=self._url,
+            version=self._version,
+            layer=self._layer,
+            epsg_code=self._epsg_code,
+            response_format=self._response_format,
+            channels=self._channels,
+            tile_size=self._tile_size,
+            ground_sampling_distance=self._ground_sampling_distance,
+            style=self._style,
+            buffer_size=self._buffer_size,
+            ignore_channels=self._ignore_channels,
             fill_value=self._FILL_VALUE,
         )
 
@@ -345,19 +361,21 @@ class WMSFetcherConfig(pydantic.BaseModel):
         layer: name of the layer
         epsg_code: EPSG code
         response_format: format of the response (MIME type, e.g., 'image/png')
+        channels: channels
         tile_size: tile size in meters
         ground_sampling_distance: ground sampling distance in meters
         style: name of the style
         buffer_size: buffer size in meters (specifies the area around the tile that is additionally fetched)
-        drop_channels: channel indices to drop (supports negative indexing)
+        ignore_channels: channels to ignore
     """
     url: str
     version: WMSVersion
     layer: str
     epsg_code: EPSGCode
     response_format: str
+    channels: Channels
     tile_size: TileSize
     ground_sampling_distance: GroundSamplingDistance
     style: str | None = None
     buffer_size: BufferSize = 0
-    drop_channels: list[int] | None = None
+    ignore_channels: ChannelsSet | None = None

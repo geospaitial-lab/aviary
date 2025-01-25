@@ -29,11 +29,6 @@ nav:
       - Tile: api_reference/tile.md
       - Type Aliases: api_reference/type_aliases.md
     - aviary.data:
-      - DataFetcher:
-        - DataFetcher: api_reference/data/data_fetcher/data_fetcher.md
-        - CompositeFetcher: api_reference/data/data_fetcher/composite_fetcher.md
-        - VRTFetcher: api_reference/data/data_fetcher/vrt_fetcher.md
-        - WMSFetcher: api_reference/data/data_fetcher/wms_fetcher.md
       - DataLoader: api_reference/data/data_loader.md
       - DataPreprocessor:
         - DataPreprocessor: api_reference/data/data_preprocessor/data_preprocessor.md
@@ -67,6 +62,11 @@ nav:
         - Model: api_reference/inference/model/model.md
         - SegmentationModel: api_reference/inference/model/segmentation_model.md
         - ONNXSegmentationModel: api_reference/inference/model/onnx_segmentation_model.md
+      - TileFetcher:
+          - TileFetcher: api_reference/inference/tile_fetcher/tile_fetcher.md
+          - CompositeFetcher: api_reference/inference/tile_fetcher/composite_fetcher.md
+          - VRTFetcher: api_reference/inference/tile_fetcher/vrt_fetcher.md
+          - WMSFetcher: api_reference/inference/tile_fetcher/wms_fetcher.md
     - aviary.pipeline:
       - PostprocessingPipeline: api_reference/pipeline/postprocessing_pipeline.md
       - SegmentationPipeline: api_reference/pipeline/segmentation_pipeline.md

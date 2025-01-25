@@ -9,8 +9,20 @@ from .model import (
     SegmentationModel,
     SegmentationModelConfig,
 )
+from .tile_fetcher import (
+    CompositeFetcher,
+    CompositeFetcherConfig,
+    TileFetcher,
+    TileFetcherConfig,
+    VRTFetcher,
+    VRTFetcherConfig,
+    WMSFetcher,
+    WMSFetcherConfig,
+)
 
 __all__ = [
+    'CompositeFetcher',
+    'CompositeFetcherConfig',
     'Exporter',
     'Model',
     'ONNXSegmentationModel',
@@ -18,4 +30,10 @@ __all__ = [
     'SegmentationExporterConfig',
     'SegmentationModel',
     'SegmentationModelConfig',
+    'TileFetcher',
+    'TileFetcherConfig',
+    'VRTFetcher',
+    'VRTFetcherConfig',
+    'WMSFetcher',
+    'WMSFetcherConfig',
 ]

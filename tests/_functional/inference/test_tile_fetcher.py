@@ -3,9 +3,8 @@ import numpy.typing as npt
 import pytest
 
 # noinspection PyProtectedMember
-from aviary._functional.data.data_fetcher import (
+from aviary._functional.inference.tile_fetcher import (
     _compute_tile_size_pixels,
-    _drop_channels,
     _get_wms_params,
     _permute_data,
 )
@@ -17,9 +16,8 @@ from aviary.core.type_aliases import (
     GroundSamplingDistance,
     TileSize,
 )
-from tests._functional.data.data.data_test_data_fetcher import (
+from tests._functional.inference.data.data_test_tile_fetcher import (
     data_test__compute_tile_size_pixels,
-    data_test__drop_channels,
     data_test__get_wms_params,
     data_test__permute_data,
 )
@@ -62,20 +60,6 @@ def test__compute_tile_size_pixels(
     )
 
     assert tile_size_pixels == expected
-
-
-@pytest.mark.parametrize(('data', 'drop_channels', 'expected'), data_test__drop_channels)
-def test__drop_channels(
-    data: npt.NDArray,
-    drop_channels: list[int] | None,
-    expected: npt.NDArray,
-) -> None:
-    data = _drop_channels(
-        data=data,
-        drop_channels=drop_channels,
-    )
-
-    np.testing.assert_array_equal(data, expected)
 
 
 @pytest.mark.parametrize(
