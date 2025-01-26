@@ -1,6 +1,9 @@
 from __future__ import annotations
 
-from collections.abc import Iterable
+from collections.abc import (
+    Iterable,
+    Iterator,
+)
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
@@ -327,3 +330,11 @@ class Tiles(Iterable[tuple[Channel | str, npt.NDArray]]):
             raise AviaryUserError(message)
 
         return self._data[channel]
+
+    def __iter__(self) -> Iterator[tuple[Channel | str, npt.NDArray]]:
+        """Iterates over the channels.
+
+        Yields:
+            channel and data
+        """
+        yield from self._data.items()
