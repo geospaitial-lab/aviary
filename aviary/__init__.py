@@ -16,6 +16,7 @@ from .core.process_area import (
     ProcessAreaConfig,
 )
 from .core.tile import Tile
+from .core.tiles import Tiles
 from .core.type_aliases import (
     BufferSize,
     Channels,
@@ -50,6 +51,7 @@ __all__ = [
     'SetFilterMode',
     'Tile',
     'TileSize',
+    'Tiles',
     'TimeStep',
     'WMSVersion',
     '__version__',
