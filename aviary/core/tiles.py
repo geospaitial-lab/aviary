@@ -172,6 +172,14 @@ class Tiles(Iterable[tuple[Channel | str, npt.NDArray]]):
         return (self._tile_size + 2 * self._buffer_size) ** 2
 
     @property
+    def batch_size(self) -> int:
+        """
+        Returns:
+            batch size
+        """
+        return self.shape[0]
+
+    @property
     def channels(self) -> ChannelsSet:
         """
         Returns:
