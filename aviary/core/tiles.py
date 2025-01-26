@@ -4,6 +4,7 @@ from collections.abc import Iterable
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
+import numpy as np
 import numpy.typing as npt
 
 from aviary.core.enums import Channel
@@ -237,6 +238,33 @@ class Tiles(Iterable[tuple[Channel | str, npt.NDArray]]):
             f'    buffer_size={self._buffer_size},\n'
             ')'
         )
+
+    def __eq__(
+        self,
+        other: Tiles,
+    ) -> bool:
+        """Compares the tiles.
+
+        Parameters:
+            other: other tiles
+
+        Returns:
+            True if the tiles are equal, False otherwise
+        """
+        if not isinstance(other, Tiles):
+            return False
+
+        conditions = [
+            self._data.keys() == other.data.keys(),
+            all(
+                np.array_equal(self._data[channel], other.data.get(channel, None))
+                for channel in self.channels
+            ),
+            np.array_equal(self._coordinates, other.coordinates),
+            self._tile_size == other.tile_size,
+            self._buffer_size == other.buffer_size,
+        ]
+        return all(conditions)
 
     def __len__(self) -> int:
         """Computes the number of channels.
