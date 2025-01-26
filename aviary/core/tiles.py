@@ -124,3 +124,35 @@ class Tiles(Iterable[tuple[Channel | str, npt.NDArray]]):
                 'buffer_size must be non-negative.'
             )
             raise AviaryUserError(message)
+
+    @property
+    def data(self) -> dict[Channel | str, npt.NDArray]:
+        """
+        Returns:
+            data
+        """
+        return self._data
+
+    @property
+    def coordinates(self) -> CoordinatesSet:
+        """
+        Returns:
+            coordinates (x_min, y_min) of each tile
+        """
+        return self._coordinates
+
+    @property
+    def tile_size(self) -> TileSize:
+        """
+        Returns:
+            tile size in meters
+        """
+        return self._tile_size
+
+    @property
+    def buffer_size(self) -> BufferSize:
+        """
+        Returns:
+            buffer size in meters
+        """
+        return self._buffer_size
