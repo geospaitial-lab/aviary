@@ -156,3 +156,11 @@ class Tiles(Iterable[tuple[Channel | str, npt.NDArray]]):
             buffer size in meters
         """
         return self._buffer_size
+
+    def __len__(self) -> int:
+        """Computes the number of channels.
+
+        Returns:
+            number of channels
+        """
+        return len(self._data)
