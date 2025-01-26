@@ -12,7 +12,9 @@ from aviary.core.exceptions import AviaryUserError
 if TYPE_CHECKING:
     from aviary.core.type_aliases import (
         BufferSize,
+        ChannelsSet,
         CoordinatesSet,
+        GroundSamplingDistance,
         TileSize,
     )
 
@@ -156,6 +158,46 @@ class Tiles(Iterable[tuple[Channel | str, npt.NDArray]]):
             buffer size in meters
         """
         return self._buffer_size
+
+    @property
+    def channels(self) -> ChannelsSet:
+        """
+        Returns:
+            channels
+        """
+        return set(self._data.keys())
+
+    @property
+    def ground_sampling_distance(self) -> GroundSamplingDistance:
+        """
+        Returns:
+            ground sampling distance in meters
+        """
+        return (self._tile_size + 2 * self._buffer_size) / self.shape[1]
+
+    @property
+    def num_channels(self) -> int:
+        """
+        Returns:
+            number of channels
+        """
+        return len(self)
+
+    @property
+    def num_time_steps(self) -> int:
+        """
+        Returns:
+            number of time steps
+        """
+        return self.shape[-1]
+
+    @property
+    def shape(self) -> tuple[int, int, int, int]:
+        """
+        Returns:
+            shape of the data
+        """
+        return next(iter(self))[1].shape
 
     def __len__(self) -> int:
         """Computes the number of channels.
