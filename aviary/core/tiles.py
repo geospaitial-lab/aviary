@@ -207,6 +207,37 @@ class Tiles(Iterable[tuple[Channel | str, npt.NDArray]]):
         """
         return next(iter(self))[1].shape
 
+    def __repr__(self) -> str:
+        """Returns the string representation.
+
+        Returns:
+            string representation
+        """
+        data_repr = '\n'.join(
+            f'        {channel}: {data.shape},'
+            for channel, data in self
+        )
+
+        max_coordinates = 4
+        coordinates_repr = self._coordinates.tolist()
+
+        if len(coordinates_repr) > max_coordinates:
+            coordinates_repr = (
+                coordinates_repr[:max_coordinates // 2] +
+                [Ellipsis] +
+                coordinates_repr[-max_coordinates // 2:]
+            )
+
+        coordinates_repr = str(coordinates_repr).replace('Ellipsis', '...')
+        return (
+            'Tile(\n'
+            f'    data=\n{data_repr}\n'
+            f'    coordinates={coordinates_repr},\n'
+            f'    tile_size={self._tile_size},\n'
+            f'    buffer_size={self._buffer_size},\n'
+            ')'
+        )
+
     def __len__(self) -> int:
         """Computes the number of channels.
 
