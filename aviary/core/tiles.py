@@ -274,6 +274,33 @@ class Tiles(Iterable[tuple[Channel | str, npt.NDArray]]):
         """
         return len(self._data)
 
+    def __getattr__(
+        self,
+        channel: str,
+    ) -> npt.NDArray:
+        """Returns the channel data.
+
+        Parameters:
+            channel: channel
+
+        Returns:
+            channel data
+
+        Raises:
+            AviaryUserError: Invalid channel (the channel is not available)
+        """
+        if channel in self._built_in_channels:
+            channel = Channel(channel)
+
+        if channel not in self.channels:
+            message = (
+                'Invalid channel! '
+                f'The {channel} channel is not available.'
+            )
+            raise AviaryUserError(message)
+
+        return self[channel]
+
     def __getitem__(
         self,
         channel: Channel | str,
