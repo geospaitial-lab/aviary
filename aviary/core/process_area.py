@@ -557,8 +557,7 @@ class ProcessArea(Iterable[Coordinates]):
         if coordinates != unique_coordinates:
             message = (
                 'Invalid coordinates! '
-                'coordinates must be an array of unique coordinates. '
-                'Duplicates are removed.'
+                'coordinates is already in the process area.'
             )
             warnings.warn(
                 message=message,
@@ -614,6 +613,48 @@ class ProcessArea(Iterable[Coordinates]):
             filtered process area
         """
         coordinates = coordinates_filter(self._coordinates)
+
+        if inplace:
+            self._coordinates = coordinates
+            self._validate()
+            return self
+
+        return ProcessArea(
+            coordinates=coordinates,
+            tile_size=self._tile_size,
+        )
+
+    def remove(
+        self,
+        coordinates: Coordinates,
+        inplace: bool = False,
+    ) -> ProcessArea:
+        """Removes the coordinates from the process area.
+
+        Parameters:
+            coordinates: coordinates (x_min, y_min) of the tile
+            inplace: if True, the coordinates are removed inplace
+
+        Returns:
+            process area
+        """
+        coordinates = np.array([coordinates], dtype=np.int32)
+        coordinates = set_filter(
+            coordinates=self._coordinates,
+            other=coordinates,
+            mode=SetFilterMode.DIFFERENCE,
+        )
+
+        if coordinates == self._coordinates:
+            message = (
+                'Invalid coordinates! '
+                'coordinates is not in the process area.'
+            )
+            warnings.warn(
+                message=message,
+                category=AviaryUserWarning,
+                stacklevel=2,
+            )
 
         if inplace:
             self._coordinates = coordinates
