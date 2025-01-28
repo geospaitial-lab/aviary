@@ -244,8 +244,19 @@ class ProcessArea(Iterable[Coordinates]):
 
         Returns:
             process area
+
+        Raises:
+            AviaryUserError: Invalid JSON string (`json_string` does not contain the keys coordinates and tile_size)
         """
         dict_ = json.loads(json_string)
+
+        if 'coordinates' not in dict_ or 'tile_size' not in dict_:
+            message = (
+                'Invalid JSON string! '
+                'json_string must contain the keys coordinates and tile_size.'
+            )
+            raise AviaryUserError(message)
+
         coordinates, tile_size = dict_['coordinates'], dict_['tile_size']
         coordinates = np.array(coordinates, dtype=np.int32) if coordinates else None
         return cls(
