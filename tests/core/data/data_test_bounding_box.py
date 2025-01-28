@@ -16,21 +16,6 @@ data_test_bounding_box_buffer_exceptions = [
     (-192, 'Invalid buffer size! buffer_size must be less than half the width or height of the bounding box.'),
 ]
 
-data_test_bounding_box_init_exceptions = [
-    # test case 1: x_min == x_max
-    (0, 0, 0, 128, 'Invalid bounding box! x_min must be less than x_max.'),
-    # test case 2: x_min > x_max
-    (128, 0, 0, 128, 'Invalid bounding box! x_min must be less than x_max.'),
-    # test case 3: y_min == y_max
-    (0, 0, 128, 0, 'Invalid bounding box! y_min must be less than y_max.'),
-    # test case 4: y_min > y_max
-    (0, 128, 128, 0, 'Invalid bounding box! y_min must be less than y_max.'),
-    # test case 5: x_min == x_max, y_min == y_max
-    (0, 0, 0, 0, 'Invalid bounding box! x_min must be less than x_max.'),
-    # test case 6: x_min > x_max, y_min > y_max
-    (128, 128, 0, 0, 'Invalid bounding box! x_min must be less than x_max.'),
-]
-
 data_test_bounding_box_area = [
     # test case 1: bounding box is in all quadrants
     (BoundingBox(-128, -128, 128, 128), 65536),
@@ -82,4 +67,27 @@ data_test_bounding_box_quantize_exceptions = [
     (0, 'Invalid value! value must be positive.'),
     # test case 2: value is negative
     (-128, 'Invalid value! value must be positive.'),
+]
+
+data_test_bounding_box_validation_message = (
+    'Invalid bounding box! x_min must be less than x_max and y_min must be less than y_max.'
+)
+
+data_test_bounding_box_validation = [
+    # test case 1: x_min == x_max
+    (128, -64, 128, 192, data_test_bounding_box_validation_message),
+    # test case 2: x_min > x_max
+    (192, -64, 128, 192, data_test_bounding_box_validation_message),
+    # test case 3: y_min == y_max
+    (-128, 192, 128, 192, data_test_bounding_box_validation_message),
+    # test case 4: y_min > y_max
+    (-128, 256, 128, 192, data_test_bounding_box_validation_message),
+    # test case 5: x_min == x_max, y_min == y_max
+    (128, 192, 128, 192, data_test_bounding_box_validation_message),
+    # test case 6: x_min > x_max, y_min > y_max
+    (192, 256, 128, 192, data_test_bounding_box_validation_message),
+    # test case 7: x_min > x_max, y_min == y_max
+    (192, 192, 128, 192, data_test_bounding_box_validation_message),
+    # test case 8: x_min == x_max, y_min > y_max
+    (128, 256, 128, 192, data_test_bounding_box_validation_message),
 ]

@@ -13,17 +13,17 @@ from tests.core.data.data_test_bounding_box import (
     data_test_bounding_box_area,
     data_test_bounding_box_buffer,
     data_test_bounding_box_buffer_exceptions,
-    data_test_bounding_box_init_exceptions,
     data_test_bounding_box_quantize,
     data_test_bounding_box_quantize_exceptions,
+    data_test_bounding_box_validation,
 )
 
 
 def test_bounding_box_init() -> None:
-    x_min = -64
-    y_min = -128
-    x_max = 192
-    y_max = 128
+    x_min = -128
+    y_min = -64
+    x_max = 128
+    y_max = 192
     bounding_box = BoundingBox(
         x_min=x_min,
         y_min=y_min,
@@ -37,8 +37,8 @@ def test_bounding_box_init() -> None:
     assert bounding_box.y_max == y_max
 
 
-@pytest.mark.parametrize(('x_min', 'y_min', 'x_max', 'y_max', 'message'), data_test_bounding_box_init_exceptions)
-def test_bounding_box_init_exceptions(
+@pytest.mark.parametrize(('x_min', 'y_min', 'x_max', 'y_max', 'message'), data_test_bounding_box_validation)
+def test_bounding_box_validation(
     x_min: Coordinate,
     y_min: Coordinate,
     x_max: Coordinate,
