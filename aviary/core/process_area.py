@@ -715,8 +715,9 @@ class ProcessAreaConfig(pydantic.BaseModel):
         bounding_box: Bounding box (x_min, y_min, x_max, y_max)
         gdf: Path to the geodataframe
         json_string: Path to the JSON file containing the coordinates (x_min, y_min) of each tile
+            and the tile size
         processed_coordinates_json_string: Path to the JSON file containing the coordinates (x_min, y_min)
-            of the processed tiles
+            of each tile and the tile size of the processed tiles
         tile_size: Tile size in meters
         quantize: If true, the bounding box is quantized to `tile_size`
     """
