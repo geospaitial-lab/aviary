@@ -742,11 +742,12 @@ class ProcessAreaConfig(pydantic.BaseModel):
             )
             raise ValueError(message)
 
+        x_min, y_min, x_max, y_max = bounding_box
         return BoundingBox(
-            x_min=bounding_box[0],
-            y_min=bounding_box[1],
-            x_max=bounding_box[2],
-            y_max=bounding_box[3],
+            x_min=x_min,
+            y_min=y_min,
+            x_max=x_max,
+            y_max=y_max,
         )
 
     # noinspection PyNestedDecorators
