@@ -242,7 +242,7 @@ def test_bounding_box_to_gdf(
 ) -> None:
     epsg_code = 25832
     gdf = bounding_box.to_gdf(epsg_code=epsg_code)
-    expected_geometry = [box(-128, -128, 128, 128)]
+    expected_geometry = [box(-128, -64, 128, 192)]
     expected_epsg_code = 25832
     expected = gpd.GeoDataFrame(
         geometry=expected_geometry,
