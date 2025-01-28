@@ -545,6 +545,7 @@ class ProcessArea(Iterable[Coordinates]):
 
         if inplace:
             self._coordinates = coordinates
+            self._validate()
             return self
 
         return ProcessArea(
@@ -591,6 +592,7 @@ class ProcessArea(Iterable[Coordinates]):
 
         if inplace:
             self._coordinates = coordinates
+            self._validate()
             return self
 
         return ProcessArea(
