@@ -11,9 +11,9 @@ from aviary.core.tile import Tile
 @pytest.fixture(scope='function')
 def bounding_box() -> BoundingBox:
     x_min = -128
-    y_min = -128
+    y_min = -64
     x_max = 128
-    y_max = 128
+    y_max = 192
     return BoundingBox(
         x_min=x_min,
         y_min=y_min,
