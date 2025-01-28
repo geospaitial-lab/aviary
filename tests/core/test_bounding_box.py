@@ -20,9 +20,9 @@ from tests.core.data.data_test_bounding_box import (
 
 
 def test_bounding_box_init() -> None:
-    x_min = -128
+    x_min = -64
     y_min = -128
-    x_max = 128
+    x_max = 192
     y_max = 128
     bounding_box = BoundingBox(
         x_min=x_min,
