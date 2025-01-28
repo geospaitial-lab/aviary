@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import warnings
 from collections.abc import (
     Iterable,
     Iterator,
@@ -31,7 +32,10 @@ from aviary.core.enums import (
     GeospatialFilterMode,
     SetFilterMode,
 )
-from aviary.core.exceptions import AviaryUserError
+from aviary.core.exceptions import (
+    AviaryUserError,
+    AviaryUserWarning,
+)
 from aviary.core.type_aliases import (
     Coordinate,
     Coordinates,
@@ -56,31 +60,71 @@ class ProcessArea(Iterable[Coordinates]):
 
     def __init__(
         self,
+        coordinates: CoordinatesSet | None,
         tile_size: TileSize,
-        coordinates: CoordinatesSet | None = None,
     ) -> None:
         """
         Parameters:
-            tile_size: tile size in meters
             coordinates: coordinates (x_min, y_min) of each tile
+            tile_size: tile size in meters
         """
+        self._coordinates = coordinates
         self._tile_size = tile_size
 
-        if coordinates is None:
-            coordinates = np.empty(
-                shape=(0, 2),
-                dtype=np.int32,
+        self._validate()
+
+    def _validate(self) -> None:
+        """Validates the process area."""
+        self._validate_coordinates()
+        self._validate_tile_size()
+
+    def _validate_coordinates(self) -> None:
+        """Validates `coordinates`.
+
+        Raises:
+            Invalid coordinates (`coordinates` is not an array of shape (n, 2) and data type int32)
+        """
+        conditions = [
+            self._coordinates.ndim != 2,  # noqa: PLR2004
+            self._coordinates.shape[1] != 2,  # noqa: PLR2004
+            self._coordinates.dtype != np.int32,
+        ]
+
+        if any(conditions):
+            message = (
+                'Invalid coordinates! '
+                'coordinates must be an array of shape (n, 2) and data type int32.'
+            )
+            raise AviaryUserError(message)
+
+        unique_coordinates = duplicates_filter(self._coordinates)
+
+        if self._coordinates != unique_coordinates:
+            message = (
+                'Invalid coordinates! '
+                'coordinates must be an array of unique coordinates. '
+                'Duplicates are removed.'
+            )
+            warnings.warn(
+                message=message,
+                category=AviaryUserWarning,
+                stacklevel=2,
             )
 
-        self._coordinates = coordinates
+        self._coordinates = unique_coordinates
 
-    @property
-    def tile_size(self) -> TileSize:
+    def _validate_tile_size(self) -> None:
+        """Validates `tile_size`.
+
+        Raises:
+            AviaryUserError: Invalid tile size (`tile_size` is negative or zero)
         """
-        Returns:
-            tile size in meters
-        """
-        return self._tile_size
+        if self._tile_size <= 0:
+            message = (
+                'Invalid tile size! '
+                'tile_size must be positive.'
+            )
+            raise AviaryUserError(message)
 
     @property
     def coordinates(self) -> CoordinatesSet:
@@ -89,6 +133,14 @@ class ProcessArea(Iterable[Coordinates]):
             coordinates (x_min, y_min) of each tile
         """
         return self._coordinates
+
+    @property
+    def tile_size(self) -> TileSize:
+        """
+        Returns:
+            tile size in meters
+        """
+        return self._tile_size
 
     @property
     def area(self) -> int:
