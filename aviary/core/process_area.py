@@ -65,8 +65,8 @@ class ProcessArea(Iterable[Coordinates]):
     ) -> None:
         """
         Parameters:
-            coordinates: coordinates (x_min, y_min) of each tile
-            tile_size: tile size in meters
+            coordinates: Coordinates (x_min, y_min) of each tile
+            tile_size: Tile size in meters
         """
         self._coordinates = coordinates
         self._tile_size = tile_size
@@ -82,7 +82,7 @@ class ProcessArea(Iterable[Coordinates]):
         """Validates `coordinates`.
 
         Raises:
-            Invalid coordinates (`coordinates` is not an array of shape (n, 2) and data type int32)
+            AviaryUserError: Invalid coordinates (`coordinates` is not an array of shape (n, 2) and data type int32)
         """
         conditions = [
             self._coordinates.ndim != 2,  # noqa: PLR2004
@@ -130,7 +130,7 @@ class ProcessArea(Iterable[Coordinates]):
     def coordinates(self) -> CoordinatesSet:
         """
         Returns:
-            coordinates (x_min, y_min) of each tile
+            Coordinates (x_min, y_min) of each tile
         """
         return self._coordinates
 
@@ -138,7 +138,7 @@ class ProcessArea(Iterable[Coordinates]):
     def tile_size(self) -> TileSize:
         """
         Returns:
-            tile size in meters
+            Tile size in meters
         """
         return self._tile_size
 
@@ -146,7 +146,7 @@ class ProcessArea(Iterable[Coordinates]):
     def area(self) -> int:
         """
         Returns:
-            area in square meters
+            Area in square meters
         """
         return len(self) * self._tile_size ** 2
 
@@ -160,12 +160,12 @@ class ProcessArea(Iterable[Coordinates]):
         """Creates a process area from a bounding box.
 
         Parameters:
-            bounding_box: bounding box
-            tile_size: tile size in meters
-            quantize: if True, the bounding box is quantized to `tile_size`
+            bounding_box: Bounding box
+            tile_size: Tile size in meters
+            quantize: If true, the bounding box is quantized to `tile_size`
 
         Returns:
-            process area
+            Process area
         """
         coordinates = compute_coordinates(
             bounding_box=bounding_box,
@@ -187,12 +187,12 @@ class ProcessArea(Iterable[Coordinates]):
         """Creates a process area from a geodataframe.
 
         Parameters:
-            gdf: geodataframe
-            tile_size: tile size in meters
-            quantize: if True, the bounding box is quantized to `tile_size`
+            gdf: Geodataframe
+            tile_size: Tile size in meters
+            quantize: If true, the bounding box is quantized to `tile_size`
 
         Returns:
-            process area
+            Process area
         """
         bounding_box = BoundingBox.from_gdf(gdf)
         coordinates = compute_coordinates(
@@ -243,7 +243,7 @@ class ProcessArea(Iterable[Coordinates]):
             json_string: JSON string
 
         Returns:
-            process area
+            Process area
 
         Raises:
             AviaryUserError: Invalid JSON string (`json_string` does not contain the keys coordinates and tile_size)
@@ -272,10 +272,10 @@ class ProcessArea(Iterable[Coordinates]):
         """Creates a process area from the configuration.
 
         Parameters:
-            config: configuration
+            config: Configuration
 
         Returns:
-            process area
+            Process area
 
         Raises:
             AviaryUserError: Invalid configuration
@@ -334,7 +334,7 @@ class ProcessArea(Iterable[Coordinates]):
         """Returns the string representation.
 
         Returns:
-            string representation
+            String representation
         """
         max_coordinates = 4
         coordinates_repr = self._coordinates.tolist()
@@ -361,10 +361,10 @@ class ProcessArea(Iterable[Coordinates]):
         """Compares the process areas.
 
         Parameters:
-            other: other process area
+            other: Other process area
 
         Returns:
-            True if the process areas are equal, False otherwise
+            True if the process areas are equal, false otherwise
         """
         if not isinstance(other, ProcessArea):
             return False
@@ -379,7 +379,7 @@ class ProcessArea(Iterable[Coordinates]):
         """Computes the number of coordinates.
 
         Returns:
-            number of coordinates
+            Number of coordinates
         """
         return len(self._coordinates)
 
@@ -404,10 +404,10 @@ class ProcessArea(Iterable[Coordinates]):
         """Returns the coordinates or the sliced process area.
 
         Parameters:
-            index: index or slice of the coordinates
+            index: Index or slice of the coordinates
 
         Returns:
-            coordinates or sliced process area
+            Coordinates or sliced process area
         """
         if isinstance(index, slice):
             coordinates = self._coordinates[index]
@@ -423,7 +423,7 @@ class ProcessArea(Iterable[Coordinates]):
         """Iterates over the coordinates.
 
         Yields:
-            coordinates
+            Coordinates
         """
         for x_min, y_min in self._coordinates:
             yield int(x_min), int(y_min)
@@ -439,10 +439,10 @@ class ProcessArea(Iterable[Coordinates]):
               to the coordinates
 
         Parameters:
-            other: other process area
+            other: Other process area
 
         Returns:
-            union of the process areas
+            Process area
 
         Raises:
             AviaryUserError: Invalid tile size (`tile_size` != `other.tile_size`)
@@ -475,10 +475,10 @@ class ProcessArea(Iterable[Coordinates]):
               to the coordinates
 
         Parameters:
-            other: other process area
+            other: Other process area
 
         Returns:
-            difference of the process areas
+            Process area
 
         Raises:
             AviaryUserError: Invalid tile size (`tile_size` != `other.tile_size`)
@@ -511,10 +511,10 @@ class ProcessArea(Iterable[Coordinates]):
               to the coordinates
 
         Parameters:
-            other: other process area
+            other: Other process area
 
         Returns:
-            intersection of the process areas
+            Process area
 
         Raises:
             AviaryUserError: Invalid tile size (`tile_size` != `other.tile_size`)
@@ -544,11 +544,11 @@ class ProcessArea(Iterable[Coordinates]):
         """Appends the coordinates to the process area.
 
         Parameters:
-            coordinates: coordinates (x_min, y_min) of the tile
-            inplace: if True, the coordinates are appended inplace
+            coordinates: Coordinates (x_min, y_min) of the tile
+            inplace: If true, the coordinates are appended inplace
 
         Returns:
-            process area
+            Process area
         """
         coordinates = np.array([coordinates], dtype=np.int32)
         coordinates = np.concatenate([self._coordinates, coordinates], axis=0)
@@ -584,10 +584,10 @@ class ProcessArea(Iterable[Coordinates]):
         """Chunks the process area.
 
         Parameters:
-            num_chunks: number of chunks
+            num_chunks: Number of chunks
 
         Returns:
-            list of process areas
+            Process areas
         """
         return [
             ProcessArea(
@@ -606,11 +606,11 @@ class ProcessArea(Iterable[Coordinates]):
         """Filters the process area.
 
         Parameters:
-            coordinates_filter: coordinates filter
-            inplace: if True, the coordinates are filtered inplace
+            coordinates_filter: Coordinates filter
+            inplace: If true, the coordinates are filtered inplace
 
         Returns:
-            filtered process area
+            Process area
         """
         coordinates = coordinates_filter(self._coordinates)
 
@@ -632,11 +632,11 @@ class ProcessArea(Iterable[Coordinates]):
         """Removes the coordinates from the process area.
 
         Parameters:
-            coordinates: coordinates (x_min, y_min) of the tile
-            inplace: if True, the coordinates are removed inplace
+            coordinates: Coordinates (x_min, y_min) of the tile
+            inplace: If true, the coordinates are removed inplace
 
         Returns:
-            process area
+            Process area
         """
         coordinates = np.array([coordinates], dtype=np.int32)
         coordinates = set_filter(
@@ -676,7 +676,7 @@ class ProcessArea(Iterable[Coordinates]):
             epsg_code: EPSG code
 
         Returns:
-            geodataframe
+            Geodataframe
         """
         geometry = [
             box(x_min, y_min, x_min + self._tile_size, y_min + self._tile_size)
@@ -712,13 +712,13 @@ class ProcessAreaConfig(pydantic.BaseModel):
         - `bounding_box` and `tile_size`
 
     Attributes:
-        bounding_box: bounding box (x_min, y_min, x_max, y_max)
-        gdf: path to the geodataframe
-        json_string: path to the JSON file containing the coordinates (x_min, y_min) of each tile
-        processed_coordinates_json_string: path to the JSON file containing the coordinates (x_min, y_min)
+        bounding_box: Bounding box (x_min, y_min, x_max, y_max)
+        gdf: Path to the geodataframe
+        json_string: Path to the JSON file containing the coordinates (x_min, y_min) of each tile
+        processed_coordinates_json_string: Path to the JSON file containing the coordinates (x_min, y_min)
             of the processed tiles
-        tile_size: tile size in meters
-        quantize: if True, the bounding box is quantized to `tile_size`
+        tile_size: Tile size in meters
+        quantize: If true, the bounding box is quantized to `tile_size`
     """
     bounding_box: list[Coordinate] | None = None
     gdf: Path | None = None
@@ -734,7 +734,7 @@ class ProcessAreaConfig(pydantic.BaseModel):
         cls,
         bounding_box: list[Coordinate],
     ) -> BoundingBox:
-        """Parses the bounding box."""
+        """Parses `bounding_box`."""
         if len(bounding_box) != 4:  # noqa: PLR2004
             message = (
                 'Invalid bounding box! '
@@ -756,7 +756,7 @@ class ProcessAreaConfig(pydantic.BaseModel):
         cls,
         gdf: Path,
     ) -> gpd.GeoDataFrame:
-        """Parses the geodataframe."""
+        """Parses `gdf`."""
         return gpd.read_file(gdf)
 
     # noinspection PyNestedDecorators
@@ -766,7 +766,7 @@ class ProcessAreaConfig(pydantic.BaseModel):
         cls,
         json_string: Path,
     ) -> str:
-        """Parses the JSON string containing the coordinates (x_min, y_min) of each tile."""
+        """Parses `json_string`."""
         with json_string.open() as file:
             return json.load(file)
 
@@ -777,7 +777,7 @@ class ProcessAreaConfig(pydantic.BaseModel):
         cls,
         processed_coordinates_json_string: Path,
     ) -> str:
-        """Parses the JSON string containing the coordinates (x_min, y_min) of the processed tiles."""
+        """Parses `processed_coordinates_json_string`."""
         with processed_coordinates_json_string.open() as file:
             return json.load(file)
 
