@@ -18,15 +18,15 @@ data_test_bounding_box_buffer_exceptions = [
 
 data_test_bounding_box_area = [
     # test case 1: bounding box is in all quadrants
-    (BoundingBox(-128, -128, 128, 128), 65536),
+    (BoundingBox(-128, -64, 128, 192), 65536),
     # test case 2: bounding box is in the first quadrant
-    (BoundingBox(128, 128, 256, 256), 16384),
+    (BoundingBox(128, 192, 256, 320), 16384),
     # test case 3: bounding box is in the second quadrant
-    (BoundingBox(-256, 128, -128, 256), 16384),
+    (BoundingBox(-256, 192, -128, 320), 16384),
     # test case 4: bounding box is in the third quadrant
-    (BoundingBox(-256, -256, -128, -128), 16384),
+    (BoundingBox(-256, -192, -128, -64), 16384),
     # test case 5: bounding box is in the fourth quadrant
-    (BoundingBox(128, -256, 256, -128), 16384),
+    (BoundingBox(128, -192, 256, -64), 16384),
 ]
 
 data_test_bounding_box_quantize = [
