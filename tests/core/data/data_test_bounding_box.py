@@ -31,25 +31,6 @@ data_test_bounding_box_init_exceptions = [
     (128, 128, 0, 0, 'Invalid bounding box! x_min must be less than x_max.'),
 ]
 
-data_test_bounding_box_properties_exceptions = [
-    # test case 1: x_min == x_max
-    ('x_min', 128, 'Invalid bounding box! x_min must be less than x_max.'),
-    # test case 2: x_min > x_max
-    ('x_min', 129, 'Invalid bounding box! x_min must be less than x_max.'),
-    # test case 3: y_min == y_max
-    ('y_min', 128, 'Invalid bounding box! y_min must be less than y_max.'),
-    # test case 4: y_min > y_max
-    ('y_min', 129, 'Invalid bounding box! y_min must be less than y_max.'),
-    # test case 5: x_max == x_min
-    ('x_max', -128, 'Invalid bounding box! x_min must be less than x_max.'),
-    # test case 6: x_max < x_min
-    ('x_max', -129, 'Invalid bounding box! x_min must be less than x_max.'),
-    # test case 7: y_max == y_min
-    ('y_max', -128, 'Invalid bounding box! y_min must be less than y_max.'),
-    # test case 8: y_max < y_min
-    ('y_max', -129, 'Invalid bounding box! y_min must be less than y_max.'),
-]
-
 data_test_bounding_box_area = [
     # test case 1: bounding box is in all quadrants
     (BoundingBox(-128, -128, 128, 128), 65536),

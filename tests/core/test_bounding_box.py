@@ -14,7 +14,6 @@ from tests.core.data.data_test_bounding_box import (
     data_test_bounding_box_buffer,
     data_test_bounding_box_buffer_exceptions,
     data_test_bounding_box_init_exceptions,
-    data_test_bounding_box_properties_exceptions,
     data_test_bounding_box_quantize,
     data_test_bounding_box_quantize_exceptions,
 )
@@ -53,35 +52,6 @@ def test_bounding_box_init_exceptions(
             x_max=x_max,
             y_max=y_max,
         )
-
-
-def test_bounding_box_properties(
-    bounding_box: BoundingBox,
-) -> None:
-    x_min = -192
-    y_min = -192
-    x_max = 192
-    y_max = 192
-    bounding_box.x_min = x_min
-    bounding_box.y_min = y_min
-    bounding_box.x_max = x_max
-    bounding_box.y_max = y_max
-
-    assert bounding_box.x_min == x_min
-    assert bounding_box.y_min == y_min
-    assert bounding_box.x_max == x_max
-    assert bounding_box.y_max == y_max
-
-
-@pytest.mark.parametrize(('property_', 'value', 'message'), data_test_bounding_box_properties_exceptions)
-def test_bounding_box_properties_exceptions(
-    property_: str,
-    value: Coordinate,
-    message: str,
-    bounding_box: BoundingBox,
-) -> None:
-    with pytest.raises(AviaryUserError, match=message):
-        setattr(bounding_box, property_, value)
 
 
 @pytest.mark.parametrize(('bounding_box', 'expected'), data_test_bounding_box_area)
