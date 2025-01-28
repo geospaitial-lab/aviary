@@ -63,7 +63,7 @@ def test_bounding_box_area(
 
 
 def test_bounding_box_from_gdf() -> None:
-    geometry = [box(-128, -128, 128, 128)]
+    geometry = [box(-128, -64, 128, 192)]
     epsg_code = 25832
     gdf = gpd.GeoDataFrame(
         geometry=geometry,
@@ -71,9 +71,9 @@ def test_bounding_box_from_gdf() -> None:
     )
     bounding_box = BoundingBox.from_gdf(gdf)
     expected_x_min = -128
-    expected_y_min = -128
+    expected_y_min = -64
     expected_x_max = 128
-    expected_y_max = 128
+    expected_y_max = 192
     expected = BoundingBox(
         x_min=expected_x_min,
         y_min=expected_y_min,
