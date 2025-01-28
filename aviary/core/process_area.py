@@ -5,7 +5,6 @@ from collections.abc import (
     Iterable,
     Iterator,
 )
-from dataclasses import dataclass
 from pathlib import Path  # noqa: TC003
 from typing import (
     TYPE_CHECKING,
@@ -45,7 +44,6 @@ if TYPE_CHECKING:
     from aviary.geodata.coordinates_filter import CoordinatesFilter
 
 
-@dataclass
 class ProcessArea(Iterable[Coordinates]):
     """A process area specifies the area of interest by a set of coordinates of the bottom left corner of each tile
     and the tile size.
@@ -54,13 +52,7 @@ class ProcessArea(Iterable[Coordinates]):
         - The `+` operator can be used to add two process areas
         - The `-` operator can be used to subtract two process areas
         - The `&` operator can be used to intersect two process areas
-
-    Attributes:
-        coordinates: coordinates (x_min, y_min) of each tile
-        tile_size: tile size in meters
     """
-    coordinates: CoordinatesSet
-    tile_size: TileSize
 
     def __init__(
         self,
