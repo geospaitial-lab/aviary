@@ -4,10 +4,6 @@ from collections.abc import (
     Iterable,
     Iterator,
 )
-from dataclasses import (
-    dataclass,
-    fields,
-)
 from math import (
     ceil,
     floor,
@@ -24,20 +20,14 @@ from aviary.core.type_aliases import (
 )
 
 
-@dataclass
 class BoundingBox(Iterable[Coordinate]):
-    """A bounding box specifies the spatial extent of an area of interest.
-
-    Attributes:
-        x_min: minimum x coordinate
-        y_min: minimum y coordinate
-        x_max: maximum x coordinate
-        y_max: maximum y coordinate
-    """
-    x_min: Coordinate
-    y_min: Coordinate
-    x_max: Coordinate
-    y_max: Coordinate
+    """A bounding box specifies the spatial extent of an area of interest."""
+    _COORDINATES = (
+        'x_min',
+        'y_min',
+        'x_max',
+        'y_max',
+    )
 
     def __init__(
         self,
@@ -235,13 +225,36 @@ class BoundingBox(Iterable[Coordinate]):
             ')'
         )
 
+    def __eq__(
+        self,
+        other: BoundingBox,
+    ) -> bool:
+        """Compares the bounding boxes.
+
+        Parameters:
+            other: other bounding box
+
+        Returns:
+            True if the bounding boxes are equal, False otherwise
+        """
+        if not isinstance(other, BoundingBox):
+            return False
+
+        conditions = [
+            self._x_min == other.x_min,
+            self._y_min == other.y_min,
+            self._x_max == other.x_max,
+            self._y_max == other.y_max,
+        ]
+        return all(conditions)
+
     def __len__(self) -> int:
         """Computes the number of coordinates.
 
         Returns:
             number of coordinates
         """
-        return len(fields(self))
+        return len(self._COORDINATES)
 
     def __getitem__(
         self,
@@ -255,8 +268,7 @@ class BoundingBox(Iterable[Coordinate]):
         Returns:
             coordinate
         """
-        field = fields(self)[index]
-        return getattr(self, field.name)
+        return getattr(self, self._COORDINATES[index])
 
     def __iter__(self) -> Iterator[Coordinate]:
         """Iterates over the coordinates.
@@ -264,8 +276,8 @@ class BoundingBox(Iterable[Coordinate]):
         Yields:
             coordinate
         """
-        for field in fields(self):
-            yield getattr(self, field.name)
+        for coordinate in self._COORDINATES:
+            yield getattr(self, coordinate)
 
     def buffer(
         self,
