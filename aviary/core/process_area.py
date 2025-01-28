@@ -64,7 +64,7 @@ class ProcessArea(Iterable[Coordinates]):
             tile_size: tile size in meters
             coordinates: coordinates (x_min, y_min) of each tile
         """
-        self.tile_size = tile_size
+        self._tile_size = tile_size
 
         if coordinates is None:
             coordinates = np.empty(
@@ -72,7 +72,7 @@ class ProcessArea(Iterable[Coordinates]):
                 dtype=np.int32,
             )
 
-        self.coordinates = coordinates
+        self._coordinates = coordinates
 
     @property
     def tile_size(self) -> TileSize:
@@ -82,27 +82,6 @@ class ProcessArea(Iterable[Coordinates]):
         """
         return self._tile_size
 
-    @tile_size.setter
-    def tile_size(
-        self,
-        value: TileSize,
-    ) -> None:
-        """
-        Parameters:
-            value: tile size in meters
-
-        Raises:
-            AviaryUserError: Invalid tile size (`tile_size` <= 0)
-        """
-        if value <= 0:
-            message = (
-                'Invalid tile size! '
-                'tile_size must be positive.'
-            )
-            raise AviaryUserError(message)
-
-        self._tile_size = value
-
     @property
     def coordinates(self) -> CoordinatesSet:
         """
@@ -110,33 +89,6 @@ class ProcessArea(Iterable[Coordinates]):
             coordinates (x_min, y_min) of each tile
         """
         return self._coordinates
-
-    @coordinates.setter
-    def coordinates(
-        self,
-        value: CoordinatesSet,
-    ) -> None:
-        """
-        Parameters:
-            value: coordinates (x_min, y_min) of each tile
-
-        Raises:
-            AviaryUserError: Invalid coordinates (`coordinates` is not an array of shape (n, 2) and data type int32)
-        """
-        conditions = [
-            value.ndim != 2,  # noqa: PLR2004
-            value.shape[1] != 2,  # noqa: PLR2004
-            value.dtype != np.int32,
-        ]
-
-        if any(conditions):
-            message = (
-                'Invalid coordinates! '
-                'coordinates must be an array of shape (n, 2) and data type int32.'
-            )
-            raise AviaryUserError(message)
-
-        self._coordinates = value
 
     @property
     def area(self) -> int:
