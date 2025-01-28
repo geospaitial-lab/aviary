@@ -326,15 +326,19 @@ class ProcessArea(Iterable[Coordinates]):
             string representation
         """
         max_coordinates = 4
-        coordinates = self._coordinates.tolist()
+        coordinates_repr = self._coordinates.tolist()
 
-        if len(coordinates) > max_coordinates:
-            coordinates = coordinates[:max_coordinates // 2] + [Ellipsis] + coordinates[-max_coordinates // 2:]
+        if len(coordinates_repr) > max_coordinates:
+            coordinates_repr = (
+                coordinates_repr[:max_coordinates // 2] +
+                [Ellipsis] +
+                coordinates_repr[-max_coordinates // 2:]
+            )
 
-        coordinates = str(coordinates).replace('Ellipsis', '...')
+        coordinates_repr = str(coordinates_repr).replace('Ellipsis', '...')
         return (
             'ProcessArea(\n'
-            f'    coordinates={coordinates},\n'
+            f'    coordinates={coordinates_repr},\n'
             f'    tile_size={self._tile_size},\n'
             ')'
         )
