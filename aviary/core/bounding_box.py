@@ -73,27 +73,6 @@ class BoundingBox(Iterable[Coordinate]):
         """
         return self._x_min
 
-    @x_min.setter
-    def x_min(
-        self,
-        value: Coordinate,
-    ) -> None:
-        """
-        Parameters:
-            value: minimum x coordinate
-
-        Raises:
-            AviaryUserError: Invalid bounding box (`x_min` >= `x_max`)
-        """
-        if value >= self._x_max:
-            message = (
-                'Invalid bounding box! '
-                'x_min must be less than x_max.'
-            )
-            raise AviaryUserError(message)
-
-        self._x_min = value
-
     @property
     def y_min(self) -> Coordinate:
         """
@@ -101,27 +80,6 @@ class BoundingBox(Iterable[Coordinate]):
             minimum y coordinate
         """
         return self._y_min
-
-    @y_min.setter
-    def y_min(
-        self,
-        value: Coordinate,
-    ) -> None:
-        """
-        Parameters:
-            value: minimum y coordinate
-
-        Raises:
-            AviaryUserError: Invalid bounding box (`y_min` >= `y_max`)
-        """
-        if value >= self._y_max:
-            message = (
-                'Invalid bounding box! '
-                'y_min must be less than y_max.'
-            )
-            raise AviaryUserError(message)
-
-        self._y_min = value
 
     @property
     def x_max(self) -> Coordinate:
@@ -131,27 +89,6 @@ class BoundingBox(Iterable[Coordinate]):
         """
         return self._x_max
 
-    @x_max.setter
-    def x_max(
-        self,
-        value: Coordinate,
-    ) -> None:
-        """
-        Parameters:
-            value: maximum x coordinate
-
-        Raises:
-            AviaryUserError: Invalid bounding box (`x_min` >= `x_max`)
-        """
-        if value <= self._x_min:
-            message = (
-                'Invalid bounding box! '
-                'x_min must be less than x_max.'
-            )
-            raise AviaryUserError(message)
-
-        self._x_max = value
-
     @property
     def y_max(self) -> Coordinate:
         """
@@ -159,27 +96,6 @@ class BoundingBox(Iterable[Coordinate]):
             maximum y coordinate
         """
         return self._y_max
-
-    @y_max.setter
-    def y_max(
-        self,
-        value: Coordinate,
-    ) -> None:
-        """
-        Parameters:
-            value: maximum y coordinate
-
-        Raises:
-            AviaryUserError: Invalid bounding box (`y_min` >= `y_max`)
-        """
-        if value <= self._y_min:
-            message = (
-                'Invalid bounding box! '
-                'y_min must be less than y_max.'
-            )
-            raise AviaryUserError(message)
-
-        self._y_max = value
 
     @property
     def area(self) -> int:
