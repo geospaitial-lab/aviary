@@ -41,37 +41,49 @@ data_test_bounding_box_quantize = [
     (BoundingBox(-127, -127, 127, 127), 128, BoundingBox(-128, -128, 128, 128)),
     # test case 3: bounding box is in all quadrants, bounding box is not divisible by value
     (BoundingBox(-129, -129, 129, 129), 128, BoundingBox(-256, -256, 256, 256)),
-    # test case 4: bounding box is in the first quadrant, bounding box is divisible by value
+    # test case 4: bounding box is in all quadrants, bounding box is not divisible by value
+    (BoundingBox(-128, -64, 128, 192), 128, BoundingBox(-128, -128, 128, 256)),
+    # test case 5: bounding box is in the first quadrant, bounding box is divisible by value
     (BoundingBox(128, 128, 256, 256), 128, BoundingBox(128, 128, 256, 256)),
-    # test case 5: bounding box is in the first quadrant, bounding box is not divisible by value
-    (BoundingBox(129, 129, 255, 255), 128, BoundingBox(128, 128, 256, 256)),
     # test case 6: bounding box is in the first quadrant, bounding box is not divisible by value
+    (BoundingBox(129, 129, 255, 255), 128, BoundingBox(128, 128, 256, 256)),
+    # test case 7: bounding box is in the first quadrant, bounding box is not divisible by value
     (BoundingBox(127, 127, 257, 257), 128, BoundingBox(0, 0, 384, 384)),
-    # test case 7: bounding box is in the second quadrant, bounding box is divisible by value
+    # test case 8: bounding box is in the first quadrant, bounding box is not divisible by value
+    (BoundingBox(128, 192, 256, 320), 128, BoundingBox(128, 128, 256, 384)),
+    # test case 9: bounding box is in the second quadrant, bounding box is divisible by value
     (BoundingBox(-256, 128, -128, 256), 128, BoundingBox(-256, 128, -128, 256)),
-    # test case 8: bounding box is in the second quadrant, bounding box is not divisible by value
+    # test case 10: bounding box is in the second quadrant, bounding box is not divisible by value
     (BoundingBox(-255, 129, -129, 255), 128, BoundingBox(-256, 128, -128, 256)),
-    # test case 9: bounding box is in the second quadrant, bounding box is not divisible by value
+    # test case 11: bounding box is in the second quadrant, bounding box is not divisible by value
     (BoundingBox(-257, 127, -127, 257), 128, BoundingBox(-384, 0, 0, 384)),
-    # test case 10: bounding box is in the third quadrant, bounding box is divisible by value
+    # test case 12: bounding box is in the second quadrant, bounding box is not divisible by value
+    (BoundingBox(-256, 192, -128, 320), 128, BoundingBox(-256, 128, -128, 384)),
+    # test case 13: bounding box is in the third quadrant, bounding box is divisible by value
     (BoundingBox(-256, -256, -128, -128), 128, BoundingBox(-256, -256, -128, -128)),
-    # test case 11: bounding box is in the third quadrant, bounding box is not divisible by value
+    # test case 14: bounding box is in the third quadrant, bounding box is not divisible by value
     (BoundingBox(-255, -255, -129, -129), 128, BoundingBox(-256, -256, -128, -128)),
-    # test case 12: bounding box is in the third quadrant, bounding box is not divisible by value
+    # test case 15: bounding box is in the third quadrant, bounding box is not divisible by value
     (BoundingBox(-257, -257, -127, -127), 128, BoundingBox(-384, -384, 0, 0)),
-    # test case 13: bounding box is in the fourth quadrant, bounding box is divisible by value
+    # test case 16: bounding box is in the third quadrant, bounding box is not divisible by value
+    (BoundingBox(-256, -192, -128, -64), 128, BoundingBox(-256, -256, -128, 0)),
+    # test case 17: bounding box is in the fourth quadrant, bounding box is divisible by value
     (BoundingBox(128, -256, 256, -128), 128, BoundingBox(128, -256, 256, -128)),
-    # test case 14: bounding box is in the fourth quadrant, bounding box is not divisible by value
+    # test case 18: bounding box is in the fourth quadrant, bounding box is not divisible by value
     (BoundingBox(129, -255, 255, -129), 128, BoundingBox(128, -256, 256, -128)),
-    # test case 15: bounding box is in the fourth quadrant, bounding box is not divisible by value
+    # test case 19: bounding box is in the fourth quadrant, bounding box is not divisible by value
     (BoundingBox(127, -257, 257, -127), 128, BoundingBox(0, -384, 384, 0)),
+    # test case 20: bounding box is in the fourth quadrant, bounding box is not divisible by value
+    (BoundingBox(128, -192, 256, -64), 128, BoundingBox(128, -256, 256, 0)),
 ]
 
+data_test_bounding_box_quantize_exceptions_message = 'Invalid value! value must be positive.'
+
 data_test_bounding_box_quantize_exceptions = [
-    # test case 1: value is 0
-    (0, 'Invalid value! value must be positive.'),
+    # test case 1: value is zero
+    (0, data_test_bounding_box_quantize_exceptions_message),
     # test case 2: value is negative
-    (-128, 'Invalid value! value must be positive.'),
+    (-128, data_test_bounding_box_quantize_exceptions_message),
 ]
 
 data_test_bounding_box_validation_message = (
