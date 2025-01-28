@@ -88,9 +88,9 @@ def test_bounding_box_eq(
     bounding_box: BoundingBox,
 ) -> None:
     other_x_min = -128
-    other_y_min = -128
+    other_y_min = -64
     other_x_max = 128
-    other_y_max = 128
+    other_y_max = 192
     other_bounding_box = BoundingBox(
         x_min=other_x_min,
         y_min=other_y_min,
