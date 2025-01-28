@@ -1,19 +1,24 @@
 from aviary.core.bounding_box import BoundingBox
 
 data_test_bounding_box_buffer = [
-    # test case 1: buffer_size is 0
-    (0, BoundingBox(-128, -128, 128, 128)),
+    # test case 1: buffer_size is zero
+    (0, BoundingBox(-128, -64, 128, 192)),
     # test case 2: buffer_size is positive
-    (64, BoundingBox(-192, -192, 192, 192)),
+    (64, BoundingBox(-192, -128, 192, 256)),
     # test case 3: buffer_size is negative
-    (-64, BoundingBox(-64, -64, 64, 64)),
+    (-64, BoundingBox(-64, 0, 64, 128)),
 ]
 
+data_test_bounding_box_buffer_exceptions_message = (
+    'Invalid buffer size! '
+    'The absolute value of a negative buffer_size must be less than half the width and height of the bounding box.'
+)
+
 data_test_bounding_box_buffer_exceptions = [
-    # test case 1: buffer_size is equal to half the width or height of the bounding box
-    (-128, 'Invalid buffer size! buffer_size must be less than half the width or height of the bounding box.'),
-    # test case 2: buffer_size is greater than half the width or height of the bounding box
-    (-192, 'Invalid buffer size! buffer_size must be less than half the width or height of the bounding box.'),
+    # test case 1: abs(buffer_size) is equal to half the width and height of the bounding box
+    (-128, data_test_bounding_box_buffer_exceptions_message),
+    # test case 2: abs(buffer_size) is greater than half the width and height of the bounding box
+    (-192, data_test_bounding_box_buffer_exceptions_message),
 ]
 
 data_test_bounding_box_area = [

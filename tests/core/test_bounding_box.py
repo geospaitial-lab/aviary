@@ -1,3 +1,5 @@
+import copy
+
 import geopandas as gpd
 import geopandas.testing
 import pytest
@@ -159,9 +161,15 @@ def test_bounding_box_buffer(
     expected: BoundingBox,
     bounding_box: BoundingBox,
 ) -> None:
-    bounding_box = bounding_box.buffer(buffer_size)
+    copied_bounding_box = copy.deepcopy(bounding_box)
 
-    assert bounding_box == expected
+    bounding_box_ = bounding_box.buffer(
+        buffer_size=buffer_size,
+        inplace=False,
+    )
+
+    assert bounding_box == copied_bounding_box
+    assert bounding_box_ == expected
 
 
 @pytest.mark.parametrize(('buffer_size', 'expected'), data_test_bounding_box_buffer)
@@ -170,7 +178,17 @@ def test_bounding_box_buffer_inplace(
     expected: BoundingBox,
     bounding_box: BoundingBox,
 ) -> None:
-    bounding_box.buffer(buffer_size, inplace=True)
+    copied_bounding_box = copy.deepcopy(bounding_box)
+
+    bounding_box.buffer(
+        buffer_size=buffer_size,
+        inplace=True,
+    )
+
+    if buffer_size != 0:
+        assert bounding_box != copied_bounding_box
+    else:
+        assert bounding_box == copied_bounding_box
 
     assert bounding_box == expected
 
