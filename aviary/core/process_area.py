@@ -445,11 +445,11 @@ class ProcessArea(Iterable[Coordinates]):
             Process area
 
         Raises:
-            AviaryUserError: Invalid tile size (`tile_size` != `other.tile_size`)
+            AviaryUserError: Invalid other (the tile sizes of the process areas are not equal)
         """
         if self._tile_size != other.tile_size:
             message = (
-                'Invalid tile size! '
+                'Invalid other! '
                 'The tile sizes of the process areas must be equal.'
             )
             raise AviaryUserError(message)
@@ -481,11 +481,11 @@ class ProcessArea(Iterable[Coordinates]):
             Process area
 
         Raises:
-            AviaryUserError: Invalid tile size (`tile_size` != `other.tile_size`)
+            AviaryUserError: Invalid other (the tile sizes of the process areas are not equal)
         """
         if self._tile_size != other.tile_size:
             message = (
-                'Invalid tile size! '
+                'Invalid other! '
                 'The tile sizes of the process areas must be equal.'
             )
             raise AviaryUserError(message)
@@ -517,11 +517,11 @@ class ProcessArea(Iterable[Coordinates]):
             Process area
 
         Raises:
-            AviaryUserError: Invalid tile size (`tile_size` != `other.tile_size`)
+            AviaryUserError: Invalid other (the tile sizes of the process areas are not equal)
         """
         if self._tile_size != other.tile_size:
             message = (
-                'Invalid tile size! '
+                'Invalid other! '
                 'The tile sizes of the process areas must be equal.'
             )
             raise AviaryUserError(message)
