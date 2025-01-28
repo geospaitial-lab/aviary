@@ -42,26 +42,30 @@ class BoundingBox(Iterable[Coordinate]):
             y_min: minimum y coordinate
             x_max: maximum x coordinate
             y_max: maximum y coordinate
-
-        Raises:
-            AviaryUserError: Invalid bounding box (`x_min` >= `x_max` or `y_min` >= `y_max`)
         """
         self._x_min = x_min
         self._y_min = y_min
         self._x_max = x_max
         self._y_max = y_max
 
-        if self._x_min >= self._x_max:
-            message = (
-                'Invalid bounding box! '
-                'x_min must be less than x_max.'
-            )
-            raise AviaryUserError(message)
+        self._validate()
 
-        if self._y_min >= self._y_max:
+    def _validate(self) -> None:
+        """Validates the bounding box.
+
+        Raises:
+            AviaryUserError: Invalid bounding box (`x_min` is greater than or equal to `x_max` or
+                `y_min` is greater than or equal to `y_max`)
+        """
+        conditions = [
+            self._x_min >= self._x_max,
+            self._y_min >= self._y_max,
+        ]
+
+        if any(conditions):
             message = (
                 'Invalid bounding box! '
-                'y_min must be less than y_max.'
+                'x_min must be less than x_max and y_min must be less than y_max.'
             )
             raise AviaryUserError(message)
 
@@ -246,7 +250,8 @@ class BoundingBox(Iterable[Coordinate]):
         y_max = self._y_max + buffer_size
 
         if inplace:
-            self.x_min, self.y_min, self.x_max, self.y_max = x_min, y_min, x_max, y_max
+            self._x_min, self._y_min, self._x_max, self._y_max = x_min, y_min, x_max, y_max
+            self._validate()
             return self
 
         return BoundingBox(
@@ -301,7 +306,8 @@ class BoundingBox(Iterable[Coordinate]):
         y_max = self._y_max + (value - self._y_max % value) % value
 
         if inplace:
-            self.x_min, self.y_min, self.x_max, self.y_max = x_min, y_min, x_max, y_max
+            self._x_min, self._y_min, self._x_max, self._y_max = x_min, y_min, x_max, y_max
+            self._validate()
             return self
 
         return BoundingBox(
