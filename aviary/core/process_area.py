@@ -351,6 +351,9 @@ class ProcessArea(Iterable[Coordinates]):
         Returns:
             True if the process areas are equal, False otherwise
         """
+        if not isinstance(other, ProcessArea):
+            return False
+
         conditions = [
             np.array_equal(self._coordinates, other.coordinates),
             self._tile_size == other.tile_size,
