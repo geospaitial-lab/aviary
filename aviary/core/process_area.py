@@ -538,20 +538,20 @@ class ProcessArea(Iterable[Coordinates]):
 
     def append(
         self,
-        other: Coordinates,
+        coordinates: Coordinates,
         inplace: bool = False,
     ) -> ProcessArea:
         """Appends the coordinates to the process area.
 
         Parameters:
-            other: other coordinates
+            coordinates: coordinates (x_min, y_min) of the tile
             inplace: if True, the coordinates are appended inplace
 
         Returns:
             process area
         """
-        other = np.array([other], dtype=np.int32)
-        coordinates = np.concatenate([self._coordinates, other], axis=0)
+        coordinates = np.array([coordinates], dtype=np.int32)
+        coordinates = np.concatenate([self._coordinates, coordinates], axis=0)
         coordinates = duplicates_filter(coordinates)
 
         if inplace:
