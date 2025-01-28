@@ -552,7 +552,21 @@ class ProcessArea(Iterable[Coordinates]):
         """
         coordinates = np.array([coordinates], dtype=np.int32)
         coordinates = np.concatenate([self._coordinates, coordinates], axis=0)
-        coordinates = duplicates_filter(coordinates)
+        unique_coordinates = duplicates_filter(coordinates)
+
+        if coordinates != unique_coordinates:
+            message = (
+                'Invalid coordinates! '
+                'coordinates must be an array of unique coordinates. '
+                'Duplicates are removed.'
+            )
+            warnings.warn(
+                message=message,
+                category=AviaryUserWarning,
+                stacklevel=2,
+            )
+
+        coordinates = unique_coordinates
 
         if inplace:
             self._coordinates = coordinates
