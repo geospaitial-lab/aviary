@@ -1,5 +1,18 @@
 from aviary.core.bounding_box import BoundingBox
 
+data_test_bounding_box_area = [
+    # test case 1: bounding box is in all quadrants
+    (BoundingBox(-128, -64, 128, 192), 65536),
+    # test case 2: bounding box is in the first quadrant
+    (BoundingBox(128, 192, 256, 320), 16384),
+    # test case 3: bounding box is in the second quadrant
+    (BoundingBox(-256, 192, -128, 320), 16384),
+    # test case 4: bounding box is in the third quadrant
+    (BoundingBox(-256, -192, -128, -64), 16384),
+    # test case 5: bounding box is in the fourth quadrant
+    (BoundingBox(128, -192, 256, -64), 16384),
+]
+
 data_test_bounding_box_buffer = [
     # test case 1: buffer_size is zero
     (0, BoundingBox(-128, -64, 128, 192)),
@@ -19,19 +32,6 @@ data_test_bounding_box_buffer_exceptions = [
     (-128, data_test_bounding_box_buffer_exceptions_message),
     # test case 2: abs(buffer_size) is greater than half the width and height of the bounding box
     (-192, data_test_bounding_box_buffer_exceptions_message),
-]
-
-data_test_bounding_box_area = [
-    # test case 1: bounding box is in all quadrants
-    (BoundingBox(-128, -64, 128, 192), 65536),
-    # test case 2: bounding box is in the first quadrant
-    (BoundingBox(128, 192, 256, 320), 16384),
-    # test case 3: bounding box is in the second quadrant
-    (BoundingBox(-256, 192, -128, 320), 16384),
-    # test case 4: bounding box is in the third quadrant
-    (BoundingBox(-256, -192, -128, -64), 16384),
-    # test case 5: bounding box is in the fourth quadrant
-    (BoundingBox(128, -192, 256, -64), 16384),
 ]
 
 data_test_bounding_box_quantize = [
