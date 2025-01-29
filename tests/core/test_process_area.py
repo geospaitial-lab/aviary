@@ -137,6 +137,16 @@ def test_process_area_from_json(
     assert process_area == expected
 
 
+def test_process_area_from_json_exceptions() -> None:
+    json_string = '{"invalid": 0}'
+    message = re.escape('Invalid JSON string! json_string must contain the keys coordinates and tile_size.')
+
+    with pytest.raises(AviaryUserError, match=message):
+        _ = ProcessArea.from_json(
+            json_string=json_string,
+        )
+
+
 def test_process_area_eq(
     process_area: ProcessArea,
 ) -> None:
