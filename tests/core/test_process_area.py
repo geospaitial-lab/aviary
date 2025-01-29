@@ -23,18 +23,18 @@ from tests.core.data.data_test_process_area import (
 )
 
 
-@pytest.mark.parametrize(('coordinates', 'tile_size', 'expected_coordinates'), data_test_process_area_init)
+@pytest.mark.parametrize(('coordinates', 'tile_size', 'expected'), data_test_process_area_init)
 def test_process_area_init(
     coordinates: CoordinatesSet,
     tile_size: TileSize,
-    expected_coordinates: CoordinatesSet,
+    expected: CoordinatesSet,
 ) -> None:
     process_area = ProcessArea(
         coordinates=coordinates,
         tile_size=tile_size,
     )
 
-    np.testing.assert_array_equal(process_area.coordinates, expected_coordinates)
+    np.testing.assert_array_equal(process_area.coordinates, expected)
     assert process_area.tile_size == tile_size
 
 
