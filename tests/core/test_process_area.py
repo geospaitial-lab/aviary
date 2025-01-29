@@ -16,7 +16,6 @@ from aviary.core.type_aliases import (
 from tests.core.data.data_test_process_area import (
     data_test_process_area_area,
     data_test_process_area_init_exceptions,
-    data_test_process_area_properties_exceptions,
 )
 
 
@@ -57,29 +56,6 @@ def test_process_area_init_exceptions(
             coordinates=coordinates,
             tile_size=tile_size,
         )
-
-
-def test_process_area_properties(
-    process_area: ProcessArea,
-) -> None:
-    coordinates = np.array([[128, -128], [128, 0]], dtype=np.int32)
-    tile_size = 64
-    process_area.coordinates = coordinates
-    process_area.tile_size = tile_size
-
-    np.testing.assert_array_equal(process_area.coordinates, coordinates)
-    assert process_area.tile_size == tile_size
-
-
-@pytest.mark.parametrize(('property_', 'value', 'message'), data_test_process_area_properties_exceptions)
-def test_process_area_properties_exceptions(
-    property_: str,
-    value: CoordinatesSet,
-    message: str,
-    process_area: ProcessArea,
-) -> None:
-    with pytest.raises(AviaryUserError, match=message):
-        setattr(process_area, property_, value)
 
 
 @pytest.mark.parametrize(('process_area', 'expected'), data_test_process_area_area)
@@ -171,7 +147,10 @@ def test_process_area_eq(
 
     assert process_area == other_process_area
 
-    other_process_area = ProcessArea(tile_size=other_tile_size)
+    other_process_area = ProcessArea(
+        coordinates=None,
+        tile_size=other_tile_size,
+    )
 
     assert process_area != other_process_area
 
@@ -255,7 +234,7 @@ def test_process_area_add_exception(
         coordinates=other_coordinates,
         tile_size=other_tile_size,
     )
-    message = re.escape('Invalid tile size! The tile sizes of the process areas must be equal.')
+    message = re.escape('Invalid other! The tile sizes of the process areas must be equal.')
 
     with pytest.raises(AviaryUserError, match=message):
         _ = process_area + other_process_area
@@ -287,7 +266,7 @@ def test_process_area_sub_exception(
         coordinates=other_coordinates,
         tile_size=other_tile_size,
     )
-    message = re.escape('Invalid tile size! The tile sizes of the process areas must be equal.')
+    message = re.escape('Invalid other! The tile sizes of the process areas must be equal.')
 
     with pytest.raises(AviaryUserError, match=message):
         _ = process_area - other_process_area
@@ -319,7 +298,7 @@ def test_process_area_and_exception(
         coordinates=other_coordinates,
         tile_size=other_tile_size,
     )
-    message = re.escape('Invalid tile size! The tile sizes of the process areas must be equal.')
+    message = re.escape('Invalid other! The tile sizes of the process areas must be equal.')
 
     with pytest.raises(AviaryUserError, match=message):
         _ = process_area & other_process_area
