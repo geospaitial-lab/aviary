@@ -490,6 +490,31 @@ def test_process_area_remove(
     assert process_area_ == expected
 
 
+def test_process_area_remove_nonexistent(
+    process_area: ProcessArea,
+) -> None:
+    copied_process_area = copy.deepcopy(process_area)
+
+    other_coordinates = (128, -128)
+    message = re.escape('Invalid coordinates! coordinates is not in the process area.')
+
+    with pytest.warns(AviaryUserWarning, match=message):
+        process_area_ = process_area.remove(
+            coordinates=other_coordinates,
+            inplace=False,
+        )
+
+    expected_coordinates = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32)
+    expected_tile_size = 128
+    expected = ProcessArea(
+        coordinates=expected_coordinates,
+        tile_size=expected_tile_size,
+    )
+
+    assert process_area == copied_process_area
+    assert process_area_ == expected
+
+
 def test_process_area_remove_inplace(
     process_area: ProcessArea,
 ) -> None:
@@ -499,6 +524,28 @@ def test_process_area_remove_inplace(
         inplace=True,
     )
     expected_coordinates = np.array([[-128, -128], [0, -128], [-128, 0]], dtype=np.int32)
+    expected_tile_size = 128
+    expected = ProcessArea(
+        coordinates=expected_coordinates,
+        tile_size=expected_tile_size,
+    )
+
+    assert process_area == expected
+
+
+def test_process_area_remove_nonexistent_inplace(
+    process_area: ProcessArea,
+) -> None:
+    other_coordinates = (128, -128)
+    message = re.escape('Invalid coordinates! coordinates is not in the process area.')
+
+    with pytest.warns(AviaryUserWarning, match=message):
+        process_area.remove(
+            coordinates=other_coordinates,
+            inplace=True,
+        )
+
+    expected_coordinates = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32)
     expected_tile_size = 128
     expected = ProcessArea(
         coordinates=expected_coordinates,
