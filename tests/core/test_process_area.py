@@ -100,10 +100,14 @@ def test_process_area_from_bounding_box() -> None:
         tile_size=tile_size,
         quantize=quantize,
     )
-    expected = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32)
+    expected_coordinates = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32)
+    expected_tile_size = 128
+    expected = ProcessArea(
+        coordinates=expected_coordinates,
+        tile_size=expected_tile_size,
+    )
 
-    np.testing.assert_array_equal(process_area.coordinates, expected)
-    assert process_area.tile_size == tile_size
+    assert process_area == expected
 
 
 def test_process_area_from_bounding_box_defaults() -> None:
@@ -127,10 +131,14 @@ def test_process_area_from_gdf() -> None:
         tile_size=tile_size,
         quantize=quantize,
     )
-    expected = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32)
+    expected_coordinates = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32)
+    expected_tile_size = 128
+    expected = ProcessArea(
+        coordinates=expected_coordinates,
+        tile_size=expected_tile_size,
+    )
 
-    np.testing.assert_array_equal(process_area.coordinates, expected)
-    assert process_area.tile_size == tile_size
+    assert process_area == expected
 
 
 def test_process_area_from_gdf_defaults() -> None:
@@ -251,9 +259,12 @@ def test_process_area_add(
     process_area = process_area + other_process_area
     expected_coordinates = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0], [128, -128], [128, 0]], dtype=np.int32)
     expected_tile_size = 128
+    expected = ProcessArea(
+        coordinates=expected_coordinates,
+        tile_size=expected_tile_size,
+    )
 
-    np.testing.assert_array_equal(process_area.coordinates, expected_coordinates)
-    assert process_area.tile_size == expected_tile_size
+    assert process_area == expected
 
 
 def test_process_area_add_exception(
@@ -283,9 +294,12 @@ def test_process_area_sub(
     process_area = process_area - other_process_area
     expected_coordinates = np.array([[-128, -128], [0, -128]], dtype=np.int32)
     expected_tile_size = 128
+    expected = ProcessArea(
+        coordinates=expected_coordinates,
+        tile_size=expected_tile_size,
+    )
 
-    np.testing.assert_array_equal(process_area.coordinates, expected_coordinates)
-    assert process_area.tile_size == expected_tile_size
+    assert process_area == expected
 
 
 def test_process_area_sub_exception(
@@ -315,9 +329,12 @@ def test_process_area_and(
     process_area = process_area & other_process_area
     expected_coordinates = np.array([[-128, 0], [0, 0]], dtype=np.int32)
     expected_tile_size = 128
+    expected = ProcessArea(
+        coordinates=expected_coordinates,
+        tile_size=expected_tile_size,
+    )
 
-    np.testing.assert_array_equal(process_area.coordinates, expected_coordinates)
-    assert process_area.tile_size == expected_tile_size
+    assert process_area == expected
 
 
 def test_process_area_and_exception(
@@ -342,9 +359,12 @@ def test_process_area_append(
     process_area = process_area.append(other_coordinates)
     expected_coordinates = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0], [128, -128]], dtype=np.int32)
     expected_tile_size = 128
+    expected = ProcessArea(
+        coordinates=expected_coordinates,
+        tile_size=expected_tile_size,
+    )
 
-    np.testing.assert_array_equal(process_area.coordinates, expected_coordinates)
-    assert process_area.tile_size == expected_tile_size
+    assert process_area == expected
 
 
 def test_process_area_append_duplicate(
