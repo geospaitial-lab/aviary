@@ -267,7 +267,7 @@ def test_process_area_add(
     assert process_area == expected
 
 
-def test_process_area_add_exception(
+def test_process_area_add_exceptions(
     process_area: ProcessArea,
 ) -> None:
     other_coordinates = np.array([[-128, 0], [0, 0], [128, -128], [128, 0]], dtype=np.int32)
@@ -302,7 +302,7 @@ def test_process_area_sub(
     assert process_area == expected
 
 
-def test_process_area_sub_exception(
+def test_process_area_sub_exceptions(
     process_area: ProcessArea,
 ) -> None:
     other_coordinates = np.array([[-128, 0], [0, 0], [128, -128], [128, 0]], dtype=np.int32)
@@ -337,7 +337,7 @@ def test_process_area_and(
     assert process_area == expected
 
 
-def test_process_area_and_exception(
+def test_process_area_and_exceptions(
     process_area: ProcessArea,
 ) -> None:
     other_coordinates = np.array([[-128, 0], [0, 0], [128, -128], [128, 0]], dtype=np.int32)
