@@ -18,6 +18,7 @@ from aviary.core.type_aliases import (
 )
 from tests.core.data.data_test_process_area import (
     data_test_process_area_area,
+    data_test_process_area_from_json,
     data_test_process_area_init,
     data_test_process_area_validation,
 )
@@ -124,29 +125,16 @@ def test_process_area_from_gdf() -> None:
     assert process_area.tile_size == tile_size
 
 
-def test_process_area_from_json() -> None:
-    json_string = '{"coordinates": [[-128, -128], [0, -128], [-128, 0], [0, 0]], "tile_size": 128}'
+@pytest.mark.parametrize(('json_string', 'expected'), data_test_process_area_from_json)
+def test_process_area_from_json(
+    json_string: str,
+    expected: ProcessArea,
+) -> None:
     process_area = ProcessArea.from_json(
         json_string=json_string,
     )
-    expected_coordinates = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32)
-    expected_tile_size = 128
 
-    np.testing.assert_array_equal(process_area.coordinates, expected_coordinates)
-    assert process_area.tile_size == expected_tile_size
-
-    json_string = '{"coordinates": [], "tile_size": 128}'
-    process_area = ProcessArea.from_json(
-        json_string=json_string,
-    )
-    expected_coordinates = np.empty(
-        shape=(0, 2),
-        dtype=np.int32,
-    )
-    expected_tile_size = 128
-
-    np.testing.assert_array_equal(process_area.coordinates, expected_coordinates)
-    assert process_area.tile_size == expected_tile_size
+    assert process_area == expected
 
 
 def test_process_area_eq(

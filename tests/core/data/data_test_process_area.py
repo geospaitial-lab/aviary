@@ -31,6 +31,33 @@ data_test_process_area_area = [
     ),
 ]
 
+data_test_process_area_from_json = [
+    # test case 1: process area has no tiles
+    (
+        '{"coordinates": [], "tile_size": 128}',
+        ProcessArea(
+            coordinates=None,
+            tile_size=128,
+        ),
+    ),
+    # test case 2: process area has one tile
+    (
+        '{"coordinates": [[-128, -128]], "tile_size": 128}',
+        ProcessArea(
+            coordinates=np.array([[-128, -128]], dtype=np.int32),
+            tile_size=128,
+        ),
+    ),
+    # test case 3: process area has four tiles
+    (
+        '{"coordinates": [[-128, -128], [0, -128], [-128, 0], [0, 0]], "tile_size": 128}',
+        ProcessArea(
+            coordinates=np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32),
+            tile_size=128,
+        ),
+    ),
+]
+
 data_test_process_area_init = [
     # test case 1: process area has no tiles
     (
