@@ -1,6 +1,7 @@
 import copy
 import inspect
 import re
+from unittest.mock import MagicMock
 
 import geopandas as gpd
 import geopandas.testing
@@ -18,6 +19,7 @@ from aviary.core.type_aliases import (
     CoordinatesSet,
     TileSize,
 )
+from aviary.geodata.coordinates_filter import CoordinatesFilter
 from tests.core.data.data_test_process_area import (
     data_test_process_area_area,
     data_test_process_area_from_json,
@@ -483,9 +485,54 @@ def test_process_area_chunk() -> None:
     assert process_areas == expected
 
 
-@pytest.mark.skip(reason='Not implemented')
-def test_process_area_filter() -> None:
-    pass
+def test_process_area_filter(
+    process_area: ProcessArea,
+) -> None:
+    copied_process_area = copy.deepcopy(process_area)
+
+    coordinates_filter = MagicMock(spec=CoordinatesFilter)
+    coordinates_filter.return_value = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32)
+    process_area_ = process_area.filter(
+        coordinates_filter=coordinates_filter,
+        inplace=False,
+    )
+    expected_coordinates = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32)
+    expected_tile_size = 128
+    expected = ProcessArea(
+        coordinates=expected_coordinates,
+        tile_size=expected_tile_size,
+    )
+
+    assert process_area == copied_process_area
+    assert process_area_ == expected
+    coordinates_filter.assert_called_once()
+
+
+def test_process_area_filter_inplace(
+    process_area: ProcessArea,
+) -> None:
+    coordinates_filter = MagicMock(spec=CoordinatesFilter)
+    coordinates_filter.return_value = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32)
+    process_area = process_area.filter(
+        coordinates_filter=coordinates_filter,
+        inplace=True,
+    )
+    expected_coordinates = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32)
+    expected_tile_size = 128
+    expected = ProcessArea(
+        coordinates=expected_coordinates,
+        tile_size=expected_tile_size,
+    )
+
+    assert process_area == expected
+    coordinates_filter.assert_called_once()
+
+
+def test_process_area_filter_defaults() -> None:
+    signature = inspect.signature(ProcessArea.filter)
+    inplace = signature.parameters['inplace'].default
+
+    assert inplace is False
 
 
 def test_process_area_remove(
