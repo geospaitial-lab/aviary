@@ -1,4 +1,5 @@
 import copy
+import inspect
 
 import geopandas as gpd
 import geopandas.testing
@@ -115,6 +116,10 @@ def test_bounding_box_eq(
 
     assert bounding_box != other_bounding_box
 
+    other = 'invalid'
+
+    assert bounding_box != other
+
 
 def test_bounding_box_len(
     bounding_box: BoundingBox,
@@ -193,7 +198,17 @@ def test_bounding_box_buffer_exceptions(
     bounding_box: BoundingBox,
 ) -> None:
     with pytest.raises(AviaryUserError, match=message):
-        _ = bounding_box.buffer(buffer_size)
+        _ = bounding_box.buffer(
+            buffer_size=buffer_size,
+            inplace=False,
+        )
+
+
+def test_bounding_box_buffer_defaults() -> None:
+    signature = inspect.signature(BoundingBox.buffer)
+    inplace = signature.parameters['inplace'].default
+
+    assert inplace is False
 
 
 @pytest.mark.parametrize(('bounding_box', 'value', 'expected'), data_test_bounding_box_quantize)
@@ -234,7 +249,17 @@ def test_bounding_box_quantize_exceptions(
     bounding_box: BoundingBox,
 ) -> None:
     with pytest.raises(AviaryUserError, match=message):
-        _ = bounding_box.quantize(value)
+        _ = bounding_box.quantize(
+            value=value,
+            inplace=False,
+        )
+
+
+def test_bounding_box_quantize_defaults() -> None:
+    signature = inspect.signature(BoundingBox.quantize)
+    inplace = signature.parameters['inplace'].default
+
+    assert inplace is False
 
 
 def test_bounding_box_to_gdf(
