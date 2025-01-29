@@ -1,3 +1,4 @@
+import copy
 import inspect
 import re
 
@@ -59,6 +60,19 @@ def test_process_area_init_duplicates() -> None:
 
     np.testing.assert_array_equal(process_area.coordinates, expected_coordinates)
     assert process_area.tile_size == tile_size
+
+
+def test_process_area_mutability() -> None:
+    coordinates = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32)
+    tile_size = 128
+    process_area = ProcessArea(
+        coordinates=coordinates,
+        tile_size=tile_size,
+    )
+    copied_coordinates = copy.deepcopy(coordinates)
+    coordinates += 1
+
+    np.testing.assert_array_equal(process_area.coordinates, copied_coordinates)
 
 
 @pytest.mark.parametrize(('coordinates', 'tile_size', 'message'), data_test_process_area_validation)
