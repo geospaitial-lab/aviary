@@ -7,7 +7,10 @@ import pytest
 from shapely.geometry import box
 
 from aviary.core.bounding_box import BoundingBox
-from aviary.core.exceptions import AviaryUserError
+from aviary.core.exceptions import (
+    AviaryUserError,
+    AviaryUserWarning,
+)
 from aviary.core.process_area import ProcessArea
 from aviary.core.type_aliases import (
     CoordinatesSet,
@@ -30,6 +33,27 @@ def test_process_area_init(
         coordinates=coordinates,
         tile_size=tile_size,
     )
+
+    np.testing.assert_array_equal(process_area.coordinates, expected_coordinates)
+    assert process_area.tile_size == tile_size
+
+
+def test_process_area_init_duplicates() -> None:
+    coordinates = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0], [0, 0]], dtype=np.int32)
+    tile_size = 128
+    expected_coordinates = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32)
+    message = (
+        'Invalid coordinates! '
+        'coordinates must be an array of unique coordinates. '
+        'Duplicates are removed.'
+    )
+    message = re.escape(message)
+
+    with pytest.warns(AviaryUserWarning, match=message):
+        process_area = ProcessArea(
+            coordinates=coordinates,
+            tile_size=tile_size,
+        )
 
     np.testing.assert_array_equal(process_area.coordinates, expected_coordinates)
     assert process_area.tile_size == tile_size
