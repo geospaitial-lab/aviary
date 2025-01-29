@@ -186,6 +186,11 @@ def test_process_area_from_json_exceptions() -> None:
         )
 
 
+@pytest.mark.skip(reason='Not implemented')
+def test_process_area_from_config() -> None:
+    pass
+
+
 def test_process_area_eq(
     process_area: ProcessArea,
 ) -> None:
@@ -657,3 +662,8 @@ def test_process_area_to_json(
     expected = '{"coordinates": [[-128, -128], [0, -128], [-128, 0], [0, 0]], "tile_size": 128}'
 
     assert json_string == expected
+
+
+@pytest.mark.skip(reason='Not implemented')
+def test_process_area_config() -> None:
+    pass
