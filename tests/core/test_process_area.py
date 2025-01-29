@@ -369,8 +369,57 @@ def test_process_area_and_exceptions(
 def test_process_area_append(
     process_area: ProcessArea,
 ) -> None:
+    copied_process_area = copy.deepcopy(process_area)
+
     other_coordinates = (128, -128)
-    process_area = process_area.append(other_coordinates)
+    process_area_ = process_area.append(
+        coordinates=other_coordinates,
+        inplace=False,
+    )
+    expected_coordinates = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0], [128, -128]], dtype=np.int32)
+    expected_tile_size = 128
+    expected = ProcessArea(
+        coordinates=expected_coordinates,
+        tile_size=expected_tile_size,
+    )
+
+    assert process_area == copied_process_area
+    assert process_area_ == expected
+
+
+def test_process_area_append_duplicate(
+    process_area: ProcessArea,
+) -> None:
+    copied_process_area = copy.deepcopy(process_area)
+
+    other_coordinates = (0, 0)
+    message = re.escape('Invalid coordinates! coordinates is already in the process area.')
+
+    with pytest.warns(AviaryUserWarning, match=message):
+        process_area_ = process_area.append(
+            coordinates=other_coordinates,
+            inplace=False,
+        )
+
+    expected_coordinates = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32)
+    expected_tile_size = 128
+    expected = ProcessArea(
+        coordinates=expected_coordinates,
+        tile_size=expected_tile_size,
+    )
+
+    assert process_area == copied_process_area
+    assert process_area_ == expected
+
+
+def test_process_area_append_inplace(
+    process_area: ProcessArea,
+) -> None:
+    other_coordinates = (128, -128)
+    process_area.append(
+        coordinates=other_coordinates,
+        inplace=True,
+    )
     expected_coordinates = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0], [128, -128]], dtype=np.int32)
     expected_tile_size = 128
     expected = ProcessArea(
@@ -381,40 +430,33 @@ def test_process_area_append(
     assert process_area == expected
 
 
-def test_process_area_append_duplicate(
-    process_area: ProcessArea,
-) -> None:
-    other_coordinates = (0, 0)
-    process_area = process_area.append(other_coordinates)
-    expected_coordinates = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32)
-    expected_tile_size = 128
-
-    np.testing.assert_array_equal(process_area.coordinates, expected_coordinates)
-    assert process_area.tile_size == expected_tile_size
-
-
-def test_process_area_append_inplace(
-    process_area: ProcessArea,
-) -> None:
-    other_coordinates = (128, -128)
-    process_area.append(other_coordinates, inplace=True)
-    expected_coordinates = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0], [128, -128]], dtype=np.int32)
-    expected_tile_size = 128
-
-    np.testing.assert_array_equal(process_area.coordinates, expected_coordinates)
-    assert process_area.tile_size == expected_tile_size
-
-
 def test_process_area_append_duplicate_inplace(
     process_area: ProcessArea,
 ) -> None:
     other_coordinates = (0, 0)
-    process_area.append(other_coordinates, inplace=True)
+    message = re.escape('Invalid coordinates! coordinates is already in the process area.')
+
+    with pytest.warns(AviaryUserWarning, match=message):
+        process_area.append(
+            coordinates=other_coordinates,
+            inplace=True,
+        )
+
     expected_coordinates = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32)
     expected_tile_size = 128
+    expected = ProcessArea(
+        coordinates=expected_coordinates,
+        tile_size=expected_tile_size,
+    )
 
-    np.testing.assert_array_equal(process_area.coordinates, expected_coordinates)
-    assert process_area.tile_size == expected_tile_size
+    assert process_area == expected
+
+
+def test_process_area_append_defaults() -> None:
+    signature = inspect.signature(ProcessArea.append)
+    inplace = signature.parameters['inplace'].default
+
+    assert inplace is False
 
 
 @pytest.mark.skip(reason='Not implemented')
