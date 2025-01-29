@@ -168,6 +168,10 @@ def test_process_area_eq(
 
     assert process_area != other_process_area
 
+    other = 'invalid'
+
+    assert process_area != other
+
 
 def test_process_area_len(
     process_area: ProcessArea,
