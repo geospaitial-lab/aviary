@@ -1,3 +1,4 @@
+import inspect
 import re
 
 import geopandas as gpd
@@ -105,6 +106,13 @@ def test_process_area_from_bounding_box() -> None:
     assert process_area.tile_size == tile_size
 
 
+def test_process_area_from_bounding_box_defaults() -> None:
+    signature = inspect.signature(ProcessArea.from_bounding_box)
+    quantize = signature.parameters['quantize'].default
+
+    assert quantize is True
+
+
 def test_process_area_from_gdf() -> None:
     geometry = [box(-128, -128, 128, 128)]
     epsg_code = 25832
@@ -123,6 +131,13 @@ def test_process_area_from_gdf() -> None:
 
     np.testing.assert_array_equal(process_area.coordinates, expected)
     assert process_area.tile_size == tile_size
+
+
+def test_process_area_from_gdf_defaults() -> None:
+    signature = inspect.signature(ProcessArea.from_gdf)
+    quantize = signature.parameters['quantize'].default
+
+    assert quantize is True
 
 
 @pytest.mark.parametrize(('json_string', 'expected'), data_test_process_area_from_json)
