@@ -84,6 +84,13 @@ class ProcessArea(Iterable[Coordinates]):
         Raises:
             AviaryUserError: Invalid coordinates (`coordinates` is not an array of shape (n, 2) and data type int32)
         """
+        if self._coordinates is None:
+            self._coordinates = np.empty(
+                shape=(0, 2),
+                dtype=np.int32,
+            )
+            return
+
         conditions = [
             self._coordinates.ndim != 2,  # noqa: PLR2004
             self._coordinates.shape[1] != 2,  # noqa: PLR2004
@@ -99,7 +106,7 @@ class ProcessArea(Iterable[Coordinates]):
 
         unique_coordinates = duplicates_filter(self._coordinates)
 
-        if self._coordinates != unique_coordinates:
+        if not np.array_equal(self._coordinates, unique_coordinates):
             message = (
                 'Invalid coordinates! '
                 'coordinates must be an array of unique coordinates. '
@@ -554,7 +561,7 @@ class ProcessArea(Iterable[Coordinates]):
         coordinates = np.concatenate([self._coordinates, coordinates], axis=0)
         unique_coordinates = duplicates_filter(coordinates)
 
-        if coordinates != unique_coordinates:
+        if not np.array_equal(coordinates, unique_coordinates):
             message = (
                 'Invalid coordinates! '
                 'coordinates is already in the process area.'
