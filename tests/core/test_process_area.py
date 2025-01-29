@@ -41,7 +41,7 @@ def test_process_area_init(
 
 
 def test_process_area_init_duplicates() -> None:
-    coordinates = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0], [0, 0]], dtype=np.int32)
+    coordinates = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0], [-128, -128], [0, 0]], dtype=np.int32)
     tile_size = 128
     expected_coordinates = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32)
     message = (
