@@ -4,6 +4,33 @@ import numpy as np
 
 from aviary.core.process_area import ProcessArea
 
+data_test_process_area_area = [
+    # test case 1: process area has no tiles
+    (
+        ProcessArea(
+            coordinates=None,
+            tile_size=128,
+        ),
+        0,
+    ),
+    # test case 2: process area has one tile
+    (
+        ProcessArea(
+            coordinates=np.array([[-128, -128]], dtype=np.int32),
+            tile_size=128,
+        ),
+        16384,
+    ),
+    # test case 3: process area has four tiles
+    (
+        ProcessArea(
+            coordinates=np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32),
+            tile_size=128,
+        ),
+        65536,
+    ),
+]
+
 data_test_process_area_init = [
     # test case 1: process area has no tiles
     (
@@ -55,32 +82,5 @@ data_test_process_area_validation = [
         np.arange(8, dtype=np.int32).reshape(4, 2),
         -1,
         re.escape('Invalid tile size! tile_size must be positive.'),
-    ),
-]
-
-data_test_process_area_area = [
-    # test case 1: process area has no tiles
-    (
-        ProcessArea(
-            coordinates=None,
-            tile_size=128,
-        ),
-        0,
-    ),
-    # test case 2: process area has one tile
-    (
-        ProcessArea(
-            coordinates=np.array([[-128, -128]], dtype=np.int32),
-            tile_size=128,
-        ),
-        16384,
-    ),
-    # test case 3: process area has four tiles
-    (
-        ProcessArea(
-            coordinates=np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32),
-            tile_size=128,
-        ),
-        65536,
     ),
 ]
