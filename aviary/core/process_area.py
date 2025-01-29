@@ -652,7 +652,7 @@ class ProcessArea(Iterable[Coordinates]):
             mode=SetFilterMode.DIFFERENCE,
         )
 
-        if coordinates == self._coordinates:
+        if np.array_equal(self._coordinates, coordinates):
             message = (
                 'Invalid coordinates! '
                 'coordinates is not in the process area.'
