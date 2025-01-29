@@ -4,6 +4,27 @@ import numpy as np
 
 from aviary.core.process_area import ProcessArea
 
+data_test_process_area_init = [
+    # test case 1: process area has no tiles
+    (
+        None,
+        128,
+        np.empty(shape=(0, 2), dtype=np.int32),
+    ),
+    # test case 2: process area has one tile
+    (
+        np.array([[-128, -128]], dtype=np.int32),
+        128,
+        np.array([[-128, -128]], dtype=np.int32),
+    ),
+    # test case 3: process area has four tiles
+    (
+        np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32),
+        128,
+        np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32),
+    ),
+]
+
 data_test_process_area_init_exceptions = [
     # test case 1: coordinates has not 2 dimensions
     (

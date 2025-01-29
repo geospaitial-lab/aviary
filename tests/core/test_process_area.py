@@ -15,33 +15,23 @@ from aviary.core.type_aliases import (
 )
 from tests.core.data.data_test_process_area import (
     data_test_process_area_area,
+    data_test_process_area_init,
     data_test_process_area_init_exceptions,
 )
 
 
-def test_process_area_init() -> None:
-    coordinates = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32)
-    tile_size = 128
+@pytest.mark.parametrize(('coordinates', 'tile_size', 'expected_coordinates'), data_test_process_area_init)
+def test_process_area_init(
+    coordinates: CoordinatesSet,
+    tile_size: TileSize,
+    expected_coordinates: CoordinatesSet,
+) -> None:
     process_area = ProcessArea(
         coordinates=coordinates,
         tile_size=tile_size,
     )
 
-    np.testing.assert_array_equal(process_area.coordinates, coordinates)
-    assert process_area.tile_size == tile_size
-
-    coordinates = None
-    tile_size = 128
-    process_area = ProcessArea(
-        coordinates=coordinates,
-        tile_size=tile_size,
-    )
-    expected = np.empty(
-        shape=(0, 2),
-        dtype=np.int32,
-    )
-
-    np.testing.assert_array_equal(process_area.coordinates, expected)
+    np.testing.assert_array_equal(process_area.coordinates, expected_coordinates)
     assert process_area.tile_size == tile_size
 
 
