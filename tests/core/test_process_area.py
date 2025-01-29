@@ -16,7 +16,7 @@ from aviary.core.type_aliases import (
 from tests.core.data.data_test_process_area import (
     data_test_process_area_area,
     data_test_process_area_init,
-    data_test_process_area_init_exceptions,
+    data_test_process_area_validation,
 )
 
 
@@ -35,8 +35,8 @@ def test_process_area_init(
     assert process_area.tile_size == tile_size
 
 
-@pytest.mark.parametrize(('coordinates', 'tile_size', 'message'), data_test_process_area_init_exceptions)
-def test_process_area_init_exceptions(
+@pytest.mark.parametrize(('coordinates', 'tile_size', 'message'), data_test_process_area_validation)
+def test_process_area_validation(
     coordinates: CoordinatesSet,
     tile_size: TileSize,
     message: str,

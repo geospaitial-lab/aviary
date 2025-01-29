@@ -25,34 +25,34 @@ data_test_process_area_init = [
     ),
 ]
 
-data_test_process_area_init_exceptions = [
+data_test_process_area_validation = [
     # test case 1: coordinates has not 2 dimensions
     (
-        np.ones(shape=(4, 2, 1), dtype=np.int32),
+        np.arange(8, dtype=np.int32).reshape(4, 2, 1),
         1,
         re.escape('Invalid coordinates! coordinates must be an array of shape (n, 2) and data type int32.'),
     ),
     # test case 2: coordinates has not 2 values in the second dimension
     (
-        np.ones(shape=(4, 4), dtype=np.int32),
+        np.arange(8, dtype=np.int32).reshape(2, 4),
         1,
         re.escape('Invalid coordinates! coordinates must be an array of shape (n, 2) and data type int32.'),
     ),
     # test case 3: coordinates is not of data type int32
     (
-        np.ones(shape=(4, 2), dtype=np.float32),
+        np.arange(8, dtype=np.float32).reshape(4, 2),
         1,
         re.escape('Invalid coordinates! coordinates must be an array of shape (n, 2) and data type int32.'),
     ),
     # test case 4: tile_size is 0
     (
-        np.ones(shape=(4, 2), dtype=np.int32),
+        np.arange(8, dtype=np.int32).reshape(4, 2),
         0,
         re.escape('Invalid tile size! tile_size must be positive.'),
     ),
     # test case 5: tile_size is negative
     (
-        np.ones(shape=(4, 2), dtype=np.int32),
+        np.arange(8, dtype=np.int32).reshape(4, 2),
         -1,
         re.escape('Invalid tile size! tile_size must be positive.'),
     ),
