@@ -459,9 +459,28 @@ def test_process_area_append_defaults() -> None:
     assert inplace is False
 
 
-@pytest.mark.skip(reason='Not implemented')
 def test_process_area_chunk() -> None:
-    pass
+    coordinates = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0], [128, -128]], dtype=np.int32)
+    tile_size = 128
+    process_area = ProcessArea(
+        coordinates=coordinates,
+        tile_size=tile_size,
+    )
+    process_areas = process_area.chunk(num_chunks=2)
+    expected_coordinates_1 = np.array([[-128, -128], [0, -128], [-128, 0]], dtype=np.int32)
+    expected_coordinates_2 = np.array([[0, 0], [128, -128]], dtype=np.int32)
+    expected_tile_size = 128
+    expected_1 = ProcessArea(
+        coordinates=expected_coordinates_1,
+        tile_size=expected_tile_size,
+    )
+    expected_2 = ProcessArea(
+        coordinates=expected_coordinates_2,
+        tile_size=expected_tile_size,
+    )
+    expected = [expected_1, expected_2]
+
+    assert process_areas == expected
 
 
 @pytest.mark.skip(reason='Not implemented')
