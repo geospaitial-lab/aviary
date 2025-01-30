@@ -9,7 +9,7 @@ class Enum(BaseEnum):  # noqa: D101
         """Returns the string representation.
 
         Returns:
-            string representation
+            String representation
         """
         return self.value
 
@@ -17,10 +17,10 @@ class Enum(BaseEnum):  # noqa: D101
 class Channel(Enum):
     """
     Attributes:
-        B: blue channel
-        G: green channel
-        NIR: near-infrared channel
-        R: red channel
+        B: Blue channel
+        G: Green channel
+        NIR: Near-infrared channel
+        R: Red channel
     """
     B = 'b'
     G = 'g'
@@ -41,8 +41,8 @@ class Device(Enum):
 class GeospatialFilterMode(Enum):
     """
     Attributes:
-        DIFFERENCE: difference mode
-        INTERSECTION: intersection mode
+        DIFFERENCE: Difference mode
+        INTERSECTION: Intersection mode
     """
     DIFFERENCE = 'difference'
     INTERSECTION = 'intersection'
@@ -51,8 +51,8 @@ class GeospatialFilterMode(Enum):
 class InterpolationMode(Enum):
     """
     Attributes:
-        BILINEAR: bilinear mode
-        NEAREST: nearest mode
+        BILINEAR: Bilinear mode
+        NEAREST: Nearest mode
     """
     BILINEAR = 'bilinear'
     NEAREST = 'nearest'
@@ -61,7 +61,7 @@ class InterpolationMode(Enum):
         """Converts the interpolation mode to the rasterio resampling mode.
 
         Returns:
-            rasterio resampling mode
+            Rasterio resampling mode
         """
         mapping = {
             InterpolationMode.BILINEAR: rio.enums.Resampling.bilinear,
@@ -73,9 +73,9 @@ class InterpolationMode(Enum):
 class SetFilterMode(Enum):
     """
     Attributes:
-        DIFFERENCE: difference mode
-        INTERSECTION: intersection mode
-        UNION: union mode
+        DIFFERENCE: Difference mode
+        INTERSECTION: Intersection mode
+        UNION: Union mode
     """
     DIFFERENCE = 'difference'
     INTERSECTION = 'intersection'
@@ -85,8 +85,8 @@ class SetFilterMode(Enum):
 class WMSVersion(Enum):
     """
     Attributes:
-        V1_1_1: version 1.1.1
-        V1_3_0: version 1.3.0
+        V1_1_1: Version 1.1.1
+        V1_3_0: Version 1.3.0
     """
     V1_1_1 = '1.1.1'
     V1_3_0 = '1.3.0'
