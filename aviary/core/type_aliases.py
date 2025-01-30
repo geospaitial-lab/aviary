@@ -3,11 +3,11 @@ from typing import TypeAlias
 import numpy as np
 import numpy.typing as npt
 
-from aviary.core.enums import Channel
+from aviary.core.enums import ChannelType
 
 BufferSize: TypeAlias = int
-Channels: TypeAlias = list[Channel | str]
-ChannelsSet: TypeAlias = set[Channel | str]
+ChannelTypes: TypeAlias = list[ChannelType | str]
+ChannelTypeSet: TypeAlias = set[ChannelType | str]
 Coordinate: TypeAlias = int
 Coordinates: TypeAlias = tuple[Coordinate, Coordinate]
 CoordinatesSet: TypeAlias = npt.NDArray[np.int32]

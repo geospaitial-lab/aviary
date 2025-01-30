@@ -15,7 +15,7 @@ import numpy as np
 import numpy.typing as npt
 
 from aviary.core.bounding_box import BoundingBox
-from aviary.core.enums import Channel
+from aviary.core.enums import ChannelType
 from aviary.core.exceptions import (
     AviaryUserError,
     AviaryUserWarning,
@@ -24,8 +24,8 @@ from aviary.core.exceptions import (
 if TYPE_CHECKING:
     from aviary.core.type_aliases import (
         BufferSize,
-        Channels,
-        ChannelsSet,
+        ChannelTypes,
+        ChannelTypeSet,
         Coordinates,
         GroundSamplingDistance,
         TileSize,
@@ -34,7 +34,7 @@ if TYPE_CHECKING:
 
 
 @dataclass
-class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
+class Tile(Iterable[tuple[ChannelType | str, npt.NDArray]]):
     """A tile specifies the data and the spatial extent of a tile.
 
     Attributes:
@@ -43,15 +43,15 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
         tile_size: tile size in meters
         buffer_size: buffer size in meters
     """
-    data: dict[Channel | str, npt.NDArray]
+    data: dict[ChannelType | str, npt.NDArray]
     coordinates: Coordinates
     tile_size: TileSize
     buffer_size: BufferSize
-    _built_in_channels = frozenset(channel.value for channel in Channel)
+    _built_in_channels = frozenset(channel.value for channel in ChannelType)
 
     def __init__(
         self,
-        data: dict[Channel | str, npt.NDArray],
+        data: dict[ChannelType | str, npt.NDArray],
         coordinates: Coordinates,
         tile_size: TileSize,
         buffer_size: BufferSize = 0,
@@ -80,7 +80,7 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
     def _cast_channels(self) -> None:
         """Casts the channels to `Channel`."""
         self._data = {
-            Channel(channel)
+            ChannelType(channel)
             if isinstance(channel, str) and channel in self._built_in_channels else channel: data
             for channel, data in self
         }
@@ -142,7 +142,7 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
             raise AviaryUserError(message)
 
     @property
-    def data(self) -> dict[Channel | str, npt.NDArray]:
+    def data(self) -> dict[ChannelType | str, npt.NDArray]:
         """
         Returns:
             data
@@ -199,7 +199,7 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
         return bounding_box.buffer(buffer_size=self._buffer_size)
 
     @property
-    def channels(self) -> ChannelsSet:
+    def channels(self) -> ChannelTypeSet:
         """
         Returns:
             channels
@@ -242,7 +242,7 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
     def from_composite(
         cls,
         data: npt.NDArray,
-        channels: Channels,
+        channels: ChannelTypes,
         coordinates: Coordinates,
         tile_size: TileSize,
         buffer_size: BufferSize = 0,
@@ -295,7 +295,7 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
             raise AviaryUserError(message)
 
         channels = [
-            Channel(channel) if isinstance(channel, str) and channel in cls._built_in_channels else channel
+            ChannelType(channel) if isinstance(channel, str) and channel in cls._built_in_channels else channel
             for channel in channels
         ]
 
@@ -476,7 +476,7 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
             AviaryUserError: Invalid channel (the channel is not available)
         """
         if channel in self._built_in_channels:
-            channel = Channel(channel)
+            channel = ChannelType(channel)
 
         if channel not in self.channels:
             message = (
@@ -489,7 +489,7 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
 
     def __getitem__(
         self,
-        channel: Channel | str,
+        channel: ChannelType | str,
     ) -> npt.NDArray:
         """Returns the channel data.
 
@@ -503,7 +503,7 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
             AviaryUserError: Invalid channel (the channel is not available)
         """
         if isinstance(channel, str) and channel in self._built_in_channels:
-            channel = Channel(channel)
+            channel = ChannelType(channel)
 
         if channel not in self.channels:
             message = (
@@ -514,7 +514,7 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
 
         return self._data[channel]
 
-    def __iter__(self) -> Iterator[tuple[Channel | str, npt.NDArray]]:
+    def __iter__(self) -> Iterator[tuple[ChannelType | str, npt.NDArray]]:
         """Iterates over the channels.
 
         Yields:
@@ -525,7 +525,7 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
     def append_channel(
         self,
         data: npt.NDArray,
-        channel: Channel | str,
+        channel: ChannelType | str,
         inplace: bool = False,
     ) -> Tile:
         """Appends the channel to the tile.
@@ -542,7 +542,7 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
             AviaryUserError: Invalid channel (the channel is already available)
         """
         if isinstance(channel, str) and channel in self._built_in_channels:
-            channel = Channel(channel)
+            channel = ChannelType(channel)
 
         if channel in self.channels:
             message = (
@@ -613,7 +613,7 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
 
     def remove_channel(
         self,
-        channel: Channel | str,
+        channel: ChannelType | str,
         inplace: bool = False,
     ) -> Tile:
         """Removes the channel from the tile.
@@ -626,7 +626,7 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
             tile
         """
         if isinstance(channel, str) and channel in self._built_in_channels:
-            channel = Channel(channel)
+            channel = ChannelType(channel)
 
         if channel not in self.channels:
             message = (
@@ -680,9 +680,9 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
             color-infrared data
         """
         channels = [
-            Channel.NIR,
-            Channel.R,
-            Channel.G,
+            ChannelType.NIR,
+            ChannelType.R,
+            ChannelType.G,
         ]
         return self.to_composite(
             channels=channels,
@@ -691,7 +691,7 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
 
     def to_composite(
         self,
-        channels: Channels,
+        channels: ChannelTypes,
         time_step: TimeStep = 0,
     ) -> npt.NDArray:
         """Converts the tile to composite data.
@@ -722,7 +722,7 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
             raise AviaryUserError(message)
 
         channels = [
-            Channel(channel) if isinstance(channel, str) and channel in self._built_in_channels else channel
+            ChannelType(channel) if isinstance(channel, str) and channel in self._built_in_channels else channel
             for channel in channels
         ]
         data = [
@@ -744,9 +744,9 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
             near-infrared data
         """
         channels = [
-            Channel.NIR,
-            Channel.NIR,
-            Channel.NIR,
+            ChannelType.NIR,
+            ChannelType.NIR,
+            ChannelType.NIR,
         ]
         return self.to_composite(
             channels=channels,
@@ -766,9 +766,9 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
             rgb data
         """
         channels = [
-            Channel.R,
-            Channel.G,
-            Channel.B,
+            ChannelType.R,
+            ChannelType.G,
+            ChannelType.B,
         ]
         return self.to_composite(
             channels=channels,
@@ -788,10 +788,10 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
             rgb-infrared data
         """
         channels = [
-            Channel.R,
-            Channel.G,
-            Channel.B,
-            Channel.NIR,
+            ChannelType.R,
+            ChannelType.G,
+            ChannelType.B,
+            ChannelType.NIR,
         ]
         return self.to_composite(
             channels=channels,

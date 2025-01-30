@@ -3,7 +3,7 @@ import numpy.typing as npt
 import pytest
 
 from aviary.core.bounding_box import BoundingBox
-from aviary.core.enums import Channel
+from aviary.core.enums import ChannelType
 from aviary.core.process_area import ProcessArea
 from aviary.core.tile import Tile
 
@@ -34,7 +34,7 @@ def process_area() -> ProcessArea:
 
 @pytest.fixture(scope='function')
 def tile(
-    tile_data: dict[Channel | str, npt.NDArray],
+    tile_data: dict[ChannelType | str, npt.NDArray],
 ) -> Tile:
     data = tile_data
     coordinates = (0, 0)
@@ -49,7 +49,7 @@ def tile(
 
 
 @pytest.fixture(scope='function')
-def tile_data() -> dict[Channel | str, npt.NDArray]:
+def tile_data() -> dict[ChannelType | str, npt.NDArray]:
     data_r = np.full(
         shape=(800, 800, 2),
         fill_value=0,
@@ -76,9 +76,9 @@ def tile_data() -> dict[Channel | str, npt.NDArray]:
         dtype=np.uint8,
     )
     return {
-        Channel.R: data_r,
-        Channel.G: data_g,
-        Channel.B: data_b,
-        Channel.NIR: data_nir,
+        ChannelType.R: data_r,
+        ChannelType.G: data_g,
+        ChannelType.B: data_b,
+        ChannelType.NIR: data_nir,
         'custom': data_custom,
     }
