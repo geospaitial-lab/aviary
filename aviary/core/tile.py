@@ -123,6 +123,28 @@ class Tile(Iterable[Channel]):
             ')'
         )
 
+    def __eq__(
+        self,
+        other: Tile,
+    ) -> bool:
+        """Compares the tiles.
+
+        Parameters:
+            other: Other tile
+
+        Returns:
+            True if the tiles are equal, false otherwise
+        """
+        if not isinstance(other, Tile):
+            return False
+
+        conditions = (
+            self._channels == other._channels,
+            self._coordinates == other._coordinates,
+            self._tile_size == other._tile_size,
+        )
+        return all(conditions)
+
     def __len__(self) -> int:
         """Computes the number of channels.
 
