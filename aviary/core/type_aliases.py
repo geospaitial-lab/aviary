@@ -6,8 +6,8 @@ import numpy.typing as npt
 from aviary.core.enums import ChannelName
 
 BufferSize: TypeAlias = int
-ChannelNameSet: TypeAlias = set[ChannelName | str]
 ChannelNames: TypeAlias = list[ChannelName | str]
+ChannelNameSet: TypeAlias = set[ChannelName | str]
 Coordinate: TypeAlias = int
 Coordinates: TypeAlias = tuple[Coordinate, Coordinate]
 CoordinatesSet: TypeAlias = npt.NDArray[np.int32]

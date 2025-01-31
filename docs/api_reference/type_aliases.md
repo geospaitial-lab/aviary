@@ -4,13 +4,13 @@
       show_symbol_type_toc: false
       show_labels: false
 
-::: aviary.ChannelNameSet
+::: aviary.ChannelNames
     options:
       show_symbol_type_heading: false
       show_symbol_type_toc: false
       show_labels: false
 
-::: aviary.ChannelNames
+::: aviary.ChannelNameSet
     options:
       show_symbol_type_heading: false
       show_symbol_type_toc: false

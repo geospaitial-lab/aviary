@@ -18,8 +18,8 @@ from .core.process_area import (
 from .core.tile import Tile
 from .core.type_aliases import (
     BufferSize,
-    ChannelNameSet,
     ChannelNames,
+    ChannelNameSet,
     Coordinate,
     Coordinates,
     CoordinatesSet,
