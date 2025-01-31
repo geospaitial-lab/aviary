@@ -23,6 +23,7 @@ nav:
     - API Reference: api_reference/index.md
     - aviary:
       - BoundingBox: api_reference/bounding_box.md
+      - Channel: api_reference/channel.md
       - Enums: api_reference/enums.md
       - Exceptions: api_reference/exceptions.md
       - ProcessArea: api_reference/process_area.md

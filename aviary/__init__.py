@@ -1,4 +1,5 @@
 from .core.bounding_box import BoundingBox
+from .core.channel import Channel
 from .core.enums import (
     ChannelName,
     Device,
@@ -20,6 +21,7 @@ from .core.type_aliases import (
     BufferSize,
     ChannelNames,
     ChannelNameSet,
+    Channels,
     Coordinate,
     Coordinates,
     CoordinatesSet,
@@ -34,9 +36,11 @@ __all__ = [
     'AviaryUserWarning',
     'BoundingBox',
     'BufferSize',
+    'Channel',
     'ChannelName',
     'ChannelNameSet',
     'ChannelNames',
+    'Channels',
     'Coordinate',
     'Coordinates',
     'CoordinatesSet',
