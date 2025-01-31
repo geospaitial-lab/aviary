@@ -1,6 +1,6 @@
 from .core.bounding_box import BoundingBox
 from .core.enums import (
-    ChannelType,
+    ChannelName,
     Device,
     GeospatialFilterMode,
     InterpolationMode,
@@ -18,8 +18,8 @@ from .core.process_area import (
 from .core.tile import Tile
 from .core.type_aliases import (
     BufferSize,
-    ChannelTypes,
-    ChannelTypeSet,
+    ChannelNameSet,
+    ChannelNames,
     Coordinate,
     Coordinates,
     CoordinatesSet,
@@ -34,9 +34,9 @@ __all__ = [
     'AviaryUserWarning',
     'BoundingBox',
     'BufferSize',
-    'ChannelType',
-    'ChannelTypeSet',
-    'ChannelTypes',
+    'ChannelName',
+    'ChannelNameSet',
+    'ChannelNames',
     'Coordinate',
     'Coordinates',
     'CoordinatesSet',

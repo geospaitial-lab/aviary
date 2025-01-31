@@ -14,7 +14,7 @@ class Enum(BaseEnum):  # noqa: D101
         return self.value
 
 
-class ChannelType(Enum):
+class ChannelName(Enum):
     """
     Attributes:
         B: Blue channel

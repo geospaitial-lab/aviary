@@ -2,12 +2,12 @@ import numpy as np
 import pytest
 
 from aviary.core.bounding_box import BoundingBox
-from aviary.core.enums import ChannelType
+from aviary.core.enums import ChannelName
 from aviary.core.tile import Tile
 
 
 def test_tile_init(
-    tile_data: dict[ChannelType | str, np.ndarray],
+    tile_data: dict[ChannelName | str, np.ndarray],
 ) -> None:
     data = tile_data
     coordinates = (0, 0)
@@ -71,10 +71,10 @@ def test_tile_channels(
     tile: Tile,
 ) -> None:
     expected = [
-        ChannelType.R,
-        ChannelType.G,
-        ChannelType.B,
-        ChannelType.NIR,
+        ChannelName.R,
+        ChannelName.G,
+        ChannelName.B,
+        ChannelName.NIR,
         'custom',
     ]
     expected = set(expected)

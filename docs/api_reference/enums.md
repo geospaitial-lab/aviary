@@ -1,4 +1,4 @@
-::: aviary.Channel
+::: aviary.ChannelName
 
 ---
 

@@ -4,7 +4,7 @@ from unittest.mock import MagicMock
 import pytest
 
 from aviary.core.enums import (
-    ChannelType,
+    ChannelName,
     InterpolationMode,
     WMSVersion,
 )
@@ -95,10 +95,10 @@ def segmentation_exporter() -> SegmentationExporter:
 def vrt_fetcher() -> VRTFetcher:
     path = Path('test/test.vrt')
     channels = [
-        ChannelType.R,
-        ChannelType.G,
-        ChannelType.B,
-        ChannelType.NIR,
+        ChannelName.R,
+        ChannelName.G,
+        ChannelName.B,
+        ChannelName.NIR,
         'custom',
     ]
     tile_size = 128
@@ -125,9 +125,9 @@ def wms_fetcher() -> WMSFetcher:
     epsg_code = 25832
     response_format = 'image/png'
     channels = [
-        ChannelType.R,
-        ChannelType.G,
-        ChannelType.B,
+        ChannelName.R,
+        ChannelName.G,
+        ChannelName.B,
     ]
     tile_size = 128
     ground_sampling_distance = .2
