@@ -1,13 +1,20 @@
+from __future__ import annotations
+
 from typing import (
-    Any,
+    TYPE_CHECKING,
     Protocol,
 )
 
-import geopandas as gpd
-import numpy.typing as npt
+import numpy as np
+
+if TYPE_CHECKING:
+    import geopandas as gpd
+    import numpy.typing as npt
 
 from aviary.core.enums import ChannelName
-from aviary.core.type_aliases import BufferSize
+
+if TYPE_CHECKING:
+    from aviary.core.type_aliases import BufferSize
 
 
 class Channel(Protocol):
@@ -19,7 +26,7 @@ class Channel(Protocol):
     """
 
     @property
-    def data(self) -> Any:  # noqa: ANN401
+    def data(self) -> object:
         """
         Returns:
             Data
@@ -47,6 +54,20 @@ class Channel(Protocol):
         """
         Returns:
             Data type
+        """
+        ...
+
+    def __eq__(
+        self,
+        other: object,
+    ) -> bool:
+        """Compares the channels.
+
+        Parameters:
+            other: Other channel
+
+        Returns:
+            True if the channels are equal, false otherwise
         """
         ...
 
@@ -110,6 +131,28 @@ class ArrayChannel:
         """
         return type(self._data)
 
+    def __eq__(
+        self,
+        other: ArrayChannel,
+    ) -> bool:
+        """Compares the array channels.
+
+        Parameters:
+            other: Other array channel
+
+        Returns:
+            True if the array channels are equal, false otherwise
+        """
+        if not isinstance(other, ArrayChannel):
+            return False
+
+        conditions = [
+            np.array_equal(self._data, other.data),
+            self._name == other.name,
+            self._buffer_size == other.buffer_size,
+        ]
+        return all(conditions)
+
 
 class GdfChannel:
     """Channel that contains a geodataframe
@@ -169,3 +212,25 @@ class GdfChannel:
             Data type
         """
         return type(self._data)
+
+    def __eq__(
+        self,
+        other: GdfChannel,
+    ) -> bool:
+        """Compares the geodataframe channels.
+
+        Parameters:
+            other: Other geodataframe channel
+
+        Returns:
+            True if the geodataframe channels are equal, false otherwise
+        """
+        if not isinstance(other, GdfChannel):
+            return False
+
+        conditions = [
+            self._data.equals(other.data),
+            self._name == other.name,
+            self._buffer_size == other.buffer_size,
+        ]
+        return all(conditions)
