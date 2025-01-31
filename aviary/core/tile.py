@@ -86,7 +86,7 @@ class Tile(Iterable[tuple[ChannelType | str, npt.NDArray]]):
         }
 
     def _validate_data(self) -> None:
-        """Validates data.
+        """Validates `data`.
 
         Raises:
             AviaryUserError: Invalid data (`data` is an empty dictionary)
@@ -116,7 +116,7 @@ class Tile(Iterable[tuple[ChannelType | str, npt.NDArray]]):
                 raise AviaryUserError(message)
 
     def _validate_tile_size(self) -> None:
-        """Validates tile_size.
+        """Validates `tile_size`.
 
         Raises:
             AviaryUserError: Invalid tile size (`tile_size` <= 0)
@@ -129,7 +129,7 @@ class Tile(Iterable[tuple[ChannelType | str, npt.NDArray]]):
             raise AviaryUserError(message)
 
     def _validate_buffer_size(self) -> None:
-        """Validates buffer_size.
+        """Validates `buffer_size`.
 
         Raises:
             AviaryUserError: Invalid buffer size (`buffer_size` < 0)
@@ -757,7 +757,7 @@ class Tile(Iterable[tuple[ChannelType | str, npt.NDArray]]):
         self,
         time_step: TimeStep = 0,
     ) -> npt.NDArray:
-        """Converts the data to rgb data.
+        """Converts the tile to rgb data.
 
         Parameters:
             time_step: time step (supports negative indexing)
