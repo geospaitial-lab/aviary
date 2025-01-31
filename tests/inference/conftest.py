@@ -8,6 +8,7 @@ from aviary.core.enums import (
     InterpolationMode,
     WMSVersion,
 )
+from aviary.core.process_area import ProcessArea
 from aviary.inference.aviary import (
     Aviary,
     Channels,
@@ -21,6 +22,7 @@ from aviary.inference.tile_fetcher import (
     VRTFetcher,
     WMSFetcher,
 )
+from aviary.inference.tile_set import TileSet
 
 
 @pytest.fixture(scope='session')
@@ -88,6 +90,16 @@ def segmentation_exporter() -> SegmentationExporter:
         epsg_code=epsg_code,
         field_name=field_name,
         num_workers=num_workers,
+    )
+
+
+@pytest.fixture(scope='session')
+def tile_set() -> TileSet:
+    process_area = MagicMock(spec=ProcessArea)
+    tile_fetcher = MagicMock(spec=TileFetcher)
+    return TileSet(
+        process_area=process_area,
+        tile_fetcher=tile_fetcher,
     )
 
 
