@@ -1,5 +1,9 @@
 from .core.bounding_box import BoundingBox
-from .core.channel import Channel
+from .core.channel import (
+    ArrayChannel,
+    Channel,
+    GdfChannel,
+)
 from .core.enums import (
     ChannelName,
     Device,
@@ -32,6 +36,7 @@ from .core.type_aliases import (
 )
 
 __all__ = [
+    'ArrayChannel',
     'AviaryUserError',
     'AviaryUserWarning',
     'BoundingBox',
@@ -46,6 +51,7 @@ __all__ = [
     'CoordinatesSet',
     'Device',
     'EPSGCode',
+    'GdfChannel',
     'GeospatialFilterMode',
     'GroundSamplingDistance',
     'InterpolationMode',
