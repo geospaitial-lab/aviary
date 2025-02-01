@@ -42,6 +42,25 @@ class Tile(Iterable[Channel]):
 
         self._channel_dict = {channel.name: channel for channel in self._channels}
 
+        self._validate()
+
+    def _validate(self) -> None:
+        """Validates the tile."""
+        self._validate_tile_size()
+
+    def _validate_tile_size(self) -> None:
+        """Validates `tile_size`.
+
+        Raises:
+            AviaryUserError: Invalid tile size (`tile_size` is negative or zero)
+        """
+        if self._tile_size <= 0:
+            message = (
+                'Invalid tile size! '
+                'tile_size must be positive.'
+            )
+            raise AviaryUserError(message)
+
     @property
     def channels(self) -> Channels:
         """
