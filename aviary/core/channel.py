@@ -15,6 +15,7 @@ from aviary.core.enums import ChannelName
 from aviary.core.exceptions import AviaryUserError
 
 if TYPE_CHECKING:
+    from aviary.core.tile import Tile
     from aviary.core.type_aliases import BufferSize
 
 
@@ -72,6 +73,17 @@ class Channel(Protocol):
         """
         ...
 
+    def ref_tile(
+        self,
+        tile: Tile,
+    ) -> None:
+        """References the tile.
+
+        Parameters:
+            tile: Tile
+        """
+        ...
+
 
 class ArrayChannel:
     """Channel that contains an array
@@ -85,16 +97,19 @@ class ArrayChannel:
         data: npt.NDArray,
         name: ChannelName | str,
         buffer_size: BufferSize,
+        tile_ref: Tile | None = None,
     ) -> None:
         """
         Parameters:
             data: Data
             name: Name
             buffer_size: Buffer size in meters
+            tile_ref: Tile reference
         """
         self._data = data
         self._name = name
         self._buffer_size = buffer_size
+        self._tile_ref = tile_ref
 
         self._validate()
 
@@ -175,6 +190,17 @@ class ArrayChannel:
         ]
         return all(conditions)
 
+    def ref_tile(
+        self,
+        tile: Tile,
+    ) -> None:
+        """References the tile.
+
+        Parameters:
+            tile: Tile
+        """
+        self._tile_ref = tile
+
 
 class GdfChannel:
     """Channel that contains a geodataframe
@@ -188,16 +214,19 @@ class GdfChannel:
         data: gpd.GeoDataFrame,
         name: ChannelName | str,
         buffer_size: BufferSize,
+        tile_ref: Tile | None = None,
     ) -> None:
         """
         Parameters:
             data: Data
             name: Name
             buffer_size: Buffer size in meters
+            tile_ref: Tile reference
         """
         self._data = data
         self._name = name
         self._buffer_size = buffer_size
+        self._tile_ref = tile_ref
 
         self._validate()
 
@@ -277,3 +306,14 @@ class GdfChannel:
             self._buffer_size == other.buffer_size,
         ]
         return all(conditions)
+
+    def ref_tile(
+        self,
+        tile: Tile,
+    ) -> None:
+        """References the tile.
+
+        Parameters:
+            tile: Tile
+        """
+        self._tile_ref = tile
