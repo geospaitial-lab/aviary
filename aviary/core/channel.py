@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import copy
 from abc import (
     ABC,
     abstractmethod,
@@ -16,8 +17,14 @@ from aviary.core.enums import ChannelName
 from aviary.core.exceptions import AviaryUserError
 
 if TYPE_CHECKING:
+    from aviary.core.bounding_box import BoundingBox
     from aviary.core.tile import Tile
-    from aviary.core.type_aliases import BufferSize
+    from aviary.core.type_aliases import (
+        BufferSize,
+        Coordinates,
+        GroundSamplingDistance,
+        TileSize,
+    )
 
 
 class Channel(ABC):
@@ -98,12 +105,57 @@ class Channel(ABC):
         return self._buffer_size
 
     @property
+    def area(self) -> int:
+        """
+        Returns:
+            Area in square meters
+        """
+        return self.bounding_box.area
+
+    @property
+    def bounding_box(self) -> BoundingBox:
+        """
+        Returns:
+            Bounding box
+        """
+        if self._tile_ref is None:
+            message = 'Tile reference is not set!'
+            raise AviaryUserError(message)
+
+        bounding_box = self._tile_ref.bounding_box
+        return bounding_box.buffer(buffer_size=self._buffer_size)
+
+    @property
+    def coordinates(self) -> Coordinates:
+        """
+        Returns:
+            Coordinates (x_min, y_min) of the tile
+        """
+        if self._tile_ref is None:
+            message = 'Tile reference is not set!'
+            raise AviaryUserError(message)
+
+        return self._tile_ref.coordinates
+
+    @property
     def data_type(self) -> type:
         """
         Returns:
             Data type
         """
         return type(self._data)
+
+    @property
+    def tile_size(self) -> TileSize:
+        """
+        Returns:
+            tile size in meters
+        """
+        if self._tile_ref is None:
+            message = 'Tile reference is not set!'
+            raise AviaryUserError(message)
+
+        return self._tile_ref.tile_size
 
     @abstractmethod
     def __eq__(
@@ -133,6 +185,7 @@ class Channel(ABC):
 
 class ArrayChannel(Channel):
     """Channel that contains an array"""
+    _data: npt.NDArray
 
     def __init__(
         self,
@@ -154,6 +207,44 @@ class ArrayChannel(Channel):
             buffer_size=buffer_size,
             tile_ref=tile_ref,
         )
+
+        self._validate_data()
+
+    def _validate_data(self) -> None:
+        """Validates `data`.
+
+        Raises:
+            AviaryUserError: Invalid data (`data` is not an array of shape (m, m, n))
+        """
+        conditions = [
+            self._data.ndim != 3,  # noqa: PLR2004
+            self._data.shape[0] != self._data.shape[1],
+        ]
+
+        if any(conditions):
+            message = (
+                'Invalid data! '
+                'data must be an array of shape (m, m, n).'
+            )
+            raise AviaryUserError(message)
+
+        self._data = copy.deepcopy(self._data)
+
+    @property
+    def ground_sampling_distance(self) -> GroundSamplingDistance:
+        """
+        Returns:
+            Ground sampling distance in meters
+        """
+        return (self.tile_size + 2 * self._buffer_size) / self.shape[0]
+
+    @property
+    def shape(self) -> tuple[int, int, int]:
+        """
+        Returns:
+            Shape
+        """
+        return self._data.shape
 
     def __eq__(
         self,
@@ -180,6 +271,7 @@ class ArrayChannel(Channel):
 
 class GdfChannel(Channel):
     """Channel that contains a geodataframe"""
+    _data: gpd.GeoDataFrame
 
     def __init__(
         self,
@@ -202,6 +294,12 @@ class GdfChannel(Channel):
             tile_ref=tile_ref,
         )
 
+        self._validate_data()
+
+    def _validate_data(self) -> None:
+        """Validates `data`."""
+        self._data = copy.deepcopy(self._data)
+
     def __eq__(
         self,
         other: GdfChannel,
@@ -217,7 +315,6 @@ class GdfChannel(Channel):
         if not isinstance(other, GdfChannel):
             return False
 
-        # noinspection PyUnresolvedReferences
         conditions = [
             self._data.equals(other.data),
             self._name == other.name,
