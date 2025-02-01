@@ -48,15 +48,40 @@ class Tile(Iterable[Channel]):
         self._coordinates = coordinates
         self._tile_size = tile_size
 
-        self._channel_dict = {channel.name: channel for channel in self._channels}
-
         self._validate()
+
+        self._channel_dict = {channel.name: channel for channel in self._channels}
 
     def _validate(self) -> None:
         """Validates the tile."""
+        self._validate_channels()
         self._ref_channels()
         self._copy_channels()
         self._validate_tile_size()
+
+    def _validate_channels(self) -> None:
+        """Validates `channels`.
+
+        Raises:
+            AviaryUserError: Invalid channels (`channels` is an empty list)
+            AviaryUserError: Invalid channels (`channels` contains duplicate names)
+        """
+        if not self._channels:
+            message = (
+                'Invalid channels! '
+                'channels must be a non-empty list.'
+            )
+            raise AviaryUserError(message)
+
+        channel_names = [channel.name for channel in self._channels]
+        unique_channel_names = set(channel_names)
+
+        if len(channel_names) != len(unique_channel_names):
+            message = (
+                'Invalid channels! '
+                'channels must contain unique names.'
+            )
+            raise AviaryUserError(message)
 
     def _ref_channels(self) -> None:
         """References the tile in the channels."""
