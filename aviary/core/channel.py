@@ -41,6 +41,7 @@ class Channel(ABC):
         name: ChannelName | str,
         buffer_size: BufferSize,
         tile_ref: Tile | None = None,
+        copy: bool = False,
     ) -> None:
         """
         Parameters:
@@ -48,18 +49,32 @@ class Channel(ABC):
             name: Name
             buffer_size: Buffer size in meters
             tile_ref: Tile reference
+            copy: If true, the data is copied to avoid side effects
         """
         self._data = data
         self._name = name
         self._buffer_size = buffer_size
         self._tile_ref = tile_ref
+        self._copy = copy
 
         self._validate()
 
+        if self._copy:
+            self._copy_data()
+
     def _validate(self) -> None:
         """Validates the channel."""
+        self._validate_data()
         self._cast_name()
         self._validate_buffer_size()
+
+    @abstractmethod
+    def _validate_data(self) -> None:
+        """Validates `data`."""
+
+    @abstractmethod
+    def _copy_data(self) -> None:
+        """Copies `data`."""
 
     def _cast_name(self) -> None:
         """Casts the name to `ChannelName`."""
@@ -214,6 +229,7 @@ class ArrayChannel(Channel):
         name: ChannelName | str,
         buffer_size: BufferSize,
         tile_ref: Tile | None = None,
+        copy: bool = False,
     ) -> None:
         """
         Parameters:
@@ -221,16 +237,15 @@ class ArrayChannel(Channel):
             name: Name
             buffer_size: Buffer size in meters
             tile_ref: Tile reference
+            copy: If true, the data is copied to avoid side effects
         """
         super().__init__(
             data=data,
             name=name,
             buffer_size=buffer_size,
             tile_ref=tile_ref,
+            copy=copy,
         )
-
-        self._validate_data()
-        self._copy_data()
 
     def _validate_data(self) -> None:
         """Validates `data`.
@@ -284,6 +299,7 @@ class ArrayChannel(Channel):
             f'    name={self._name},\n'
             f'    buffer_size={self._buffer_size},\n'
             f'    tile_ref={tile_ref_repr},\n'
+            f'    copy={self._copy},\n'
             ')'
         )
 
@@ -330,6 +346,7 @@ class ArrayChannel(Channel):
                 name=self._name,
                 buffer_size=self._buffer_size,
                 tile_ref=self._tile_ref,
+                copy=True,
             )
 
         buffer_size = int(self._buffer_size / self.ground_sampling_distance)
@@ -338,7 +355,6 @@ class ArrayChannel(Channel):
             self._data = self._data[buffer_size:-buffer_size, buffer_size:-buffer_size, :]
             self._buffer_size = 0
             self._validate()
-            self._validate_data()
             return self
 
         data = self._data[buffer_size:-buffer_size, buffer_size:-buffer_size, :]
@@ -347,6 +363,7 @@ class ArrayChannel(Channel):
             name=self._name,
             buffer_size=0,
             tile_ref=self._tile_ref,
+            copy=True,
         )
 
 
@@ -360,6 +377,7 @@ class GdfChannel(Channel):
         name: ChannelName | str,
         buffer_size: BufferSize,
         tile_ref: Tile | None = None,
+        copy: bool = False,
     ) -> None:
         """
         Parameters:
@@ -367,15 +385,18 @@ class GdfChannel(Channel):
             name: Name
             buffer_size: Buffer size in meters
             tile_ref: Tile reference
+            copy: If true, the data is copied to avoid side effects
         """
         super().__init__(
             data=data,
             name=name,
             buffer_size=buffer_size,
             tile_ref=tile_ref,
+            copy=copy,
         )
 
-        self._copy_data()
+    def _validate_data(self) -> None:
+        """Validates `data`."""
 
     def _copy_data(self) -> None:
         """Copies `data`."""
@@ -395,6 +416,7 @@ class GdfChannel(Channel):
             f'    name={self._name},\n'
             f'    buffer_size={self._buffer_size},\n'
             f'    tile_ref={tile_ref_repr},\n'
+            f'    copy={self._copy},\n'
             ')'
         )
 
@@ -436,11 +458,12 @@ class GdfChannel(Channel):
             if inplace:
                 return self
 
-            return Channel(
+            return GdfChannel(
                 data=self._data,
                 name=self._name,
                 buffer_size=self._buffer_size,
                 tile_ref=self._tile_ref,
+                copy=True,
             )
 
         if inplace:
@@ -461,4 +484,5 @@ class GdfChannel(Channel):
             name=self._name,
             buffer_size=0,
             tile_ref=self._tile_ref,
+            copy=False,  # clip already creates a copy
         )
