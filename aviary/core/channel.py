@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import copy
 from abc import (
     ABC,
     abstractmethod,
@@ -190,6 +189,20 @@ class Channel(ABC):
         """
         self._tile_ref = tile
 
+    @abstractmethod
+    def remove_buffer(
+        self,
+        inplace: bool = False,
+    ) -> Channel:
+        """Removes the buffer.
+
+        Parameters:
+            inplace: If true, the buffer is removed inplace
+
+        Returns:
+            Channel
+        """
+
 
 class ArrayChannel(Channel):
     """Channel that contains an array"""
@@ -217,6 +230,7 @@ class ArrayChannel(Channel):
         )
 
         self._validate_data()
+        self._copy_data()
 
     def _validate_data(self) -> None:
         """Validates `data`.
@@ -236,7 +250,9 @@ class ArrayChannel(Channel):
             )
             raise AviaryUserError(message)
 
-        self._data = copy.deepcopy(self._data)
+    def _copy_data(self) -> None:
+        """Copies `data`."""
+        self._data = np.copy(self._data)
 
     @property
     def ground_sampling_distance(self) -> GroundSamplingDistance:
@@ -293,6 +309,46 @@ class ArrayChannel(Channel):
         ]
         return all(conditions)
 
+    def remove_buffer(
+        self,
+        inplace: bool = False,
+    ) -> ArrayChannel:
+        """Removes the buffer.
+
+        Parameters:
+            inplace: If true, the buffer is removed inplace
+
+        Returns:
+            Array channel
+        """
+        if self._buffer_size == 0:
+            if inplace:
+                return self
+
+            return Channel(
+                data=self._data,
+                name=self._name,
+                buffer_size=self._buffer_size,
+                tile_ref=self._tile_ref,
+            )
+
+        buffer_size = int(self._buffer_size / self.ground_sampling_distance)
+
+        if inplace:
+            self._data = self._data[buffer_size:-buffer_size, buffer_size:-buffer_size, :]
+            self._buffer_size = 0
+            self._validate()
+            self._validate_data()
+            return self
+
+        data = self._data[buffer_size:-buffer_size, buffer_size:-buffer_size, :]
+        return ArrayChannel(
+            data=data,
+            name=self._name,
+            buffer_size=0,
+            tile_ref=self._tile_ref,
+        )
+
 
 class GdfChannel(Channel):
     """Channel that contains a geodataframe"""
@@ -319,11 +375,11 @@ class GdfChannel(Channel):
             tile_ref=tile_ref,
         )
 
-        self._validate_data()
+        self._copy_data()
 
-    def _validate_data(self) -> None:
-        """Validates `data`."""
-        self._data = copy.deepcopy(self._data)
+    def _copy_data(self) -> None:
+        """Copies `data`."""
+        self._data = self._data.copy()
 
     def __repr__(self) -> str:
         """Returns the string representation.
@@ -363,3 +419,46 @@ class GdfChannel(Channel):
             self._buffer_size == other.buffer_size,
         ]
         return all(conditions)
+
+    def remove_buffer(
+        self,
+        inplace: bool = False,
+    ) -> GdfChannel:
+        """Removes the buffer.
+
+        Parameters:
+            inplace: If true, the buffer is removed inplace
+
+        Returns:
+            Geodataframe channel
+        """
+        if self._buffer_size == 0:
+            if inplace:
+                return self
+
+            return Channel(
+                data=self._data,
+                name=self._name,
+                buffer_size=self._buffer_size,
+                tile_ref=self._tile_ref,
+            )
+
+        if inplace:
+            self._data = self._data.clip(
+                mask=self.bounding_box,
+                keep_geom_type=True,
+            )
+            self._buffer_size = 0
+            self._validate()
+            return self
+
+        data = self._data.clip(
+            mask=self.bounding_box,
+            keep_geom_type=True,
+        )
+        return GdfChannel(
+            data=data,
+            name=self._name,
+            buffer_size=0,
+            tile_ref=self._tile_ref,
+        )
