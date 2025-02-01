@@ -196,7 +196,6 @@ class Tile(Iterable[Channel]):
             if isinstance(channel_name, str) and channel_name in cls._built_in_channel_names else channel_name
             for channel_name in channel_names
         ]
-
         channels = [
             Channel(
                 data=data[..., i],
@@ -205,7 +204,6 @@ class Tile(Iterable[Channel]):
             )
             for i, channel_name in channel_names
         ]
-
         return cls(
             channels=channels,
             coordinates=coordinates,
