@@ -12,6 +12,7 @@ if TYPE_CHECKING:
     import numpy.typing as npt
 
 from aviary.core.enums import ChannelName
+from aviary.core.exceptions import AviaryUserError
 
 if TYPE_CHECKING:
     from aviary.core.type_aliases import BufferSize
@@ -77,6 +78,7 @@ class ArrayChannel:
 
     Implements the `Channel` protocol.
     """
+    _built_in_channel_names = frozenset(channel_name.value for channel_name in ChannelName)
 
     def __init__(
         self,
@@ -98,6 +100,26 @@ class ArrayChannel:
 
     def _validate(self) -> None:
         """Validates the array channel."""
+        self._cast_name()
+        self._validate_buffer_size()
+
+    def _cast_name(self) -> None:
+        """Casts the name to `ChannelName`."""
+        if isinstance(self._name, str) and self._name in self._built_in_channel_names:
+            self._name = ChannelName(self._name)
+
+    def _validate_buffer_size(self) -> None:
+        """Validates `buffer_size`.
+
+        Raises:
+            AviaryUserError: Invalid buffer size (`buffer_size` is negative)
+        """
+        if self._buffer_size < 0:
+            message = (
+                'Invalid buffer size! '
+                'buffer_size must be non-negative.'
+            )
+            raise AviaryUserError(message)
 
     @property
     def data(self) -> npt.NDArray:
@@ -159,6 +181,7 @@ class GdfChannel:
 
     Implements the `Channel` protocol.
     """
+    _built_in_channel_names = frozenset(channel_name.value for channel_name in ChannelName)
 
     def __init__(
         self,
@@ -180,6 +203,26 @@ class GdfChannel:
 
     def _validate(self) -> None:
         """Validates the geodataframe channel."""
+        self._cast_name()
+        self._validate_buffer_size()
+
+    def _cast_name(self) -> None:
+        """Casts the name to `ChannelName`."""
+        if isinstance(self._name, str) and self._name in self._built_in_channel_names:
+            self._name = ChannelName(self._name)
+
+    def _validate_buffer_size(self) -> None:
+        """Validates `buffer_size`.
+
+        Raises:
+            AviaryUserError: Invalid buffer size (`buffer_size` is negative)
+        """
+        if self._buffer_size < 0:
+            message = (
+                'Invalid buffer size! '
+                'buffer_size must be non-negative.'
+            )
+            raise AviaryUserError(message)
 
     @property
     def data(self) -> gpd.GeoDataFrame:
