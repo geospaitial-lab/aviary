@@ -158,6 +158,14 @@ class Channel(ABC):
         return self._tile_ref.tile_size
 
     @abstractmethod
+    def __repr__(self) -> str:
+        """Returns the string representation.
+
+        Returns:
+            String representation
+        """
+
+    @abstractmethod
     def __eq__(
         self,
         other: object,
@@ -246,6 +254,23 @@ class ArrayChannel(Channel):
         """
         return self._data.shape
 
+    def __repr__(self) -> str:
+        """Returns the string representation.
+
+        Returns:
+            String representation
+        """
+        data_repr = self.shape
+        tile_ref_repr = id(self._tile_ref) if self._tile_ref is not None else None
+        return (
+            'ArrayChannel(\n'
+            f'    data={data_repr},\n'
+            f'    name={self._name},\n'
+            f'    buffer_size={self._buffer_size},\n'
+            f'    tile_ref={tile_ref_repr},\n'
+            ')'
+        )
+
     def __eq__(
         self,
         other: ArrayChannel,
@@ -299,6 +324,23 @@ class GdfChannel(Channel):
     def _validate_data(self) -> None:
         """Validates `data`."""
         self._data = copy.deepcopy(self._data)
+
+    def __repr__(self) -> str:
+        """Returns the string representation.
+
+        Returns:
+            String representation
+        """
+        data_repr = len(self._data)
+        tile_ref_repr = id(self._tile_ref) if self._tile_ref is not None else None
+        return (
+            'GdfChannel(\n'
+            f'    data={data_repr},\n'
+            f'    name={self._name},\n'
+            f'    buffer_size={self._buffer_size},\n'
+            f'    tile_ref={tile_ref_repr},\n'
+            ')'
+        )
 
     def __eq__(
         self,
