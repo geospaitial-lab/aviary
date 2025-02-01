@@ -9,6 +9,7 @@ from typing import TYPE_CHECKING
 from aviary.core.bounding_box import BoundingBox
 from aviary.core.channel import Channel
 from aviary.core.enums import ChannelName
+from aviary.core.exceptions import AviaryUserError
 
 if TYPE_CHECKING:
     from aviary.core.type_aliases import (
@@ -152,6 +153,60 @@ class Tile(Iterable[Channel]):
             Number of channels
         """
         return len(self._channels)
+
+    def __getattr__(
+        self,
+        channel_name: str,
+    ) -> Channel:
+        """Returns the channel.
+
+        Parameters:
+            channel_name: Channel name
+
+        Returns:
+            Channel
+
+        Raises:
+            AviaryUserError: Invalid channel name (the channel is not available)
+        """
+        if channel_name in self._built_in_channel_names:
+            channel_name = ChannelName(channel_name)
+
+        if channel_name not in self.channel_names:
+            message = (
+                'Invalid channel name! '
+                f'The {channel_name} channel is not available.'
+            )
+            raise AviaryUserError(message)
+
+        return self[channel_name]
+
+    def __getitem__(
+        self,
+        channel_name: ChannelName | str,
+    ) -> Channel:
+        """Returns the channel.
+
+        Parameters:
+            channel_name: Channel name
+
+        Returns:
+            Channel
+
+        Raises:
+            AviaryUserError: Invalid channel name (the channel is not available)
+        """
+        if isinstance(channel_name, str) and channel_name in self._built_in_channel_names:
+            channel_name = ChannelName(channel_name)
+
+        if channel_name not in self.channel_names:
+            message = (
+                'Invalid channel name! '
+                f'The {channel_name} channel is not available.'
+            )
+            raise AviaryUserError(message)
+
+        return self._channel_dict[channel_name]
 
     def __iter__(self) -> Iterator[Channel]:
         """Iterates over the channels.
