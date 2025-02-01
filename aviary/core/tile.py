@@ -46,7 +46,13 @@ class Tile(Iterable[Channel]):
 
     def _validate(self) -> None:
         """Validates the tile."""
+        self._ref_channels()
         self._validate_tile_size()
+
+    def _ref_channels(self) -> None:
+        """References the tile in the channels."""
+        for channel in self._channels:
+            channel.ref_tile(tile=self)
 
     def _validate_tile_size(self) -> None:
         """Validates `tile_size`.
