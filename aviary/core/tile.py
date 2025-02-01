@@ -1,10 +1,16 @@
 from __future__ import annotations
 
+import copy
 from collections.abc import (
     Iterable,
     Iterator,
 )
 from typing import TYPE_CHECKING
+
+import numpy as np
+
+if TYPE_CHECKING:
+    import numpy.typing as npt
 
 from aviary.core.bounding_box import BoundingBox
 from aviary.core.channel import Channel
@@ -13,6 +19,8 @@ from aviary.core.exceptions import AviaryUserError
 
 if TYPE_CHECKING:
     from aviary.core.type_aliases import (
+        BufferSize,
+        ChannelNames,
         ChannelNameSet,
         Channels,
         Coordinates,
@@ -47,12 +55,17 @@ class Tile(Iterable[Channel]):
     def _validate(self) -> None:
         """Validates the tile."""
         self._ref_channels()
+        self._copy_channels()
         self._validate_tile_size()
 
     def _ref_channels(self) -> None:
         """References the tile in the channels."""
         for channel in self._channels:
             channel.ref_tile(tile=self)
+
+    def _copy_channels(self) -> None:
+        """Copies `channels`."""
+        self._channels = copy.deepcopy(self._channels)
 
     def _validate_tile_size(self) -> None:
         """Validates `tile_size`.
@@ -130,6 +143,74 @@ class Tile(Iterable[Channel]):
             Number of channels
         """
         return len(self)
+
+    @classmethod
+    def from_composite_array(
+        cls,
+        data: npt.NDArray,
+        channel_names: ChannelNames,
+        coordinates: Coordinates,
+        tile_size: TileSize,
+        buffer_size: BufferSize = 0,
+    ) -> Tile:
+        """Creates a tile from a composite array.
+
+        Parameters:
+            data: Data
+            channel_names: Channel names
+            coordinates: Coordinates (x_min, y_min) of the tile
+            tile_size: Tile size in meters
+            buffer_size: Buffer size in meters
+
+        Returns:
+            Tile
+
+        Raises:
+            AviaryUserError: Invalid data (`data` is not an array of shape (n, n, c))
+            AviaryUserError: Invalid channel names (the number of channel names is not equal to the number of channels)
+        """
+        if data.ndim == 2:  # noqa: PLR2004
+            data = data[..., np.newaxis]
+
+        conditions = [
+            data.ndim != 3,  # noqa: PLR2004
+            data.shape[0] != data.shape[1],
+        ]
+
+        if any(conditions):
+            message = (
+                'Invalid data! '
+                'data must be an array of shape (n, n, c).'
+            )
+            raise AviaryUserError(message)
+
+        if data.shape[-1] != len(channel_names):
+            message = (
+                'Invalid channel names! '
+                'The number of channel names must be equal to the number of channels.'
+            )
+            raise AviaryUserError(message)
+
+        channel_names = [
+            ChannelName(channel_name)
+            if isinstance(channel_name, str) and channel_name in cls._built_in_channel_names else channel_name
+            for channel_name in channel_names
+        ]
+
+        channels = [
+            Channel(
+                data=data[..., i],
+                name=channel_name,
+                buffer_size=buffer_size,
+            )
+            for i, channel_name in channel_names
+        ]
+
+        return cls(
+            channels=channels,
+            coordinates=coordinates,
+            tile_size=tile_size,
+        )
 
     def __repr__(self) -> str:
         """Returns the string representation.
