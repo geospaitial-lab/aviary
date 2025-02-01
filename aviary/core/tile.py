@@ -135,7 +135,7 @@ class Tile(Iterable[Channel]):
         """Returns the string representation.
 
         Returns:
-            string representation
+            String representation
         """
         channels_repr = '\n'.join(
             f'        {channel.name}: {channel.data_type},'

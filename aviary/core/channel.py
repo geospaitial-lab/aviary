@@ -149,7 +149,7 @@ class Channel(ABC):
     def tile_size(self) -> TileSize:
         """
         Returns:
-            tile size in meters
+            Tile size in meters
         """
         if self._tile_ref is None:
             message = 'Tile reference is not set!'
