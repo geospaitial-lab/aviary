@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import copy
 from collections.abc import (
     Iterable,
     Iterator,
@@ -29,7 +28,12 @@ if TYPE_CHECKING:
 
 
 class Tile(Iterable[Channel]):
-    """A tile specifies the channels and the spatial extent of a tile."""
+    """A tile specifies the channels and the spatial extent of a tile.
+
+    Notes:
+        - The `channels` property returns a reference to the channels
+        - The dunder methods `__getattr__`, `__getitem__`, and `__iter__` return or yield a reference to a channel
+    """
     _built_in_channel_names = frozenset(channel_name.value for channel_name in ChannelName)
 
     def __init__(
@@ -37,18 +41,24 @@ class Tile(Iterable[Channel]):
         channels: Channels,
         coordinates: Coordinates,
         tile_size: TileSize,
+        copy: bool = False,
     ) -> None:
         """
         Parameters:
             channels: Channels
             coordinates: Coordinates (x_min, y_min) of the tile
             tile_size: Tile size in meters
+            copy: If true, the channels are copied during initialization
         """
         self._channels = channels
         self._coordinates = coordinates
         self._tile_size = tile_size
+        self._copy = copy
 
         self._validate()
+
+        if self._copy:
+            self._copy_channels()
 
         self._channel_dict = {channel.name: channel for channel in self._channels}
 
@@ -56,7 +66,6 @@ class Tile(Iterable[Channel]):
         """Validates the tile."""
         self._validate_channels()
         self._ref_channels()
-        self._copy_channels()
         self._validate_tile_size()
 
     def _validate_channels(self) -> None:
@@ -90,7 +99,7 @@ class Tile(Iterable[Channel]):
 
     def _copy_channels(self) -> None:
         """Copies `channels`."""
-        self._channels = copy.deepcopy(self._channels)
+        self._channels = [channel.copy() for channel in self._channels]
 
     def _validate_tile_size(self) -> None:
         """Validates `tile_size`.
@@ -177,6 +186,7 @@ class Tile(Iterable[Channel]):
         coordinates: Coordinates,
         tile_size: TileSize,
         buffer_size: BufferSize = 0,
+        copy: bool = False,
     ) -> Tile:
         """Creates a tile from a composite array.
 
@@ -186,6 +196,7 @@ class Tile(Iterable[Channel]):
             coordinates: Coordinates (x_min, y_min) of the tile
             tile_size: Tile size in meters
             buffer_size: Buffer size in meters
+            copy: If true, the channels are copied during initialization
 
         Returns:
             Tile
@@ -233,6 +244,7 @@ class Tile(Iterable[Channel]):
             channels=channels,
             coordinates=coordinates,
             tile_size=tile_size,
+            copy=copy,
         )
 
     def __repr__(self) -> str:
@@ -250,6 +262,7 @@ class Tile(Iterable[Channel]):
             f'    channels=\n{channels_repr}\n'
             f'    coordinates={self._coordinates},\n'
             f'    tile_size={self._tile_size},\n'
+            f'    copy={self._copy},\n'
             ')'
         )
 
@@ -344,3 +357,16 @@ class Tile(Iterable[Channel]):
             Channel
         """
         yield from self._channels
+
+    def copy(self) -> Tile:
+        """Copies the tile.
+
+        Returns:
+            Tile
+        """
+        return Tile(
+            channels=self._channels,
+            coordinates=self._coordinates,
+            tile_size=self._tile_size,
+            copy=True,
+        )
