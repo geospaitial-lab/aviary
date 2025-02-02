@@ -193,6 +193,13 @@ class Channel(ABC):
             True if the channels are equal, false otherwise
         """
 
+    @abstractmethod
+    def copy(self) -> Channel:
+        """
+        Returns:
+            Copy of the channel
+        """
+
     def ref_tile(
         self,
         tile: Tile,
@@ -333,6 +340,19 @@ class ArrayChannel(Channel):
         ]
         return all(conditions)
 
+    def copy(self) -> ArrayChannel:
+        """
+        Returns:
+            Copy of the array channel
+        """
+        return ArrayChannel(
+            data=self._data,
+            name=self._name,
+            buffer_size=self._buffer_size,
+            tile_ref=self._tile_ref,
+            copy=True,
+        )
+
     def remove_buffer(
         self,
         inplace: bool = False,
@@ -457,6 +477,19 @@ class GdfChannel(Channel):
             self._buffer_size == other.buffer_size,
         ]
         return all(conditions)
+
+    def copy(self) -> GdfChannel:
+        """
+        Returns:
+            Copy of the geodataframe channel
+        """
+        return GdfChannel(
+            data=self._data,
+            name=self._name,
+            buffer_size=self._buffer_size,
+            tile_ref=self._tile_ref,
+            copy=True,
+        )
 
     def remove_buffer(
         self,
