@@ -198,9 +198,10 @@ class Channel(ABC):
 
     @abstractmethod
     def copy(self) -> Channel:
-        """
+        """Copies the channel.
+
         Returns:
-            Copy of the channel
+            Channel
         """
 
     def ref_tile(
@@ -348,9 +349,10 @@ class ArrayChannel(Channel):
         return all(conditions)
 
     def copy(self) -> ArrayChannel:
-        """
+        """Copies the array channel.
+
         Returns:
-            Copy of the array channel
+            Array channel
         """
         return ArrayChannel(
             data=self._data,
@@ -490,9 +492,10 @@ class GdfChannel(Channel):
         return all(conditions)
 
     def copy(self) -> GdfChannel:
-        """
+        """Copies the geodataframe channel.
+
         Returns:
-            Copy of the geodataframe channel
+            Geodataframe channel
         """
         return GdfChannel(
             data=self._data,
