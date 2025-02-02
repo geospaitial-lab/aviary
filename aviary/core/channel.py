@@ -29,6 +29,9 @@ if TYPE_CHECKING:
 class Channel(ABC):
     """Abstract class for channels
 
+    Notes:
+        - The `data` property returns a reference to the data
+
     Currently implemented channels:
         - `ArrayChannel`: Contains an array
         - `GdfChannel`: Contains a geodataframe
@@ -49,7 +52,7 @@ class Channel(ABC):
             name: Name
             buffer_size: Buffer size in meters
             tile_ref: Tile reference
-            copy: If true, the data is copied to avoid side effects
+            copy: If true, the data is copied during initialization
         """
         self._data = data
         self._name = name
@@ -227,7 +230,11 @@ class Channel(ABC):
 
 
 class ArrayChannel(Channel):
-    """Channel that contains an array"""
+    """Channel that contains an array
+
+    Notes:
+        - The `data` property returns a reference to the data
+    """
     _data: npt.NDArray
 
     def __init__(
@@ -244,7 +251,7 @@ class ArrayChannel(Channel):
             name: Name
             buffer_size: Buffer size in meters
             tile_ref: Tile reference
-            copy: If true, the data is copied to avoid side effects
+            copy: If true, the data is copied during initialization
         """
         super().__init__(
             data=data,
@@ -282,7 +289,7 @@ class ArrayChannel(Channel):
         Returns:
             Data
         """
-        return self._data.copy()
+        return self._data
 
     @property
     def ground_sampling_distance(self) -> GroundSamplingDistance:
@@ -396,7 +403,11 @@ class ArrayChannel(Channel):
 
 
 class GdfChannel(Channel):
-    """Channel that contains a geodataframe"""
+    """Channel that contains a geodataframe
+
+    Notes:
+        - The `data` property returns a reference to the data
+    """
     _data: gpd.GeoDataFrame
 
     def __init__(
@@ -413,7 +424,7 @@ class GdfChannel(Channel):
             name: Name
             buffer_size: Buffer size in meters
             tile_ref: Tile reference
-            copy: If true, the data is copied to avoid side effects
+            copy: If true, the data is copied during initialization
         """
         super().__init__(
             data=data,
@@ -436,7 +447,7 @@ class GdfChannel(Channel):
         Returns:
             Data
         """
-        return self._data.copy()
+        return self._data
 
     def __repr__(self) -> str:
         """Returns the string representation.
