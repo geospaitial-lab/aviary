@@ -60,7 +60,7 @@ class Tile(Iterable[Channel]):
         if self._copy:
             self._copy_channels()
 
-        self._channel_dict = {channel.name: channel for channel in self._channels}
+        self._channel_dict = {channel.name: channel for channel in self}
 
     def _validate(self) -> None:
         """Validates the tile."""
@@ -82,7 +82,7 @@ class Tile(Iterable[Channel]):
             )
             raise AviaryUserError(message)
 
-        channel_names = [channel.name for channel in self._channels]
+        channel_names = [channel.name for channel in self]
         unique_channel_names = set(channel_names)
 
         if len(channel_names) != len(unique_channel_names):
@@ -94,12 +94,12 @@ class Tile(Iterable[Channel]):
 
     def _ref_channels(self) -> None:
         """References the tile in the channels."""
-        for channel in self._channels:
+        for channel in self:
             channel.ref_tile(tile=self)
 
     def _copy_channels(self) -> None:
         """Copies `channels`."""
-        self._channels = [channel.copy() for channel in self._channels]
+        self._channels = [channel.copy() for channel in self]
 
     def _validate_tile_size(self) -> None:
         """Validates `tile_size`.
