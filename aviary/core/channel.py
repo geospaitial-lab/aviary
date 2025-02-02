@@ -95,12 +95,12 @@ class Channel(ABC):
             raise AviaryUserError(message)
 
     @property
+    @abstractmethod
     def data(self) -> object:
         """
         Returns:
             Data
         """
-        return self._data
 
     @property
     def name(self) -> ChannelName | str:
@@ -267,7 +267,15 @@ class ArrayChannel(Channel):
 
     def _copy_data(self) -> None:
         """Copies `data`."""
-        self._data = np.copy(self._data)
+        self._data = self._data.copy()
+
+    @property
+    def data(self) -> npt.NDArray:
+        """
+        Returns:
+            Data
+        """
+        return self._data.copy()
 
     @property
     def ground_sampling_distance(self) -> GroundSamplingDistance:
@@ -401,6 +409,14 @@ class GdfChannel(Channel):
     def _copy_data(self) -> None:
         """Copies `data`."""
         self._data = self._data.copy()
+
+    @property
+    def data(self) -> gpd.GeoDataFrame:
+        """
+        Returns:
+            Data
+        """
+        return self._data.copy()
 
     def __repr__(self) -> str:
         """Returns the string representation.
