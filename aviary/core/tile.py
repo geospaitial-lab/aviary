@@ -307,20 +307,7 @@ class Tile(Iterable[Channel]):
 
         Returns:
             Channel
-
-        Raises:
-            AviaryUserError: Invalid channel name (the channel is not available)
         """
-        if channel_name in self._built_in_channel_names:
-            channel_name = ChannelName(channel_name)
-
-        if channel_name not in self.channel_names:
-            message = (
-                'Invalid channel name! '
-                f'The {channel_name} channel is not available.'
-            )
-            raise AviaryUserError(message)
-
         return self[channel_name]
 
     def __getitem__(
