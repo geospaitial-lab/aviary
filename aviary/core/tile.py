@@ -60,7 +60,7 @@ class Tile(Iterable[Channel]):
         if self._copy:
             self._copy_channels()
 
-        self._channel_dict = {channel.name: channel for channel in self}
+        self._channels_dict = {channel.name: channel for channel in self}
 
     def _validate(self) -> None:
         """Validates the tile."""
@@ -168,7 +168,7 @@ class Tile(Iterable[Channel]):
         Returns:
             Channel names
         """
-        return set(self._channel_dict.keys())
+        return set(self._channels_dict.keys())
 
     @property
     def num_channels(self) -> int:
@@ -232,14 +232,20 @@ class Tile(Iterable[Channel]):
             if isinstance(channel_name, str) and channel_name in cls._built_in_channel_names else channel_name
             for channel_name in channel_names
         ]
-        channels = [
-            Channel(
-                data=data[..., i],
-                name=channel_name,
-                buffer_size=buffer_size,
-            )
-            for i, channel_name in channel_names
-        ]
+
+        channels_dict = {}
+
+        for i, channel_name in enumerate(channel_names):
+            if channel_name not in channels_dict:
+                channels_dict[channel_name] = Channel(
+                    data=data[..., i],
+                    name=channel_name,
+                    buffer_size=buffer_size,
+                    tile_ref=None,
+                    copy=False,
+                )
+
+        channels = list(channels_dict.values())
         return cls(
             channels=channels,
             coordinates=coordinates,
@@ -335,7 +341,7 @@ class Tile(Iterable[Channel]):
             )
             raise AviaryUserError(message)
 
-        return self._channel_dict[channel_name]
+        return self._channels_dict[channel_name]
 
     def __iter__(self) -> Iterator[Channel]:
         """Iterates over the channels.
