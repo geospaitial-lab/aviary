@@ -219,11 +219,13 @@ class Channel(ABC):
     def remove_buffer(
         self,
         inplace: bool = False,
+        copy: bool = False,
     ) -> Channel:
         """Removes the buffer.
 
         Parameters:
             inplace: If true, the buffer is removed inplace
+            copy: If true, the data is copied during initialization (only used if `inplace` is false)
 
         Returns:
             Channel
@@ -365,11 +367,13 @@ class ArrayChannel(Channel):
     def remove_buffer(
         self,
         inplace: bool = False,
+        copy: bool = False,
     ) -> ArrayChannel:
         """Removes the buffer.
 
         Parameters:
             inplace: If true, the buffer is removed inplace
+            copy: If true, the data is copied during initialization (only used if `inplace` is false)
 
         Returns:
             Array channel
@@ -383,7 +387,7 @@ class ArrayChannel(Channel):
                 name=self._name,
                 buffer_size=self._buffer_size,
                 tile_ref=self._tile_ref,
-                copy=True,
+                copy=copy,
             )
 
         buffer_size = int(self._buffer_size / self.ground_sampling_distance)
@@ -400,7 +404,7 @@ class ArrayChannel(Channel):
             name=self._name,
             buffer_size=0,
             tile_ref=self._tile_ref,
-            copy=True,
+            copy=copy,
         )
 
 
@@ -508,11 +512,13 @@ class GdfChannel(Channel):
     def remove_buffer(
         self,
         inplace: bool = False,
+        copy: bool = False,
     ) -> GdfChannel:
         """Removes the buffer.
 
         Parameters:
             inplace: If true, the buffer is removed inplace
+            copy: If true, the data is copied during initialization (only used if `inplace` is false)
 
         Returns:
             Geodataframe channel
@@ -526,7 +532,7 @@ class GdfChannel(Channel):
                 name=self._name,
                 buffer_size=self._buffer_size,
                 tile_ref=self._tile_ref,
-                copy=True,
+                copy=copy,
             )
 
         if inplace:
