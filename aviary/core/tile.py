@@ -230,8 +230,7 @@ class Tile(Iterable[Channel]):
 
         channels_dict = {}
 
-        ground_sampling_distance = tile_size / data.shape[0]
-        buffer_size = buffer_size / ground_sampling_distance
+        buffer_size = buffer_size / tile_size
 
         for i, channel_name in enumerate(channel_names):
             if channel_name not in channels_dict:
