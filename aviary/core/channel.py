@@ -19,6 +19,7 @@ if TYPE_CHECKING:
     from aviary.core.type_aliases import (
         BufferSize,
         FractionalBufferSize,
+        TimeStep,
     )
 
 
@@ -39,6 +40,7 @@ class Channel(ABC):
         data: object,
         name: ChannelName | str,
         buffer_size: FractionalBufferSize = 0.,
+        time_step: TimeStep | None = None,
         copy: bool = False,
     ) -> None:
         """
@@ -46,11 +48,13 @@ class Channel(ABC):
             data: Data
             name: Name
             buffer_size: Buffer size as a fraction of the spatial extent of the data
+            time_step: Time step
             copy: If true, the data is copied during initialization
         """
         self._data = data
         self._name = name
         self._buffer_size = buffer_size
+        self._time_step = time_step
         self._copy = copy
 
         self._validate()
@@ -113,6 +117,14 @@ class Channel(ABC):
             Buffer size as a fraction of the spatial extent of the data
         """
         return self._buffer_size
+
+    @property
+    def time_step(self) -> TimeStep | None:
+        """
+        Returns:
+            Time step
+        """
+        return self._time_step
 
     @property
     def is_copied(self) -> bool:
@@ -183,6 +195,7 @@ class RasterChannel(Channel):
         data: npt.NDArray,
         name: ChannelName | str,
         buffer_size: FractionalBufferSize = 0.,
+        time_step: TimeStep | None = None,
         copy: bool = False,
     ) -> None:
         """
@@ -190,12 +203,14 @@ class RasterChannel(Channel):
             data: Data
             name: Name
             buffer_size: Buffer size as a fraction of the spatial extent of the data
+            time_step: Time step
             copy: If true, the data is copied during initialization
         """
         super().__init__(
             data=data,
             name=name,
             buffer_size=buffer_size,
+            time_step=time_step,
             copy=copy,
         )
 
@@ -266,6 +281,7 @@ class RasterChannel(Channel):
             f'    data={data_repr},\n'
             f'    name={self._name},\n'
             f'    buffer_size={self._buffer_size},\n'
+            f'    time_step={self._time_step},\n'
             f'    copy={self._copy},\n'
             ')'
         )
@@ -289,6 +305,7 @@ class RasterChannel(Channel):
             np.array_equal(self._data, other.data),
             self._name == other.name,
             self._buffer_size == other.buffer_size,
+            self._time_step == other.time_step,
         ]
         return all(conditions)
 
@@ -302,6 +319,7 @@ class RasterChannel(Channel):
             data=self._data,
             name=self._name,
             buffer_size=self._buffer_size,
+            time_step=self._time_step,
             copy=True,
         )
 
@@ -327,6 +345,7 @@ class RasterChannel(Channel):
                 data=self._data,
                 name=self._name,
                 buffer_size=self._buffer_size,
+                time_step=self._time_step,
                 copy=copy,
             )
 
@@ -351,6 +370,7 @@ class RasterChannel(Channel):
             data=data,
             name=self._name,
             buffer_size=buffer_size,
+            time_step=self._time_step,
             copy=copy,
         )
 
@@ -369,6 +389,7 @@ class VectorChannel(Channel):
         data: gpd.GeoDataFrame,
         name: ChannelName | str,
         buffer_size: FractionalBufferSize = 0.,
+        time_step: TimeStep | None = None,
         copy: bool = False,
     ) -> None:
         """
@@ -376,12 +397,14 @@ class VectorChannel(Channel):
             data: Data
             name: Name
             buffer_size: Buffer size as a fraction of the spatial extent of the data
+            time_step: Time step
             copy: If true, the data is copied during initialization
         """
         super().__init__(
             data=data,
             name=name,
             buffer_size=buffer_size,
+            time_step=time_step,
             copy=copy,
         )
 
@@ -456,6 +479,7 @@ class VectorChannel(Channel):
             f'    data={data_repr},\n'
             f'    name={self._name},\n'
             f'    buffer_size={self._buffer_size},\n'
+            f'    time_step={self._time_step},\n'
             f'    copy={self._copy},\n'
             ')'
         )
@@ -479,6 +503,7 @@ class VectorChannel(Channel):
             self._data.equals(other.data),
             self._name == other.name,
             self._buffer_size == other.buffer_size,
+            self._time_step == other.time_step,
         ]
         return all(conditions)
 
@@ -492,6 +517,7 @@ class VectorChannel(Channel):
             data=self._data,
             name=self._name,
             buffer_size=self._buffer_size,
+            time_step=self._time_step,
             copy=True,
         )
 
@@ -522,6 +548,7 @@ class VectorChannel(Channel):
                 data=self._data,
                 name=self._name,
                 buffer_size=buffer_size,
+                time_step=self._time_step,
                 copy=copy,
             )
 
@@ -533,6 +560,7 @@ class VectorChannel(Channel):
                 data=self._data,
                 name=self._name,
                 buffer_size=self._buffer_size,
+                time_step=self._time_step,
                 copy=copy,
             )
 
@@ -558,6 +586,7 @@ class VectorChannel(Channel):
             data=data,
             name=self._name,
             buffer_size=buffer_size,
+            time_step=self._time_step,
             copy=False,
         )
 
