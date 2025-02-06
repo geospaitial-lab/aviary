@@ -1,4 +1,4 @@
-::: aviary.GdfChannel
+::: aviary.RasterChannel
     options:
       filters:
       - "!^_"

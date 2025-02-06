@@ -1,8 +1,8 @@
 from .core.bounding_box import BoundingBox
 from .core.channel import (
-    ArrayChannel,
     Channel,
-    GdfChannel,
+    RasterChannel,
+    VectorChannel,
 )
 from .core.enums import (
     ChannelName,
@@ -30,13 +30,13 @@ from .core.type_aliases import (
     Coordinates,
     CoordinatesSet,
     EPSGCode,
+    FractionalBufferSize,
     GroundSamplingDistance,
     TileSize,
     TimeStep,
 )
 
 __all__ = [
-    'ArrayChannel',
     'AviaryUserError',
     'AviaryUserWarning',
     'BoundingBox',
@@ -51,16 +51,18 @@ __all__ = [
     'CoordinatesSet',
     'Device',
     'EPSGCode',
-    'GdfChannel',
+    'FractionalBufferSize',
     'GeospatialFilterMode',
     'GroundSamplingDistance',
     'InterpolationMode',
     'ProcessArea',
     'ProcessAreaConfig',
+    'RasterChannel',
     'SetFilterMode',
     'Tile',
     'TileSize',
     'TimeStep',
+    'VectorChannel',
     'WMSVersion',
     '__version__',
 ]

@@ -65,20 +65,19 @@ class Tile(Iterable[Channel]):
     def _validate(self) -> None:
         """Validates the tile."""
         self._validate_channels()
-        self._ref_channels()
         self._validate_tile_size()
 
     def _validate_channels(self) -> None:
         """Validates `channels`.
 
         Raises:
-            AviaryUserError: Invalid channels (`channels` is an empty list)
-            AviaryUserError: Invalid channels (`channels` contains duplicate names)
+            AviaryUserError: Invalid `channels` (the channels are an empty list)
+            AviaryUserError: Invalid `channels` (the channels contain duplicate names)
         """
         if not self._channels:
             message = (
                 'Invalid channels! '
-                'channels must be a non-empty list.'
+                'The channels must be a non-empty list.'
             )
             raise AviaryUserError(message)
 
@@ -88,14 +87,9 @@ class Tile(Iterable[Channel]):
         if len(channel_names) != len(unique_channel_names):
             message = (
                 'Invalid channels! '
-                'channels must contain unique names.'
+                'The channels must contain unique names.'
             )
             raise AviaryUserError(message)
-
-    def _ref_channels(self) -> None:
-        """References the tile in the channels."""
-        for channel in self:
-            channel.ref_tile(tile=self)
 
     def _copy_channels(self) -> None:
         """Copies `channels`."""
@@ -105,12 +99,12 @@ class Tile(Iterable[Channel]):
         """Validates `tile_size`.
 
         Raises:
-            AviaryUserError: Invalid tile size (`tile_size` is negative or zero)
+            AviaryUserError: Invalid `tile_size` (the tile size is negative or zero)
         """
         if self._tile_size <= 0:
             message = (
-                'Invalid tile size! '
-                'tile_size must be positive.'
+                'Invalid tile_size! '
+                'The tile size must be positive.'
             )
             raise AviaryUserError(message)
 
@@ -179,7 +173,7 @@ class Tile(Iterable[Channel]):
         return len(self)
 
     @classmethod
-    def from_composite_array(
+    def from_composite_raster(
         cls,
         data: npt.NDArray,
         channel_names: ChannelNames,
@@ -188,7 +182,7 @@ class Tile(Iterable[Channel]):
         buffer_size: BufferSize = 0,
         copy: bool = False,
     ) -> Tile:
-        """Creates a tile from a composite array.
+        """Creates a tile from composite raster data.
 
         Parameters:
             data: Data
@@ -202,8 +196,9 @@ class Tile(Iterable[Channel]):
             Tile
 
         Raises:
-            AviaryUserError: Invalid data (`data` is not an array of shape (n, n, c))
-            AviaryUserError: Invalid channel names (the number of channel names is not equal to the number of channels)
+            AviaryUserError: Invalid `data` (the data is not in shape (n, n, c))
+            AviaryUserError: Invalid `channel_names` (the number of channel names is not equal to
+                the number of channels)
         """
         if data.ndim == 2:  # noqa: PLR2004
             data = data[..., np.newaxis]
@@ -216,13 +211,13 @@ class Tile(Iterable[Channel]):
         if any(conditions):
             message = (
                 'Invalid data! '
-                'data must be an array of shape (n, n, c).'
+                'The data must be in shape (n, n, c).'
             )
             raise AviaryUserError(message)
 
         if data.shape[-1] != len(channel_names):
             message = (
-                'Invalid channel names! '
+                'Invalid channel_names! '
                 'The number of channel names must be equal to the number of channels.'
             )
             raise AviaryUserError(message)
@@ -235,13 +230,15 @@ class Tile(Iterable[Channel]):
 
         channels_dict = {}
 
+        ground_sampling_distance = tile_size / data.shape[0]
+        buffer_size = buffer_size / ground_sampling_distance
+
         for i, channel_name in enumerate(channel_names):
             if channel_name not in channels_dict:
                 channels_dict[channel_name] = Channel(
                     data=data[..., i],
                     name=channel_name,
                     buffer_size=buffer_size,
-                    tile_ref=None,
                     copy=False,
                 )
 
@@ -260,7 +257,7 @@ class Tile(Iterable[Channel]):
             String representation
         """
         channels_repr = '\n'.join(
-            f'        {channel.name}: {channel.data_type},'
+            f'        {channel.name}: {type(channel).__name__},'
             for channel in self
         )
         return (
@@ -329,14 +326,14 @@ class Tile(Iterable[Channel]):
             Channel
 
         Raises:
-            AviaryUserError: Invalid channel name (the channel is not available)
+            AviaryUserError: Invalid `channel_name` (the channel is not available)
         """
         if isinstance(channel_name, str) and channel_name in self._built_in_channel_names:
             channel_name = ChannelName(channel_name)
 
         if channel_name not in self.channel_names:
             message = (
-                'Invalid channel name! '
+                'Invalid channel_name! '
                 f'The {channel_name} channel is not available.'
             )
             raise AviaryUserError(message)

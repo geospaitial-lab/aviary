@@ -1,4 +1,4 @@
-::: aviary.ArrayChannel
+::: aviary.VectorChannel
     options:
       filters:
       - "!^_"

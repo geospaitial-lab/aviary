@@ -14,6 +14,7 @@ Coordinate: TypeAlias = int
 Coordinates: TypeAlias = tuple[Coordinate, Coordinate]
 CoordinatesSet: TypeAlias = npt.NDArray[np.int32]
 EPSGCode: TypeAlias = int
+FractionalBufferSize: TypeAlias = float
 GroundSamplingDistance: TypeAlias = float
 TileSize: TypeAlias = int
 TimeStep: TypeAlias = int

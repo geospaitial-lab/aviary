@@ -16,13 +16,9 @@ from aviary.core.enums import ChannelName
 from aviary.core.exceptions import AviaryUserError
 
 if TYPE_CHECKING:
-    from aviary.core.bounding_box import BoundingBox
-    from aviary.core.tile import Tile
     from aviary.core.type_aliases import (
         BufferSize,
-        Coordinates,
-        GroundSamplingDistance,
-        TileSize,
+        FractionalBufferSize,
     )
 
 
@@ -32,9 +28,9 @@ class Channel(ABC):
     Notes:
         - The `data` property returns a reference to the data
 
-    Currently implemented channels:
-        - `ArrayChannel`: Contains an array
-        - `GdfChannel`: Contains a geodataframe
+    Implemented channels:
+        - `RasterChannel`: Contains raster data
+        - `VectorChannel`: Contains vector data
     """
     _built_in_channel_names = frozenset(channel_name.value for channel_name in ChannelName)
 
@@ -42,22 +38,19 @@ class Channel(ABC):
         self,
         data: object,
         name: ChannelName | str,
-        buffer_size: BufferSize,
-        tile_ref: Tile | None = None,
+        buffer_size: FractionalBufferSize = 0.,
         copy: bool = False,
     ) -> None:
         """
         Parameters:
             data: Data
             name: Name
-            buffer_size: Buffer size in meters
-            tile_ref: Tile reference
+            buffer_size: Buffer size as a fraction of the spatial extent of the data
             copy: If true, the data is copied during initialization
         """
         self._data = data
         self._name = name
         self._buffer_size = buffer_size
-        self._tile_ref = tile_ref
         self._copy = copy
 
         self._validate()
@@ -88,12 +81,12 @@ class Channel(ABC):
         """Validates `buffer_size`.
 
         Raises:
-            AviaryUserError: Invalid buffer size (`buffer_size` is negative)
+            AviaryUserError: Invalid `buffer_size` (the buffer size is not in the range [0, 0.5))
         """
-        if self._buffer_size < 0:
+        if self._buffer_size < 0 or self._buffer_size >= .5:  # noqa: PLR2004
             message = (
-                'Invalid buffer size! '
-                'buffer_size must be positive or zero.'
+                'Invalid buffer_size! '
+                'The buffer size must be in the range [0, 0.5).'
             )
             raise AviaryUserError(message)
 
@@ -114,65 +107,20 @@ class Channel(ABC):
         return self._name
 
     @property
-    def buffer_size(self) -> BufferSize:
+    def buffer_size(self) -> FractionalBufferSize:
         """
         Returns:
-            Buffer size in meters
+            Buffer size as a fraction of the spatial extent of the data
         """
         return self._buffer_size
 
     @property
-    def area(self) -> int:
+    def is_copied(self) -> bool:
         """
         Returns:
-            Area in square meters
+            If true, the data is copied during initialization
         """
-        return self.bounding_box.area
-
-    @property
-    def bounding_box(self) -> BoundingBox:
-        """
-        Returns:
-            Bounding box
-        """
-        if self._tile_ref is None:
-            message = 'Tile reference is not set!'
-            raise AviaryUserError(message)
-
-        bounding_box = self._tile_ref.bounding_box
-        return bounding_box.buffer(buffer_size=self._buffer_size)
-
-    @property
-    def coordinates(self) -> Coordinates:
-        """
-        Returns:
-            Coordinates (x_min, y_min) of the tile
-        """
-        if self._tile_ref is None:
-            message = 'Tile reference is not set!'
-            raise AviaryUserError(message)
-
-        return self._tile_ref.coordinates
-
-    @property
-    def data_type(self) -> type:
-        """
-        Returns:
-            Data type
-        """
-        return type(self._data)
-
-    @property
-    def tile_size(self) -> TileSize:
-        """
-        Returns:
-            Tile size in meters
-        """
-        if self._tile_ref is None:
-            message = 'Tile reference is not set!'
-            raise AviaryUserError(message)
-
-        return self._tile_ref.tile_size
+        return self._copy
 
     @abstractmethod
     def __repr__(self) -> str:
@@ -204,17 +152,6 @@ class Channel(ABC):
             Channel
         """
 
-    def ref_tile(
-        self,
-        tile: Tile,
-    ) -> None:
-        """References the tile.
-
-        Parameters:
-            tile: Tile
-        """
-        self._tile_ref = tile
-
     @abstractmethod
     def remove_buffer(
         self,
@@ -232,10 +169,11 @@ class Channel(ABC):
         """
 
 
-class ArrayChannel(Channel):
-    """Channel that contains an array
+class RasterChannel(Channel):
+    """Channel that contains raster data
 
     Notes:
+        - The data is assumed to be in shape (n, n, 1), where n is the spatial extent in x and y direction
         - The `data` property returns a reference to the data
     """
     _data: npt.NDArray
@@ -244,47 +182,69 @@ class ArrayChannel(Channel):
         self,
         data: npt.NDArray,
         name: ChannelName | str,
-        buffer_size: BufferSize,
-        tile_ref: Tile | None = None,
+        buffer_size: FractionalBufferSize = 0.,
         copy: bool = False,
     ) -> None:
         """
         Parameters:
             data: Data
             name: Name
-            buffer_size: Buffer size in meters
-            tile_ref: Tile reference
+            buffer_size: Buffer size as a fraction of the spatial extent of the data
             copy: If true, the data is copied during initialization
         """
         super().__init__(
             data=data,
             name=name,
             buffer_size=buffer_size,
-            tile_ref=tile_ref,
             copy=copy,
         )
+
+        self._buffer_size_pixels = self._compute_buffer_size_pixels()
 
     def _validate_data(self) -> None:
         """Validates `data`.
 
         Raises:
-            AviaryUserError: Invalid data (`data` is not an array of shape (m, m, n))
+            AviaryUserError: Invalid `data` (the data is not in shape (n, n, 1))
         """
         conditions = [
             self._data.ndim != 3,  # noqa: PLR2004
             self._data.shape[0] != self._data.shape[1],
+            self._data.shape[2] != 1,
         ]
 
         if any(conditions):
             message = (
                 'Invalid data! '
-                'data must be an array of shape (m, m, n).'
+                'The data must be in shape (n, n, 1).'
             )
             raise AviaryUserError(message)
 
     def _copy_data(self) -> None:
         """Copies `data`."""
         self._data = self._data.copy()
+
+    def _compute_buffer_size_pixels(self) -> BufferSize:
+        """Computes the buffer size in pixels.
+
+        Returns:
+            Buffer size
+
+        Raises:
+            AviaryUserError: Invalid `buffer_size` (the buffer size does not match the spatial extent of the data,
+                resulting in a fractional number of pixels)
+        """
+        buffer_size_pixels = self._buffer_size * self._data.shape[0]
+
+        if not buffer_size_pixels.is_integer():
+            message = (
+                'Invalid buffer_size! '
+                'The buffer size must must match the spatial extent of the data, '
+                'resulting in a whole number of pixels.'
+            )
+            raise AviaryUserError(message)
+
+        return int(buffer_size_pixels)
 
     @property
     def data(self) -> npt.NDArray:
@@ -294,53 +254,35 @@ class ArrayChannel(Channel):
         """
         return self._data
 
-    @property
-    def ground_sampling_distance(self) -> GroundSamplingDistance:
-        """
-        Returns:
-            Ground sampling distance in meters
-        """
-        return (self.tile_size + 2 * self._buffer_size) / self.shape[0]
-
-    @property
-    def shape(self) -> tuple[int, int, int]:
-        """
-        Returns:
-            Shape
-        """
-        return self._data.shape
-
     def __repr__(self) -> str:
         """Returns the string representation.
 
         Returns:
             String representation
         """
-        data_repr = self.shape
-        tile_ref_repr = id(self._tile_ref) if self._tile_ref is not None else None
+        data_repr = self._data.shape
         return (
-            'ArrayChannel(\n'
+            'RasterChannel(\n'
             f'    data={data_repr},\n'
             f'    name={self._name},\n'
             f'    buffer_size={self._buffer_size},\n'
-            f'    tile_ref={tile_ref_repr},\n'
             f'    copy={self._copy},\n'
             ')'
         )
 
     def __eq__(
         self,
-        other: ArrayChannel,
+        other: RasterChannel,
     ) -> bool:
-        """Compares the array channels.
+        """Compares the raster channels.
 
         Parameters:
-            other: Other array channel
+            other: Other raster channel
 
         Returns:
-            True if the array channels are equal, false otherwise
+            True if the raster channels are equal, false otherwise
         """
-        if not isinstance(other, ArrayChannel):
+        if not isinstance(other, RasterChannel):
             return False
 
         conditions = [
@@ -350,17 +292,16 @@ class ArrayChannel(Channel):
         ]
         return all(conditions)
 
-    def copy(self) -> ArrayChannel:
-        """Copies the array channel.
+    def copy(self) -> RasterChannel:
+        """Copies the raster channel.
 
         Returns:
-            Array channel
+            Raster channel
         """
-        return ArrayChannel(
+        return RasterChannel(
             data=self._data,
             name=self._name,
             buffer_size=self._buffer_size,
-            tile_ref=self._tile_ref,
             copy=True,
         )
 
@@ -368,7 +309,7 @@ class ArrayChannel(Channel):
         self,
         inplace: bool = False,
         copy: bool = False,
-    ) -> ArrayChannel:
+    ) -> RasterChannel:
         """Removes the buffer.
 
         Parameters:
@@ -376,42 +317,49 @@ class ArrayChannel(Channel):
             copy: If true, the data is copied during initialization (only used if `inplace` is false)
 
         Returns:
-            Array channel
+            Raster channel
         """
-        if self._buffer_size == 0:
+        if self._buffer_size == 0.:
             if inplace:
                 return self
 
-            return Channel(
+            return RasterChannel(
                 data=self._data,
                 name=self._name,
                 buffer_size=self._buffer_size,
-                tile_ref=self._tile_ref,
                 copy=copy,
             )
 
-        buffer_size = int(self._buffer_size / self.ground_sampling_distance)
-
         if inplace:
-            self._data = self._data[buffer_size:-buffer_size, buffer_size:-buffer_size, :]
-            self._buffer_size = 0
+            self._data = self._data[
+                self._buffer_size_pixels:-self._buffer_size_pixels,
+                self._buffer_size_pixels:-self._buffer_size_pixels,
+                :,
+            ]
+            self._buffer_size = 0.
             self._validate()
+            self._buffer_size_pixels = self._compute_buffer_size_pixels()
             return self
 
-        data = self._data[buffer_size:-buffer_size, buffer_size:-buffer_size, :]
-        return ArrayChannel(
+        data = self._data[
+            self._buffer_size_pixels:-self._buffer_size_pixels,
+            self._buffer_size_pixels:-self._buffer_size_pixels,
+            :,
+        ]
+        buffer_size = 0.
+        return RasterChannel(
             data=data,
             name=self._name,
-            buffer_size=0,
-            tile_ref=self._tile_ref,
+            buffer_size=buffer_size,
             copy=copy,
         )
 
 
-class GdfChannel(Channel):
-    """Channel that contains a geodataframe
+class VectorChannel(Channel):
+    """Channel that contains vector data
 
     Notes:
+        - The data is assumed to be scaled to the spatial extent [0, 1] in x and y direction
         - The `data` property returns a reference to the data
     """
     _data: gpd.GeoDataFrame
@@ -420,32 +368,64 @@ class GdfChannel(Channel):
         self,
         data: gpd.GeoDataFrame,
         name: ChannelName | str,
-        buffer_size: BufferSize,
-        tile_ref: Tile | None = None,
+        buffer_size: FractionalBufferSize = 0.,
         copy: bool = False,
     ) -> None:
         """
         Parameters:
             data: Data
             name: Name
-            buffer_size: Buffer size in meters
-            tile_ref: Tile reference
+            buffer_size: Buffer size as a fraction of the spatial extent of the data
             copy: If true, the data is copied during initialization
         """
         super().__init__(
             data=data,
             name=name,
             buffer_size=buffer_size,
-            tile_ref=tile_ref,
             copy=copy,
         )
 
+        self._unbuffered_bounding_box = self._compute_unbuffered_bounding_box()
+
     def _validate_data(self) -> None:
-        """Validates `data`."""
+        """Validates `data`.
+
+        Raises:
+            AviaryUserError: Invalid `data` (the data is not scaled to the spatial extent [0, 1] in x and y direction)
+        """
+        if len(self._data) == 0:
+            return
+
+        x_min, y_min, x_max, y_max = self._data.total_bounds
+        conditions = [
+            x_min < 0,
+            y_min < 0,
+            x_max > 1,
+            y_max > 1,
+        ]
+
+        if any(conditions):
+            message = (
+                'Invalid data! '
+                'The data must be scaled to the spatial extent [0, 1] in x and y direction.'
+            )
+            raise AviaryUserError(message)
 
     def _copy_data(self) -> None:
         """Copies `data`."""
         self._data = self._data.copy()
+
+    def _compute_unbuffered_bounding_box(self) -> tuple[float, float, float, float]:
+        """Computes the unbuffered bounding box.
+
+        Returns:
+            Bounding box
+        """
+        x_min = 0 + self._buffer_size
+        y_min = 0 + self._buffer_size
+        x_max = 1 - self._buffer_size
+        y_max = 1 - self._buffer_size
+        return x_min, y_min, x_max, y_max
 
     @property
     def data(self) -> gpd.GeoDataFrame:
@@ -462,30 +442,28 @@ class GdfChannel(Channel):
             String representation
         """
         data_repr = len(self._data)
-        tile_ref_repr = id(self._tile_ref) if self._tile_ref is not None else None
         return (
-            'GdfChannel(\n'
+            'VectorChannel(\n'
             f'    data={data_repr},\n'
             f'    name={self._name},\n'
             f'    buffer_size={self._buffer_size},\n'
-            f'    tile_ref={tile_ref_repr},\n'
             f'    copy={self._copy},\n'
             ')'
         )
 
     def __eq__(
         self,
-        other: GdfChannel,
+        other: VectorChannel,
     ) -> bool:
-        """Compares the geodataframe channels.
+        """Compares the vector channels.
 
         Parameters:
-            other: Other geodataframe channel
+            other: Other vector channel
 
         Returns:
-            True if the geodataframe channels are equal, false otherwise
+            True if the vector channels are equal, false otherwise
         """
-        if not isinstance(other, GdfChannel):
+        if not isinstance(other, VectorChannel):
             return False
 
         conditions = [
@@ -495,17 +473,16 @@ class GdfChannel(Channel):
         ]
         return all(conditions)
 
-    def copy(self) -> GdfChannel:
-        """Copies the geodataframe channel.
+    def copy(self) -> VectorChannel:
+        """Copies the vector channel.
 
         Returns:
-            Geodataframe channel
+            Vector channel
         """
-        return GdfChannel(
+        return VectorChannel(
             data=self._data,
             name=self._name,
             buffer_size=self._buffer_size,
-            tile_ref=self._tile_ref,
             copy=True,
         )
 
@@ -513,7 +490,7 @@ class GdfChannel(Channel):
         self,
         inplace: bool = False,
         copy: bool = False,
-    ) -> GdfChannel:
+    ) -> VectorChannel:
         """Removes the buffer.
 
         Parameters:
@@ -521,37 +498,81 @@ class GdfChannel(Channel):
             copy: If true, the data is copied during initialization (only used if `inplace` is false)
 
         Returns:
-            Geodataframe channel
+            Vector channel
         """
-        if self._buffer_size == 0:
+        if len(self._data) == 0:
+            if inplace:
+                self._buffer_size = 0.
+                self._validate()
+                self._unbuffered_bounding_box = self._compute_unbuffered_bounding_box()
+                return self
+
+            buffer_size = 0.
+            return VectorChannel(
+                data=self._data,
+                name=self._name,
+                buffer_size=buffer_size,
+                copy=copy,
+            )
+
+        if self._buffer_size == 0.:
             if inplace:
                 return self
 
-            return GdfChannel(
+            return VectorChannel(
                 data=self._data,
                 name=self._name,
                 buffer_size=self._buffer_size,
-                tile_ref=self._tile_ref,
                 copy=copy,
             )
 
         if inplace:
             self._data = self._data.clip(
-                mask=self.bounding_box,
+                mask=self._unbuffered_bounding_box,
                 keep_geom_type=True,
             )
-            self._buffer_size = 0
+            self._data = self._scale_data(data=self._data)
+            self._buffer_size = 0.
             self._validate()
+            self._unbuffered_bounding_box = self._compute_unbuffered_bounding_box()
             return self
 
-        data = self._data.clip(
-            mask=self.bounding_box,
+        data = self._data.clip(  # returns a copy
+            mask=list(self._unbuffered_bounding_box),
             keep_geom_type=True,
         )
-        return GdfChannel(
+        data = self._scale_data(data=data)
+        buffer_size = 0.
+        return VectorChannel(
             data=data,
             name=self._name,
-            buffer_size=0,
-            tile_ref=self._tile_ref,
-            copy=False,  # clip already creates a copy
+            buffer_size=buffer_size,
+            copy=False,
         )
+
+    def _scale_data(
+        self,
+        data: gpd.GeoDataFrame,
+    ) -> gpd.GeoDataFrame:
+        """Scales the data to the spatial extent [0, 1] in x and y direction.
+
+        Parameters:
+            data: Data
+
+        Returns:
+            Data
+        """
+        source_bounding_box = self._unbuffered_bounding_box
+        target_bounding_box = (0., 0., 1., 1.)
+
+        source_size = source_bounding_box[2] - source_bounding_box[0]
+        target_size = target_bounding_box[2] - target_bounding_box[0]
+
+        scale = target_size / source_size
+
+        translate_x = target_bounding_box[0] - source_bounding_box[0] * scale
+        translate_y = target_bounding_box[1] - source_bounding_box[1] * scale
+
+        transform = [scale, 0., 0., scale, translate_x, translate_y]
+        data['geometry'] = data['geometry'].affine_transform(transform)
+        return data
