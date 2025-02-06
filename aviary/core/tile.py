@@ -24,6 +24,7 @@ if TYPE_CHECKING:
         Channels,
         Coordinates,
         TileSize,
+        TimeStep,
     )
 
 
@@ -180,6 +181,7 @@ class Tile(Iterable[Channel]):
         coordinates: Coordinates,
         tile_size: TileSize,
         buffer_size: BufferSize = 0,
+        time_step: TimeStep | None = None,
         copy: bool = False,
     ) -> Tile:
         """Creates a tile from composite raster data.
@@ -190,6 +192,7 @@ class Tile(Iterable[Channel]):
             coordinates: Coordinates (x_min, y_min) of the tile
             tile_size: Tile size in meters
             buffer_size: Buffer size in meters
+            time_step: Time step
             copy: If true, the channels are copied during initialization
 
         Returns:
@@ -238,6 +241,7 @@ class Tile(Iterable[Channel]):
                     data=data[..., i],
                     name=channel_name,
                     buffer_size=buffer_size,
+                    time_step=time_step,
                     copy=False,
                 )
 
