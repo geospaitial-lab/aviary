@@ -185,7 +185,7 @@ class RasterChannel(Channel):
     """Channel that contains raster data
 
     Notes:
-        - The data is assumed to be in shape (n, n, 1), where n is the spatial extent in x and y direction
+        - The data is assumed to be in shape (n, n), where n is the spatial extent in x and y direction
         - The `data` property returns a reference to the data
     """
     _data: npt.NDArray
@@ -220,18 +220,17 @@ class RasterChannel(Channel):
         """Validates `data`.
 
         Raises:
-            AviaryUserError: Invalid `data` (the data is not in shape (n, n, 1))
+            AviaryUserError: Invalid `data` (the data is not in shape (n, n))
         """
         conditions = [
-            self._data.ndim != 3,  # noqa: PLR2004
+            self._data.ndim != 2,  # noqa: PLR2004
             self._data.shape[0] != self._data.shape[1],
-            self._data.shape[2] != 1,
         ]
 
         if any(conditions):
             message = (
                 'Invalid data! '
-                'The data must be in shape (n, n, 1).'
+                'The data must be in shape (n, n).'
             )
             raise AviaryUserError(message)
 
@@ -353,7 +352,6 @@ class RasterChannel(Channel):
             self._data = self._data[
                 self._buffer_size_pixels:-self._buffer_size_pixels,
                 self._buffer_size_pixels:-self._buffer_size_pixels,
-                :,
             ]
             self._buffer_size = 0.
             self._validate()
@@ -363,7 +361,6 @@ class RasterChannel(Channel):
         data = self._data[
             self._buffer_size_pixels:-self._buffer_size_pixels,
             self._buffer_size_pixels:-self._buffer_size_pixels,
-            :,
         ]
         buffer_size = 0.
         return RasterChannel(
