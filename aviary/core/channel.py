@@ -385,6 +385,7 @@ class VectorChannel(Channel):
             copy=copy,
         )
 
+        self._buffer_size_coordinate_units = self._compute_buffer_size_coordinate_units()
         self._unbuffered_bounding_box = self._compute_unbuffered_bounding_box()
 
     def _validate_data(self) -> None:
@@ -398,10 +399,10 @@ class VectorChannel(Channel):
 
         x_min, y_min, x_max, y_max = self._data.total_bounds
         conditions = [
-            x_min < 0,
-            y_min < 0,
-            x_max > 1,
-            y_max > 1,
+            x_min < 0.,
+            y_min < 0.,
+            x_max > 1.,
+            y_max > 1.,
         ]
 
         if any(conditions):
@@ -415,16 +416,24 @@ class VectorChannel(Channel):
         """Copies `data`."""
         self._data = self._data.copy()
 
+    def _compute_buffer_size_coordinate_units(self) -> BufferSize:
+        """Computes the buffer size in coordinate units.
+
+        Returns:
+            Buffer size
+        """
+        return self._buffer_size / (1. + 2. * self._buffer_size)
+
     def _compute_unbuffered_bounding_box(self) -> tuple[float, float, float, float]:
         """Computes the unbuffered bounding box.
 
         Returns:
             Bounding box
         """
-        x_min = 0 + self._buffer_size
-        y_min = 0 + self._buffer_size
-        x_max = 1 - self._buffer_size
-        y_max = 1 - self._buffer_size
+        x_min = 0. + self._buffer_size_coordinate_units
+        y_min = 0. + self._buffer_size_coordinate_units
+        x_max = 1. - self._buffer_size_coordinate_units
+        y_max = 1. - self._buffer_size_coordinate_units
         return x_min, y_min, x_max, y_max
 
     @property
@@ -504,6 +513,7 @@ class VectorChannel(Channel):
             if inplace:
                 self._buffer_size = 0.
                 self._validate()
+                self._buffer_size_coordinate_units = self._compute_buffer_size_coordinate_units()
                 self._unbuffered_bounding_box = self._compute_unbuffered_bounding_box()
                 return self
 
@@ -534,6 +544,7 @@ class VectorChannel(Channel):
             self._data = self._scale_data(data=self._data)
             self._buffer_size = 0.
             self._validate()
+            self._buffer_size_coordinate_units = self._compute_buffer_size_coordinate_units()
             self._unbuffered_bounding_box = self._compute_unbuffered_bounding_box()
             return self
 
