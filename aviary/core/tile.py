@@ -47,7 +47,7 @@ class Tile(Iterable[Channel]):
         """
         Parameters:
             channels: Channels
-            coordinates: Coordinates (x_min, y_min) of the tile
+            coordinates: Coordinates (x_min, y_min) of the tile in meters
             tile_size: Tile size in meters
             copy: If true, the channels are copied during initialization
         """
@@ -121,7 +121,7 @@ class Tile(Iterable[Channel]):
     def coordinates(self) -> Coordinates:
         """
         Returns:
-            Coordinates (x_min, y_min) of the tile
+            Coordinates (x_min, y_min) of the tile in meters
         """
         return self._coordinates
 
@@ -189,7 +189,7 @@ class Tile(Iterable[Channel]):
         Parameters:
             data: Data
             channel_names: Channel names
-            coordinates: Coordinates (x_min, y_min) of the tile
+            coordinates: Coordinates (x_min, y_min) of the tile in meters
             tile_size: Tile size in meters
             buffer_size: Buffer size in meters
             time_step: Time step
