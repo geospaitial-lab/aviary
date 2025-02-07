@@ -245,6 +245,57 @@ class Tile(Iterable[Channel]):
             copy=copy,
         )
 
+    @classmethod
+    def from_tiles(
+        cls,
+        tiles: list[Tile],
+        copy: bool = False,
+    ) -> Tile:
+        """Creates a tile from tiles.
+
+        Parameters:
+            tiles: Tiles
+            copy: If true, the channels are copied during initialization
+
+        Returns:
+            Tile
+
+        Raises:
+            AviaryUserError: Invalid `tiles` (the tiles are empty)
+            AviaryUserError: Invalid `tiles` (the coordinates and tile sizes of the tiles are not equal)
+        """
+        if not tiles:
+            message = (
+                'Invalid tiles! '
+                'The tiles must contain at least one tile.'
+            )
+            raise AviaryUserError(message)
+
+        first_tile = tiles[0]
+        coordinates = first_tile.coordinates
+        tile_size = first_tile.tile_size
+
+        for tile in tiles:
+            conditions = [
+                tile.coordinates != coordinates,
+                tile.tile_size != tile_size,
+            ]
+
+            if any(conditions):
+                message = (
+                    'Invalid tiles! '
+                    'The coordinates and tile sizes of the tiles must be equal.'
+                )
+                raise AviaryUserError(message)
+
+        channels = [channel for tile in tiles for channel in tile]
+        return cls(
+            channels=channels,
+            coordinates=coordinates,
+            tile_size=tile_size,
+            copy=copy,
+        )
+
     def __repr__(self) -> str:
         """Returns the string representation.
 
