@@ -61,7 +61,7 @@ class Tile(Iterable[Channel]):
         if self._copy:
             self._copy_channels()
 
-        self._channels_dict = {channel.name: channel for channel in self._channels}
+        self._channels_dict = {(channel.name, channel.time_step): channel for channel in self._channels}
 
     def _validate(self) -> None:
         """Validates the tile."""
@@ -72,15 +72,15 @@ class Tile(Iterable[Channel]):
         """Validates `channels`.
 
         Raises:
-            AviaryUserError: Invalid `channels` (the channels contain duplicate names)
+            AviaryUserError: Invalid `channels` (the channels contain duplicate channel name and time step combinations)
         """
-        channel_names = [channel.name for channel in self._channels]
-        unique_channel_names = set(channel_names)
+        channel_keys = [(channel.name, channel.time_step) for channel in self._channels]
+        unique_channel_keys = set(channel_keys)
 
-        if len(channel_names) != len(unique_channel_names):
+        if len(channel_keys) != len(unique_channel_keys):
             message = (
                 'Invalid channels! '
-                'The channels must contain unique names.'
+                'The channels must contain unique channel name and time step combinations.'
             )
             raise AviaryUserError(message)
 
@@ -155,7 +155,7 @@ class Tile(Iterable[Channel]):
         Returns:
             Channel names
         """
-        return set(self._channels_dict.keys())
+        return {channel.name for channel in self}
 
     @property
     def num_channels(self) -> int:
@@ -355,6 +355,9 @@ class Tile(Iterable[Channel]):
     ) -> Channel:
         """Returns the channel.
 
+        Notes:
+            - Accessing a channel by its name assumes the time step is None
+
         Parameters:
             channel_name: Channel name
 
@@ -365,30 +368,30 @@ class Tile(Iterable[Channel]):
 
     def __getitem__(
         self,
-        channel_name: ChannelName | str,
+        channel_key: ChannelName | str | tuple[ChannelName | str, TimeStep],
     ) -> Channel:
         """Returns the channel.
 
+        Notes:
+            - Accessing a channel by its name assumes the time step is None
+
         Parameters:
-            channel_name: Channel name
+            channel_key: Channel name or channel name and time step combination
 
         Returns:
             Channel
-
-        Raises:
-            AviaryUserError: Invalid `channel_name` (the channel is not available)
         """
+        if isinstance(channel_key, tuple):
+            channel_name, time_step = channel_key
+        else:
+            channel_name = channel_key
+            time_step = None
+
         if isinstance(channel_name, str) and channel_name in self._built_in_channel_names:
             channel_name = ChannelName(channel_name)
 
-        if channel_name not in self.channel_names:
-            message = (
-                'Invalid channel_name! '
-                f'The {channel_name} channel is not available.'
-            )
-            raise AviaryUserError(message)
-
-        return self._channels_dict[channel_name]
+        channel_key = (channel_name, time_step)
+        return self._channels_dict[channel_key]
 
     def __iter__(self) -> Iterator[Channel]:
         """Iterates over the channels.
