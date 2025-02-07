@@ -176,7 +176,7 @@ class Channel(ABC):
 
         Parameters:
             inplace: If true, the buffer is removed inplace
-            copy: If true, the data is copied during initialization (only used if `inplace` is false)
+            copy: If true, the data is copied (only used if `inplace` is false)
 
         Returns:
             Channel
@@ -333,7 +333,7 @@ class RasterChannel(Channel):
 
         Parameters:
             inplace: If true, the buffer is removed inplace
-            copy: If true, the data is copied during initialization (only used if `inplace` is false)
+            copy: If true, the data is copied (only used if `inplace` is false)
 
         Returns:
             Raster channel
@@ -591,7 +591,7 @@ class VectorChannel(Channel):
 
         Parameters:
             inplace: If true, the buffer is removed inplace
-            copy: If true, the data is copied during initialization (only used if `inplace` is false)
+            copy: If true, the data is copied (only used if `inplace` is false)
 
         Returns:
             Vector channel
