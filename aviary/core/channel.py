@@ -18,7 +18,9 @@ from aviary.core.exceptions import AviaryUserError
 if TYPE_CHECKING:
     from aviary.core.type_aliases import (
         BufferSize,
+        Coordinates,
         FractionalBufferSize,
+        TileSize,
         TimeStep,
     )
 
@@ -464,6 +466,68 @@ class VectorChannel(Channel):
         """
         return self._data
 
+    @classmethod
+    def from_unscaled_data(
+        cls,
+        data: gpd.GeoDataFrame,
+        name: ChannelName | str,
+        coordinates: Coordinates,
+        tile_size: TileSize,
+        buffer_size: BufferSize = 0,
+        time_step: TimeStep | None = None,
+        copy: bool = False,
+    ) -> VectorChannel:
+        """Creates a vector channel from unscaled data.
+
+        Parameters:
+            data: Data
+            name: Name
+            coordinates: Coordinates (x_min, y_min) of the tile in meters
+            tile_size: Tile size in meters
+            buffer_size: Buffer size in meters
+            time_step: Time step
+            copy: If true, the data is copied during initialization
+
+        Raises:
+            AviaryUserError: Invalid `tile_size` (the tile size is negative or zero)
+            AviaryUserError: Invalid `buffer_size` (the buffer size is negative)
+        """
+        if tile_size <= 0:
+            message = (
+                'Invalid tile_size! '
+                'The tile size must be positive.'
+            )
+            raise AviaryUserError(message)
+
+        if buffer_size < 0:
+            message = (
+                'Invalid buffer_size! '
+                'The buffer size must be positive or zero.'
+            )
+            raise AviaryUserError(message)
+
+        source_bounding_box = (
+            float(coordinates[0] - buffer_size),
+            float(coordinates[1] - buffer_size),
+            float(coordinates[0] + tile_size + buffer_size),
+            float(coordinates[1] + tile_size + buffer_size),
+        )
+        target_bounding_box = (0., 0., 1., 1.)
+        data = cls._scale_data(
+            data=data,
+            source_bounding_box=source_bounding_box,
+            target_bounding_box=target_bounding_box,
+            copy=copy,
+        )
+        buffer_size = buffer_size / tile_size
+        return cls(
+            data=data,
+            name=name,
+            buffer_size=buffer_size,
+            time_step=time_step,
+            copy=False,
+        )
+
     def __repr__(self) -> str:
         """Returns the string representation.
 
@@ -561,12 +625,20 @@ class VectorChannel(Channel):
                 copy=copy,
             )
 
+        source_bounding_box = self._unbuffered_bounding_box
+        target_bounding_box = (0., 0., 1., 1.)
+
         if inplace:
             self._data = self._data.clip(
                 mask=self._unbuffered_bounding_box,
                 keep_geom_type=True,
             )
-            self._data = self._scale_data(data=self._data)
+            self._data = self._scale_data(
+                data=self._data,
+                source_bounding_box=source_bounding_box,
+                target_bounding_box=target_bounding_box,
+                copy=False,
+            )
             self._buffer_size = 0.
             self._validate()
             self._buffer_size_coordinate_units = self._compute_buffer_size_coordinate_units()
@@ -577,7 +649,12 @@ class VectorChannel(Channel):
             mask=list(self._unbuffered_bounding_box),
             keep_geom_type=True,
         )
-        data = self._scale_data(data=data)
+        data = self._scale_data(
+            data=data,
+            source_bounding_box=source_bounding_box,
+            target_bounding_box=target_bounding_box,
+            copy=False,
+        )
         buffer_size = 0.
         return VectorChannel(
             data=data,
@@ -587,20 +664,26 @@ class VectorChannel(Channel):
             copy=False,
         )
 
+    @staticmethod
     def _scale_data(
-        self,
         data: gpd.GeoDataFrame,
+        source_bounding_box: tuple[float, float, float, float],
+        target_bounding_box: tuple[float, float, float, float],
+        copy: bool = False,
     ) -> gpd.GeoDataFrame:
         """Scales the data to the spatial extent [0, 1] in x and y direction.
 
         Parameters:
             data: Data
+            source_bounding_box: Source bounding box
+            target_bounding_box: Target bounding box
+            copy: If true, the data is copied
 
         Returns:
             Data
         """
-        source_bounding_box = self._unbuffered_bounding_box
-        target_bounding_box = (0., 0., 1., 1.)
+        if copy:
+            data = data.copy()
 
         source_size = source_bounding_box[2] - source_bounding_box[0]
         target_size = target_bounding_box[2] - target_bounding_box[0]
