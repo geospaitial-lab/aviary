@@ -61,7 +61,7 @@ class Tile(Iterable[Channel]):
         if self._copy:
             self._copy_channels()
 
-        self._channels_dict = {channel.name: channel for channel in self}
+        self._channels_dict = {channel.name: channel for channel in self._channels}
 
     def _validate(self) -> None:
         """Validates the tile."""
@@ -72,17 +72,9 @@ class Tile(Iterable[Channel]):
         """Validates `channels`.
 
         Raises:
-            AviaryUserError: Invalid `channels` (the channels are an empty list)
             AviaryUserError: Invalid `channels` (the channels contain duplicate names)
         """
-        if not self._channels:
-            message = (
-                'Invalid channels! '
-                'The channels must be a non-empty list.'
-            )
-            raise AviaryUserError(message)
-
-        channel_names = [channel.name for channel in self]
+        channel_names = [channel.name for channel in self._channels]
         unique_channel_names = set(channel_names)
 
         if len(channel_names) != len(unique_channel_names):
@@ -94,7 +86,7 @@ class Tile(Iterable[Channel]):
 
     def _copy_channels(self) -> None:
         """Copies `channels`."""
-        self._channels = [channel.copy() for channel in self]
+        self._channels = [channel.copy() for channel in self._channels]
 
     def _validate_tile_size(self) -> None:
         """Validates `tile_size`.
@@ -259,13 +251,17 @@ class Tile(Iterable[Channel]):
         Returns:
             String representation
         """
-        channels_repr = '\n'.join(
-            f'        {channel.name}: {type(channel).__name__},'
-            for channel in self
-        )
+        if self.channels:
+            channels_repr = '\n'.join(
+                f'        {channel.name}: {type(channel).__name__},'
+                for channel in self
+            )
+            channels_repr = '\n' + channels_repr
+        else:
+            channels_repr = ','
         return (
             'Tile(\n'
-            f'    channels=\n{channels_repr}\n'
+            f'    channels={channels_repr}\n'
             f'    coordinates={self._coordinates},\n'
             f'    tile_size={self._tile_size},\n'
             f'    copy={self._copy},\n'
