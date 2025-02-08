@@ -67,7 +67,7 @@ class Channel(ABC):
     def _validate(self) -> None:
         """Validates the channel."""
         self._validate_data()
-        self._cast_name()
+        self._parse_name()
         self._validate_buffer_size()
 
     @abstractmethod
@@ -82,8 +82,8 @@ class Channel(ABC):
         """Sets `_copy` to True if the data is copied before the initialization."""
         self._copy = True
 
-    def _cast_name(self) -> None:
-        """Casts the name to `ChannelName`."""
+    def _parse_name(self) -> None:
+        """Parses the name to `ChannelName`."""
         if isinstance(self._name, str) and self._name in self._built_in_channel_names:
             self._name = ChannelName(self._name)
 
