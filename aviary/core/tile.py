@@ -269,7 +269,7 @@ class Tile(Iterable[Channel]):
         tiles: list[Tile],
         copy: bool = False,
     ) -> Tile:
-        """Creates a tile from tiles.
+        """Creates a tile from tiles that specify the same spatial extent.
 
         Parameters:
             tiles: Tiles
