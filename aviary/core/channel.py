@@ -458,6 +458,39 @@ class VectorChannel(Channel):
         y_max = 1. - self._buffer_size_coordinate_units
         return x_min, y_min, x_max, y_max
 
+    @staticmethod
+    def _scale_data(
+        data: gpd.GeoDataFrame,
+        source_bounding_box: tuple[float, float, float, float],
+        target_bounding_box: tuple[float, float, float, float],
+        inplace: bool = False,
+    ) -> gpd.GeoDataFrame:
+        """Scales the data to the spatial extent [0, 1] in x and y direction.
+
+        Parameters:
+            data: Data
+            source_bounding_box: Source bounding box
+            target_bounding_box: Target bounding box
+            inplace: If True, the data is scaled inplace
+
+        Returns:
+            Data
+        """
+        if not inplace:
+            data = data.copy()
+
+        source_size = source_bounding_box[2] - source_bounding_box[0]
+        target_size = target_bounding_box[2] - target_bounding_box[0]
+
+        scale = target_size / source_size
+
+        translate_x = target_bounding_box[0] - source_bounding_box[0] * scale
+        translate_y = target_bounding_box[1] - source_bounding_box[1] * scale
+
+        transform = [scale, 0., 0., scale, translate_x, translate_y]
+        data['geometry'] = data['geometry'].affine_transform(transform)
+        return data
+
     @property
     def data(self) -> gpd.GeoDataFrame:
         """
@@ -671,36 +704,3 @@ class VectorChannel(Channel):
         )
         vector_channel._mark_as_copied()  # noqa: SLF001
         return vector_channel
-
-    @staticmethod
-    def _scale_data(
-        data: gpd.GeoDataFrame,
-        source_bounding_box: tuple[float, float, float, float],
-        target_bounding_box: tuple[float, float, float, float],
-        inplace: bool = False,
-    ) -> gpd.GeoDataFrame:
-        """Scales the data to the spatial extent [0, 1] in x and y direction.
-
-        Parameters:
-            data: Data
-            source_bounding_box: Source bounding box
-            target_bounding_box: Target bounding box
-            inplace: If True, the data is scaled inplace
-
-        Returns:
-            Data
-        """
-        if not inplace:
-            data = data.copy()
-
-        source_size = source_bounding_box[2] - source_bounding_box[0]
-        target_size = target_bounding_box[2] - target_bounding_box[0]
-
-        scale = target_size / source_size
-
-        translate_x = target_bounding_box[0] - source_bounding_box[0] * scale
-        translate_y = target_bounding_box[1] - source_bounding_box[1] * scale
-
-        transform = [scale, 0., 0., scale, translate_x, translate_y]
-        data['geometry'] = data['geometry'].affine_transform(transform)
-        return data
