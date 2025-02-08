@@ -83,7 +83,7 @@ class Channel(ABC):
         self._copy = True
 
     def _parse_name(self) -> None:
-        """Parses the name to `ChannelName`."""
+        """Parses `name` to `ChannelName`."""
         if isinstance(self._name, str) and self._name in self._built_in_channel_names:
             self._name = ChannelName(self._name)
 
