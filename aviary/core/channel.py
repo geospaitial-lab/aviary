@@ -379,6 +379,7 @@ class VectorChannel(Channel):
 
     Notes:
         - The data is assumed to be scaled to the spatial extent [0, 1] in x and y direction
+            without a coordinate reference system
         - The `data` property returns a reference to the data
     """
     _data: gpd.GeoDataFrame
@@ -414,8 +415,16 @@ class VectorChannel(Channel):
         """Validates `data`.
 
         Raises:
+            AviaryUserError: Invalid `data` (the data has a coordinate reference system)
             AviaryUserError: Invalid `data` (the data is not scaled to the spatial extent [0, 1] in x and y direction)
         """
+        if self._data.crs is not None:
+            message = (
+                'Invalid data! '
+                'The data must not have a coordinate reference system.'
+            )
+            raise AviaryUserError(message)
+
         if len(self._data) == 0:
             return
 
@@ -542,6 +551,11 @@ class VectorChannel(Channel):
         if copy:
             data = data.copy()
 
+        data = data.set_crs(
+            crs=None,
+            inplace=True,
+            allow_override=True,
+        )
         source_bounding_box = (
             float(coordinates[0] - buffer_size),
             float(coordinates[1] - buffer_size),
