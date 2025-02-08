@@ -15,13 +15,17 @@ from aviary.core.bounding_box import BoundingBox
 from aviary.core.channel import Channel
 from aviary.core.enums import ChannelName
 from aviary.core.exceptions import AviaryUserError
-from aviary.core.type_aliases import ChannelKey
+from aviary.core.type_aliases import (
+    ChannelKey,
+    ChannelNameSet,
+)
 
 if TYPE_CHECKING:
     from aviary.core.type_aliases import (
         BufferSize,
+        ChannelKeySet,
+        ChannelNameKeySet,
         ChannelNames,
-        ChannelNameSet,
         Channels,
         Coordinates,
         TileSize,
@@ -62,7 +66,7 @@ class Tile(Iterable[Channel]):
         if self._copy:
             self._copy_channels()
 
-        self._channels_dict = {(channel.name, channel.time_step): channel for channel in self._channels}
+        self._channels_dict = self._compute_channels_dict()
 
     def _validate(self) -> None:
         """Validates the tile."""
@@ -75,7 +79,7 @@ class Tile(Iterable[Channel]):
         Raises:
             AviaryUserError: Invalid `channels` (the channels contain duplicate channel name and time step combinations)
         """
-        channel_keys = [(channel.name, channel.time_step) for channel in self._channels]
+        channel_keys = [channel.key for channel in self._channels]
         unique_channel_keys = set(channel_keys)
 
         if len(channel_keys) != len(unique_channel_keys):
@@ -106,6 +110,30 @@ class Tile(Iterable[Channel]):
             )
             raise AviaryUserError(message)
 
+    def _compute_channels_dict(self) -> dict[ChannelKey, Channel]:
+        """Computes the channels dictionary.
+
+        Returns:
+            Channels dictionary
+        """
+        return {channel.key: channel for channel in self._channels}
+
+    def _parse_channel_name(
+        self,
+        channel_name: ChannelName | str,
+    ) -> ChannelName:
+        """Parses `channel_name` to `ChannelName`.
+
+        Parameters:
+            channel_name: Channel name
+
+        Returns:
+            Channel name
+        """
+        if isinstance(channel_name, str) and channel_name in self._built_in_channel_names:
+            return ChannelName(channel_name)
+        return channel_name
+
     def _parse_channel_key(
         self,
         channel_key: ChannelName | str | ChannelKey,
@@ -124,10 +152,42 @@ class Tile(Iterable[Channel]):
             channel_name = channel_key
             time_step = None
 
-        if isinstance(channel_name, str) and channel_name in self._built_in_channel_names:
-            channel_name = ChannelName(channel_name)
-
+        channel_name = self._parse_channel_name(channel_name=channel_name)
         return channel_name, time_step
+
+    def _parse_channel_keys(
+        self,
+        channel_keys:
+            ChannelName | str |
+            ChannelKey |
+            ChannelNameSet | ChannelKeySet | ChannelNameKeySet |
+            None,
+    ) -> ChannelKeySet:
+        """Parses `channel_keys` to `ChannelKeySet`.
+
+        Parameters:
+            channel_keys: Channel name, channel name and time step combination, channel names,
+                or channel name and time step combinations to ignore
+
+        Returns:
+            Channel name and time step combinations
+        """
+        if channel_keys is None:
+            return set()
+
+        if isinstance(channel_keys, (ChannelName | str | ChannelKey)):
+            return set(self._parse_channel_key(channel_key=channel_keys))
+
+        if isinstance(channel_keys, ChannelNameSet):
+            return {
+                (self._parse_channel_name(channel_name=channel_name), None)
+                for channel_name in channel_keys
+            }
+
+        return {
+            self._parse_channel_key(channel_key=channel_key)
+            for channel_key in channel_keys
+        }
 
     @property
     def channels(self) -> Channels:
@@ -184,6 +244,14 @@ class Tile(Iterable[Channel]):
             x_max=x_max,
             y_max=y_max,
         )
+
+    @property
+    def channel_keys(self) -> ChannelKeySet:
+        """
+        Returns:
+            Channel name and time step combinations
+        """
+        return {channel.key for channel in self}
 
     @property
     def channel_names(self) -> ChannelNameSet:
@@ -346,7 +414,7 @@ class Tile(Iterable[Channel]):
         """
         if self.channels:
             channels_repr = '\n'.join(
-                f'        {channel.name}: {type(channel).__name__},'
+                f'        {channel.key}: {type(channel).__name__},'
                 for channel in self
             )
             channels_repr = '\n' + channels_repr
@@ -407,7 +475,7 @@ class Tile(Iterable[Channel]):
             True if the channel is in the tile, False otherwise
         """
         channel_key = self._parse_channel_key(channel_key=channel_key)
-        return channel_key in self._channels_dict
+        return channel_key in self.channel_keys
 
     def __getattr__(
         self,
@@ -464,3 +532,43 @@ class Tile(Iterable[Channel]):
             tile_size=self._tile_size,
             copy=True,
         )
+
+    def remove_buffer(
+        self,
+        ignore_channel_keys:
+            ChannelName | str |
+            ChannelKey |
+            ChannelNameSet | ChannelKeySet | ChannelNameKeySet |
+            None = None,
+        inplace: bool = False,
+    ) -> Tile:
+        """Removes the buffer.
+
+        Notes:
+            - Ignoring a channel by its name assumes the time step is None
+
+        Parameters:
+            ignore_channel_keys: Channel name, channel name and time step combination, channel names,
+                or channel name and time step combinations to ignore
+            inplace: If True, the buffer is removed inplace
+
+        Returns:
+            Tile
+        """
+        ignore_channel_keys = self._parse_channel_keys(channel_keys=ignore_channel_keys)
+
+        if inplace:
+            for channel in self:
+                if channel.key not in ignore_channel_keys:
+                    channel.remove_buffer(inplace=True)
+
+            self._validate()
+            return self
+
+        tile = self.copy()
+
+        for channel in tile:
+            if channel.key not in ignore_channel_keys:
+                channel.remove_buffer(inplace=True)
+
+        return tile

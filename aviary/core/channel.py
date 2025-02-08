@@ -18,6 +18,7 @@ from aviary.core.exceptions import AviaryUserError
 if TYPE_CHECKING:
     from aviary.core.type_aliases import (
         BufferSize,
+        ChannelKey,
         Coordinates,
         FractionalBufferSize,
         TileSize,
@@ -139,6 +140,14 @@ class Channel(ABC):
             If True, the data is copied during initialization
         """
         return self._copy
+
+    @property
+    def key(self) -> ChannelKey:
+        """
+        Returns:
+            Name and time step combination
+        """
+        return self._name, self._time_step
 
     @abstractmethod
     def __repr__(self) -> str:
