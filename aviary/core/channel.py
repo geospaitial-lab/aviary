@@ -51,7 +51,7 @@ class Channel(ABC):
             name: Name
             buffer_size: Buffer size as a fraction of the spatial extent of the data
             time_step: Time step
-            copy: If true, the data is copied during initialization
+            copy: If True, the data is copied during initialization
         """
         self._data = data
         self._name = name
@@ -132,7 +132,7 @@ class Channel(ABC):
     def is_copied(self) -> bool:
         """
         Returns:
-            If true, the data is copied during initialization
+            If True, the data is copied during initialization
         """
         return self._copy
 
@@ -155,7 +155,7 @@ class Channel(ABC):
             other: Other channel
 
         Returns:
-            True if the channels are equal, false otherwise
+            True if the channels are equal, False otherwise
         """
 
     @abstractmethod
@@ -175,8 +175,8 @@ class Channel(ABC):
         """Removes the buffer.
 
         Parameters:
-            inplace: If true, the buffer is removed inplace
-            copy: If true, the data is copied (only used if `inplace` is false)
+            inplace: If True, the buffer is removed inplace
+            copy: If True, the data is copied (only used if `inplace` is False)
 
         Returns:
             Channel
@@ -206,7 +206,7 @@ class RasterChannel(Channel):
             name: Name
             buffer_size: Buffer size as a fraction of the spatial extent of the data
             time_step: Time step
-            copy: If true, the data is copied during initialization
+            copy: If True, the data is copied during initialization
         """
         super().__init__(
             data=data,
@@ -297,7 +297,7 @@ class RasterChannel(Channel):
             other: Other raster channel
 
         Returns:
-            True if the raster channels are equal, false otherwise
+            True if the raster channels are equal, False otherwise
         """
         if not isinstance(other, RasterChannel):
             return False
@@ -332,8 +332,8 @@ class RasterChannel(Channel):
         """Removes the buffer.
 
         Parameters:
-            inplace: If true, the buffer is removed inplace
-            copy: If true, the data is copied (only used if `inplace` is false)
+            inplace: If True, the buffer is removed inplace
+            copy: If True, the data is copied (only used if `inplace` is False)
 
         Returns:
             Raster channel
@@ -397,7 +397,7 @@ class VectorChannel(Channel):
             name: Name
             buffer_size: Buffer size as a fraction of the spatial extent of the data
             time_step: Time step
-            copy: If true, the data is copied during initialization
+            copy: If True, the data is copied during initialization
         """
         super().__init__(
             data=data,
@@ -486,7 +486,7 @@ class VectorChannel(Channel):
             tile_size: Tile size in meters
             buffer_size: Buffer size in meters
             time_step: Time step
-            copy: If true, the data is copied during initialization
+            copy: If True, the data is copied during initialization
 
         Raises:
             AviaryUserError: Invalid `tile_size` (the tile size is negative or zero)
@@ -555,7 +555,7 @@ class VectorChannel(Channel):
             other: Other vector channel
 
         Returns:
-            True if the vector channels are equal, false otherwise
+            True if the vector channels are equal, False otherwise
         """
         if not isinstance(other, VectorChannel):
             return False
@@ -590,8 +590,8 @@ class VectorChannel(Channel):
         """Removes the buffer.
 
         Parameters:
-            inplace: If true, the buffer is removed inplace
-            copy: If true, the data is copied (only used if `inplace` is false)
+            inplace: If True, the buffer is removed inplace
+            copy: If True, the data is copied (only used if `inplace` is False)
 
         Returns:
             Vector channel
@@ -677,7 +677,7 @@ class VectorChannel(Channel):
             data: Data
             source_bounding_box: Source bounding box
             target_bounding_box: Target bounding box
-            copy: If true, the data is copied
+            copy: If True, the data is copied
 
         Returns:
             Data

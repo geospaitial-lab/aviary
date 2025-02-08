@@ -49,7 +49,7 @@ class Tile(Iterable[Channel]):
             channels: Channels
             coordinates: Coordinates (x_min, y_min) of the tile in meters
             tile_size: Tile size in meters
-            copy: If true, the channels are copied during initialization
+            copy: If True, the channels are copied during initialization
         """
         self._channels = channels
         self._coordinates = coordinates
@@ -185,7 +185,7 @@ class Tile(Iterable[Channel]):
             tile_size: Tile size in meters
             buffer_size: Buffer size in meters
             time_step: Time step
-            copy: If true, the channels are copied during initialization
+            copy: If True, the channels are copied during initialization
 
         Returns:
             Tile
@@ -255,7 +255,7 @@ class Tile(Iterable[Channel]):
 
         Parameters:
             tiles: Tiles
-            copy: If true, the channels are copied during initialization
+            copy: If True, the channels are copied during initialization
 
         Returns:
             Tile
@@ -329,7 +329,7 @@ class Tile(Iterable[Channel]):
             other: Other tile
 
         Returns:
-            True if the tiles are equal, false otherwise
+            True if the tiles are equal, False otherwise
         """
         if not isinstance(other, Tile):
             return False
