@@ -4,6 +4,24 @@
       show_symbol_type_toc: false
       show_labels: false
 
+::: aviary.ChannelKey
+    options:
+      show_symbol_type_heading: false
+      show_symbol_type_toc: false
+      show_labels: false
+
+::: aviary.ChannelKeySet
+    options:
+      show_symbol_type_heading: false
+      show_symbol_type_toc: false
+      show_labels: false
+
+::: aviary.ChannelNameKeySet
+    options:
+      show_symbol_type_heading: false
+      show_symbol_type_toc: false
+      show_labels: false
+
 ::: aviary.ChannelNames
     options:
       show_symbol_type_heading: false

@@ -23,6 +23,9 @@ from .core.process_area import (
 from .core.tile import Tile
 from .core.type_aliases import (
     BufferSize,
+    ChannelKey,
+    ChannelKeySet,
+    ChannelNameKeySet,
     ChannelNames,
     ChannelNameSet,
     Channels,
@@ -42,7 +45,10 @@ __all__ = [
     'BoundingBox',
     'BufferSize',
     'Channel',
+    'ChannelKey',
+    'ChannelKeySet',
     'ChannelName',
+    'ChannelNameKeySet',
     'ChannelNameSet',
     'ChannelNames',
     'Channels',

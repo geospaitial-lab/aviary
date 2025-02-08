@@ -7,6 +7,10 @@ from aviary.core.channel import Channel
 from aviary.core.enums import ChannelName
 
 BufferSize: TypeAlias = int
+TimeStep: TypeAlias = int
+ChannelKey: TypeAlias = tuple[ChannelName | str, TimeStep]
+ChannelKeySet: TypeAlias = set[ChannelKey]
+ChannelNameKeySet: TypeAlias = set[ChannelName | str | ChannelKey]
 ChannelNames: TypeAlias = list[ChannelName | str]
 ChannelNameSet: TypeAlias = set[ChannelName | str]
 Channels: TypeAlias = list[Channel]
@@ -17,4 +21,3 @@ EPSGCode: TypeAlias = int
 FractionalBufferSize: TypeAlias = float
 GroundSamplingDistance: TypeAlias = float
 TileSize: TypeAlias = int
-TimeStep: TypeAlias = int
