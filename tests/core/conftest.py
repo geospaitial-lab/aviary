@@ -1,7 +1,10 @@
 import numpy as np
+import numpy.typing as npt
 import pytest
 
 from aviary.core.bounding_box import BoundingBox
+from aviary.core.channel import RasterChannel
+from aviary.core.enums import ChannelName
 from aviary.core.process_area import ProcessArea
 
 
@@ -26,4 +29,33 @@ def process_area() -> ProcessArea:
     return ProcessArea(
         coordinates=coordinates,
         tile_size=tile_size,
+    )
+
+
+@pytest.fixture(scope='function')
+def raster_channel_data() -> npt.NDArray:
+    return np.ones((640, 640), dtype=np.uint8)
+
+
+@pytest.fixture(scope='function')
+def raster_channel_buffered_data() -> npt.NDArray:
+    data = np.zeros((960, 960), dtype=np.uint8)
+    data[160:800, 160:800] = 1
+    return data
+
+
+@pytest.fixture(scope='function')
+def raster_channel(
+    raster_channel_data: npt.NDArray,
+) -> RasterChannel:
+    name = ChannelName.R
+    buffer_size = 0.
+    time_step = None
+    copy = False
+    return RasterChannel(
+        data=raster_channel_data,
+        name=name,
+        buffer_size=buffer_size,
+        time_step=time_step,
+        copy=copy,
     )
