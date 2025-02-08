@@ -88,6 +88,10 @@ class Tile(Iterable[Channel]):
         """Copies `channels`."""
         self._channels = [channel.copy() for channel in self._channels]
 
+    def _mark_as_copied(self) -> None:
+        """Sets `_copy` to True if the channels are copied before the initialization."""
+        self._copy = True
+
     def _validate_tile_size(self) -> None:
         """Validates `tile_size`.
 
@@ -124,6 +128,14 @@ class Tile(Iterable[Channel]):
             Tile size in meters
         """
         return self._tile_size
+
+    @property
+    def is_copied(self) -> bool:
+        """
+        Returns:
+            If True, the channels are copied during initialization
+        """
+        return self._copy
 
     @property
     def area(self) -> int:
@@ -210,21 +222,22 @@ class Tile(Iterable[Channel]):
             )
             raise AviaryUserError(message)
 
-        if data.shape[-1] != len(channel_names):
+        if len(channel_names) != data.shape[-1]:
             message = (
                 'Invalid channel_names! '
                 'The number of channel names must be equal to the number of channels.'
             )
             raise AviaryUserError(message)
 
+        if copy:
+            data = data.copy()
+
         channel_names = [
             ChannelName(channel_name)
             if isinstance(channel_name, str) and channel_name in cls._built_in_channel_names else channel_name
             for channel_name in channel_names
         ]
-
         channels_dict = {}
-
         buffer_size = buffer_size / tile_size
 
         for i, channel_name in enumerate(channel_names):
@@ -238,12 +251,17 @@ class Tile(Iterable[Channel]):
                 )
 
         channels = list(channels_dict.values())
-        return cls(
+        tile = cls(
             channels=channels,
             coordinates=coordinates,
             tile_size=tile_size,
-            copy=copy,
+            copy=False,
         )
+
+        if copy:
+            tile._mark_as_copied()  # noqa: SLF001
+
+        return tile
 
     @classmethod
     def from_tiles(
