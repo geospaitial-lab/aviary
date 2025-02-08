@@ -15,6 +15,7 @@ from aviary.core.bounding_box import BoundingBox
 from aviary.core.channel import Channel
 from aviary.core.enums import ChannelName
 from aviary.core.exceptions import AviaryUserError
+from aviary.core.type_aliases import ChannelKey
 
 if TYPE_CHECKING:
     from aviary.core.type_aliases import (
@@ -104,6 +105,29 @@ class Tile(Iterable[Channel]):
                 'The tile size must be positive.'
             )
             raise AviaryUserError(message)
+
+    def _parse_channel_key(
+        self,
+        channel_key: ChannelName | str | ChannelKey,
+    ) -> ChannelKey:
+        """Parses `channel_key` to `ChannelKey`.
+
+        Parameters:
+            channel_key: Channel name or channel name and time step combination
+
+        Returns:
+            Channel name and time step combination
+        """
+        if isinstance(channel_key, ChannelKey):
+            channel_name, time_step = channel_key
+        else:
+            channel_name = channel_key
+            time_step = None
+
+        if isinstance(channel_name, str) and channel_name in self._built_in_channel_names:
+            channel_name = ChannelName(channel_name)
+
+        return channel_name, time_step
 
     @property
     def channels(self) -> Channels:
@@ -367,6 +391,24 @@ class Tile(Iterable[Channel]):
         """
         return len(self._channels)
 
+    def __contains__(
+        self,
+        channel_key: ChannelName | str | ChannelKey,
+    ) -> bool:
+        """Checks if the channel is in the tile.
+
+        Notes:
+            - Accessing a channel by its name assumes the time step is None
+
+        Parameters:
+            channel_key: Channel name or channel name and time step combination
+
+        Returns:
+            True if the channel is in the tile, False otherwise
+        """
+        channel_key = self._parse_channel_key(channel_key=channel_key)
+        return channel_key in self._channels_dict
+
     def __getattr__(
         self,
         channel_name: str,
@@ -386,7 +428,7 @@ class Tile(Iterable[Channel]):
 
     def __getitem__(
         self,
-        channel_key: ChannelName | str | tuple[ChannelName | str, TimeStep],
+        channel_key: ChannelName | str | ChannelKey,
     ) -> Channel:
         """Returns the channel.
 
@@ -399,16 +441,7 @@ class Tile(Iterable[Channel]):
         Returns:
             Channel
         """
-        if isinstance(channel_key, tuple):
-            channel_name, time_step = channel_key
-        else:
-            channel_name = channel_key
-            time_step = None
-
-        if isinstance(channel_name, str) and channel_name in self._built_in_channel_names:
-            channel_name = ChannelName(channel_name)
-
-        channel_key = (channel_name, time_step)
+        channel_key = self._parse_channel_key(channel_key=channel_key)
         return self._channels_dict[channel_key]
 
     def __iter__(self) -> Iterator[Channel]:
