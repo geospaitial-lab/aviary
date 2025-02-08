@@ -78,6 +78,10 @@ class Channel(ABC):
     def _copy_data(self) -> None:
         """Copies `data`."""
 
+    def _mark_as_copied(self) -> None:
+        """Sets `_copy` to True if the data is copied before the initialization."""
+        self._copy = True
+
     def _cast_name(self) -> None:
         """Casts the name to `ChannelName`."""
         if isinstance(self._name, str) and self._name in self._built_in_channel_names:
@@ -170,13 +174,11 @@ class Channel(ABC):
     def remove_buffer(
         self,
         inplace: bool = False,
-        copy: bool = False,
     ) -> Channel:
         """Removes the buffer.
 
         Parameters:
             inplace: If True, the buffer is removed inplace
-            copy: If True, the data is copied (only used if `inplace` is False)
 
         Returns:
             Channel
@@ -327,13 +329,11 @@ class RasterChannel(Channel):
     def remove_buffer(
         self,
         inplace: bool = False,
-        copy: bool = False,
     ) -> RasterChannel:
         """Removes the buffer.
 
         Parameters:
             inplace: If True, the buffer is removed inplace
-            copy: If True, the data is copied (only used if `inplace` is False)
 
         Returns:
             Raster channel
@@ -347,7 +347,7 @@ class RasterChannel(Channel):
                 name=self._name,
                 buffer_size=self._buffer_size,
                 time_step=self._time_step,
-                copy=copy,
+                copy=True,
             )
 
         if inplace:
@@ -370,7 +370,7 @@ class RasterChannel(Channel):
             name=self._name,
             buffer_size=buffer_size,
             time_step=self._time_step,
-            copy=copy,
+            copy=True,
         )
 
 
@@ -506,6 +506,9 @@ class VectorChannel(Channel):
             )
             raise AviaryUserError(message)
 
+        if copy:
+            data = data.copy()
+
         source_bounding_box = (
             float(coordinates[0] - buffer_size),
             float(coordinates[1] - buffer_size),
@@ -517,16 +520,21 @@ class VectorChannel(Channel):
             data=data,
             source_bounding_box=source_bounding_box,
             target_bounding_box=target_bounding_box,
-            copy=copy,
+            inplace=True,
         )
         buffer_size = buffer_size / tile_size
-        return cls(
+        vector_channel = cls(
             data=data,
             name=name,
             buffer_size=buffer_size,
             time_step=time_step,
             copy=False,
         )
+
+        if copy:
+            vector_channel._mark_as_copied()  # noqa: SLF001
+
+        return vector_channel
 
     def __repr__(self) -> str:
         """Returns the string representation.
@@ -585,13 +593,11 @@ class VectorChannel(Channel):
     def remove_buffer(
         self,
         inplace: bool = False,
-        copy: bool = False,
     ) -> VectorChannel:
         """Removes the buffer.
 
         Parameters:
             inplace: If True, the buffer is removed inplace
-            copy: If True, the data is copied (only used if `inplace` is False)
 
         Returns:
             Vector channel
@@ -610,7 +616,7 @@ class VectorChannel(Channel):
                 name=self._name,
                 buffer_size=buffer_size,
                 time_step=self._time_step,
-                copy=copy,
+                copy=True,
             )
 
         if self._buffer_size == 0.:
@@ -622,7 +628,7 @@ class VectorChannel(Channel):
                 name=self._name,
                 buffer_size=self._buffer_size,
                 time_step=self._time_step,
-                copy=copy,
+                copy=True,
             )
 
         source_bounding_box = self._unbuffered_bounding_box
@@ -637,7 +643,7 @@ class VectorChannel(Channel):
                 data=self._data,
                 source_bounding_box=source_bounding_box,
                 target_bounding_box=target_bounding_box,
-                copy=False,
+                inplace=True,
             )
             self._buffer_size = 0.
             self._validate()
@@ -653,23 +659,25 @@ class VectorChannel(Channel):
             data=data,
             source_bounding_box=source_bounding_box,
             target_bounding_box=target_bounding_box,
-            copy=False,
+            inplace=True,
         )
         buffer_size = 0.
-        return VectorChannel(
+        vector_channel = VectorChannel(
             data=data,
             name=self._name,
             buffer_size=buffer_size,
             time_step=self._time_step,
             copy=False,
         )
+        vector_channel._mark_as_copied()  # noqa: SLF001
+        return vector_channel
 
     @staticmethod
     def _scale_data(
         data: gpd.GeoDataFrame,
         source_bounding_box: tuple[float, float, float, float],
         target_bounding_box: tuple[float, float, float, float],
-        copy: bool = False,
+        inplace: bool = False,
     ) -> gpd.GeoDataFrame:
         """Scales the data to the spatial extent [0, 1] in x and y direction.
 
@@ -677,12 +685,12 @@ class VectorChannel(Channel):
             data: Data
             source_bounding_box: Source bounding box
             target_bounding_box: Target bounding box
-            copy: If True, the data is copied
+            inplace: If True, the data is scaled inplace
 
         Returns:
             Data
         """
-        if copy:
+        if not inplace:
             data = data.copy()
 
         source_size = source_bounding_box[2] - source_bounding_box[0]
