@@ -31,6 +31,51 @@ def test_raster_channel_init(
     assert raster_channel.is_copied == copy
 
 
+def test_raster_channel_init_built_in_name(
+    raster_channel_data: npt.NDArray,
+) -> None:
+    name = 'r'
+    buffer_size = 0.
+    time_step = None
+    copy = False
+    raster_channel = RasterChannel(
+        data=raster_channel_data,
+        name=name,
+        buffer_size=buffer_size,
+        time_step=time_step,
+        copy=copy,
+    )
+    expected_name = ChannelName.R
+
+    np.testing.assert_array_equal(raster_channel.data, raster_channel_data)
+    assert raster_channel.name == expected_name
+    assert raster_channel.buffer_size == buffer_size
+    assert raster_channel.time_step == time_step
+    assert raster_channel.is_copied == copy
+
+
+def test_raster_channel_init_custom_name(
+    raster_channel_data: npt.NDArray,
+) -> None:
+    name = 'custom'
+    buffer_size = 0.
+    time_step = None
+    copy = False
+    raster_channel = RasterChannel(
+        data=raster_channel_data,
+        name=name,
+        buffer_size=buffer_size,
+        time_step=time_step,
+        copy=copy,
+    )
+
+    np.testing.assert_array_equal(raster_channel.data, raster_channel_data)
+    assert raster_channel.name == name
+    assert raster_channel.buffer_size == buffer_size
+    assert raster_channel.time_step == time_step
+    assert raster_channel.is_copied == copy
+
+
 def test_raster_channel_mutability_no_copy(
     raster_channel_data: npt.NDArray,
 ) -> None:
