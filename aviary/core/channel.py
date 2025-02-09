@@ -708,7 +708,7 @@ class VectorChannel(Channel):
             return self
 
         data = self._data.clip(  # returns a copy
-            mask=list(self._unbuffered_bounding_box),
+            mask=self._unbuffered_bounding_box,
             keep_geom_type=True,
         )
         data = self._scale_data(
