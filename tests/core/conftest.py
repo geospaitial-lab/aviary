@@ -33,6 +33,23 @@ def process_area() -> ProcessArea:
 
 
 @pytest.fixture(scope='function')
+def raster_channel(
+    raster_channel_data: npt.NDArray,
+) -> RasterChannel:
+    name = ChannelName.R
+    buffer_size = 0.
+    time_step = None
+    copy = False
+    return RasterChannel(
+        data=raster_channel_data,
+        name=name,
+        buffer_size=buffer_size,
+        time_step=time_step,
+        copy=copy,
+    )
+
+
+@pytest.fixture(scope='function')
 def raster_channel_data() -> npt.NDArray:
     return np.ones(
         shape=(640, 640),
@@ -48,20 +65,3 @@ def raster_channel_buffered_data() -> npt.NDArray:
     )
     data[160:800, 160:800] = 1
     return data
-
-
-@pytest.fixture(scope='function')
-def raster_channel(
-    raster_channel_data: npt.NDArray,
-) -> RasterChannel:
-    name = ChannelName.R
-    buffer_size = 0.
-    time_step = None
-    copy = False
-    return RasterChannel(
-        data=raster_channel_data,
-        name=name,
-        buffer_size=buffer_size,
-        time_step=time_step,
-        copy=copy,
-    )
