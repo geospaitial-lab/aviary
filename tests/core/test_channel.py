@@ -2,11 +2,16 @@ import copy
 import inspect
 import pickle
 
+import geopandas as gpd
+import geopandas.testing
 import numpy as np
 import numpy.typing as npt
 import pytest
 
-from aviary.core.channel import RasterChannel
+from aviary.core.channel import (
+    RasterChannel,
+    VectorChannel,
+)
 from aviary.core.enums import ChannelName
 from aviary.core.exceptions import AviaryUserError
 from aviary.core.type_aliases import FractionalBufferSize
@@ -297,3 +302,158 @@ def test_raster_channel_remove_buffer_defaults() -> None:
     inplace = signature.parameters['inplace'].default
 
     assert inplace is False
+
+
+def test_vector_channel_init(
+    vector_channel_data: gpd.GeoDataFrame,
+) -> None:
+    name = ChannelName.R
+    buffer_size = 0.
+    time_step = None
+    copy = False
+    vector_channel = VectorChannel(
+        data=vector_channel_data,
+        name=name,
+        buffer_size=buffer_size,
+        time_step=time_step,
+        copy=copy,
+    )
+
+    gpd.testing.assert_geodataframe_equal(vector_channel.data, vector_channel_data)
+    assert vector_channel.name == name
+    assert vector_channel.buffer_size == buffer_size
+    assert vector_channel.time_step == time_step
+    assert vector_channel.is_copied == copy
+
+
+def test_vector_channel_init_built_in_name(
+    vector_channel_data: gpd.GeoDataFrame,
+) -> None:
+    name = 'r'
+    buffer_size = 0.
+    time_step = None
+    copy = False
+    vector_channel = VectorChannel(
+        data=vector_channel_data,
+        name=name,
+        buffer_size=buffer_size,
+        time_step=time_step,
+        copy=copy,
+    )
+    expected_name = ChannelName.R
+
+    gpd.testing.assert_geodataframe_equal(vector_channel.data, vector_channel_data)
+    assert vector_channel.name == expected_name
+    assert vector_channel.buffer_size == buffer_size
+    assert vector_channel.time_step == time_step
+    assert vector_channel.is_copied == copy
+
+
+def test_vector_channel_init_custom_name(
+    vector_channel_data: gpd.GeoDataFrame,
+) -> None:
+    name = 'custom'
+    buffer_size = 0.
+    time_step = None
+    copy = False
+    vector_channel = VectorChannel(
+        data=vector_channel_data,
+        name=name,
+        buffer_size=buffer_size,
+        time_step=time_step,
+        copy=copy,
+    )
+
+    gpd.testing.assert_geodataframe_equal(vector_channel.data, vector_channel_data)
+    assert vector_channel.name == name
+    assert vector_channel.buffer_size == buffer_size
+    assert vector_channel.time_step == time_step
+    assert vector_channel.is_copied == copy
+
+
+def test_vector_channel_init_defaults() -> None:
+    signature = inspect.signature(VectorChannel)
+    buffer_size = signature.parameters['buffer_size'].default
+    time_step = signature.parameters['time_step'].default
+    copy = signature.parameters['copy'].default
+
+    assert buffer_size == 0.
+    assert time_step is None
+    assert copy is False
+
+
+def test_vector_channel_mutability_no_copy(
+    vector_channel_data: gpd.GeoDataFrame,
+) -> None:
+    name = ChannelName.R
+    buffer_size = 0.
+    time_step = None
+    copy = False
+    vector_channel = VectorChannel(
+        data=vector_channel_data,
+        name=name,
+        buffer_size=buffer_size,
+        time_step=time_step,
+        copy=copy,
+    )
+
+    assert id(vector_channel._data) == id(vector_channel_data)
+    assert id(vector_channel.data) == id(vector_channel._data)
+
+
+def test_vector_channel_mutability_copy(
+    vector_channel_data: gpd.GeoDataFrame,
+) -> None:
+    name = ChannelName.R
+    buffer_size = 0.
+    time_step = None
+    copy = True
+    vector_channel = VectorChannel(
+        data=vector_channel_data,
+        name=name,
+        buffer_size=buffer_size,
+        time_step=time_step,
+        copy=copy,
+    )
+
+    assert id(vector_channel._data) != id(vector_channel_data)
+    assert id(vector_channel.data) == id(vector_channel._data)
+
+
+def test_vector_channel_setters(
+    vector_channel: VectorChannel,
+) -> None:
+    with pytest.raises(AttributeError):
+        # noinspection PyPropertyAccess
+        vector_channel.data = None
+
+    with pytest.raises(AttributeError):
+        # noinspection PyPropertyAccess
+        vector_channel.name = None
+
+    with pytest.raises(AttributeError):
+        # noinspection PyPropertyAccess
+        vector_channel.buffer_size = None
+
+    with pytest.raises(AttributeError):
+        # noinspection PyPropertyAccess
+        vector_channel.time_step = None
+
+
+def test_vector_channel_pickle(
+    vector_channel: VectorChannel,
+) -> None:
+    pickled_vector_channel = pickle.dumps(vector_channel)
+    unpickled_vector_channel = pickle.loads(pickled_vector_channel)  # noqa: S301
+
+    assert vector_channel == unpickled_vector_channel
+
+
+def test_vector_channel_key(
+    vector_channel: VectorChannel,
+) -> None:
+    expected_name = ChannelName.R
+    expected_time_step = None
+    expected_key = (expected_name, expected_time_step)
+
+    assert vector_channel.key == expected_key

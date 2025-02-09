@@ -1,9 +1,14 @@
+import geopandas as gpd
 import numpy as np
 import numpy.typing as npt
 import pytest
+from shapely.geometry import box
 
 from aviary.core.bounding_box import BoundingBox
-from aviary.core.channel import RasterChannel
+from aviary.core.channel import (
+    RasterChannel,
+    VectorChannel,
+)
 from aviary.core.enums import ChannelName
 from aviary.core.process_area import ProcessArea
 
@@ -65,3 +70,38 @@ def raster_channel_buffered_data() -> npt.NDArray:
     )
     data[160:800, 160:800] = 1
     return data
+
+
+@pytest.fixture(scope='function')
+def vector_channel(
+    vector_channel_data: gpd.GeoDataFrame,
+) -> VectorChannel:
+    name = ChannelName.R
+    buffer_size = 0.
+    time_step = None
+    copy = False
+    return VectorChannel(
+        data=vector_channel_data,
+        name=name,
+        buffer_size=buffer_size,
+        time_step=time_step,
+        copy=copy,
+    )
+
+
+@pytest.fixture(scope='function')
+def vector_channel_data() -> gpd.GeoDataFrame:
+    geometries = [
+        box(0., 0., .1, .1),
+        box(.9, 0., 1., .1),
+        box(.9, .9, 1., 1.),
+        box(0., .9, .1, 1.),
+        box(.45, .45, .55, .55),
+    ]
+    return gpd.GeoDataFrame(geometry=geometries)
+
+
+@pytest.fixture(scope='function')
+def vector_channel_empty_data() -> gpd.GeoDataFrame:
+    geometries = []
+    return gpd.GeoDataFrame(geometry=geometries)
