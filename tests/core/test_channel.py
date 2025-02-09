@@ -187,6 +187,58 @@ def test_raster_channel_key(
     assert raster_channel.key == expected_key
 
 
+def test_raster_channel_eq(
+    raster_channel: RasterChannel,
+    raster_channel_data: npt.NDArray,
+    raster_channel_buffered_data: npt.NDArray,
+) -> None:
+    other_name = ChannelName.R
+    other_buffer_size = 0.
+    other_time_step = None
+    other_copy = False
+    other_raster_channel = RasterChannel(
+        data=raster_channel_data,
+        name=other_name,
+        buffer_size=other_buffer_size,
+        time_step=other_time_step,
+        copy=other_copy,
+    )
+
+    assert raster_channel == other_raster_channel
+
+    other_name = ChannelName.R
+    other_buffer_size = 0.
+    other_time_step = None
+    other_copy = True
+    other_raster_channel = RasterChannel(
+        data=raster_channel_data,
+        name=other_name,
+        buffer_size=other_buffer_size,
+        time_step=other_time_step,
+        copy=other_copy,
+    )
+
+    assert raster_channel == other_raster_channel
+
+    other_name = ChannelName.G
+    other_buffer_size = .25
+    other_time_step = 0
+    other_copy = False
+    other_raster_channel = RasterChannel(
+        data=raster_channel_buffered_data,
+        name=other_name,
+        buffer_size=other_buffer_size,
+        time_step=other_time_step,
+        copy=other_copy,
+    )
+
+    assert raster_channel != other_raster_channel
+
+    other_raster_channel = 'invalid'
+
+    assert raster_channel != other_raster_channel
+
+
 def test_raster_channel_copy(
     raster_channel: RasterChannel,
 ) -> None:

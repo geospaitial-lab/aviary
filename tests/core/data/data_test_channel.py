@@ -33,4 +33,14 @@ data_test_raster_channel_init_exceptions = [
         1.,
         re.escape('Invalid buffer_size! The buffer size must be in the range [0, 0.5).'),
     ),
+    # test case 6: buffer_size results in a fractional number of pixels
+    (
+        np.ones(shape=(640, 640), dtype=np.uint8),
+        .16,
+        re.escape(
+            'Invalid buffer_size! '
+            'The buffer size must must match the spatial extent of the data, '
+            'resulting in a whole number of pixels.',
+        ),
+    ),
 ]
