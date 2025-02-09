@@ -457,3 +457,66 @@ def test_vector_channel_key(
     expected_key = (expected_name, expected_time_step)
 
     assert vector_channel.key == expected_key
+
+
+def test_vector_channel_eq(
+    vector_channel: VectorChannel,
+    vector_channel_data: gpd.GeoDataFrame,
+    vector_channel_empty_data: gpd.GeoDataFrame,
+) -> None:
+    other_name = ChannelName.R
+    other_buffer_size = 0.
+    other_time_step = None
+    other_copy = False
+    other_vector_channel = VectorChannel(
+        data=vector_channel_data,
+        name=other_name,
+        buffer_size=other_buffer_size,
+        time_step=other_time_step,
+        copy=other_copy,
+    )
+
+    assert vector_channel == other_vector_channel
+
+    other_name = ChannelName.R
+    other_buffer_size = 0.
+    other_time_step = None
+    other_copy = True
+    other_vector_channel = VectorChannel(
+        data=vector_channel_data,
+        name=other_name,
+        buffer_size=other_buffer_size,
+        time_step=other_time_step,
+        copy=other_copy,
+    )
+
+    assert vector_channel == other_vector_channel
+
+    other_name = ChannelName.G
+    other_buffer_size = .25
+    other_time_step = 0
+    other_copy = False
+    other_vector_channel = VectorChannel(
+        data=vector_channel_empty_data,
+        name=other_name,
+        buffer_size=other_buffer_size,
+        time_step=other_time_step,
+        copy=other_copy,
+    )
+
+    assert vector_channel != other_vector_channel
+
+    other_vector_channel = 'invalid'
+
+    assert vector_channel != other_vector_channel
+
+
+def test_vector_channel_copy(
+    vector_channel: VectorChannel,
+) -> None:
+    copied_vector_channel = vector_channel.copy()
+
+    assert copied_vector_channel == vector_channel
+    assert copied_vector_channel.is_copied is True
+    assert id(copied_vector_channel) != id(vector_channel)
+    assert id(copied_vector_channel.data) != id(vector_channel.data)
