@@ -481,7 +481,6 @@ class VectorChannel(Channel):
         data: gpd.GeoDataFrame,
         source_bounding_box: tuple[float, float, float, float],
         target_bounding_box: tuple[float, float, float, float],
-        inplace: bool = False,
     ) -> gpd.GeoDataFrame:
         """Scales the data to the spatial extent [0, 1] in x and y direction.
 
@@ -489,14 +488,10 @@ class VectorChannel(Channel):
             data: Data
             source_bounding_box: Source bounding box
             target_bounding_box: Target bounding box
-            inplace: If True, the data is scaled inplace
 
         Returns:
             Data
         """
-        if not inplace:
-            data = data.copy()
-
         source_size = source_bounding_box[2] - source_bounding_box[0]
         target_size = target_bounding_box[2] - target_bounding_box[0]
 
@@ -576,7 +571,6 @@ class VectorChannel(Channel):
             data=data,
             source_bounding_box=source_bounding_box,
             target_bounding_box=target_bounding_box,
-            inplace=True,
         )
         buffer_size = buffer_size / tile_size
         vector_channel = cls(
@@ -699,7 +693,6 @@ class VectorChannel(Channel):
                 data=self._data,
                 source_bounding_box=source_bounding_box,
                 target_bounding_box=target_bounding_box,
-                inplace=True,
             )
             self._buffer_size = 0.
             self._validate()
@@ -715,7 +708,6 @@ class VectorChannel(Channel):
             data=data,
             source_bounding_box=source_bounding_box,
             target_bounding_box=target_bounding_box,
-            inplace=True,
         )
         buffer_size = 0.
         vector_channel = VectorChannel(
