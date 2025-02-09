@@ -7,6 +7,9 @@ import pytest
 
 from aviary.core.channel import RasterChannel
 from aviary.core.enums import ChannelName
+from aviary.core.exceptions import AviaryUserError
+from aviary.core.type_aliases import FractionalBufferSize
+from tests.core.data.data_test_channel import data_test_raster_channel_init_exceptions
 
 
 def test_raster_channel_init(
@@ -76,6 +79,37 @@ def test_raster_channel_init_custom_name(
     assert raster_channel.is_copied == copy
 
 
+@pytest.mark.parametrize(('data', 'buffer_size', 'message'), data_test_raster_channel_init_exceptions)
+def test_raster_channel_init_exceptions(
+    data: npt.NDArray,
+    buffer_size: FractionalBufferSize,
+    message: str,
+) -> None:
+    name = ChannelName.R
+    time_step = None
+    copy = False
+
+    with pytest.raises(AviaryUserError, match=message):
+        _ = RasterChannel(
+            data=data,
+            name=name,
+            buffer_size=buffer_size,
+            time_step=time_step,
+            copy=copy,
+        )
+
+
+def test_raster_channel_init_defaults() -> None:
+    signature = inspect.signature(RasterChannel)
+    buffer_size = signature.parameters['buffer_size'].default
+    time_step = signature.parameters['time_step'].default
+    copy = signature.parameters['copy'].default
+
+    assert buffer_size == 0.
+    assert time_step is None
+    assert copy is False
+
+
 def test_raster_channel_mutability_no_copy(
     raster_channel_data: npt.NDArray,
 ) -> None:
@@ -143,12 +177,22 @@ def test_raster_channel_pickle(
     assert raster_channel == unpickled_raster_channel
 
 
-def test_raster_channel_defaults() -> None:
-    signature = inspect.signature(RasterChannel)
-    buffer_size = signature.parameters['buffer_size'].default
-    time_step = signature.parameters['time_step'].default
-    copy = signature.parameters['copy'].default
+def test_raster_channel_key(
+    raster_channel: RasterChannel,
+) -> None:
+    expected_name = ChannelName.R
+    expected_time_step = None
+    expected_key = (expected_name, expected_time_step)
 
-    assert buffer_size == 0.
-    assert time_step is None
-    assert copy is False
+    assert raster_channel.key == expected_key
+
+
+def test_raster_channel_copy(
+    raster_channel: RasterChannel,
+) -> None:
+    copied_raster_channel = raster_channel.copy()
+
+    assert copied_raster_channel == raster_channel
+    assert copied_raster_channel.is_copied is True
+    assert id(copied_raster_channel) != id(raster_channel)
+    assert id(copied_raster_channel.data) != id(raster_channel.data)

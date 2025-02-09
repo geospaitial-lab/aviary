@@ -34,12 +34,18 @@ def process_area() -> ProcessArea:
 
 @pytest.fixture(scope='function')
 def raster_channel_data() -> npt.NDArray:
-    return np.ones((640, 640), dtype=np.uint8)
+    return np.ones(
+        shape=(640, 640),
+        dtype=np.uint8,
+    )
 
 
 @pytest.fixture(scope='function')
 def raster_channel_buffered_data() -> npt.NDArray:
-    data = np.zeros((960, 960), dtype=np.uint8)
+    data = np.zeros(
+        shape=(960, 960),
+        dtype=np.uint8,
+    )
     data[160:800, 160:800] = 1
     return data
 
