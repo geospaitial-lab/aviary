@@ -1,3 +1,4 @@
+import copy
 import inspect
 import pickle
 
@@ -9,7 +10,10 @@ from aviary.core.channel import RasterChannel
 from aviary.core.enums import ChannelName
 from aviary.core.exceptions import AviaryUserError
 from aviary.core.type_aliases import FractionalBufferSize
-from tests.core.data.data_test_channel import data_test_raster_channel_init_exceptions
+from tests.core.data.data_test_channel import (
+    data_test_raster_channel_init_exceptions,
+    data_test_raster_channel_remove_buffer,
+)
 
 
 def test_raster_channel_init(
@@ -248,3 +252,48 @@ def test_raster_channel_copy(
     assert copied_raster_channel.is_copied is True
     assert id(copied_raster_channel) != id(raster_channel)
     assert id(copied_raster_channel.data) != id(raster_channel.data)
+
+
+@pytest.mark.parametrize(('raster_channel', 'expected'), data_test_raster_channel_remove_buffer)
+def test_raster_channel_remove_buffer(
+    raster_channel: RasterChannel,
+    expected: RasterChannel,
+) -> None:
+    copied_raster_channel = copy.deepcopy(raster_channel)
+
+    raster_channel_ = raster_channel.remove_buffer(inplace=False)
+
+    assert raster_channel == copied_raster_channel
+    assert raster_channel_ == expected
+    assert id(raster_channel_) != id(raster_channel)
+    assert raster_channel.is_copied is False
+    assert raster_channel_.is_copied is True
+
+
+@pytest.mark.parametrize(('raster_channel', 'expected'), data_test_raster_channel_remove_buffer)
+def test_raster_channel_remove_buffer_inplace(
+    raster_channel: RasterChannel,
+    expected: RasterChannel,
+) -> None:
+    raster_channel.remove_buffer(inplace=True)
+
+    assert raster_channel == expected
+
+
+@pytest.mark.parametrize(('raster_channel', 'expected'), data_test_raster_channel_remove_buffer)
+def test_raster_channel_remove_buffer_inplace_return(
+    raster_channel: RasterChannel,
+    expected: RasterChannel,
+) -> None:
+    raster_channel_ = raster_channel.remove_buffer(inplace=True)
+
+    assert raster_channel == expected
+    assert raster_channel_ == expected
+    assert id(raster_channel_) == id(raster_channel)
+
+
+def test_raster_channel_remove_buffer_defaults() -> None:
+    signature = inspect.signature(RasterChannel.remove_buffer)
+    inplace = signature.parameters['inplace'].default
+
+    assert inplace is False
