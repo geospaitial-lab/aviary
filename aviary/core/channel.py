@@ -261,7 +261,7 @@ class RasterChannel(Channel):
             AviaryUserError: Invalid `buffer_size` (the buffer size does not match the spatial extent of the data,
                 resulting in a fractional number of pixels)
         """
-        buffer_size_pixels = self._buffer_size * self._data.shape[0]
+        buffer_size_pixels = self._buffer_size * self._data.shape[0] / (1. + 2. * self._buffer_size)
 
         if not buffer_size_pixels.is_integer():
             message = (
