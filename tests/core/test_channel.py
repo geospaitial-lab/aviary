@@ -18,6 +18,7 @@ from aviary.core.type_aliases import FractionalBufferSize
 from tests.core.data.data_test_channel import (
     data_test_raster_channel_init_exceptions,
     data_test_raster_channel_remove_buffer,
+    data_test_vector_channel_init_exceptions,
 )
 
 
@@ -326,6 +327,28 @@ def test_vector_channel_init(
     assert vector_channel.is_copied == copy
 
 
+def test_vector_channel_init_empty_data(
+    vector_channel_empty_data: gpd.GeoDataFrame,
+) -> None:
+    name = ChannelName.R
+    buffer_size = 0.
+    time_step = None
+    copy = False
+    vector_channel = VectorChannel(
+        data=vector_channel_empty_data,
+        name=name,
+        buffer_size=buffer_size,
+        time_step=time_step,
+        copy=copy,
+    )
+
+    gpd.testing.assert_geodataframe_equal(vector_channel.data, vector_channel_empty_data)
+    assert vector_channel.name == name
+    assert vector_channel.buffer_size == buffer_size
+    assert vector_channel.time_step == time_step
+    assert vector_channel.is_copied == copy
+
+
 def test_vector_channel_init_built_in_name(
     vector_channel_data: gpd.GeoDataFrame,
 ) -> None:
@@ -369,6 +392,26 @@ def test_vector_channel_init_custom_name(
     assert vector_channel.buffer_size == buffer_size
     assert vector_channel.time_step == time_step
     assert vector_channel.is_copied == copy
+
+
+@pytest.mark.parametrize(('data', 'buffer_size', 'message'), data_test_vector_channel_init_exceptions)
+def test_vector_channel_init_exceptions(
+    data: gpd.GeoDataFrame,
+    buffer_size: FractionalBufferSize,
+    message: str,
+) -> None:
+    name = ChannelName.R
+    time_step = None
+    copy = False
+
+    with pytest.raises(AviaryUserError, match=message):
+        _ = VectorChannel(
+            data=data,
+            name=name,
+            buffer_size=buffer_size,
+            time_step=time_step,
+            copy=copy,
+        )
 
 
 def test_vector_channel_init_defaults() -> None:
