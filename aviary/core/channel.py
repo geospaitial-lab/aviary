@@ -689,6 +689,7 @@ class VectorChannel(Channel):
                 mask=self._unbuffered_bounding_box,
                 keep_geom_type=True,
             )
+            self._data = self._data.reset_index(drop=True)
             self._data = self._scale_data(
                 data=self._data,
                 source_bounding_box=source_bounding_box,
@@ -704,6 +705,7 @@ class VectorChannel(Channel):
             mask=self._unbuffered_bounding_box,
             keep_geom_type=True,
         )
+        data = data.reset_index(drop=True)
         data = self._scale_data(
             data=data,
             source_bounding_box=source_bounding_box,
