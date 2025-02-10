@@ -4,7 +4,10 @@ import geopandas as gpd
 import numpy as np
 from shapely.geometry import box
 
-from aviary.core.channel import RasterChannel
+from aviary.core.channel import (
+    RasterChannel,
+    VectorChannel,
+)
 from aviary.core.enums import ChannelName
 
 _raster_channel_data = np.ones(shape=(640, 640), dtype=np.uint8)
@@ -99,6 +102,10 @@ _vector_channel_data_geometries = [
     box(.45, .45, .55, .55),
 ]
 _vector_channel_data = gpd.GeoDataFrame(geometry=_vector_channel_data_geometries)
+_vector_channel_unbuffered_data_geometries = [
+    box(.425, .425, .575, .575),
+]
+_vector_channel_unbuffered_data = gpd.GeoDataFrame(geometry=_vector_channel_unbuffered_data_geometries)
 
 data_test_vector_channel_init_exceptions = [
     # test case 1: data has a coordinate reference system
@@ -130,5 +137,42 @@ data_test_vector_channel_init_exceptions = [
         _vector_channel_data,
         1.,
         re.escape('Invalid buffer_size! The buffer size must be in the range [0, 0.5).'),
+    ),
+]
+
+data_test_vector_channel_remove_buffer = [
+    # test case 1: buffer_size is 0.
+    (
+        VectorChannel(
+            data=_vector_channel_data,
+            name=ChannelName.R,
+            buffer_size=0.,
+            time_step=None,
+            copy=False,
+        ),
+        VectorChannel(
+            data=_vector_channel_data,
+            name=ChannelName.R,
+            buffer_size=0.,
+            time_step=None,
+            copy=False,
+        ),
+    ),
+    # test case 2: buffer_size is not 0.
+    (
+        VectorChannel(
+            data=_vector_channel_data,
+            name=ChannelName.R,
+            buffer_size=.25,
+            time_step=None,
+            copy=False,
+        ),
+        VectorChannel(
+            data=_vector_channel_unbuffered_data,
+            name=ChannelName.R,
+            buffer_size=0.,
+            time_step=None,
+            copy=False,
+        ),
     ),
 ]

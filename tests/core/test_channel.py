@@ -19,6 +19,7 @@ from tests.core.data.data_test_channel import (
     data_test_raster_channel_init_exceptions,
     data_test_raster_channel_remove_buffer,
     data_test_vector_channel_init_exceptions,
+    data_test_vector_channel_remove_buffer,
 )
 
 
@@ -563,3 +564,48 @@ def test_vector_channel_copy(
     assert copied_vector_channel.is_copied is True
     assert id(copied_vector_channel) != id(vector_channel)
     assert id(copied_vector_channel.data) != id(vector_channel.data)
+
+
+@pytest.mark.parametrize(('vector_channel', 'expected'), data_test_vector_channel_remove_buffer)
+def test_vector_channel_remove_buffer(
+    vector_channel: VectorChannel,
+    expected: VectorChannel,
+) -> None:
+    copied_vector_channel = copy.deepcopy(vector_channel)
+
+    vector_channel_ = vector_channel.remove_buffer(inplace=False)
+
+    assert vector_channel == copied_vector_channel
+    assert vector_channel_ == expected
+    assert id(vector_channel_) != id(vector_channel)
+    assert vector_channel.is_copied is False
+    assert vector_channel_.is_copied is True
+
+
+@pytest.mark.parametrize(('vector_channel', 'expected'), data_test_vector_channel_remove_buffer)
+def test_vector_channel_remove_buffer_inplace(
+    vector_channel: VectorChannel,
+    expected: VectorChannel,
+) -> None:
+    vector_channel.remove_buffer(inplace=True)
+
+    assert vector_channel == expected
+
+
+@pytest.mark.parametrize(('vector_channel', 'expected'), data_test_vector_channel_remove_buffer)
+def test_vector_channel_remove_buffer_inplace_return(
+    vector_channel: VectorChannel,
+    expected: VectorChannel,
+) -> None:
+    vector_channel_ = vector_channel.remove_buffer(inplace=True)
+
+    assert vector_channel == expected
+    assert vector_channel_ == expected
+    assert id(vector_channel_) == id(vector_channel)
+
+
+def test_vector_channel_remove_buffer_defaults() -> None:
+    signature = inspect.signature(VectorChannel.remove_buffer)
+    inplace = signature.parameters['inplace'].default
+
+    assert inplace is False
