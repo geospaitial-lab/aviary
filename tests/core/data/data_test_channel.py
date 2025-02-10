@@ -106,6 +106,7 @@ _vector_channel_unbuffered_data_geometries = [
     box(.425, .425, .575, .575),
 ]
 _vector_channel_unbuffered_data = gpd.GeoDataFrame(geometry=_vector_channel_unbuffered_data_geometries)
+_vector_channel_empty_data = gpd.GeoDataFrame(geometry=[])
 
 data_test_vector_channel_init_exceptions = [
     # test case 1: data has a coordinate reference system
@@ -169,6 +170,23 @@ data_test_vector_channel_remove_buffer = [
         ),
         VectorChannel(
             data=_vector_channel_unbuffered_data,
+            name=ChannelName.R,
+            buffer_size=0.,
+            time_step=None,
+            copy=False,
+        ),
+    ),
+    # test case 3: data is empty
+    (
+        VectorChannel(
+            data=_vector_channel_empty_data,
+            name=ChannelName.R,
+            buffer_size=.25,
+            time_step=None,
+            copy=False,
+        ),
+        VectorChannel(
+            data=_vector_channel_empty_data,
             name=ChannelName.R,
             buffer_size=0.,
             time_step=None,
