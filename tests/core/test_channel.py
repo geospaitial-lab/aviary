@@ -115,10 +115,13 @@ def test_raster_channel_init_defaults() -> None:
     buffer_size = signature.parameters['buffer_size'].default
     time_step = signature.parameters['time_step'].default
     copy = signature.parameters['copy'].default
+    expected_buffer_size = 0.
+    expected_time_step = None
+    expected_copy = False
 
-    assert buffer_size == 0.
-    assert time_step is None
-    assert copy is False
+    assert buffer_size == expected_buffer_size
+    assert time_step is expected_time_step
+    assert copy is expected_copy
 
 
 def test_raster_channel_mutability_no_copy(
@@ -302,8 +305,9 @@ def test_raster_channel_remove_buffer_inplace_return(
 def test_raster_channel_remove_buffer_defaults() -> None:
     signature = inspect.signature(RasterChannel.remove_buffer)
     inplace = signature.parameters['inplace'].default
+    expected_inplace = False
 
-    assert inplace is False
+    assert inplace is expected_inplace
 
 
 def test_vector_channel_init(
@@ -420,10 +424,13 @@ def test_vector_channel_init_defaults() -> None:
     buffer_size = signature.parameters['buffer_size'].default
     time_step = signature.parameters['time_step'].default
     copy = signature.parameters['copy'].default
+    expected_buffer_size = 0.
+    expected_time_step = None
+    expected_copy = False
 
-    assert buffer_size == 0.
-    assert time_step is None
-    assert copy is False
+    assert buffer_size == expected_buffer_size
+    assert time_step is expected_time_step
+    assert copy is expected_copy
 
 
 def test_vector_channel_mutability_no_copy(
@@ -607,5 +614,6 @@ def test_vector_channel_remove_buffer_inplace_return(
 def test_vector_channel_remove_buffer_defaults() -> None:
     signature = inspect.signature(VectorChannel.remove_buffer)
     inplace = signature.parameters['inplace'].default
+    expected_inplace = False
 
-    assert inplace is False
+    assert inplace is expected_inplace
