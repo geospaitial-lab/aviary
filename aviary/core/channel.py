@@ -434,7 +434,7 @@ class VectorChannel(Channel):
             )
             raise AviaryUserError(message)
 
-        if len(self._data) == 0:
+        if self._data.empty:
             return
 
         x_min, y_min, x_max, y_max = self._data.total_bounds
@@ -652,7 +652,7 @@ class VectorChannel(Channel):
         Returns:
             Vector channel
         """
-        if len(self._data) == 0:
+        if self._data.empty:
             if inplace:
                 self._buffer_size = 0.
                 self._validate()
