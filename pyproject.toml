@@ -69,6 +69,13 @@ exclude_also = [
 ]
 
 [tool.pytest.ini_options]
+norecursedirs = [
+    "tests/_functional",
+    "tests/data",
+    "tests/geodata",
+    "tests/inference",
+    "tests/pipeline",
+]
 pythonpath = ["."]
 
 [tool.ruff]

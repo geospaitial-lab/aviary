@@ -4,13 +4,37 @@
       show_symbol_type_toc: false
       show_labels: false
 
-::: aviary.Channels
+::: aviary.ChannelKey
     options:
       show_symbol_type_heading: false
       show_symbol_type_toc: false
       show_labels: false
 
-::: aviary.ChannelsSet
+::: aviary.ChannelKeySet
+    options:
+      show_symbol_type_heading: false
+      show_symbol_type_toc: false
+      show_labels: false
+
+::: aviary.ChannelNameKeySet
+    options:
+      show_symbol_type_heading: false
+      show_symbol_type_toc: false
+      show_labels: false
+
+::: aviary.ChannelNames
+    options:
+      show_symbol_type_heading: false
+      show_symbol_type_toc: false
+      show_labels: false
+
+::: aviary.ChannelNameSet
+    options:
+      show_symbol_type_heading: false
+      show_symbol_type_toc: false
+      show_labels: false
+
+::: aviary.Channels
     options:
       show_symbol_type_heading: false
       show_symbol_type_toc: false
@@ -35,6 +59,12 @@
       show_labels: false
 
 ::: aviary.EPSGCode
+    options:
+      show_symbol_type_heading: false
+      show_symbol_type_toc: false
+      show_labels: false
+
+::: aviary.FractionalBufferSize
     options:
       show_symbol_type_heading: false
       show_symbol_type_toc: false

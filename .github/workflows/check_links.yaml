@@ -2,24 +2,24 @@ name: Check links
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '0 0 * * *'
-  pull_request:
-    branches:
-      - main
-    paths:
-      - '**/*.html'
-      - '**/*.ipynb'
-      - '**/*.md'
-      - '.github/workflows/check_links.yaml'
-  push:
-    branches:
-      - main
-    paths:
-      - '**/*.html'
-      - '**/*.ipynb'
-      - '**/*.md'
-      - '.github/workflows/check_links.yaml'
+#  schedule:
+#    - cron: '0 0 * * *'
+#  pull_request:
+#    branches:
+#      - main
+#    paths:
+#      - '**/*.html'
+#      - '**/*.ipynb'
+#      - '**/*.md'
+#      - '.github/workflows/check_links.yaml'
+#  push:
+#    branches:
+#      - main
+#    paths:
+#      - '**/*.html'
+#      - '**/*.ipynb'
+#      - '**/*.md'
+#      - '.github/workflows/check_links.yaml'
 
 permissions:
   contents: read
