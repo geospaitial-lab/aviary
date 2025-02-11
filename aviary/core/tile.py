@@ -429,6 +429,25 @@ class Tile(Iterable[Channel]):
             ')'
         )
 
+    def __getstate__(self) -> dict:
+        """Gets the state for pickling.
+
+        Returns:
+            State
+        """
+        return self.__dict__
+
+    def __setstate__(
+        self,
+        state: dict,
+    ) -> None:
+        """Sets the state for unpickling.
+
+        Parameters:
+            state: State
+        """
+        self.__dict__ = state
+
     def __eq__(
         self,
         other: Tile,
