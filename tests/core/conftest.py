@@ -63,16 +63,6 @@ def raster_channel_data() -> npt.NDArray:
 
 
 @pytest.fixture(scope='function')
-def raster_channel_buffered_data() -> npt.NDArray:
-    data = np.zeros(
-        shape=(960, 960),
-        dtype=np.uint8,
-    )
-    data[160:800, 160:800] = 1
-    return data
-
-
-@pytest.fixture(scope='function')
 def vector_channel(
     vector_channel_data: gpd.GeoDataFrame,
 ) -> VectorChannel:
@@ -98,10 +88,4 @@ def vector_channel_data() -> gpd.GeoDataFrame:
         box(0., .9, .1, 1.),
         box(.45, .45, .55, .55),
     ]
-    return gpd.GeoDataFrame(geometry=geometries)
-
-
-@pytest.fixture(scope='function')
-def vector_channel_empty_data() -> gpd.GeoDataFrame:
-    geometries = []
     return gpd.GeoDataFrame(geometry=geometries)
