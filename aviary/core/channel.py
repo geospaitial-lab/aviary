@@ -557,21 +557,23 @@ class VectorChannel(Channel):
 
         data = data.set_crs(
             crs=None,
-            inplace=True,
             allow_override=True,
         )
-        source_bounding_box = (
-            float(coordinates[0] - buffer_size),
-            float(coordinates[1] - buffer_size),
-            float(coordinates[0] + tile_size + buffer_size),
-            float(coordinates[1] + tile_size + buffer_size),
-        )
-        target_bounding_box = (0., 0., 1., 1.)
-        data = cls._scale_data(
-            data=data,
-            source_bounding_box=source_bounding_box,
-            target_bounding_box=target_bounding_box,
-        )
+
+        if not data.empty:
+            source_bounding_box = (
+                float(coordinates[0] - buffer_size),
+                float(coordinates[1] - buffer_size),
+                float(coordinates[0] + tile_size + buffer_size),
+                float(coordinates[1] + tile_size + buffer_size),
+            )
+            target_bounding_box = (0., 0., 1., 1.)
+            data = cls._scale_data(
+                data=data,
+                source_bounding_box=source_bounding_box,
+                target_bounding_box=target_bounding_box,
+            )
+
         buffer_size = buffer_size / tile_size
         vector_channel = cls(
             data=data,
