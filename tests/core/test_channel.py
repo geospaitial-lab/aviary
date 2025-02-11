@@ -183,9 +183,9 @@ def test_raster_channel_key(
 ) -> None:
     expected_name = ChannelName.R
     expected_time_step = None
-    expected_key = (expected_name, expected_time_step)
+    expected = (expected_name, expected_time_step)
 
-    assert raster_channel.key == expected_key
+    assert raster_channel.key == expected
 
 
 @pytest.mark.parametrize(('other', 'expected'), data_test_raster_channel_eq)
@@ -406,9 +406,9 @@ def test_vector_channel_key(
 ) -> None:
     expected_name = ChannelName.R
     expected_time_step = None
-    expected_key = (expected_name, expected_time_step)
+    expected = (expected_name, expected_time_step)
 
-    assert vector_channel.key == expected_key
+    assert vector_channel.key == expected
 
 
 @pytest.mark.skip(reason='Not implemented')
