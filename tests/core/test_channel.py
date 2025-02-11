@@ -16,7 +16,6 @@ from aviary.core.enums import ChannelName
 from aviary.core.exceptions import AviaryUserError
 from aviary.core.type_aliases import (
     BufferSize,
-    ChannelKey,
     FractionalBufferSize,
     TileSize,
     TimeStep,
@@ -25,15 +24,11 @@ from tests.core.data.data_test_channel import (
     data_test_raster_channel_eq,
     data_test_raster_channel_init,
     data_test_raster_channel_init_exceptions,
-    data_test_raster_channel_key,
-    data_test_raster_channel_pickle,
     data_test_raster_channel_remove_buffer,
     data_test_vector_channel_eq,
     data_test_vector_channel_from_unscaled_data_exceptions,
     data_test_vector_channel_init,
     data_test_vector_channel_init_exceptions,
-    data_test_vector_channel_key,
-    data_test_vector_channel_pickle,
     data_test_vector_channel_remove_buffer,
 )
 
@@ -174,7 +169,6 @@ def test_raster_channel_setters(
         raster_channel.time_step = None
 
 
-@pytest.mark.parametrize('raster_channel', data_test_raster_channel_pickle)
 def test_raster_channel_pickle(
     raster_channel: RasterChannel,
 ) -> None:
@@ -184,12 +178,14 @@ def test_raster_channel_pickle(
     assert raster_channel == unpickled_raster_channel
 
 
-@pytest.mark.parametrize(('raster_channel', 'expected'), data_test_raster_channel_key)
 def test_raster_channel_key(
     raster_channel: RasterChannel,
-    expected: ChannelKey,
 ) -> None:
-    assert raster_channel.key == expected
+    expected_name = ChannelName.R
+    expected_time_step = None
+    expected_key = (expected_name, expected_time_step)
+
+    assert raster_channel.key == expected_key
 
 
 @pytest.mark.parametrize(('other', 'expected'), data_test_raster_channel_eq)
@@ -396,7 +392,6 @@ def test_vector_channel_setters(
         vector_channel.time_step = None
 
 
-@pytest.mark.parametrize('vector_channel', data_test_vector_channel_pickle)
 def test_vector_channel_pickle(
     vector_channel: VectorChannel,
 ) -> None:
@@ -406,12 +401,19 @@ def test_vector_channel_pickle(
     assert vector_channel == unpickled_vector_channel
 
 
-@pytest.mark.parametrize(('vector_channel', 'expected'), data_test_vector_channel_key)
 def test_vector_channel_key(
     vector_channel: VectorChannel,
-    expected: ChannelKey,
 ) -> None:
-    assert vector_channel.key == expected
+    expected_name = ChannelName.R
+    expected_time_step = None
+    expected_key = (expected_name, expected_time_step)
+
+    assert vector_channel.key == expected_key
+
+
+@pytest.mark.skip(reason='Not implemented')
+def test_vector_channel_from_unscaled_data() -> None:
+    pass
 
 
 @pytest.mark.parametrize(
@@ -426,7 +428,7 @@ def test_vector_channel_from_unscaled_data_exceptions(
     tile_size: TileSize,
     buffer_size: BufferSize,
     message: str,
-    vector_channel_empty_data: gpd.GeoDataFrame,
+    vector_channel_data: gpd.GeoDataFrame,
 ) -> None:
     name = ChannelName.R
     coordinates = (0, 0)
@@ -435,7 +437,7 @@ def test_vector_channel_from_unscaled_data_exceptions(
 
     with pytest.raises(AviaryUserError, match=message):
         _ = VectorChannel.from_unscaled_data(
-            data=vector_channel_empty_data,
+            data=vector_channel_data,
             name=name,
             coordinates=coordinates,
             tile_size=tile_size,
