@@ -21,7 +21,7 @@ data_test_raster_channel_init_exceptions = [
         0.,
         re.escape('Invalid data! The data must be in shape (n, n).'),
     ),
-    # test case 2: data is not a square
+    # test case 2: data is not square
     (
         np.ones(shape=(640, 320), dtype=np.uint8),
         0.,
@@ -124,7 +124,7 @@ data_test_vector_channel_init_exceptions = [
     # test case 3: buffer_size is negative
     (
         _vector_channel_data,
-        -1.,
+        -.1,
         re.escape('Invalid buffer_size! The buffer size must be in the range [0, 0.5).'),
     ),
     # test case 4: buffer_size is .5
@@ -136,8 +136,29 @@ data_test_vector_channel_init_exceptions = [
     # test case 5: buffer_size is greater than .5
     (
         _vector_channel_data,
-        1.,
+        .6,
         re.escape('Invalid buffer_size! The buffer size must be in the range [0, 0.5).'),
+    ),
+]
+
+data_test_vector_channel_from_unscaled_data_exceptions = [
+    # test case 1: tile_size is negative
+    (
+        -1,
+        0,
+        re.escape('Invalid tile_size! The tile size must be positive.'),
+    ),
+    # test case 2: tile_size is 0
+    (
+        0,
+        0,
+        re.escape('Invalid tile_size! The tile size must be positive.'),
+    ),
+    # test case 3: buffer_size is negative
+    (
+        128,
+        -1,
+        re.escape('Invalid buffer_size! The buffer size must be positive or zero.'),
     ),
 ]
 

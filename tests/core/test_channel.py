@@ -14,10 +14,15 @@ from aviary.core.channel import (
 )
 from aviary.core.enums import ChannelName
 from aviary.core.exceptions import AviaryUserError
-from aviary.core.type_aliases import FractionalBufferSize
+from aviary.core.type_aliases import (
+    BufferSize,
+    FractionalBufferSize,
+    TileSize,
+)
 from tests.core.data.data_test_channel import (
     data_test_raster_channel_init_exceptions,
     data_test_raster_channel_remove_buffer,
+    data_test_vector_channel_from_unscaled_data_exceptions,
     data_test_vector_channel_init_exceptions,
     data_test_vector_channel_remove_buffer,
 )
@@ -508,6 +513,51 @@ def test_vector_channel_key(
     expected_key = (expected_name, expected_time_step)
 
     assert vector_channel.key == expected_key
+
+
+@pytest.mark.parametrize(
+    (
+        'tile_size',
+        'buffer_size',
+        'message',
+    ),
+    data_test_vector_channel_from_unscaled_data_exceptions,
+)
+def test_vector_channel_from_unscaled_data_exceptions(
+    tile_size: TileSize,
+    buffer_size: BufferSize,
+    message: str,
+    vector_channel_empty_data: gpd.GeoDataFrame,
+) -> None:
+    name = ChannelName.R
+    coordinates = (0, 0)
+    time_step = None
+    copy = False
+
+    with pytest.raises(AviaryUserError, match=message):
+        _ = VectorChannel.from_unscaled_data(
+            data=vector_channel_empty_data,
+            name=name,
+            coordinates=coordinates,
+            tile_size=tile_size,
+            buffer_size=buffer_size,
+            time_step=time_step,
+            copy=copy,
+        )
+
+
+def test_vector_channel_from_unscaled_data_defaults() -> None:
+    signature = inspect.signature(VectorChannel.from_unscaled_data)
+    buffer_size = signature.parameters['buffer_size'].default
+    time_step = signature.parameters['time_step'].default
+    copy = signature.parameters['copy'].default
+    expected_buffer_size = 0.
+    expected_time_step = None
+    expected_copy = False
+
+    assert buffer_size == expected_buffer_size
+    assert time_step is expected_time_step
+    assert copy is expected_copy
 
 
 def test_vector_channel_eq(
