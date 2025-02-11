@@ -23,16 +23,16 @@ from aviary.core.type_aliases import (
 )
 from tests.core.data.data_test_channel import (
     data_test_raster_channel_eq,
-    data_test_raster_channel_key,
     data_test_raster_channel_init,
     data_test_raster_channel_init_exceptions,
+    data_test_raster_channel_key,
     data_test_raster_channel_pickle,
     data_test_raster_channel_remove_buffer,
     data_test_vector_channel_eq,
     data_test_vector_channel_from_unscaled_data_exceptions,
-    data_test_vector_channel_key,
     data_test_vector_channel_init,
     data_test_vector_channel_init_exceptions,
+    data_test_vector_channel_key,
     data_test_vector_channel_pickle,
     data_test_vector_channel_remove_buffer,
 )
