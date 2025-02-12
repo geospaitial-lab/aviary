@@ -194,9 +194,9 @@ def test_raster_channel_eq(
     expected: bool,
     raster_channel: RasterChannel,
 ) -> None:
-    equal = raster_channel == other
+    equals = raster_channel == other
 
-    assert equal is expected
+    assert equals is expected
 
 
 def test_raster_channel_copy(
@@ -467,9 +467,9 @@ def test_vector_channel_eq(
     expected: bool,
     vector_channel: VectorChannel,
 ) -> None:
-    equal = vector_channel == other
+    equals = vector_channel == other
 
-    assert equal is expected
+    assert equals is expected
 
 
 def test_vector_channel_copy(
