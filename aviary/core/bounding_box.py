@@ -349,7 +349,9 @@ class BoundingBox(Iterable[Coordinate]):
         Returns:
             Geodataframe
         """
+        geometry = [box(self._x_min, self._y_min, self._x_max, self._y_max)]
+        epsg_code = f'EPSG:{epsg_code}'
         return gpd.GeoDataFrame(
-            geometry=[box(self._x_min, self._y_min, self._x_max, self._y_max)],
-            crs=f'EPSG:{epsg_code}',
+            geometry=geometry,
+            crs=epsg_code,
         )
