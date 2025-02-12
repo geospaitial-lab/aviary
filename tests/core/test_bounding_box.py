@@ -1,5 +1,6 @@
 import copy
 import inspect
+import pickle
 
 import geopandas as gpd
 import geopandas.testing
@@ -55,6 +56,35 @@ def test_bounding_box_validation(
             x_max=x_max,
             y_max=y_max,
         )
+
+
+def test_bounding_box_setters(
+    bounding_box: BoundingBox,
+) -> None:
+    with pytest.raises(AttributeError):
+        # noinspection PyPropertyAccess
+        bounding_box.x_min = None
+
+    with pytest.raises(AttributeError):
+        # noinspection PyPropertyAccess
+        bounding_box.y_min = None
+
+    with pytest.raises(AttributeError):
+        # noinspection PyPropertyAccess
+        bounding_box.x_max = None
+
+    with pytest.raises(AttributeError):
+        # noinspection PyPropertyAccess
+        bounding_box.y_max = None
+
+
+def test_bounding_box_serializability(
+    bounding_box: BoundingBox,
+) -> None:
+    serialized_bounding_box = pickle.dumps(bounding_box)
+    deserialized_bounding_box = pickle.loads(serialized_bounding_box)  # noqa: S301
+
+    assert bounding_box == deserialized_bounding_box
 
 
 @pytest.mark.parametrize(('bounding_box', 'expected'), data_test_bounding_box_area)
