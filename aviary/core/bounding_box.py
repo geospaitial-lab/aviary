@@ -38,10 +38,10 @@ class BoundingBox(Iterable[Coordinate]):
     ) -> None:
         """
         Parameters:
-            x_min: Minimum x coordinate
-            y_min: Minimum y coordinate
-            x_max: Maximum x coordinate
-            y_max: Maximum y coordinate
+            x_min: Minimum x coordinate in meters
+            y_min: Minimum y coordinate in meters
+            x_max: Maximum x coordinate in meters
+            y_max: Maximum y coordinate in meters
         """
         self._x_min = x_min
         self._y_min = y_min
@@ -54,7 +54,7 @@ class BoundingBox(Iterable[Coordinate]):
         """Validates the bounding box.
 
         Raises:
-            AviaryUserError: Invalid bounding box (`x_min` is greater than or equal to `x_max` or
+            AviaryUserError: Invalid `bounding_box` (`x_min` is greater than or equal to `x_max` or
                 `y_min` is greater than or equal to `y_max`)
         """
         conditions = [
@@ -64,7 +64,7 @@ class BoundingBox(Iterable[Coordinate]):
 
         if any(conditions):
             message = (
-                'Invalid bounding box! '
+                'Invalid bounding_box! '
                 'x_min must be less than x_max and y_min must be less than y_max.'
             )
             raise AviaryUserError(message)
@@ -73,7 +73,7 @@ class BoundingBox(Iterable[Coordinate]):
     def x_min(self) -> Coordinate:
         """
         Returns:
-            Minimum x coordinate
+            Minimum x coordinate in meters
         """
         return self._x_min
 
@@ -81,7 +81,7 @@ class BoundingBox(Iterable[Coordinate]):
     def y_min(self) -> Coordinate:
         """
         Returns:
-            Minimum y coordinate
+            Minimum y coordinate in meters
         """
         return self._y_min
 
@@ -89,7 +89,7 @@ class BoundingBox(Iterable[Coordinate]):
     def x_max(self) -> Coordinate:
         """
         Returns:
-            Maximum x coordinate
+            Maximum x coordinate in meters
         """
         return self._x_max
 
@@ -97,7 +97,7 @@ class BoundingBox(Iterable[Coordinate]):
     def y_max(self) -> Coordinate:
         """
         Returns:
-            Maximum y coordinate
+            Maximum y coordinate in meters
         """
         return self._y_max
 
@@ -123,11 +123,15 @@ class BoundingBox(Iterable[Coordinate]):
             Bounding box
         """
         x_min, y_min, x_max, y_max = gdf.total_bounds
+        x_min = floor(x_min)
+        y_min = floor(y_min)
+        x_max = ceil(x_max)
+        y_max = ceil(y_max)
         return cls(
-            x_min=floor(x_min),
-            y_min=floor(y_min),
-            x_max=ceil(x_max),
-            y_max=ceil(y_max),
+            x_min=x_min,
+            y_min=y_min,
+            x_max=x_max,
+            y_max=y_max,
         )
 
     def __repr__(self) -> str:
@@ -155,7 +159,7 @@ class BoundingBox(Iterable[Coordinate]):
             other: Other bounding box
 
         Returns:
-            True if the bounding boxes are equal, false otherwise
+            True if the bounding boxes are equal, False otherwise
         """
         if not isinstance(other, BoundingBox):
             return False
@@ -186,7 +190,7 @@ class BoundingBox(Iterable[Coordinate]):
             index: Index of the coordinate
 
         Returns:
-            Coordinate
+            Coordinate in meters
         """
         return getattr(self, self._COORDINATES[index])
 
@@ -194,7 +198,7 @@ class BoundingBox(Iterable[Coordinate]):
         """Iterates over the coordinates.
 
         Yields:
-            Coordinate
+            Coordinate in meters
         """
         for coordinate in self._COORDINATES:
             yield getattr(self, coordinate)
@@ -232,13 +236,13 @@ class BoundingBox(Iterable[Coordinate]):
 
         Parameters:
             buffer_size: Buffer size in meters
-            inplace: If true, the bounding box is buffered inplace
+            inplace: If True, the bounding box is buffered inplace
 
         Returns:
             Bounding box
 
         Raises:
-            AviaryUserError: Invalid buffer size (the absolute value of a negative `buffer_size` is greater than or
+            AviaryUserError: Invalid `buffer_size` (the absolute value of a negative `buffer_size` is greater than or
                 equal to half the width or height of the bounding box)
         """
         conditions = [
@@ -249,7 +253,7 @@ class BoundingBox(Iterable[Coordinate]):
 
         if all(conditions):
             message = (
-                'Invalid buffer size! '
+                'Invalid buffer_size! '
                 'The absolute value of a negative buffer_size must be less than half the width and height '
                 'of the bounding box.'
             )
@@ -301,18 +305,18 @@ class BoundingBox(Iterable[Coordinate]):
 
         Parameters:
             value: Value to quantize the coordinates to in meters
-            inplace: If true, the bounding box is quantized inplace
+            inplace: If True, the bounding box is quantized inplace
 
         Returns:
             Bounding box
 
         Raises:
-            AviaryUserError: Invalid value (`value` is negative or zero)
+            AviaryUserError: Invalid `value` (the value is negative or zero)
         """
         if value <= 0:
             message = (
                 'Invalid value! '
-                'value must be positive.'
+                'The value must be positive.'
             )
             raise AviaryUserError(message)
 
