@@ -103,7 +103,7 @@ data_test_raster_channel_eq = [
 ]
 
 data_test_raster_channel_init = [
-    # test case 1: default
+    # test case 1: Default
     (
         _raster_channel_data,
         ChannelName.R,
@@ -145,9 +145,15 @@ data_test_raster_channel_init = [
 ]
 
 data_test_raster_channel_init_exceptions = [
-    # test case 1: data has not two dimensions
+    # test case 1: data has one dimension
     (
-        np.ones(shape=(640, 640, 3), dtype=np.uint8),
+        np.ones(shape=(640, ), dtype=np.uint8),
+        0.,
+        re.escape('Invalid data! The data must be in shape (n, n).'),
+    ),
+    # test case 1: data has three dimensions
+    (
+        np.ones(shape=(640, 640, 1), dtype=np.uint8),
         0.,
         re.escape('Invalid data! The data must be in shape (n, n).'),
     ),
@@ -320,7 +326,7 @@ data_test_vector_channel_from_unscaled_data_exceptions = [
 ]
 
 data_test_vector_channel_init = [
-    # test case 1: default
+    # test case 1: Default
     (
         _vector_channel_data,
         ChannelName.R,

@@ -297,12 +297,14 @@ class Tile(Iterable[Channel]):
         if data.ndim == 2:  # noqa: PLR2004
             data = data[..., np.newaxis]
 
-        conditions = [
-            data.ndim != 3,  # noqa: PLR2004
-            data.shape[0] != data.shape[1],
-        ]
+        if data.ndim != 3:  # noqa: PLR2004
+            message = (
+                'Invalid data! '
+                'The data must be in shape (n, n, c).'
+            )
+            raise AviaryUserError(message)
 
-        if any(conditions):
+        if data.shape[0] != data.shape[1]:
             message = (
                 'Invalid data! '
                 'The data must be in shape (n, n, c).'

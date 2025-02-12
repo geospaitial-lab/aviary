@@ -235,12 +235,14 @@ class RasterChannel(Channel):
         Raises:
             AviaryUserError: Invalid `data` (the data is not in shape (n, n))
         """
-        conditions = [
-            self._data.ndim != 2,  # noqa: PLR2004
-            self._data.shape[0] != self._data.shape[1],
-        ]
+        if self._data.ndim != 2:  # noqa: PLR2004
+            message = (
+                'Invalid data! '
+                'The data must be in shape (n, n).'
+            )
+            raise AviaryUserError(message)
 
-        if any(conditions):
+        if self._data.shape[0] != self._data.shape[1]:
             message = (
                 'Invalid data! '
                 'The data must be in shape (n, n).'
