@@ -23,6 +23,10 @@ nav:
     - API Reference: api_reference/index.md
     - aviary:
       - BoundingBox: api_reference/bounding_box.md
+      - Channel:
+        - Channel: api_reference/channel/channel.md
+        - RasterChannel: api_reference/channel/raster_channel.md
+        - VectorChannel: api_reference/channel/vector_channel.md
       - Enums: api_reference/enums.md
       - Exceptions: api_reference/exceptions.md
       - ProcessArea: api_reference/process_area.md

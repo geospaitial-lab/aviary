@@ -24,8 +24,8 @@ from aviary.core.enums import (
 )
 from aviary.core.type_aliases import (  # noqa: TC001
     BufferSize,
-    Channels,
-    ChannelsSet,
+    ChannelTypes,
+    ChannelTypeSet,
     Coordinates,
     EPSGCode,
     GroundSamplingDistance,
@@ -173,12 +173,12 @@ class VRTFetcher(FromConfigMixin):
     def __init__(
         self,
         path: Path,
-        channels: Channels,
+        channels: ChannelTypes,
         tile_size: TileSize,
         ground_sampling_distance: GroundSamplingDistance,
         interpolation_mode: InterpolationMode = InterpolationMode.BILINEAR,
         buffer_size: BufferSize = 0,
-        ignore_channels: ChannelsSet | None = None,
+        ignore_channels: ChannelTypeSet | None = None,
     ) -> None:
         """
         Parameters:
@@ -252,12 +252,12 @@ class VRTFetcherConfig(pydantic.BaseModel):
         ignore_channels: channels to ignore
     """
     path: Path
-    channels: Channels
+    channels: ChannelTypes
     tile_size: TileSize
     ground_sampling_distance: GroundSamplingDistance
     interpolation_mode: InterpolationMode = InterpolationMode.BILINEAR
     buffer_size: BufferSize = 0
-    ignore_channels: ChannelsSet | None = None
+    ignore_channels: ChannelTypeSet | None = None
 
 
 class WMSFetcher(FromConfigMixin):
@@ -274,12 +274,12 @@ class WMSFetcher(FromConfigMixin):
         layer: str,
         epsg_code: EPSGCode,
         response_format: str,
-        channels: Channels,
+        channels: ChannelTypes,
         tile_size: TileSize,
         ground_sampling_distance: GroundSamplingDistance,
         style: str | None = None,
         buffer_size: BufferSize = 0,
-        ignore_channels: ChannelsSet | None = None,
+        ignore_channels: ChannelTypeSet | None = None,
     ) -> None:
         """
         Parameters:
@@ -373,9 +373,9 @@ class WMSFetcherConfig(pydantic.BaseModel):
     layer: str
     epsg_code: EPSGCode
     response_format: str
-    channels: Channels
+    channels: ChannelTypes
     tile_size: TileSize
     ground_sampling_distance: GroundSamplingDistance
     style: str | None = None
     buffer_size: BufferSize = 0
-    ignore_channels: ChannelsSet | None = None
+    ignore_channels: ChannelTypeSet | None = None

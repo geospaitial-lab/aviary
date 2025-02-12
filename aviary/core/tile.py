@@ -1,159 +1,202 @@
 from __future__ import annotations
 
-import warnings
 from collections.abc import (
     Iterable,
     Iterator,
 )
-from dataclasses import dataclass
-from typing import (
-    TYPE_CHECKING,
-    Literal,
-)
+from typing import TYPE_CHECKING
 
 import numpy as np
-import numpy.typing as npt
+
+if TYPE_CHECKING:
+    import numpy.typing as npt
 
 from aviary.core.bounding_box import BoundingBox
-from aviary.core.enums import Channel
-from aviary.core.exceptions import (
-    AviaryUserError,
-    AviaryUserWarning,
+from aviary.core.channel import Channel
+from aviary.core.enums import ChannelName
+from aviary.core.exceptions import AviaryUserError
+from aviary.core.type_aliases import (
+    ChannelKey,
+    ChannelNameSet,
+    _is_channel_key,
 )
 
 if TYPE_CHECKING:
     from aviary.core.type_aliases import (
         BufferSize,
+        ChannelKeySet,
+        ChannelNameKeySet,
+        ChannelNames,
         Channels,
-        ChannelsSet,
         Coordinates,
-        GroundSamplingDistance,
         TileSize,
         TimeStep,
     )
 
 
-@dataclass
-class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
-    """A tile specifies the data and the spatial extent of a tile.
+class Tile(Iterable[Channel]):
+    """A tile specifies the channels and the spatial extent of a tile.
 
-    Attributes:
-        data: data
-        coordinates: coordinates (x_min, y_min) of the tile
-        tile_size: tile size in meters
-        buffer_size: buffer size in meters
+    Notes:
+        - The `channels` property returns a reference to the channels
+        - The dunder methods `__getattr__`, `__getitem__`, and `__iter__` return or yield a reference to a channel
     """
-    data: dict[Channel | str, npt.NDArray]
-    coordinates: Coordinates
-    tile_size: TileSize
-    buffer_size: BufferSize
-    _built_in_channels = frozenset(channel.value for channel in Channel)
+    _built_in_channel_names = frozenset(channel_name.value for channel_name in ChannelName)
 
     def __init__(
         self,
-        data: dict[Channel | str, npt.NDArray],
+        channels: Channels,
         coordinates: Coordinates,
         tile_size: TileSize,
-        buffer_size: BufferSize = 0,
+        copy: bool = False,
     ) -> None:
         """
         Parameters:
-            data: data
-            coordinates: coordinates (x_min, y_min) of the tile
-            tile_size: tile size in meters
-            buffer_size: buffer size in meters
+            channels: Channels
+            coordinates: Coordinates (x_min, y_min) of the tile in meters
+            tile_size: Tile size in meters
+            copy: If True, the channels are copied during initialization
         """
-        self._data = data
+        self._channels = channels
         self._coordinates = coordinates
         self._tile_size = tile_size
-        self._buffer_size = buffer_size
+        self._copy = copy
 
         self._validate()
 
+        if self._copy:
+            self._copy_channels()
+
+        self._channels_dict = self._compute_channels_dict()
+
     def _validate(self) -> None:
         """Validates the tile."""
-        self._cast_channels()
-        self._validate_data()
+        self._validate_channels()
         self._validate_tile_size()
-        self._validate_buffer_size()
 
-    def _cast_channels(self) -> None:
-        """Casts the channels to `Channel`."""
-        self._data = {
-            Channel(channel)
-            if isinstance(channel, str) and channel in self._built_in_channels else channel: data
-            for channel, data in self
-        }
-
-    def _validate_data(self) -> None:
-        """Validates data.
+    def _validate_channels(self) -> None:
+        """Validates `channels`.
 
         Raises:
-            AviaryUserError: Invalid data (`data` is an empty dictionary)
-            AviaryUserError: Invalid data (`data` of a channel is not an array of shape (n, n, t) or
-                its shape is not equal to the shape of the other channels)
+            AviaryUserError: Invalid `channels` (the channels contain duplicate channel name and time step combinations)
         """
-        if not self._data:
+        channel_keys = [channel.key for channel in self._channels]
+        unique_channel_keys = set(channel_keys)
+
+        if len(channel_keys) != len(unique_channel_keys):
             message = (
-                'Invalid data! '
-                'data must be a non-empty dictionary.'
+                'Invalid channels! '
+                'The channels must contain unique channel name and time step combinations.'
             )
             raise AviaryUserError(message)
 
-        for channel, data in self:
-            conditions = [
-                data.ndim != 3,  # noqa: PLR2004
-                data.shape[0] != data.shape[1],
-                data.shape != self.shape,
-            ]
+    def _copy_channels(self) -> None:
+        """Copies `channels`."""
+        self._channels = [channel.copy() for channel in self._channels]
 
-            if any(conditions):
-                message = (
-                    'Invalid data! '
-                    f'data of the {channel} channel must be an array of shape (n, n, t) and '
-                    'its shape must be equal to the shape of the other channels.'
-                )
-                raise AviaryUserError(message)
+    def _mark_as_copied(self) -> None:
+        """Sets `_copy` to True if the channels are copied before the initialization."""
+        self._copy = True
 
     def _validate_tile_size(self) -> None:
-        """Validates tile_size.
+        """Validates `tile_size`.
 
         Raises:
-            AviaryUserError: Invalid tile size (`tile_size` <= 0)
+            AviaryUserError: Invalid `tile_size` (the tile size is negative or zero)
         """
         if self._tile_size <= 0:
             message = (
-                'Invalid tile size! '
-                'tile_size must be positive.'
+                'Invalid tile_size! '
+                'The tile size must be positive.'
             )
             raise AviaryUserError(message)
 
-    def _validate_buffer_size(self) -> None:
-        """Validates buffer_size.
+    def _compute_channels_dict(self) -> dict[ChannelKey, Channel]:
+        """Computes the channels dictionary.
 
-        Raises:
-            AviaryUserError: Invalid buffer size (`buffer_size` < 0)
+        Returns:
+            Channels dictionary
         """
-        if self._buffer_size < 0:
-            message = (
-                'Invalid buffer size! '
-                'buffer_size must be non-negative.'
-            )
-            raise AviaryUserError(message)
+        return {channel.key: channel for channel in self._channels}
+
+    def _parse_channel_name(
+        self,
+        channel_name: ChannelName | str,
+    ) -> ChannelName:
+        """Parses `channel_name` to `ChannelName`.
+
+        Parameters:
+            channel_name: Channel name
+
+        Returns:
+            Channel name
+        """
+        if isinstance(channel_name, str) and channel_name in self._built_in_channel_names:
+            return ChannelName(channel_name)
+        return channel_name
+
+    def _parse_channel_key(
+        self,
+        channel_key: ChannelName | str | ChannelKey,
+    ) -> ChannelKey:
+        """Parses `channel_key` to `ChannelKey`.
+
+        Parameters:
+            channel_key: Channel name or channel name and time step combination
+
+        Returns:
+            Channel name and time step combination
+        """
+        if _is_channel_key(channel_key):
+            channel_name, time_step = channel_key
+        else:
+            channel_name = channel_key
+            time_step = None
+
+        channel_name = self._parse_channel_name(channel_name=channel_name)
+        return channel_name, time_step
+
+    def _parse_channel_keys(
+        self,
+        channel_keys:
+            ChannelName | str |
+            ChannelKey |
+            ChannelNameSet | ChannelKeySet | ChannelNameKeySet |
+            None,
+    ) -> ChannelKeySet:
+        """Parses `channel_keys` to `ChannelKeySet`.
+
+        Parameters:
+            channel_keys: Channel name, channel name and time step combination, channel names,
+                or channel name and time step combinations to ignore
+
+        Returns:
+            Channel name and time step combinations
+        """
+        if channel_keys is None:
+            return set()
+
+        if isinstance(channel_keys, (ChannelName | str)) or _is_channel_key(channel_keys):
+            return set(self._parse_channel_key(channel_key=channel_keys))
+
+        return {
+            self._parse_channel_key(channel_key=channel_key)
+            for channel_key in channel_keys
+        }
 
     @property
-    def data(self) -> dict[Channel | str, npt.NDArray]:
+    def channels(self) -> Channels:
         """
         Returns:
-            data
+            Channels
         """
-        return self._data
+        return self._channels
 
     @property
     def coordinates(self) -> Coordinates:
         """
         Returns:
-            coordinates (x_min, y_min) of the tile
+            Coordinates (x_min, y_min) of the tile in meters
         """
         return self._coordinates
 
@@ -161,23 +204,23 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
     def tile_size(self) -> TileSize:
         """
         Returns:
-            tile size in meters
+            Tile size in meters
         """
         return self._tile_size
 
     @property
-    def buffer_size(self) -> BufferSize:
+    def is_copied(self) -> bool:
         """
         Returns:
-            buffer size in meters
+            If True, the channels are copied during initialization
         """
-        return self._buffer_size
+        return self._copy
 
     @property
     def area(self) -> int:
         """
         Returns:
-            area in square meters
+            Area in square meters
         """
         return self.bounding_box.area
 
@@ -185,245 +228,222 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
     def bounding_box(self) -> BoundingBox:
         """
         Returns:
-            bounding box
+            Bounding box
         """
         x_min, y_min = self._coordinates
         x_max = x_min + self._tile_size
         y_max = y_min + self._tile_size
-        bounding_box = BoundingBox(
+        return BoundingBox(
             x_min=x_min,
             y_min=y_min,
             x_max=x_max,
             y_max=y_max,
         )
-        return bounding_box.buffer(buffer_size=self._buffer_size)
 
     @property
-    def channels(self) -> ChannelsSet:
+    def channel_keys(self) -> ChannelKeySet:
         """
         Returns:
-            channels
+            Channel name and time step combinations
         """
-        return set(self._data.keys())
+        return {channel.key for channel in self}
 
     @property
-    def ground_sampling_distance(self) -> GroundSamplingDistance:
+    def channel_names(self) -> ChannelNameSet:
         """
         Returns:
-            ground sampling distance in meters
+            Channel names
         """
-        return (self._tile_size + 2 * self._buffer_size) / self.shape[0]
+        return {channel.name for channel in self}
 
     @property
     def num_channels(self) -> int:
         """
         Returns:
-            number of channels
+            Number of channels
         """
         return len(self)
 
-    @property
-    def num_time_steps(self) -> int:
-        """
-        Returns:
-            number of time steps
-        """
-        return self.shape[-1]
-
-    @property
-    def shape(self) -> tuple[int, int, int]:
-        """
-        Returns:
-            shape of the data
-        """
-        return next(iter(self))[1].shape
-
     @classmethod
-    def from_composite(
+    def from_composite_raster(
         cls,
         data: npt.NDArray,
-        channels: Channels,
+        channel_names: ChannelNames,
         coordinates: Coordinates,
         tile_size: TileSize,
         buffer_size: BufferSize = 0,
+        time_step: TimeStep | None = None,
+        copy: bool = False,
     ) -> Tile:
-        """Creates a tile from composite data.
+        """Creates a tile from composite raster data.
 
         Parameters:
-            data: composite data
-            channels: channels
-            coordinates: coordinates (x_min, y_min) of the tile
-            tile_size: tile size in meters
-            buffer_size: buffer size in meters
+            data: Data
+            channel_names: Channel names
+            coordinates: Coordinates (x_min, y_min) of the tile in meters
+            tile_size: Tile size in meters
+            buffer_size: Buffer size in meters
+            time_step: Time step
+            copy: If True, the channels are copied during initialization
 
         Returns:
-            tile
+            Tile
 
         Raises:
-            AviaryUserError: Invalid data (`data` is not an array of shape (n, n, c))
-            AviaryUserError: Invalid channels (`channels` is an empty list)
-            AviaryUserError: Invalid channels (the number of channels is not equal to the number of channels
-                of the data)
+            AviaryUserError: Invalid `data` (the data is not in shape (n, n, c))
+            AviaryUserError: Invalid `channel_names` (the number of channel names is not equal to
+                the number of channels)
         """
         if data.ndim == 2:  # noqa: PLR2004
             data = data[..., np.newaxis]
 
-        conditions = [
-            data.ndim != 3,  # noqa: PLR2004
-            data.shape[0] != data.shape[1],
-        ]
-
-        if any(conditions):
+        if data.ndim != 3:  # noqa: PLR2004
             message = (
                 'Invalid data! '
-                'data must be an array of shape (n, n, c).'
+                'The data must be in shape (n, n, c).'
             )
             raise AviaryUserError(message)
 
-        if not channels:
+        if data.shape[0] != data.shape[1]:
             message = (
-                'Invalid channels! '
-                'channels must be a non-empty list.'
+                'Invalid data! '
+                'The data must be in shape (n, n, c).'
             )
             raise AviaryUserError(message)
 
-        if data.shape[-1] != len(channels):
+        if len(channel_names) != data.shape[-1]:
             message = (
-                'Invalid channels! '
-                'The number of channels must be equal to the number of channels of the data.'
+                'Invalid channel_names! '
+                'The number of channel names must be equal to the number of channels.'
             )
             raise AviaryUserError(message)
 
-        channels = [
-            Channel(channel) if isinstance(channel, str) and channel in cls._built_in_channels else channel
-            for channel in channels
+        if copy:
+            data = data.copy()
+
+        channel_names = [
+            ChannelName(channel_name)
+            if isinstance(channel_name, str) and channel_name in cls._built_in_channel_names else channel_name
+            for channel_name in channel_names
         ]
+        channels_dict = {}
+        buffer_size = buffer_size / tile_size
 
-        data = {
-            channel: data[..., i]
-            for i, channel in enumerate(channels)
-        }
-        return cls(
-            data=data,
+        for i, channel_name in enumerate(channel_names):
+            if channel_name not in channels_dict:
+                channels_dict[channel_name] = Channel(
+                    data=data[..., i],
+                    name=channel_name,
+                    buffer_size=buffer_size,
+                    time_step=time_step,
+                    copy=False,
+                )
+
+        channels = list(channels_dict.values())
+        tile = cls(
+            channels=channels,
             coordinates=coordinates,
             tile_size=tile_size,
-            buffer_size=buffer_size,
+            copy=False,
         )
+
+        if copy:
+            tile._mark_as_copied()  # noqa: SLF001
+
+        return tile
 
     @classmethod
     def from_tiles(
         cls,
         tiles: list[Tile],
-        axis: Literal['channel', 'time_step'] = 'channel',
+        copy: bool = False,
     ) -> Tile:
-        """Creates a tile from tiles.
+        """Creates a tile from tiles that specify the same spatial extent.
 
         Parameters:
-            tiles: tiles
-            axis: axis to concatenate the tiles (`channel`, `time_step`)
+            tiles: Tiles
+            copy: If True, the channels are copied during initialization
 
         Returns:
-            tile
+            Tile
 
         Raises:
-            AviaryUserError: Invalid tiles (`tiles` is an empty list)
-            AviaryUserError: Invalid tiles (the coordinates, tile sizes and buffer sizes of the tiles are not equal)
-            AviaryUserError: Invalid tiles (the number of time steps of the tiles are not equal)
-            AviaryUserError: Invalid tiles (the channels of the tiles are not equal)
-            AviaryUserError: Invalid axis
+            AviaryUserError: Invalid `tiles` (the tiles are empty)
+            AviaryUserError: Invalid `tiles` (the coordinates and tile sizes of the tiles are not equal)
         """
         if not tiles:
             message = (
                 'Invalid tiles! '
-                'tiles must be a non-empty list.'
+                'The tiles must contain at least one tile.'
             )
             raise AviaryUserError(message)
 
         first_tile = tiles[0]
         coordinates = first_tile.coordinates
         tile_size = first_tile.tile_size
-        buffer_size = first_tile.buffer_size
 
         for tile in tiles:
             conditions = [
                 tile.coordinates != coordinates,
                 tile.tile_size != tile_size,
-                tile.buffer_size != buffer_size,
             ]
 
             if any(conditions):
                 message = (
                     'Invalid tiles! '
-                    'The coordinates, tile sizes and buffer sizes of the tiles must be equal.'
+                    'The coordinates and tile sizes of the tiles must be equal.'
                 )
                 raise AviaryUserError(message)
 
-        if axis == 'channel':
-            num_time_steps = first_tile.num_time_steps
-
-            for tile in tiles:
-                if tile.num_time_steps != num_time_steps:
-                    message = (
-                        'Invalid tiles! '
-                        'The number of time steps of the tiles must be equal.'
-                    )
-                    raise AviaryUserError(message)
-
-            data = {
-                channel: data
-                for tile in tiles
-                for channel, data in tile
-            }
-            return cls(
-                data=data,
-                coordinates=coordinates,
-                tile_size=tile_size,
-                buffer_size=buffer_size,
-            )
-
-        if axis == 'time_step':
-            channels = first_tile.channels
-
-            for tile in tiles:
-                if tile.channels != channels:
-                    message = (
-                        'Invalid tiles! '
-                        'The channels of the tiles must be equal.'
-                    )
-                    raise AviaryUserError(message)
-
-            data = {
-                channel: np.concatenate([tile[channel] for tile in tiles], axis=-1)
-                for channel in channels
-            }
-            return cls(
-                data=data,
-                coordinates=coordinates,
-                tile_size=tile_size,
-                buffer_size=buffer_size,
-            )
-
-        message = 'Invalid axis!'
-        raise AviaryUserError(message)
+        channels = [channel for tile in tiles for channel in tile]
+        return cls(
+            channels=channels,
+            coordinates=coordinates,
+            tile_size=tile_size,
+            copy=copy,
+        )
 
     def __repr__(self) -> str:
         """Returns the string representation.
 
         Returns:
-            string representation
+            String representation
         """
-        data_repr = '\n'.join(
-            f'        {channel}: {data.shape},'
-            for channel, data in self
-        )
+        if self.channels:
+            channels_repr = '\n'.join(
+                f'        {channel.key}: {type(channel).__name__},'
+                for channel in self
+            )
+            channels_repr = '\n' + channels_repr
+        else:
+            channels_repr = ','
         return (
             'Tile(\n'
-            f'    data=\n{data_repr}\n'
+            f'    channels={channels_repr}\n'
             f'    coordinates={self._coordinates},\n'
             f'    tile_size={self._tile_size},\n'
-            f'    buffer_size={self._buffer_size},\n'
+            f'    copy={self._copy},\n'
             ')'
         )
+
+    def __getstate__(self) -> dict:
+        """Gets the state for pickling.
+
+        Returns:
+            State
+        """
+        return self.__dict__
+
+    def __setstate__(
+        self,
+        state: dict,
+    ) -> None:
+        """Sets the state for unpickling.
+
+        Parameters:
+            state: State
+        """
+        self.__dict__ = state
 
     def __eq__(
         self,
@@ -432,7 +452,7 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
         """Compares the tiles.
 
         Parameters:
-            other: other tile
+            other: Other tile
 
         Returns:
             True if the tiles are equal, False otherwise
@@ -440,360 +460,135 @@ class Tile(Iterable[tuple[Channel | str, npt.NDArray]]):
         if not isinstance(other, Tile):
             return False
 
-        conditions = [
-            self._data.keys() == other.data.keys(),
-            all(
-                np.array_equal(self._data[channel], other.data.get(channel, None))
-                for channel in self.channels
-            ),
-            self._coordinates == other.coordinates,
-            self._tile_size == other.tile_size,
-            self._buffer_size == other.buffer_size,
-        ]
+        conditions = (
+            self._channels == other._channels,
+            self._coordinates == other._coordinates,
+            self._tile_size == other._tile_size,
+        )
         return all(conditions)
 
     def __len__(self) -> int:
         """Computes the number of channels.
 
         Returns:
-            number of channels
+            Number of channels
         """
-        return len(self._data)
+        return len(self._channels)
+
+    def __contains__(
+        self,
+        channel_key: ChannelName | str | ChannelKey,
+    ) -> bool:
+        """Checks if the channel is in the tile.
+
+        Notes:
+            - Accessing a channel by its name assumes the time step is None
+
+        Parameters:
+            channel_key: Channel name or channel name and time step combination
+
+        Returns:
+            True if the channel is in the tile, False otherwise
+        """
+        channel_key = self._parse_channel_key(channel_key=channel_key)
+        return channel_key in self.channel_keys
 
     def __getattr__(
         self,
-        channel: str,
-    ) -> npt.NDArray:
-        """Returns the channel data.
+        channel_name: str,
+    ) -> Channel:
+        """Returns the channel.
+
+        Notes:
+            - Accessing a channel by its name assumes the time step is None
 
         Parameters:
-            channel: channel
+            channel_name: Channel name
 
         Returns:
-            channel data
-
-        Raises:
-            AviaryUserError: Invalid channel (the channel is not available)
+            Channel
         """
-        if channel in self._built_in_channels:
-            channel = Channel(channel)
-
-        if channel not in self.channels:
-            message = (
-                'Invalid channel! '
-                f'The {channel} channel is not available.'
-            )
-            raise AviaryUserError(message)
-
-        return self[channel]
+        try:
+            return self[channel_name]
+        except KeyError:
+            # noinspection PyUnresolvedReferences
+            return super().__getattr__(channel_name)
 
     def __getitem__(
         self,
-        channel: Channel | str,
-    ) -> npt.NDArray:
-        """Returns the channel data.
+        channel_key: ChannelName | str | ChannelKey,
+    ) -> Channel:
+        """Returns the channel.
+
+        Notes:
+            - Accessing a channel by its name assumes the time step is None
 
         Parameters:
-            channel: channel
+            channel_key: Channel name or channel name and time step combination
 
         Returns:
-            channel data
-
-        Raises:
-            AviaryUserError: Invalid channel (the channel is not available)
+            Channel
         """
-        if isinstance(channel, str) and channel in self._built_in_channels:
-            channel = Channel(channel)
+        channel_key = self._parse_channel_key(channel_key=channel_key)
+        return self._channels_dict[channel_key]
 
-        if channel not in self.channels:
-            message = (
-                'Invalid channel! '
-                f'The {channel} channel is not available.'
-            )
-            raise AviaryUserError(message)
-
-        return self._data[channel]
-
-    def __iter__(self) -> Iterator[tuple[Channel | str, npt.NDArray]]:
+    def __iter__(self) -> Iterator[Channel]:
         """Iterates over the channels.
 
         Yields:
-            channel and data
+            Channel
         """
-        yield from self._data.items()
+        yield from self._channels
 
-    def append_channel(
-        self,
-        data: npt.NDArray,
-        channel: Channel | str,
-        inplace: bool = False,
-    ) -> Tile:
-        """Appends the channel to the tile.
-
-        Parameters:
-            data: channel data
-            channel: channel
-            inplace: if True, the channel is appended inplace
+    def copy(self) -> Tile:
+        """Copies the tile.
 
         Returns:
-            tile
-
-        Raises:
-            AviaryUserError: Invalid channel (the channel is already available)
+            Tile
         """
-        if isinstance(channel, str) and channel in self._built_in_channels:
-            channel = Channel(channel)
-
-        if channel in self.channels:
-            message = (
-                'Invalid channel! '
-                f'The {channel} channel is already available.'
-            )
-            raise AviaryUserError(message)
-
-        if inplace:
-            self._data[channel] = data
-            self._validate()
-            return self
-
-        data_ = {
-            **self._data,
-            channel: data,
-        }
         return Tile(
-            data=data_,
+            channels=self._channels,
             coordinates=self._coordinates,
             tile_size=self._tile_size,
-            buffer_size=self._buffer_size,
+            copy=True,
         )
 
     def remove_buffer(
         self,
+        ignore_channel_keys:
+            ChannelName | str |
+            ChannelKey |
+            ChannelNameSet | ChannelKeySet | ChannelNameKeySet |
+            None = None,
         inplace: bool = False,
     ) -> Tile:
-        """Removes the buffer from the tile.
+        """Removes the buffer.
+
+        Notes:
+            - Ignoring a channel by its name assumes the time step is None
 
         Parameters:
-            inplace: if True, the buffer is removed inplace
+            ignore_channel_keys: Channel name, channel name and time step combination, channel names,
+                or channel name and time step combinations to ignore
+            inplace: If True, the buffer is removed inplace
 
         Returns:
-            tile
+            Tile
         """
-        if self._buffer_size == 0:
-            if inplace:
-                return self
-
-            return Tile(
-                data=self._data,
-                coordinates=self._coordinates,
-                tile_size=self._tile_size,
-                buffer_size=self._buffer_size,
-            )
-
-        buffer_size = int(self._buffer_size / self.ground_sampling_distance)
+        ignore_channel_keys = self._parse_channel_keys(channel_keys=ignore_channel_keys)
 
         if inplace:
-            for channel, data in self:
-                self._data[channel] = data[buffer_size:-buffer_size, buffer_size:-buffer_size, :]
+            for channel in self:
+                if channel.key not in ignore_channel_keys:
+                    channel.remove_buffer(inplace=True)
 
-            self._buffer_size = 0
             self._validate()
             return self
 
-        data = {
-            channel: data[buffer_size:-buffer_size, buffer_size:-buffer_size, :]
-            for channel, data in self
-        }
-        return Tile(
-            data=data,
-            coordinates=self._coordinates,
-            tile_size=self._tile_size,
-            buffer_size=0,
-        )
+        tile = self.copy()
 
-    def remove_channel(
-        self,
-        channel: Channel | str,
-        inplace: bool = False,
-    ) -> Tile:
-        """Removes the channel from the tile.
+        for channel in tile:
+            if channel.key not in ignore_channel_keys:
+                channel.remove_buffer(inplace=True)
 
-        Parameters:
-            channel: channel
-            inplace: if True, the channel is removed inplace
-
-        Returns:
-            tile
-        """
-        if isinstance(channel, str) and channel in self._built_in_channels:
-            channel = Channel(channel)
-
-        if channel not in self.channels:
-            message = (
-                'Invalid channel! '
-                f'The {channel} channel is not available. '
-                'The data is not modified.'
-            )
-            warnings.warn(
-                message=message,
-                category=AviaryUserWarning,
-                stacklevel=2,
-            )
-
-            if inplace:
-                return self
-
-            return Tile(
-                data=self._data,
-                coordinates=self._coordinates,
-                tile_size=self._tile_size,
-                buffer_size=self._buffer_size,
-            )
-
-        if inplace:
-            self._data.pop(channel)
-            self._validate()
-            return self
-
-        data = {
-            channel_: data
-            for channel_, data in self
-            if channel_ != channel
-        }
-        return Tile(
-            data=data,
-            coordinates=self._coordinates,
-            tile_size=self._tile_size,
-            buffer_size=self._buffer_size,
-        )
-
-    def to_cir(
-        self,
-        time_step: TimeStep = 0,
-    ) -> npt.NDArray:
-        """Converts the tile to color-infrared data.
-
-        Parameters:
-            time_step: time step (supports negative indexing)
-
-        Returns:
-            color-infrared data
-        """
-        channels = [
-            Channel.NIR,
-            Channel.R,
-            Channel.G,
-        ]
-        return self.to_composite(
-            channels=channels,
-            time_step=time_step,
-        )
-
-    def to_composite(
-        self,
-        channels: Channels,
-        time_step: TimeStep = 0,
-    ) -> npt.NDArray:
-        """Converts the tile to composite data.
-
-        Parameters:
-            channels: channels
-            time_step: time step (supports negative indexing)
-
-        Returns:
-            composite data
-
-        Raises:
-            AviaryUserError: Invalid channels (`channels` is an empty list)
-            AviaryUserError: Invalid time step (`time_step` >= number of time steps)
-        """
-        if not channels:
-            message = (
-                'Invalid channels! '
-                'channels must be a non-empty list.'
-            )
-            raise AviaryUserError(message)
-
-        if time_step >= self.num_time_steps:
-            message = (
-                'Invalid time step! '
-                f'time_step must be less than {self.num_time_steps}.'
-            )
-            raise AviaryUserError(message)
-
-        channels = [
-            Channel(channel) if isinstance(channel, str) and channel in self._built_in_channels else channel
-            for channel in channels
-        ]
-        data = [
-            self[channel][..., time_step]
-            for channel in channels
-        ]
-        return np.stack(data, axis=-1)
-
-    def to_nir(
-        self,
-        time_step: TimeStep = 0,
-    ) -> npt.NDArray:
-        """Converts the tile to near-infrared data.
-
-        Parameters:
-            time_step: time step (supports negative indexing)
-
-        Returns:
-            near-infrared data
-        """
-        channels = [
-            Channel.NIR,
-            Channel.NIR,
-            Channel.NIR,
-        ]
-        return self.to_composite(
-            channels=channels,
-            time_step=time_step,
-        )
-
-    def to_rgb(
-        self,
-        time_step: TimeStep = 0,
-    ) -> npt.NDArray:
-        """Converts the data to rgb data.
-
-        Parameters:
-            time_step: time step (supports negative indexing)
-
-        Returns:
-            rgb data
-        """
-        channels = [
-            Channel.R,
-            Channel.G,
-            Channel.B,
-        ]
-        return self.to_composite(
-            channels=channels,
-            time_step=time_step,
-        )
-
-    def to_rgbi(
-        self,
-        time_step: TimeStep = 0,
-    ) -> npt.NDArray:
-        """Converts the tile to rgb-infrared data.
-
-        Parameters:
-            time_step: time step (supports negative indexing)
-
-        Returns:
-            rgb-infrared data
-        """
-        channels = [
-            Channel.R,
-            Channel.G,
-            Channel.B,
-            Channel.NIR,
-        ]
-        return self.to_composite(
-            channels=channels,
-            time_step=time_step,
-        )
+        return tile

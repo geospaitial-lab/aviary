@@ -30,8 +30,8 @@ from aviary.core.tile import Tile
 if TYPE_CHECKING:
     from aviary.core.type_aliases import (
         BufferSize,
-        Channels,
-        ChannelsSet,
+        ChannelTypes,
+        ChannelTypeSet,
         Coordinates,
         EPSGCode,
         GroundSamplingDistance,
@@ -78,12 +78,12 @@ def composite_fetcher(
 def vrt_fetcher(
     coordinates: Coordinates,
     path: Path,
-    channels: Channels,
+    channels: ChannelTypes,
     tile_size: TileSize,
     ground_sampling_distance: GroundSamplingDistance,
     interpolation_mode: InterpolationMode = InterpolationMode.BILINEAR,
     buffer_size: BufferSize = 0,
-    ignore_channels: ChannelsSet | None = None,
+    ignore_channels: ChannelTypeSet | None = None,
     fill_value: int = 0,
 ) -> Tile:
     """Fetches a tile from the virtual raster.
@@ -163,12 +163,12 @@ def wms_fetcher(
     layer: str,
     epsg_code: EPSGCode,
     response_format: str,
-    channels: Channels,
+    channels: ChannelTypes,
     tile_size: TileSize,
     ground_sampling_distance: GroundSamplingDistance,
     style: str | None = None,
     buffer_size: BufferSize = 0,
-    ignore_channels: ChannelsSet | None = None,
+    ignore_channels: ChannelTypeSet | None = None,
     fill_value: str = '0x000000',
 ) -> Tile:
     """Fetches a tile from the web map service.

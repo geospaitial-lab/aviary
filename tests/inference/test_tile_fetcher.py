@@ -5,7 +5,7 @@ import pytest
 
 import aviary.inference.tile_fetcher
 from aviary.core.enums import (
-    Channel,
+    ChannelName,
     InterpolationMode,
     WMSVersion,
 )
@@ -76,10 +76,10 @@ def test_composite_fetcher_call(
 def test_vrt_fetcher_init() -> None:
     path = Path('test/test.vrt')
     channels = [
-        Channel.R,
-        Channel.G,
-        Channel.B,
-        Channel.NIR,
+        ChannelName.R,
+        ChannelName.G,
+        ChannelName.B,
+        ChannelName.NIR,
         'custom',
     ]
     tile_size = 128
@@ -109,10 +109,10 @@ def test_vrt_fetcher_init() -> None:
 def test_vrt_fetcher_from_config() -> None:
     path = Path('test/test.vrt')
     channels = [
-        Channel.R,
-        Channel.G,
-        Channel.B,
-        Channel.NIR,
+        ChannelName.R,
+        ChannelName.G,
+        ChannelName.B,
+        ChannelName.NIR,
         'custom',
     ]
     tile_size = 128
@@ -171,9 +171,9 @@ def test_wms_fetcher_init() -> None:
     epsg_code = 25832
     response_format = 'image/png'
     channels = [
-        Channel.R,
-        Channel.G,
-        Channel.B,
+        ChannelName.R,
+        ChannelName.G,
+        ChannelName.B,
     ]
     tile_size = 128
     ground_sampling_distance = .2
@@ -214,9 +214,9 @@ def test_wms_fetcher_from_config() -> None:
     epsg_code = 25832
     response_format = 'image/png'
     channels = [
-        Channel.R,
-        Channel.G,
-        Channel.B,
+        ChannelName.R,
+        ChannelName.G,
+        ChannelName.B,
     ]
     tile_size = 128
     ground_sampling_distance = .2
