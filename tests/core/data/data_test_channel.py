@@ -10,8 +10,10 @@ from aviary.core.channel import (
 )
 from aviary.core.enums import ChannelName
 from tests.core.conftest import (
+    get_raster_channel,
     get_raster_channel_buffered_data,
     get_raster_channel_data,
+    get_vector_channel,
     get_vector_channel_buffered_data,
     get_vector_channel_data,
     get_vector_channel_empty_data,
@@ -20,13 +22,7 @@ from tests.core.conftest import (
 data_test_raster_channel_eq = [
     # test case 1: other is equal
     (
-        RasterChannel(
-            data=get_raster_channel_data(),
-            name=ChannelName.R,
-            buffer_size=0.,
-            time_step=None,
-            copy=False,
-        ),
+        get_raster_channel(),
         True,
     ),
     # test case 2: data is not equal
@@ -222,13 +218,7 @@ data_test_raster_channel_remove_buffer = [
 data_test_vector_channel_eq = [
     # test case 1: other is equal
     (
-        VectorChannel(
-            data=get_vector_channel_data(),
-            name=ChannelName.R,
-            buffer_size=0.,
-            time_step=None,
-            copy=False,
-        ),
+        get_vector_channel(),
         True,
     ),
     # test case 2: data is not equal
