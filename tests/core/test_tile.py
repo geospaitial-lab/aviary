@@ -13,6 +13,7 @@ from aviary.core.type_aliases import (
 )
 from tests.core.data.data_test_tile import (
     data_test_tile_contains,
+    data_test_tile_eq,
     data_test_tile_getattr,
     data_test_tile_getitem,
 )
@@ -164,6 +165,17 @@ def test_tile_num_channels(
     expected = 4
 
     assert tile.num_channels == expected
+
+
+@pytest.mark.parametrize(('other', 'expected'), data_test_tile_eq)
+def test_tile_eq(
+    other: object,
+    expected: bool,
+    tile: Tile,
+) -> None:
+    equals = tile == other
+
+    assert equals is expected
 
 
 def test_tile_len(
