@@ -169,13 +169,13 @@ def test_raster_channel_setters(
         raster_channel.time_step = None
 
 
-def test_raster_channel_pickle(
+def test_raster_channel_serializability(
     raster_channel: RasterChannel,
 ) -> None:
-    pickled_raster_channel = pickle.dumps(raster_channel)
-    unpickled_raster_channel = pickle.loads(pickled_raster_channel)  # noqa: S301
+    serialized_raster_channel = pickle.dumps(raster_channel)
+    deserialized_raster_channel = pickle.loads(serialized_raster_channel)  # noqa: S301
 
-    assert raster_channel == unpickled_raster_channel
+    assert raster_channel == deserialized_raster_channel
 
 
 def test_raster_channel_key(
@@ -392,13 +392,13 @@ def test_vector_channel_setters(
         vector_channel.time_step = None
 
 
-def test_vector_channel_pickle(
+def test_vector_channel_serializability(
     vector_channel: VectorChannel,
 ) -> None:
-    pickled_vector_channel = pickle.dumps(vector_channel)
-    unpickled_vector_channel = pickle.loads(pickled_vector_channel)  # noqa: S301
+    serialized_vector_channel = pickle.dumps(vector_channel)
+    deserialized_vector_channel = pickle.loads(serialized_vector_channel)  # noqa: S301
 
-    assert vector_channel == unpickled_vector_channel
+    assert vector_channel == deserialized_vector_channel
 
 
 def test_vector_channel_key(
