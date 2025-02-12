@@ -17,6 +17,10 @@ from aviary.core.type_aliases import Channels
 
 @pytest.fixture(scope='function')
 def bounding_box() -> BoundingBox:
+    return get_bounding_box()
+
+
+def get_bounding_box() -> BoundingBox:
     x_min = -128
     y_min = -64
     x_max = 128
@@ -31,7 +35,11 @@ def bounding_box() -> BoundingBox:
 
 @pytest.fixture(scope='function')
 def process_area() -> ProcessArea:
-    coordinates = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32)
+    return get_process_area()
+
+
+def get_process_area() -> ProcessArea:
+    coordinates = get_process_area_coordinates()
     tile_size = 128
     return ProcessArea(
         coordinates=coordinates,
@@ -40,15 +48,30 @@ def process_area() -> ProcessArea:
 
 
 @pytest.fixture(scope='function')
-def raster_channel(
-    raster_channel_data: npt.NDArray,
-) -> RasterChannel:
+def process_area_coordinates() -> np.ndarray:
+    return get_process_area_coordinates()
+
+
+def get_process_area_coordinates() -> np.ndarray:
+    return np.array(
+        [[-128, -128], [0, -128], [-128, 0], [0, 0]],
+        dtype=np.int32,
+    )
+
+
+@pytest.fixture(scope='function')
+def raster_channel() -> RasterChannel:
+    return get_raster_channel()
+
+
+def get_raster_channel() -> RasterChannel:
+    data = get_raster_channel_data()
     name = ChannelName.R
     buffer_size = 0.
     time_step = None
     copy = False
     return RasterChannel(
-        data=raster_channel_data,
+        data=data,
         name=name,
         buffer_size=buffer_size,
         time_step=time_step,
@@ -58,21 +81,37 @@ def raster_channel(
 
 @pytest.fixture(scope='function')
 def raster_channel_data() -> npt.NDArray:
+    return get_raster_channel_data()
+
+
+def get_raster_channel_data() -> npt.NDArray:
     return np.ones(
         shape=(640, 640),
         dtype=np.uint8,
     )
 
 
+def get_raster_channel_buffered_data() -> npt.NDArray:
+    data = np.zeros(
+        shape=(960, 960),
+        dtype=np.uint8,
+    )
+    data[160:800, 160:800] = 1
+    return data
+
+
 @pytest.fixture(scope='function')
-def tile(
-    tile_channels: Channels,
-) -> Tile:
+def tile() -> Tile:
+    return get_tile()
+
+
+def get_tile() -> Tile:
+    channels = get_tile_channels()
     coordinates = (0, 0)
     tile_size = 128
     copy = False
     return Tile(
-        channels=tile_channels,
+        channels=channels,
         coordinates=coordinates,
         tile_size=tile_size,
         copy=copy,
@@ -80,30 +119,32 @@ def tile(
 
 
 @pytest.fixture(scope='function')
-def tile_channels(
-    tile_channel_1: RasterChannel,
-    tile_channel_2: RasterChannel,
-    tile_channel_3: RasterChannel,
-    tile_channel_4: VectorChannel,
-) -> Channels:
+def tile_channels() -> Channels:
+    return get_tile_channels()
+
+
+def get_tile_channels() -> Channels:
     return [
-        tile_channel_1,
-        tile_channel_2,
-        tile_channel_3,
-        tile_channel_4,
+        get_tile_channel_1(),
+        get_tile_channel_2(),
+        get_tile_channel_3(),
+        get_tile_channel_4(),
     ]
 
 
 @pytest.fixture(scope='function')
-def tile_channel_1(
-    raster_channel_data: npt.NDArray,
-) -> RasterChannel:
+def tile_channel_1() -> RasterChannel:
+    return get_tile_channel_1()
+
+
+def get_tile_channel_1() -> RasterChannel:
+    data = get_raster_channel_data()
     name = ChannelName.R
     buffer_size = 0.
     time_step = None
     copy = False
     return RasterChannel(
-        data=raster_channel_data,
+        data=data,
         name=name,
         buffer_size=buffer_size,
         time_step=time_step,
@@ -112,15 +153,18 @@ def tile_channel_1(
 
 
 @pytest.fixture(scope='function')
-def tile_channel_2(
-    raster_channel_data: npt.NDArray,
-) -> RasterChannel:
+def tile_channel_2() -> RasterChannel:
+    return get_tile_channel_2()
+
+
+def get_tile_channel_2() -> RasterChannel:
+    data = get_raster_channel_data()
     name = ChannelName.G
     buffer_size = 0.
     time_step = None
     copy = False
     return RasterChannel(
-        data=raster_channel_data,
+        data=data,
         name=name,
         buffer_size=buffer_size,
         time_step=time_step,
@@ -129,15 +173,18 @@ def tile_channel_2(
 
 
 @pytest.fixture(scope='function')
-def tile_channel_3(
-    raster_channel_data: npt.NDArray,
-) -> RasterChannel:
+def tile_channel_3() -> RasterChannel:
+    return get_tile_channel_3()
+
+
+def get_tile_channel_3() -> RasterChannel:
+    data = get_raster_channel_data()
     name = ChannelName.B
     buffer_size = 0.
     time_step = None
     copy = False
     return RasterChannel(
-        data=raster_channel_data,
+        data=data,
         name=name,
         buffer_size=buffer_size,
         time_step=time_step,
@@ -146,15 +193,18 @@ def tile_channel_3(
 
 
 @pytest.fixture(scope='function')
-def tile_channel_4(
-    vector_channel_data: gpd.GeoDataFrame,
-) -> VectorChannel:
+def tile_channel_4() -> VectorChannel:
+    return get_tile_channel_4()
+
+
+def get_tile_channel_4() -> VectorChannel:
+    data = get_vector_channel_data()
     name = 'custom'
     buffer_size = 0.
     time_step = None
     copy = False
     return VectorChannel(
-        data=vector_channel_data,
+        data=data,
         name=name,
         buffer_size=buffer_size,
         time_step=time_step,
@@ -163,15 +213,18 @@ def tile_channel_4(
 
 
 @pytest.fixture(scope='function')
-def vector_channel(
-    vector_channel_data: gpd.GeoDataFrame,
-) -> VectorChannel:
+def vector_channel() -> VectorChannel:
+    return get_vector_channel()
+
+
+def get_vector_channel() -> VectorChannel:
+    data = get_vector_channel_data()
     name = ChannelName.R
     buffer_size = 0.
     time_step = None
     copy = False
     return VectorChannel(
-        data=vector_channel_data,
+        data=data,
         name=name,
         buffer_size=buffer_size,
         time_step=time_step,
@@ -181,6 +234,17 @@ def vector_channel(
 
 @pytest.fixture(scope='function')
 def vector_channel_data() -> gpd.GeoDataFrame:
+    return get_vector_channel_data()
+
+
+def get_vector_channel_data() -> gpd.GeoDataFrame:
+    geometries = [
+        box(.425, .425, .575, .575),
+    ]
+    return gpd.GeoDataFrame(geometry=geometries)
+
+
+def get_vector_channel_buffered_data() -> gpd.GeoDataFrame:
     geometries = [
         box(0., 0., .1, .1),
         box(.9, 0., 1., .1),
@@ -188,4 +252,9 @@ def vector_channel_data() -> gpd.GeoDataFrame:
         box(0., .9, .1, 1.),
         box(.45, .45, .55, .55),
     ]
+    return gpd.GeoDataFrame(geometry=geometries)
+
+
+def get_vector_channel_empty_data() -> gpd.GeoDataFrame:
+    geometries = []
     return gpd.GeoDataFrame(geometry=geometries)
