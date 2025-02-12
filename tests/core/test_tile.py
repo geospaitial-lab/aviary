@@ -4,6 +4,7 @@ import pickle
 import pytest
 
 from aviary.core.bounding_box import BoundingBox
+from aviary.core.channel import Channel
 from aviary.core.enums import ChannelName
 from aviary.core.tile import Tile
 from aviary.core.type_aliases import (
@@ -12,6 +13,8 @@ from aviary.core.type_aliases import (
 )
 from tests.core.data.data_test_tile import (
     data_test_tile_contains,
+    data_test_tile_getattr,
+    data_test_tile_getitem,
 )
 
 
@@ -180,3 +183,39 @@ def test_tile_contains(
     contains = channel_key in tile
 
     assert contains is expected
+
+
+@pytest.mark.parametrize(('channel_name', 'expected'), data_test_tile_getattr)
+def test_tile_getattr(
+    channel_name: str,
+    expected: Channel,
+    tile: Tile,
+) -> None:
+    assert getattr(tile, channel_name) == expected
+
+
+@pytest.mark.parametrize(('channel_key', 'expected'), data_test_tile_getitem)
+def test_tile_getitem(
+    channel_key: ChannelName | str | ChannelKey,
+    expected: Channel,
+    tile: Tile,
+) -> None:
+    assert tile[channel_key] == expected
+
+
+def test_tile_iter(
+    tile: Tile,
+    tile_channels: Channels,
+) -> None:
+    assert list(tile) == tile_channels
+
+
+def test_tile_copy(
+    tile: Tile,
+) -> None:
+    copied_tile = tile.copy()
+
+    assert copied_tile == tile
+    assert copied_tile.is_copied is True
+    assert id(copied_tile) != id(tile)
+    assert id(copied_tile.channels) != id(tile.channels)
