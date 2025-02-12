@@ -286,7 +286,7 @@ data_test_vector_channel_eq = [
 data_test_vector_channel_from_unscaled_data_exceptions = [
     # test case 1: tile_size is negative
     (
-        -1,
+        -128,
         0,
         re.escape('Invalid tile_size! The tile size must be positive.'),
     ),
@@ -299,7 +299,7 @@ data_test_vector_channel_from_unscaled_data_exceptions = [
     # test case 3: buffer_size is negative
     (
         128,
-        -1,
+        -32,
         re.escape('Invalid buffer_size! The buffer size must be positive or zero.'),
     ),
 ]
