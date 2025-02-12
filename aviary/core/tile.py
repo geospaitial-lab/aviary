@@ -18,6 +18,7 @@ from aviary.core.exceptions import AviaryUserError
 from aviary.core.type_aliases import (
     ChannelKey,
     ChannelNameSet,
+    _is_channel_key,
 )
 
 if TYPE_CHECKING:
@@ -146,7 +147,7 @@ class Tile(Iterable[Channel]):
         Returns:
             Channel name and time step combination
         """
-        if isinstance(channel_key, ChannelKey):
+        if _is_channel_key(channel_key):
             channel_name, time_step = channel_key
         else:
             channel_name = channel_key
@@ -175,14 +176,8 @@ class Tile(Iterable[Channel]):
         if channel_keys is None:
             return set()
 
-        if isinstance(channel_keys, (ChannelName | str | ChannelKey)):
+        if isinstance(channel_keys, (ChannelName | str)) or _is_channel_key(channel_keys):
             return set(self._parse_channel_key(channel_key=channel_keys))
-
-        if isinstance(channel_keys, ChannelNameSet):
-            return {
-                (self._parse_channel_name(channel_name=channel_name), None)
-                for channel_name in channel_keys
-            }
 
         return {
             self._parse_channel_key(channel_key=channel_key)
