@@ -6,16 +6,19 @@ import pytest
 from aviary.core.bounding_box import BoundingBox
 from aviary.core.channel import Channel
 from aviary.core.enums import ChannelName
+from aviary.core.exceptions import AviaryUserError
 from aviary.core.tile import Tile
 from aviary.core.type_aliases import (
     ChannelKey,
     Channels,
+    TileSize,
 )
 from tests.core.data.data_test_tile import (
     data_test_tile_contains,
     data_test_tile_eq,
     data_test_tile_getattr,
     data_test_tile_getitem,
+    data_test_tile_init_exceptions,
 )
 
 
@@ -37,6 +40,24 @@ def test_tile_init(
     assert tile.coordinates == coordinates
     assert tile.tile_size == tile_size
     assert tile.is_copied == copy
+
+
+@pytest.mark.parametrize(('channels', 'tile_size', 'message'), data_test_tile_init_exceptions)
+def test_tile_init_exceptions(
+    channels: Channels,
+    tile_size: TileSize,
+    message: str,
+) -> None:
+    coordinates = (0, 0)
+    copy = False
+
+    with pytest.raises(AviaryUserError, match=message):
+        _ = Tile(
+            channels=channels,
+            coordinates=coordinates,
+            tile_size=tile_size,
+            copy=copy,
+        )
 
 
 def test_tile_init_defaults() -> None:

@@ -1,3 +1,5 @@
+import re
+
 from aviary.core.enums import ChannelName
 from aviary.core.tile import Tile
 from tests.core.conftest import (
@@ -84,4 +86,28 @@ data_test_tile_getitem = [
     ((ChannelName.R, None), get_tile_channel_1()),
     (('r', None), get_tile_channel_1()),
     (('custom', None), get_tile_channel_4()),
+]
+
+data_test_tile_init_exceptions = [
+    # test case 1: channels contains duplicate channel name and time step combinations
+    (
+        [*get_tile_channels(), get_tile_channel_1()],
+        128,
+        re.escape(
+            'Invalid channels! '
+            'The channels must contain unique channel name and time step combinations.',
+        ),
+    ),
+    # test case 2: tile_size is negative
+    (
+        get_tile_channels(),
+        -128,
+        re.escape('Invalid tile_size! The tile size must be positive.'),
+    ),
+    # test case 3: tile_size is 0
+    (
+        get_tile_channels(),
+        0,
+        re.escape('Invalid tile_size! The tile size must be positive.'),
+    ),
 ]
