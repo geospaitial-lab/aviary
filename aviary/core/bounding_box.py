@@ -54,8 +54,8 @@ class BoundingBox(Iterable[Coordinate]):
         """Validates the bounding box.
 
         Raises:
-            AviaryUserError: Invalid `bounding_box` (`x_min` is greater than or equal to `x_max` or
-                `y_min` is greater than or equal to `y_max`)
+            AviaryUserError: Invalid `bounding_box` (`x_min` is greater than or equal to `x_max`,
+                or `y_min` is greater than or equal to `y_max`)
         """
         conditions = [
             self._x_min >= self._x_max,
@@ -242,7 +242,7 @@ class BoundingBox(Iterable[Coordinate]):
             Bounding box
 
         Raises:
-            AviaryUserError: Invalid `buffer_size` (the absolute value of a negative `buffer_size` is greater than or
+            AviaryUserError: Invalid `buffer_size` (the absolute value of a negative buffer size is greater than or
                 equal to half the width or height of the bounding box)
         """
         conditions = [
@@ -254,7 +254,7 @@ class BoundingBox(Iterable[Coordinate]):
         if all(conditions):
             message = (
                 'Invalid buffer_size! '
-                'The absolute value of a negative buffer_size must be less than half the width and height '
+                'The absolute value of a negative buffer size must be less than half the width and height '
                 'of the bounding box.'
             )
             raise AviaryUserError(message)
