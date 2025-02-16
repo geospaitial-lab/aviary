@@ -2,6 +2,7 @@ import copy
 import re
 
 from aviary.core.bounding_box import BoundingBox
+from tests.core.conftest import get_bounding_box
 
 data_test_bounding_box_area = [
     # test case 1: bounding_box is in all quadrants
@@ -326,7 +327,56 @@ data_test_bounding_box_buffer_exceptions = [
 ]
 
 data_test_bounding_box_eq = [
-
+    # test case 1: other is equal
+    (
+        get_bounding_box(),
+        True,
+    ),
+    # test case 2: x_min is not equal
+    (
+        BoundingBox(
+            x_min=0,
+            y_min=-64,
+            x_max=128,
+            y_max=192,
+        ),
+        False,
+    ),
+    # test case 3: y_min is not equal
+    (
+        BoundingBox(
+            x_min=-128,
+            y_min=0,
+            x_max=128,
+            y_max=192,
+        ),
+        False,
+    ),
+    # test case 4: x_max is not equal
+    (
+        BoundingBox(
+            x_min=-128,
+            y_min=-64,
+            x_max=0,
+            y_max=192,
+        ),
+        False,
+    ),
+    # test case 5: y_max is not equal
+    (
+        BoundingBox(
+            x_min=-128,
+            y_min=-64,
+            x_max=128,
+            y_max=0,
+        ),
+        False,
+    ),
+    # test case 6: other is not of type BoundingBox
+    (
+        'invalid',
+        False,
+    ),
 ]
 
 data_test_bounding_box_from_gdf = [
@@ -334,7 +384,14 @@ data_test_bounding_box_from_gdf = [
 ]
 
 data_test_bounding_box_getitem = [
-
+    (0, -128),
+    (1, -64),
+    (2, 128),
+    (3, 192),
+    (-1, 192),
+    (-2, 128),
+    (-3, -64),
+    (-4, -128),
 ]
 
 data_test_bounding_box_init_exceptions = [
