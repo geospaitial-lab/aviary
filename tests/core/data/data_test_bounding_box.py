@@ -1,6 +1,13 @@
 import copy
 import re
 
+import geopandas as gpd
+from shapely.geometry import (
+    Point,
+    Polygon,
+    box,
+)
+
 from aviary.core.bounding_box import BoundingBox
 from tests.core.conftest import get_bounding_box
 
@@ -355,7 +362,62 @@ data_test_bounding_box_eq = [
 ]
 
 data_test_bounding_box_from_gdf = [
+    # test case 1: gdf contains a box
+    (
+        gpd.GeoDataFrame(
+            geometry=[box(-128, -64, 128, 192)],
+        ),
+        get_bounding_box(),
+    ),
+    # test case 2: gdf contains a box that needs to be rounded
+    (
+        gpd.GeoDataFrame(
+            geometry=[box(-127.9, -63.9, 127.9, 191.9)],
+        ),
+        get_bounding_box(),
+    ),
+    # test case 3: gdf contains a box that needs to be rounded
+    (
+        gpd.GeoDataFrame(
+            geometry=[box(-127.1, -63.1, 127.1, 191.1)],
+        ),
+        get_bounding_box(),
+    ),
+    # test case 4: gdf contains boxes
+    (
+        gpd.GeoDataFrame(
+            geometry=[
+                box(-128, -64, -96, -32),
+                box(96, 160, 128, 192),
+            ],
+        ),
+        get_bounding_box(),
+    ),
+    # test case 5: gdf contains a polygon
+    (
+        gpd.GeoDataFrame(
+            geometry=[Polygon([[-128, 64], [0, -64], [128, 64], [0, 192]])],
+        ),
+        get_bounding_box(),
+    ),
+    # test case 6: gdf contains points
+    (
+        gpd.GeoDataFrame(
+            geometry=[
+                Point(-128, -64),
+                Point(128, 192),
+            ],
+        ),
+        get_bounding_box(),
+    ),
+]
 
+data_test_bounding_box_from_gdf_exceptions = [
+    # test case 1: gdf contains no geometries
+    (
+        gpd.GeoDataFrame(),
+        re.escape('Invalid gdf! The geodataframe must contain at least one geometry.'),
+    ),
 ]
 
 data_test_bounding_box_getitem = [

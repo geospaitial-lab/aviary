@@ -21,6 +21,7 @@ from tests.core.data.data_test_bounding_box import (
     data_test_bounding_box_buffer_inplace_return,
     data_test_bounding_box_eq,
     data_test_bounding_box_from_gdf,
+    data_test_bounding_box_from_gdf_exceptions,
     data_test_bounding_box_getitem,
     data_test_bounding_box_init_exceptions,
     data_test_bounding_box_quantize,
@@ -110,6 +111,15 @@ def test_bounding_box_from_gdf(
     bounding_box = BoundingBox.from_gdf(gdf=gdf)
 
     assert bounding_box == expected
+
+
+@pytest.mark.parametrize(('gdf', 'message'), data_test_bounding_box_from_gdf_exceptions)
+def test_bounding_box_from_gdf_exceptions(
+    gdf: gpd.GeoDataFrame,
+    message: str,
+) -> None:
+    with pytest.raises(AviaryUserError, match=message):
+        _ = BoundingBox.from_gdf(gdf=gdf)
 
 
 @pytest.mark.parametrize(('other', 'expected'), data_test_bounding_box_eq)
