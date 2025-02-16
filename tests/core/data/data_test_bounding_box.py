@@ -1,3 +1,4 @@
+import copy
 import re
 
 from aviary.core.bounding_box import BoundingBox
@@ -56,8 +57,14 @@ data_test_bounding_box_area = [
 ]
 
 data_test_bounding_box_buffer = [
-    # test case 1: buffer_size is 0
+    # test case 1: bounding_box is in all quadrants and buffer_size is 0
     (
+        BoundingBox(
+            x_min=-128,
+            y_min=-64,
+            x_max=128,
+            y_max=192,
+        ),
         0,
         BoundingBox(
             x_min=-128,
@@ -66,8 +73,14 @@ data_test_bounding_box_buffer = [
             y_max=192,
         ),
     ),
-    # test case 2: buffer_size is positive
+    # test case 2: bounding_box is in all quadrants and buffer_size is positive
     (
+        BoundingBox(
+            x_min=-128,
+            y_min=-64,
+            x_max=128,
+            y_max=192,
+        ),
         64,
         BoundingBox(
             x_min=-192,
@@ -76,8 +89,14 @@ data_test_bounding_box_buffer = [
             y_max=256,
         ),
      ),
-    # test case 3: buffer_size is negative
+    # test case 3: bounding_box is in all quadrants and buffer_size is negative
     (
+        BoundingBox(
+            x_min=-128,
+            y_min=-64,
+            x_max=128,
+            y_max=192,
+        ),
         -64,
         BoundingBox(
             x_min=-64,
@@ -87,6 +106,9 @@ data_test_bounding_box_buffer = [
         ),
     ),
 ]
+
+data_test_bounding_box_buffer_inplace = copy.deepcopy(data_test_bounding_box_buffer)
+data_test_bounding_box_buffer_inplace_return = copy.deepcopy(data_test_bounding_box_buffer)
 
 data_test_bounding_box_buffer_exceptions = [
     # test case 1: buffer_size is negative and abs(buffer_size) is equal to half the width and height
@@ -512,6 +534,9 @@ data_test_bounding_box_quantize = [
         ),
     ),
 ]
+
+data_test_bounding_box_quantize_inplace = copy.deepcopy(data_test_bounding_box_quantize)
+data_test_bounding_box_quantize_inplace_return = copy.deepcopy(data_test_bounding_box_quantize)
 
 data_test_bounding_box_quantize_exceptions = [
     # test case 1: value is negative

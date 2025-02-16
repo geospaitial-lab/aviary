@@ -17,12 +17,16 @@ from tests.core.data.data_test_bounding_box import (
     data_test_bounding_box_area,
     data_test_bounding_box_buffer,
     data_test_bounding_box_buffer_exceptions,
+    data_test_bounding_box_buffer_inplace,
+    data_test_bounding_box_buffer_inplace_return,
     data_test_bounding_box_eq,
     data_test_bounding_box_from_gdf,
     data_test_bounding_box_getitem,
     data_test_bounding_box_init_exceptions,
     data_test_bounding_box_quantize,
     data_test_bounding_box_quantize_exceptions,
+    data_test_bounding_box_quantize_inplace,
+    data_test_bounding_box_quantize_inplace_return,
 )
 
 
@@ -153,11 +157,11 @@ def test_bounding_box_iter(
     assert list(bounding_box) == expected
 
 
-@pytest.mark.parametrize(('buffer_size', 'expected'), data_test_bounding_box_buffer)
+@pytest.mark.parametrize(('bounding_box', 'buffer_size', 'expected'), data_test_bounding_box_buffer)
 def test_bounding_box_buffer(
+    bounding_box: BoundingBox,
     buffer_size: BufferSize,
     expected: BoundingBox,
-    bounding_box: BoundingBox,
 ) -> None:
     copied_bounding_box = copy.deepcopy(bounding_box)
 
@@ -171,11 +175,11 @@ def test_bounding_box_buffer(
     assert id(bounding_box_) != id(bounding_box)
 
 
-@pytest.mark.parametrize(('buffer_size', 'expected'), data_test_bounding_box_buffer)
+@pytest.mark.parametrize(('bounding_box', 'buffer_size', 'expected'), data_test_bounding_box_buffer_inplace)
 def test_bounding_box_buffer_inplace(
+    bounding_box: BoundingBox,
     buffer_size: BufferSize,
     expected: BoundingBox,
-    bounding_box: BoundingBox,
 ) -> None:
     bounding_box.buffer(
         buffer_size=buffer_size,
@@ -185,11 +189,11 @@ def test_bounding_box_buffer_inplace(
     assert bounding_box == expected
 
 
-@pytest.mark.parametrize(('buffer_size', 'expected'), data_test_bounding_box_buffer)
+@pytest.mark.parametrize(('bounding_box', 'buffer_size', 'expected'), data_test_bounding_box_buffer_inplace_return)
 def test_bounding_box_buffer_inplace_return(
+    bounding_box: BoundingBox,
     buffer_size: BufferSize,
     expected: BoundingBox,
-    bounding_box: BoundingBox,
 ) -> None:
     bounding_box_ = bounding_box.buffer(
         buffer_size=buffer_size,
@@ -240,7 +244,7 @@ def test_bounding_box_quantize(
     assert id(bounding_box_) != id(bounding_box)
 
 
-@pytest.mark.parametrize(('bounding_box', 'value', 'expected'), data_test_bounding_box_quantize)
+@pytest.mark.parametrize(('bounding_box', 'value', 'expected'), data_test_bounding_box_quantize_inplace)
 def test_bounding_box_quantize_inplace(
     bounding_box: BoundingBox,
     value: int,
@@ -254,7 +258,7 @@ def test_bounding_box_quantize_inplace(
     assert bounding_box == expected
 
 
-@pytest.mark.parametrize(('bounding_box', 'value', 'expected'), data_test_bounding_box_quantize)
+@pytest.mark.parametrize(('bounding_box', 'value', 'expected'), data_test_bounding_box_quantize_inplace_return)
 def test_bounding_box_quantize_inplace_return(
     bounding_box: BoundingBox,
     value: int,
