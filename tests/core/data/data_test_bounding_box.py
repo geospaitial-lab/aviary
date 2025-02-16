@@ -81,12 +81,12 @@ data_test_bounding_box_buffer = [
             x_max=128,
             y_max=192,
         ),
-        64,
+        32,
         BoundingBox(
-            x_min=-192,
-            y_min=-128,
-            x_max=192,
-            y_max=256,
+            x_min=-160,
+            y_min=-96,
+            x_max=160,
+            y_max=224,
         ),
      ),
     # test case 3: bounding_box is in all quadrants and buffer_size is negative
@@ -97,12 +97,204 @@ data_test_bounding_box_buffer = [
             x_max=128,
             y_max=192,
         ),
-        -64,
+        -32,
         BoundingBox(
-            x_min=-64,
-            y_min=0,
-            x_max=64,
-            y_max=128,
+            x_min=-96,
+            y_min=-32,
+            x_max=96,
+            y_max=160,
+        ),
+    ),
+    # test case 4: bounding_box is in the first quadrant and buffer_size is 0
+    (
+        BoundingBox(
+            x_min=128,
+            y_min=192,
+            x_max=256,
+            y_max=320,
+        ),
+        0,
+        BoundingBox(
+            x_min=128,
+            y_min=192,
+            x_max=256,
+            y_max=320,
+        ),
+    ),
+    # test case 5: bounding_box is in the first quadrant and buffer_size is positive
+    (
+        BoundingBox(
+            x_min=128,
+            y_min=192,
+            x_max=256,
+            y_max=320,
+        ),
+        32,
+        BoundingBox(
+            x_min=96,
+            y_min=160,
+            x_max=288,
+            y_max=352,
+        ),
+    ),
+    # test case 6: bounding_box is in the first quadrant and buffer_size is negative
+    (
+        BoundingBox(
+            x_min=128,
+            y_min=192,
+            x_max=256,
+            y_max=320,
+        ),
+        -32,
+        BoundingBox(
+            x_min=160,
+            y_min=224,
+            x_max=224,
+            y_max=288,
+        ),
+    ),
+    # test case 7: bounding_box is in the second quadrant and buffer_size is 0
+    (
+        BoundingBox(
+            x_min=-256,
+            y_min=192,
+            x_max=-128,
+            y_max=320,
+        ),
+        0,
+        BoundingBox(
+            x_min=-256,
+            y_min=192,
+            x_max=-128,
+            y_max=320,
+        ),
+    ),
+    # test case 8: bounding_box is in the second quadrant and buffer_size is positive
+    (
+        BoundingBox(
+            x_min=-256,
+            y_min=192,
+            x_max=-128,
+            y_max=320,
+        ),
+        32,
+        BoundingBox(
+            x_min=-288,
+            y_min=160,
+            x_max=-96,
+            y_max=352,
+        ),
+    ),
+    # test case 9: bounding_box is in the second quadrant and buffer_size is negative
+    (
+        BoundingBox(
+            x_min=-256,
+            y_min=192,
+            x_max=-128,
+            y_max=320,
+        ),
+        -32,
+        BoundingBox(
+            x_min=-224,
+            y_min=224,
+            x_max=-160,
+            y_max=288,
+        ),
+    ),
+    # test case 10: bounding_box is in the third quadrant and buffer_size is 0
+    (
+        BoundingBox(
+            x_min=-256,
+            y_min=-192,
+            x_max=-128,
+            y_max=-64,
+        ),
+        0,
+        BoundingBox(
+            x_min=-256,
+            y_min=-192,
+            x_max=-128,
+            y_max=-64,
+        ),
+    ),
+    # test case 11: bounding_box is in the third quadrant and buffer_size is positive
+    (
+        BoundingBox(
+            x_min=-256,
+            y_min=-192,
+            x_max=-128,
+            y_max=-64,
+        ),
+        32,
+        BoundingBox(
+            x_min=-288,
+            y_min=-224,
+            x_max=-96,
+            y_max=-32,
+        ),
+    ),
+    # test case 12: bounding_box is in the third quadrant and buffer_size is negative
+    (
+        BoundingBox(
+            x_min=-256,
+            y_min=-192,
+            x_max=-128,
+            y_max=-64,
+        ),
+        -32,
+        BoundingBox(
+            x_min=-224,
+            y_min=-160,
+            x_max=-160,
+            y_max=-96,
+        ),
+    ),
+    # test case 13: bounding_box is in the fourth quadrant and buffer_size is 0
+    (
+        BoundingBox(
+            x_min=128,
+            y_min=-192,
+            x_max=256,
+            y_max=-64,
+        ),
+        0,
+        BoundingBox(
+            x_min=128,
+            y_min=-192,
+            x_max=256,
+            y_max=-64,
+        ),
+    ),
+    # test case 14: bounding_box is in the fourth quadrant and buffer_size is positive
+    (
+        BoundingBox(
+            x_min=128,
+            y_min=-192,
+            x_max=256,
+            y_max=-64,
+        ),
+        32,
+        BoundingBox(
+            x_min=96,
+            y_min=-224,
+            x_max=288,
+            y_max=-32,
+        ),
+    ),
+    # test case 15: bounding_box is in the fourth quadrant and buffer_size is negative
+    (
+        BoundingBox(
+            x_min=128,
+            y_min=-192,
+            x_max=256,
+            y_max=-64,
+        ),
+        -32,
+        BoundingBox(
+            x_min=160,
+            y_min=-160,
+            x_max=224,
+            y_max=-96,
         ),
     ),
 ]
