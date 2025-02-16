@@ -275,9 +275,6 @@ data_test_bounding_box_buffer = [
     ),
 ]
 
-data_test_bounding_box_buffer_inplace = copy.deepcopy(data_test_bounding_box_buffer)
-data_test_bounding_box_buffer_inplace_return = copy.deepcopy(data_test_bounding_box_buffer)
-
 data_test_bounding_box_buffer_exceptions = [
     # test case 1: buffer_size is negative and abs(buffer_size) is equal to half the width and height
     # of the bounding box
@@ -300,6 +297,9 @@ data_test_bounding_box_buffer_exceptions = [
         ),
     ),
 ]
+
+data_test_bounding_box_buffer_inplace = copy.deepcopy(data_test_bounding_box_buffer)
+data_test_bounding_box_buffer_inplace_return = copy.deepcopy(data_test_bounding_box_buffer)
 
 data_test_bounding_box_eq = [
     # test case 1: other is equal
@@ -754,9 +754,6 @@ data_test_bounding_box_quantize = [
     ),
 ]
 
-data_test_bounding_box_quantize_inplace = copy.deepcopy(data_test_bounding_box_quantize)
-data_test_bounding_box_quantize_inplace_return = copy.deepcopy(data_test_bounding_box_quantize)
-
 data_test_bounding_box_quantize_exceptions = [
     # test case 1: value is negative
     (
@@ -769,3 +766,6 @@ data_test_bounding_box_quantize_exceptions = [
         re.escape('Invalid value! The value must be positive.'),
     ),
 ]
+
+data_test_bounding_box_quantize_inplace = copy.deepcopy(data_test_bounding_box_quantize)
+data_test_bounding_box_quantize_inplace_return = copy.deepcopy(data_test_bounding_box_quantize)
