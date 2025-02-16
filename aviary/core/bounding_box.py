@@ -121,7 +121,17 @@ class BoundingBox(Iterable[Coordinate]):
 
         Returns:
             Bounding box
+
+        Raises:
+            AviaryUserError: Invalid `gdf` (the geodataframe contains no geometries)
         """
+        if gdf.empty:
+            message = (
+                'Invalid gdf! '
+                'The geodataframe must contain at least one geometry.'
+            )
+            raise AviaryUserError(message)
+
         x_min, y_min, x_max, y_max = gdf.total_bounds
         x_min = floor(x_min)
         y_min = floor(y_min)
