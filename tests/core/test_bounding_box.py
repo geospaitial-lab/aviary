@@ -1,5 +1,6 @@
 import copy
 import inspect
+import pickle
 
 import geopandas as gpd
 import geopandas.testing
@@ -16,9 +17,17 @@ from tests.core.data.data_test_bounding_box import (
     data_test_bounding_box_area,
     data_test_bounding_box_buffer,
     data_test_bounding_box_buffer_exceptions,
+    data_test_bounding_box_buffer_inplace,
+    data_test_bounding_box_buffer_inplace_return,
+    data_test_bounding_box_eq,
+    data_test_bounding_box_from_gdf,
+    data_test_bounding_box_from_gdf_exceptions,
+    data_test_bounding_box_getitem,
+    data_test_bounding_box_init_exceptions,
     data_test_bounding_box_quantize,
     data_test_bounding_box_quantize_exceptions,
-    data_test_bounding_box_validation,
+    data_test_bounding_box_quantize_inplace,
+    data_test_bounding_box_quantize_inplace_return,
 )
 
 
@@ -40,8 +49,8 @@ def test_bounding_box_init() -> None:
     assert bounding_box.y_max == y_max
 
 
-@pytest.mark.parametrize(('x_min', 'y_min', 'x_max', 'y_max', 'message'), data_test_bounding_box_validation)
-def test_bounding_box_validation(
+@pytest.mark.parametrize(('x_min', 'y_min', 'x_max', 'y_max', 'message'), data_test_bounding_box_init_exceptions)
+def test_bounding_box_init_exceptions(
     x_min: Coordinate,
     y_min: Coordinate,
     x_max: Coordinate,
@@ -57,6 +66,35 @@ def test_bounding_box_validation(
         )
 
 
+def test_bounding_box_setters(
+    bounding_box: BoundingBox,
+) -> None:
+    with pytest.raises(AttributeError):
+        # noinspection PyPropertyAccess
+        bounding_box.x_min = None
+
+    with pytest.raises(AttributeError):
+        # noinspection PyPropertyAccess
+        bounding_box.y_min = None
+
+    with pytest.raises(AttributeError):
+        # noinspection PyPropertyAccess
+        bounding_box.x_max = None
+
+    with pytest.raises(AttributeError):
+        # noinspection PyPropertyAccess
+        bounding_box.y_max = None
+
+
+def test_bounding_box_serializability(
+    bounding_box: BoundingBox,
+) -> None:
+    serialized_bounding_box = pickle.dumps(bounding_box)
+    deserialized_bounding_box = pickle.loads(serialized_bounding_box)  # noqa: S301
+
+    assert bounding_box == deserialized_bounding_box
+
+
 @pytest.mark.parametrize(('bounding_box', 'expected'), data_test_bounding_box_area)
 def test_bounding_box_area(
     bounding_box: BoundingBox,
@@ -65,60 +103,34 @@ def test_bounding_box_area(
     assert bounding_box.area == expected
 
 
-def test_bounding_box_from_gdf() -> None:
-    geometry = [box(-128, -64, 128, 192)]
-    epsg_code = 25832
-    gdf = gpd.GeoDataFrame(
-        geometry=geometry,
-        crs=f'EPSG:{epsg_code}',
-    )
-    bounding_box = BoundingBox.from_gdf(gdf)
-    expected_x_min = -128
-    expected_y_min = -64
-    expected_x_max = 128
-    expected_y_max = 192
-    expected = BoundingBox(
-        x_min=expected_x_min,
-        y_min=expected_y_min,
-        x_max=expected_x_max,
-        y_max=expected_y_max,
-    )
+@pytest.mark.parametrize(('gdf', 'expected'), data_test_bounding_box_from_gdf)
+def test_bounding_box_from_gdf(
+    gdf: gpd.GeoDataFrame,
+    expected: BoundingBox,
+) -> None:
+    bounding_box = BoundingBox.from_gdf(gdf=gdf)
 
     assert bounding_box == expected
 
 
+@pytest.mark.parametrize(('gdf', 'message'), data_test_bounding_box_from_gdf_exceptions)
+def test_bounding_box_from_gdf_exceptions(
+    gdf: gpd.GeoDataFrame,
+    message: str,
+) -> None:
+    with pytest.raises(AviaryUserError, match=message):
+        _ = BoundingBox.from_gdf(gdf=gdf)
+
+
+@pytest.mark.parametrize(('other', 'expected'), data_test_bounding_box_eq)
 def test_bounding_box_eq(
+    other: object,
+    expected: bool,
     bounding_box: BoundingBox,
 ) -> None:
-    other_x_min = -128
-    other_y_min = -64
-    other_x_max = 128
-    other_y_max = 192
-    other_bounding_box = BoundingBox(
-        x_min=other_x_min,
-        y_min=other_y_min,
-        x_max=other_x_max,
-        y_max=other_y_max,
-    )
+    equals = bounding_box == other
 
-    assert bounding_box == other_bounding_box
-
-    other_x_min = -64
-    other_y_min = -64
-    other_x_max = 64
-    other_y_max = 64
-    other_bounding_box = BoundingBox(
-        x_min=other_x_min,
-        y_min=other_y_min,
-        x_max=other_x_max,
-        y_max=other_y_max,
-    )
-
-    assert bounding_box != other_bounding_box
-
-    other = 'invalid'
-
-    assert bounding_box != other
+    assert equals is expected
 
 
 def test_bounding_box_len(
@@ -129,42 +141,37 @@ def test_bounding_box_len(
     assert len(bounding_box) == expected
 
 
+@pytest.mark.parametrize(('index', 'expected'), data_test_bounding_box_getitem)
 def test_bounding_box_getitem(
+    index: int,
+    expected: Coordinate,
     bounding_box: BoundingBox,
 ) -> None:
-    expected_x_min = bounding_box.x_min
-    expected_y_min = bounding_box.y_min
-    expected_x_max = bounding_box.x_max
-    expected_y_max = bounding_box.y_max
-
-    assert bounding_box[0] == expected_x_min
-    assert bounding_box[1] == expected_y_min
-    assert bounding_box[2] == expected_x_max
-    assert bounding_box[3] == expected_y_max
-    assert bounding_box[-1] == expected_y_max
-    assert bounding_box[-2] == expected_x_max
-    assert bounding_box[-3] == expected_y_min
-    assert bounding_box[-4] == expected_x_min
+    assert bounding_box[index] == expected
 
 
 def test_bounding_box_iter(
     bounding_box: BoundingBox,
 ) -> None:
+    expected_x_min = -128
+    expected_y_min = -64
+    expected_x_max = 128
+    expected_y_max = 192
     expected = [
-        bounding_box.x_min,
-        bounding_box.y_min,
-        bounding_box.x_max,
-        bounding_box.y_max,
+        expected_x_min,
+        expected_y_min,
+        expected_x_max,
+        expected_y_max,
     ]
 
     assert list(bounding_box) == expected
 
 
-@pytest.mark.parametrize(('buffer_size', 'expected'), data_test_bounding_box_buffer)
+@pytest.mark.parametrize(('bounding_box', 'buffer_size', 'expected'), data_test_bounding_box_buffer)
 def test_bounding_box_buffer(
+    bounding_box: BoundingBox,
     buffer_size: BufferSize,
     expected: BoundingBox,
-    bounding_box: BoundingBox,
 ) -> None:
     copied_bounding_box = copy.deepcopy(bounding_box)
 
@@ -175,13 +182,14 @@ def test_bounding_box_buffer(
 
     assert bounding_box == copied_bounding_box
     assert bounding_box_ == expected
+    assert id(bounding_box_) != id(bounding_box)
 
 
-@pytest.mark.parametrize(('buffer_size', 'expected'), data_test_bounding_box_buffer)
+@pytest.mark.parametrize(('bounding_box', 'buffer_size', 'expected'), data_test_bounding_box_buffer_inplace)
 def test_bounding_box_buffer_inplace(
+    bounding_box: BoundingBox,
     buffer_size: BufferSize,
     expected: BoundingBox,
-    bounding_box: BoundingBox,
 ) -> None:
     bounding_box.buffer(
         buffer_size=buffer_size,
@@ -189,6 +197,22 @@ def test_bounding_box_buffer_inplace(
     )
 
     assert bounding_box == expected
+
+
+@pytest.mark.parametrize(('bounding_box', 'buffer_size', 'expected'), data_test_bounding_box_buffer_inplace_return)
+def test_bounding_box_buffer_inplace_return(
+    bounding_box: BoundingBox,
+    buffer_size: BufferSize,
+    expected: BoundingBox,
+) -> None:
+    bounding_box_ = bounding_box.buffer(
+        buffer_size=buffer_size,
+        inplace=True,
+    )
+
+    assert bounding_box == expected
+    assert bounding_box_ == expected
+    assert id(bounding_box_) == id(bounding_box)
 
 
 @pytest.mark.parametrize(('buffer_size', 'message'), data_test_bounding_box_buffer_exceptions)
@@ -207,8 +231,9 @@ def test_bounding_box_buffer_exceptions(
 def test_bounding_box_buffer_defaults() -> None:
     signature = inspect.signature(BoundingBox.buffer)
     inplace = signature.parameters['inplace'].default
+    expected_inplace = False
 
-    assert inplace is False
+    assert inplace is expected_inplace
 
 
 @pytest.mark.parametrize(('bounding_box', 'value', 'expected'), data_test_bounding_box_quantize)
@@ -226,9 +251,10 @@ def test_bounding_box_quantize(
 
     assert bounding_box == copied_bounding_box
     assert bounding_box_ == expected
+    assert id(bounding_box_) != id(bounding_box)
 
 
-@pytest.mark.parametrize(('bounding_box', 'value', 'expected'), data_test_bounding_box_quantize)
+@pytest.mark.parametrize(('bounding_box', 'value', 'expected'), data_test_bounding_box_quantize_inplace)
 def test_bounding_box_quantize_inplace(
     bounding_box: BoundingBox,
     value: int,
@@ -240,6 +266,22 @@ def test_bounding_box_quantize_inplace(
     )
 
     assert bounding_box == expected
+
+
+@pytest.mark.parametrize(('bounding_box', 'value', 'expected'), data_test_bounding_box_quantize_inplace_return)
+def test_bounding_box_quantize_inplace_return(
+    bounding_box: BoundingBox,
+    value: int,
+    expected: BoundingBox,
+) -> None:
+    bounding_box_ = bounding_box.quantize(
+        value=value,
+        inplace=True,
+    )
+
+    assert bounding_box == expected
+    assert bounding_box_ == expected
+    assert id(bounding_box_) == id(bounding_box)
 
 
 @pytest.mark.parametrize(('value', 'message'), data_test_bounding_box_quantize_exceptions)
@@ -258,15 +300,18 @@ def test_bounding_box_quantize_exceptions(
 def test_bounding_box_quantize_defaults() -> None:
     signature = inspect.signature(BoundingBox.quantize)
     inplace = signature.parameters['inplace'].default
+    expected_inplace = False
 
-    assert inplace is False
+    assert inplace is expected_inplace
 
 
 def test_bounding_box_to_gdf(
     bounding_box: BoundingBox,
 ) -> None:
     epsg_code = 25832
+
     gdf = bounding_box.to_gdf(epsg_code=epsg_code)
+
     expected_geometry = [box(-128, -64, 128, 192)]
     expected_epsg_code = 25832
     expected = gpd.GeoDataFrame(
