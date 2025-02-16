@@ -7,12 +7,7 @@ from tests.core.conftest import get_bounding_box
 data_test_bounding_box_area = [
     # test case 1: bounding_box is in all quadrants
     (
-        BoundingBox(
-            x_min=-128,
-            y_min=-64,
-            x_max=128,
-            y_max=192,
-        ),
+        get_bounding_box(),
         65536,
     ),
     # test case 2: bounding_box is in the first quadrant
@@ -60,28 +55,13 @@ data_test_bounding_box_area = [
 data_test_bounding_box_buffer = [
     # test case 1: bounding_box is in all quadrants and buffer_size is 0
     (
-        BoundingBox(
-            x_min=-128,
-            y_min=-64,
-            x_max=128,
-            y_max=192,
-        ),
+        get_bounding_box(),
         0,
-        BoundingBox(
-            x_min=-128,
-            y_min=-64,
-            x_max=128,
-            y_max=192,
-        ),
+        get_bounding_box(),
     ),
     # test case 2: bounding_box is in all quadrants and buffer_size is positive
     (
-        BoundingBox(
-            x_min=-128,
-            y_min=-64,
-            x_max=128,
-            y_max=192,
-        ),
+        get_bounding_box(),
         32,
         BoundingBox(
             x_min=-160,
@@ -92,12 +72,7 @@ data_test_bounding_box_buffer = [
      ),
     # test case 3: bounding_box is in all quadrants and buffer_size is negative
     (
-        BoundingBox(
-            x_min=-128,
-            y_min=-64,
-            x_max=128,
-            y_max=192,
-        ),
+        get_bounding_box(),
         -32,
         BoundingBox(
             x_min=-96,
@@ -512,12 +487,7 @@ data_test_bounding_box_quantize = [
     ),
     # test case 4: bounding_box is in all quadrants and not divisible by value
     (
-        BoundingBox(
-            x_min=-128,
-            y_min=-64,
-            x_max=128,
-            y_max=192,
-        ),
+        get_bounding_box(),
         128,
         BoundingBox(
             x_min=-128,
