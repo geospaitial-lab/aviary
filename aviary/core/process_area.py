@@ -146,7 +146,7 @@ class ProcessArea(Iterable[Coordinates]):
         Returns:
             Coordinates (x_min, y_min) of each tile in meters
         """
-        return self._coordinates
+        return self._coordinates.copy()
 
     @property
     def tile_size(self) -> TileSize:
