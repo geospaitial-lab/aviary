@@ -113,7 +113,7 @@ class ProcessArea(Iterable[Coordinates]):
 
         unique_coordinates = duplicates_filter(coordinates=self._coordinates)  # returns a copy
 
-        if not np.array_equal(self._coordinates, unique_coordinates):
+        if len(self._coordinates) != len(unique_coordinates):
             message = (
                 'Invalid coordinates! '
                 'The coordinates must contain unique coordinates. '
@@ -407,6 +407,24 @@ class ProcessArea(Iterable[Coordinates]):
         """
         return len(self._coordinates)
 
+    def __contains__(
+        self,
+        coordinates: Coordinates,
+    ) -> bool:
+        """Checks if the coordinates are in the process area.
+
+        Parameters:
+            coordinates: Coordinates (x_min, y_min) of the tile in meters
+
+        Returns:
+            True if the coordinates are in the process area, False otherwise
+        """
+        coordinates = np.array([coordinates], dtype=np.int32)
+        coordinates = np.concatenate([self._coordinates, coordinates], axis=0)
+        unique_coordinates = duplicates_filter(coordinates=coordinates)
+        return len(coordinates) == len(unique_coordinates)
+
+
     @overload
     def __getitem__(
         self,
@@ -578,7 +596,7 @@ class ProcessArea(Iterable[Coordinates]):
         coordinates = np.concatenate([self._coordinates, coordinates], axis=0)
         unique_coordinates = duplicates_filter(coordinates=coordinates)
 
-        if not np.array_equal(coordinates, unique_coordinates):
+        if len(coordinates) != len(unique_coordinates):
             message = (
                 'Invalid coordinates! '
                 'The coordinates are already in the process area.'
