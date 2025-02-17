@@ -732,9 +732,10 @@ class ProcessArea(Iterable[Coordinates]):
             box(x_min, y_min, x_min + self._tile_size, y_min + self._tile_size)
             for x_min, y_min in self
         ]
+        epsg_code = f'EPSG:{epsg_code}'
         return gpd.GeoDataFrame(
             geometry=geometry,
-            crs=f'EPSG:{epsg_code}',
+            crs=epsg_code,
         )
 
     def to_json(self) -> str:
