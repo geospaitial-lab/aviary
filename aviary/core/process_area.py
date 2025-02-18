@@ -125,7 +125,8 @@ class ProcessArea(Iterable[Coordinates]):
                 stacklevel=2,
             )
 
-        self._coordinates = unique_coordinates
+        sorted_indices = np.lexsort((unique_coordinates[:, 0], unique_coordinates[:, 1]))
+        self._coordinates = unique_coordinates[sorted_indices]
 
     def _validate_tile_size(self) -> None:
         """Validates `tile_size`.

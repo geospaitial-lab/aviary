@@ -471,6 +471,16 @@ data_test_process_area_init = [
         get_process_area_coordinates(),
         128,
     ),
+    # test case 3: coordinates is not sorted
+    (
+        np.array(
+            [[0, 0], [-128, 0], [0, -128], [-128, -128]],
+            dtype=np.int32,
+        ),
+        128,
+        get_process_area_coordinates(),
+        128,
+    ),
 ]
 
 data_test_process_area_init_exceptions = [
