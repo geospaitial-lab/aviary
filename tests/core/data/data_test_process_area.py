@@ -4,23 +4,89 @@ import numpy as np
 
 from aviary.core.process_area import ProcessArea
 from tests.core.conftest import (
+    get_process_area,
     get_process_area_coordinates,
 )
 
 data_test_process_area_add = [
-
+    # test case 1: other contains no coordinates
+    (
+        ProcessArea(
+            coordinates=None,
+            tile_size=128,
+        ),
+        get_process_area(),
+    ),
+    # test case 2: other contains coordinates
+    (
+        ProcessArea(
+            coordinates=np.array(
+                [[-128, 0], [0, 0], [128, -128], [128, 0]],
+                dtype=np.int32,
+            ),
+            tile_size=128,
+        ),
+        ProcessArea(
+            coordinates=np.array(
+                [[-128, -128], [0, -128], [-128, 0], [0, 0], [128, -128], [128, 0]],
+                dtype=np.int32,
+            ),
+            tile_size=128,
+        ),
+    ),
 ]
 
 data_test_process_area_add_exceptions = [
-
+    # test case 1: tile_size is not equal
+    (
+        ProcessArea(
+            coordinates=None,
+            tile_size=64,
+        ),
+        re.escape('Invalid other! The tile sizes of the process areas must be equal.'),
+    ),
 ]
 
 data_test_process_area_and = [
-
+    # test case 1: other contains no coordinates
+    (
+        ProcessArea(
+            coordinates=None,
+            tile_size=128,
+        ),
+        ProcessArea(
+            coordinates=None,
+            tile_size=128,
+        ),
+    ),
+    # test case 2: other contains coordinates
+    (
+        ProcessArea(
+            coordinates=np.array(
+                [[-128, 0], [0, 0], [128, -128], [128, 0]],
+                dtype=np.int32,
+            ),
+            tile_size=128,
+        ),
+        ProcessArea(
+            coordinates=np.array(
+                [[-128, 0], [0, 0]],
+                dtype=np.int32,
+            ),
+            tile_size=128,
+        ),
+    ),
 ]
 
 data_test_process_area_and_exceptions = [
-
+    # test case 1: tile_size is not equal
+    (
+        ProcessArea(
+            coordinates=None,
+            tile_size=64,
+        ),
+        re.escape('Invalid other! The tile sizes of the process areas must be equal.'),
+    ),
 ]
 
 data_test_process_area_append = [
@@ -69,10 +135,7 @@ data_test_process_area_area = [
     ),
     # test case 3: process_area contains four coordinates
     (
-        ProcessArea(
-            coordinates=get_process_area_coordinates(),
-            tile_size=128,
-        ),
+        get_process_area(),
         65536,
     ),
 ]
@@ -117,10 +180,7 @@ data_test_process_area_from_json = [
     # test case 2: process_area contains coordinates
     (
         '{"coordinates": [[-128, -128], [0, -128], [-128, 0], [0, 0]], "tile_size": 128}',
-        ProcessArea(
-            coordinates=get_process_area_coordinates(),
-            tile_size=128,
-        ),
+        get_process_area(),
     ),
 ]
 
@@ -236,9 +296,40 @@ data_test_process_area_remove_warnings = [
 ]
 
 data_test_process_area_sub = [
-
+    # test case 1: other contains no coordinates
+    (
+        ProcessArea(
+            coordinates=None,
+            tile_size=128,
+        ),
+        get_process_area(),
+    ),
+    # test case 2: other contains coordinates
+    (
+        ProcessArea(
+            coordinates=np.array(
+                [[-128, 0], [0, 0], [128, -128], [128, 0]],
+                dtype=np.int32,
+            ),
+            tile_size=128,
+        ),
+        ProcessArea(
+            coordinates=np.array(
+                [[-128, -128], [0, -128]],
+                dtype=np.int32,
+            ),
+            tile_size=128,
+        ),
+    ),
 ]
 
 data_test_process_area_sub_exceptions = [
-
+    # test case 1: tile_size is not equal
+    (
+        ProcessArea(
+            coordinates=None,
+            tile_size=64,
+        ),
+        re.escape('Invalid other! The tile sizes of the process areas must be equal.'),
+    ),
 ]
