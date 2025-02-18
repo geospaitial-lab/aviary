@@ -17,11 +17,8 @@ from aviary._functional.geodata.geodata_postprocessor import (
     value_postprocessor,
 )
 
-# noinspection PyProtectedMember
-from aviary._utils.mixins import FromConfigMixin
 
-
-class GeodataPostprocessor(ABC, FromConfigMixin):
+class GeodataPostprocessor(ABC):
     """Abstract class for geodata postprocessors
 
     Geodata postprocessors are callables that postprocess geodata.
@@ -79,8 +76,8 @@ class ClipPostprocessor(GeodataPostprocessor):
         Returns:
             clip postprocessor
         """
-        # noinspection PyTypeChecker
-        return super().from_config(config)
+        config = config.model_dump()
+        return cls(**config)
 
     def __call__(
         self,
@@ -241,8 +238,8 @@ class FieldNamePostprocessor(GeodataPostprocessor):
         Returns:
             field name postprocessor
         """
-        # noinspection PyTypeChecker
-        return super().from_config(config)
+        config = config.model_dump()
+        return cls(**config)
 
     def __call__(
         self,
@@ -297,8 +294,8 @@ class FillPostprocessor(GeodataPostprocessor):
         Returns:
             fill postprocessor
         """
-        # noinspection PyTypeChecker
-        return super().from_config(config)
+        config = config.model_dump()
+        return cls(**config)
 
     def __call__(
         self,
@@ -353,8 +350,8 @@ class SievePostprocessor(GeodataPostprocessor):
         Returns:
             sieve postprocessor
         """
-        # noinspection PyTypeChecker
-        return super().from_config(config)
+        config = config.model_dump()
+        return cls(**config)
 
     def __call__(
         self,
@@ -411,8 +408,8 @@ class SimplifyPostprocessor(GeodataPostprocessor):
         Returns:
             simplify postprocessor
         """
-        # noinspection PyTypeChecker
-        return super().from_config(config)
+        config = config.model_dump()
+        return cls(**config)
 
     def __call__(
         self,
@@ -489,8 +486,8 @@ class ValuePostprocessor(GeodataPostprocessor):
         Returns:
             value postprocessor
         """
-        # noinspection PyTypeChecker
-        return super().from_config(config)
+        config = config.model_dump()
+        return cls(**config)
 
     def __call__(
         self,

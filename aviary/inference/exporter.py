@@ -11,9 +11,6 @@ if TYPE_CHECKING:
 
 # noinspection PyProtectedMember
 from aviary._functional.inference.exporter import segmentation_exporter
-
-# noinspection PyProtectedMember
-from aviary._utils.mixins import FromConfigMixin
 from aviary.core.type_aliases import (  # noqa: TC001
     CoordinatesSet,
     EPSGCode,
@@ -46,7 +43,7 @@ class Exporter(Protocol):
         ...
 
 
-class SegmentationExporter(FromConfigMixin):
+class SegmentationExporter:
     """Exporter for segmentation predictions
 
     Implements the `Exporter` protocol.
@@ -104,8 +101,8 @@ class SegmentationExporter(FromConfigMixin):
         Returns:
             segmentation exporter
         """
-        # noinspection PyTypeChecker
-        return super().from_config(config)
+        config = config.model_dump()
+        return cls(**config)
 
     def __call__(
         self,

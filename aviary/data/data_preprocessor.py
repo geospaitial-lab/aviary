@@ -16,11 +16,8 @@ from aviary._functional.data.data_preprocessor import (
     standardize_preprocessor,
 )
 
-# noinspection PyProtectedMember
-from aviary._utils.mixins import FromConfigMixin
 
-
-class DataPreprocessor(ABC, FromConfigMixin):
+class DataPreprocessor(ABC):
     """Abstract class for data preprocessors
 
     Data preprocessors are callables that preprocess data.
@@ -163,8 +160,8 @@ class NormalizePreprocessor(DataPreprocessor):
         Returns:
             normalize preprocessor
         """
-        # noinspection PyTypeChecker
-        return super().from_config(config)
+        config = config.model_dump()
+        return cls(**config)
 
     def __call__(
         self,
@@ -238,8 +235,8 @@ class StandardizePreprocessor(DataPreprocessor):
         Returns:
             standardize preprocessor
         """
-        # noinspection PyTypeChecker
-        return super().from_config(config)
+        config = config.model_dump()
+        return cls(**config)
 
     def __call__(
         self,
