@@ -210,7 +210,21 @@ data_test_process_area_from_json = [
 ]
 
 data_test_process_area_from_json_exceptions = [
-
+    # test case 1: json_string does not contain the keys coordinates and tile_size
+    (
+        '{}',
+        re.escape('Invalid json_string! The JSON string must contain the keys coordinates and tile_size.'),
+    ),
+    # test case 2: json_string does not contain the key tile_size
+    (
+        '{"coordinates": [[-128, -128], [0, -128], [-128, 0], [0, 0]]}',
+        re.escape('Invalid json_string! The JSON string must contain the keys coordinates and tile_size.'),
+    ),
+    # test case 3: json_string does not contain the key coordinates
+    (
+        '{"tile_size": 128}',
+        re.escape('Invalid json_string! The JSON string must contain the keys coordinates and tile_size.'),
+    ),
 ]
 
 data_test_process_area_getitem = [
