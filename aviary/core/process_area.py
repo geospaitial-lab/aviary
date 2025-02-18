@@ -430,7 +430,7 @@ class ProcessArea(Iterable[Coordinates]):
         coordinates = np.array([coordinates], dtype=np.int32)
         coordinates = np.concatenate([self._coordinates, coordinates], axis=0)
         unique_coordinates = duplicates_filter(coordinates=coordinates)
-        return len(coordinates) == len(unique_coordinates)
+        return len(coordinates) != len(unique_coordinates)
 
 
     @overload

@@ -35,6 +35,7 @@ from tests.core.data.data_test_process_area import (
     data_test_process_area_area,
     data_test_process_area_chunk,
     data_test_process_area_chunk_exceptions,
+    data_test_process_area_contains,
     data_test_process_area_eq,
     data_test_process_area_from_bounding_box,
     data_test_process_area_from_bounding_box_exceptions,
@@ -296,6 +297,17 @@ def test_process_area_len(
     expected = 4
 
     assert len(process_area) == expected
+
+
+@pytest.mark.parametrize(('coordinates', 'expected'), data_test_process_area_contains)
+def test_process_area_contains(
+    coordinates: Coordinates,
+    expected: bool,
+    process_area: ProcessArea,
+) -> None:
+    contains = coordinates in process_area
+
+    assert contains is expected
 
 
 @pytest.mark.parametrize(('index', 'expected'), data_test_process_area_getitem)

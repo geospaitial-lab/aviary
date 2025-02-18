@@ -253,6 +253,15 @@ data_test_process_area_chunk_exceptions = [
     ),
 ]
 
+data_test_process_area_contains = [
+    ((-128, -128), True),
+    ((0, -128), True),
+    ((-128, 0), True),
+    ((0, 0), True),
+    ((128, -128), False),
+    ((128, 0), False),
+]
+
 data_test_process_area_eq = [
     # test case 1: other is equal
     (
