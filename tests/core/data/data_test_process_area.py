@@ -189,11 +189,81 @@ data_test_process_area_from_json_exceptions = [
 ]
 
 data_test_process_area_getitem = [
-
+    (0, (-128, -128)),
+    (1, (0, -128)),
+    (2, (-128, 0)),
+    (3, (0, 0)),
+    (-1, (0, 0)),
+    (-2, (-128, 0)),
+    (-3, (0, -128)),
+    (-4, (-128, -128)),
 ]
 
 data_test_process_area_getitem_slice = [
-
+    (
+        slice(None, 2),
+        ProcessArea(
+            coordinates=np.array(
+                [[-128, -128], [0, -128]],
+                dtype=np.int32,
+            ),
+            tile_size=128,
+        ),
+    ),
+    (
+        slice(2, None),
+        ProcessArea(
+            coordinates=np.array(
+                [[-128, 0], [0, 0]],
+                dtype=np.int32,
+            ),
+            tile_size=128,
+        ),
+    ),
+    (
+        slice(1, -1),
+        ProcessArea(
+            coordinates=np.array(
+                [[0, -128], [-128, 0]],
+                dtype=np.int32,
+            ),
+            tile_size=128,
+        ),
+    ),
+    (
+        slice(None, None),
+        get_process_area(),
+    ),
+    (
+        slice(None, None, 2),
+        ProcessArea(
+            coordinates=np.array(
+                [[-128, -128], [-128, 0]],
+                dtype=np.int32,
+            ),
+            tile_size=128,
+        ),
+    ),
+    (
+        slice(None, None, -2),
+        ProcessArea(
+            coordinates=np.array(
+                [[0, 0], [0, -128]],
+                dtype=np.int32,
+            ),
+            tile_size=128,
+        ),
+    ),
+    (
+        slice(None, None, -1),
+        ProcessArea(
+            coordinates=np.array(
+                [[0, 0], [-128, 0], [0, -128], [-128, -128]],
+                dtype=np.int32,
+            ),
+            tile_size=128,
+        ),
+    ),
 ]
 
 data_test_process_area_init = [
