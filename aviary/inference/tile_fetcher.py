@@ -15,9 +15,6 @@ from aviary._functional.inference.tile_fetcher import (
     vrt_fetcher,
     wms_fetcher,
 )
-
-# noinspection PyProtectedMember
-from aviary._utils.mixins import FromConfigMixin
 from aviary.core.enums import (
     InterpolationMode,
     WMSVersion,
@@ -67,7 +64,7 @@ class TileFetcher(Protocol):
         ...
 
 
-class CompositeFetcher(FromConfigMixin):
+class CompositeFetcher:
     """Tile fetcher that composes multiple tile fetchers
 
     Implements the `TileFetcher` protocol.
@@ -163,7 +160,7 @@ class TileFetcherConfig(pydantic.BaseModel):
     )
 
 
-class VRTFetcher(FromConfigMixin):
+class VRTFetcher:
     """Tile fetcher for virtual rasters
 
     Implements the `TileFetcher` protocol.
@@ -211,8 +208,8 @@ class VRTFetcher(FromConfigMixin):
         Returns:
             vrt fetcher
         """
-        # noinspection PyTypeChecker
-        return super().from_config(config)
+        config = config.model_dump()
+        return cls(**config)
 
     def __call__(
         self,
@@ -260,7 +257,7 @@ class VRTFetcherConfig(pydantic.BaseModel):
     ignore_channels: ChannelTypeSet | None = None
 
 
-class WMSFetcher(FromConfigMixin):
+class WMSFetcher:
     """Tile fetcher for web map services
 
     Implements the `TileFetcher` protocol.
@@ -320,8 +317,8 @@ class WMSFetcher(FromConfigMixin):
         Returns:
             wms fetcher
         """
-        # noinspection PyTypeChecker
-        return super().from_config(config)
+        config = config.model_dump()
+        return cls(**config)
 
     def __call__(
         self,
