@@ -76,7 +76,8 @@ def geospatial_filter(
     Raises:
         AviaryUserError: Invalid geospatial filter mode
     """
-    epsg_code = gdf.crs.to_epsg()
+    epsg_code = gdf.crs.to_epsg() if gdf.crs is not None else None
+
     grid = _generate_grid(
         coordinates=coordinates,
         tile_size=tile_size,
@@ -104,7 +105,7 @@ def geospatial_filter(
 def _generate_grid(
     coordinates: CoordinatesSet,
     tile_size: TileSize,
-    epsg_code: EPSGCode,
+    epsg_code: EPSGCode | None,
 ) -> gpd.GeoDataFrame:
     """Generates a geodataframe of the grid.
 
@@ -116,13 +117,16 @@ def _generate_grid(
     Returns:
         grid
     """
+    if epsg_code is not None:
+        epsg_code = f'EPSG:{epsg_code}'
+
     tiles = _generate_tiles(
         coordinates=coordinates,
         tile_size=tile_size,
     )
     return gpd.GeoDataFrame(
         geometry=tiles,
-        crs=f'EPSG:{epsg_code}',
+        crs=epsg_code,
     )
 
 

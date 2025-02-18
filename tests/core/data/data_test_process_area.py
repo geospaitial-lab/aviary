@@ -1,7 +1,13 @@
 import copy
 import re
 
+import geopandas as gpd
 import numpy as np
+from shapely.geometry import (
+    Point,
+    Polygon,
+    box,
+)
 
 from aviary.core.process_area import ProcessArea
 from tests.core.conftest import (
@@ -342,11 +348,135 @@ data_test_process_area_from_bounding_box_exceptions = [
 ]
 
 data_test_process_area_from_gdf = [
-
+    # test case 1: gdf contains a box and quantize is False
+    (
+        gpd.GeoDataFrame(
+            geometry=[box(-128, -64, 128, 192)],
+        ),
+        128,
+        False,
+        ProcessArea(
+            coordinates=np.array(
+                [[-128, -64], [0, -64], [-128, 64], [0, 64]],
+                dtype=np.int32,
+            ),
+            tile_size=128,
+        ),
+    ),
+    # test case 2: gdf contains a box and quantize is True
+    (
+        gpd.GeoDataFrame(
+            geometry=[box(-128, -64, 128, 192)],
+        ),
+        128,
+        True,
+        ProcessArea(
+            coordinates=np.array(
+                [[-128, -128], [0, -128], [-128, 0], [0, 0], [-128, 128], [0, 128]],
+                dtype=np.int32,
+            ),
+            tile_size=128,
+        ),
+    ),
+    # test case 3: gdf contains boxes and quantize is False
+    (
+        gpd.GeoDataFrame(
+            geometry=[
+                box(-128, -64, -96, -32),
+                box(96, 160, 128, 192),
+            ],
+        ),
+        128,
+        False,
+        ProcessArea(
+            coordinates=np.array(
+                [[-128, -64], [0, 64]],
+                dtype=np.int32,
+            ),
+            tile_size=128,
+        ),
+    ),
+    # test case 4: gdf contains boxes and quantize is True
+    (
+        gpd.GeoDataFrame(
+            geometry=[
+                box(-128, -64, -96, -32),
+                box(96, 160, 128, 192),
+            ],
+        ),
+        128,
+        True,
+        ProcessArea(
+            coordinates=np.array(
+                [[-128, -128], [0, 128]],
+                dtype=np.int32,
+            ),
+            tile_size=128,
+        ),
+    ),
+    # test case 5: gdf contains a polygon and quantize is False
+    (
+        gpd.GeoDataFrame(
+            geometry=[Polygon([[-128, 64], [0, -64], [128, 64], [0, 192]])],
+        ),
+        128,
+        False,
+        ProcessArea(
+            coordinates=np.array(
+                [[-128, -64], [0, -64], [-128, 64], [0, 64]],
+                dtype=np.int32,
+            ),
+            tile_size=128,
+        ),
+    ),
+    # test case 6: gdf contains a polygon and quantize is True
+    (
+        gpd.GeoDataFrame(
+            geometry=[Polygon([[-128, 64], [0, -64], [128, 64], [0, 192]])],
+        ),
+        128,
+        True,
+        ProcessArea(
+            coordinates=np.array(
+                [[-128, -128], [0, -128], [-128, 0], [0, 0], [-128, 128], [0, 128]],
+                dtype=np.int32,
+            ),
+            tile_size=128,
+        ),
+    ),
 ]
 
 data_test_process_area_from_gdf_exceptions = [
-
+    # test case 1: gdf contains no geometries
+    (
+        gpd.GeoDataFrame(),
+        128,
+        re.escape('Invalid gdf! The geodataframe must contain at least one geometry.'),
+    ),
+    # test case 2: gdf contains geometries other than polygons
+    (
+        gpd.GeoDataFrame(
+            geometry=[Point(0, 0)],
+        ),
+        128,
+        re.escape('Invalid gdf! The geodataframe must contain only polygons.'),
+    ),
+    # test case 3: tile_size is negative
+    (
+        gpd.GeoDataFrame(
+            geometry=[box(-128, -64, 128, 192)],
+        ),
+        -128,
+        re.escape('Invalid tile_size! The tile size must be positive.'),
+    ),
+    # test case 4: tile_size is 0
+    (
+        gpd.GeoDataFrame(
+            geometry=[box(-128, -64, 128, 192)],
+        ),
+        0,
+        re.escape('Invalid tile_size! The tile size must be positive.'),
+    ),
 ]
 
 data_test_process_area_from_json = [
