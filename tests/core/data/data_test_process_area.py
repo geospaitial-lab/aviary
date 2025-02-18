@@ -141,11 +141,115 @@ data_test_process_area_area = [
 ]
 
 data_test_process_area_chunk = [
-
+    # test case 1: len(coordinates) is divisible by num_chunks
+    (
+        get_process_area(),
+        2,
+        [
+            ProcessArea(
+                coordinates=np.array(
+                    [[-128, -128], [0, -128]],
+                    dtype=np.int32,
+                ),
+                tile_size=128,
+            ),
+            ProcessArea(
+                coordinates=np.array(
+                    [[-128, 0], [0, 0]],
+                    dtype=np.int32,
+                ),
+                tile_size=128,
+            ),
+        ],
+    ),
+    # test case 2: len(coordinates) is not divisible by num_chunks
+    (
+        ProcessArea(
+            coordinates=np.array(
+                [[-128, -128], [0, -128], [-128, 0], [0, 0], [128, -128]],
+                dtype=np.int32,
+            ),
+            tile_size=128,
+        ),
+        2,
+        [
+            ProcessArea(
+                coordinates=np.array(
+                    [[-128, -128], [0, -128], [-128, 0]],
+                    dtype=np.int32,
+                ),
+                tile_size=128,
+            ),
+            ProcessArea(
+                coordinates=np.array(
+                    [[0, 0], [128, -128]],
+                    dtype=np.int32,
+                ),
+                tile_size=128,
+            ),
+        ],
+    ),
+    # test case 3: num_chunks is equal to len(coordinates)
+    (
+        get_process_area(),
+        4,
+        [
+            ProcessArea(
+                coordinates=np.array(
+                    [[-128, -128]],
+                    dtype=np.int32,
+                ),
+                tile_size=128,
+            ),
+            ProcessArea(
+                coordinates=np.array(
+                    [[0, -128]],
+                    dtype=np.int32,
+                ),
+                tile_size=128,
+            ),
+            ProcessArea(
+                coordinates=np.array(
+                    [[-128, 0]],
+                    dtype=np.int32,
+                ),
+                tile_size=128,
+            ),
+            ProcessArea(
+                coordinates=np.array(
+                    [[0, 0]],
+                    dtype=np.int32,
+                ),
+                tile_size=128,
+            ),
+        ],
+    ),
+    # test case 4: num_chunks is 1
+    (
+        get_process_area(),
+        1,
+        [
+            get_process_area(),
+        ],
+    ),
 ]
 
 data_test_process_area_chunk_exceptions = [
-
+    # test case 1: num_chunks is negative
+    (
+        -2,
+        re.escape('Invalid num_chunks! The number of chunks must be in the range [1, n].'),
+    ),
+    # test case 2: num_chunks is 0
+    (
+        0,
+        re.escape('Invalid num_chunks! The number of chunks must be in the range [1, n].'),
+    ),
+    # test case 3: num_chunks is greater than len(coordinates)
+    (
+        5,
+        re.escape('Invalid num_chunks! The number of chunks must be in the range [1, n].'),
+    ),
 ]
 
 data_test_process_area_eq = [
@@ -362,16 +466,16 @@ data_test_process_area_init_exceptions = [
         128,
         re.escape('Invalid coordinates! The coordinates must be in shape (n, 2) and data type int32.'),
     ),
-    # test case 5: tile_size is 0
-    (
-        get_process_area_coordinates(),
-        0,
-        re.escape('Invalid tile_size! The tile size must be positive.'),
-    ),
-    # test case 6: tile_size is negative
+    # test case 5: tile_size is negative
     (
         get_process_area_coordinates(),
         -128,
+        re.escape('Invalid tile_size! The tile size must be positive.'),
+    ),
+    # test case 6: tile_size is 0
+    (
+        get_process_area_coordinates(),
+        0,
         re.escape('Invalid tile_size! The tile size must be positive.'),
     ),
 ]
