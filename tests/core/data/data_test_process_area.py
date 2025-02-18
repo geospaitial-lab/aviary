@@ -3,9 +3,52 @@ import re
 import numpy as np
 
 from aviary.core.process_area import ProcessArea
+from tests.core.conftest import (
+    get_process_area_coordinates,
+)
+
+data_test_process_area_add = [
+
+]
+
+data_test_process_area_add_exceptions = [
+
+]
+
+data_test_process_area_and = [
+
+]
+
+data_test_process_area_and_exceptions = [
+
+]
+
+data_test_process_area_append = [
+
+]
+
+data_test_process_area_append_inplace = [
+
+]
+
+data_test_process_area_append_inplace_return = [
+
+]
+
+data_test_process_area_append_inplace_return_warnings = [
+
+]
+
+data_test_process_area_append_inplace_warnings = [
+
+]
+
+data_test_process_area_append_warnings = [
+
+]
 
 data_test_process_area_area = [
-    # test case 1: process area has no tiles
+    # test case 1: process_area contains no coordinates
     (
         ProcessArea(
             coordinates=None,
@@ -13,26 +56,57 @@ data_test_process_area_area = [
         ),
         0,
     ),
-    # test case 2: process area has one tile
+    # test case 2: process_area contains one coordinates
     (
         ProcessArea(
-            coordinates=np.array([[-128, -128]], dtype=np.int32),
+            coordinates=np.array(
+                [[-128, -128]],
+                dtype=np.int32,
+            ),
             tile_size=128,
         ),
         16384,
     ),
-    # test case 3: process area has four tiles
+    # test case 3: process_area contains four coordinates
     (
         ProcessArea(
-            coordinates=np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32),
+            coordinates=get_process_area_coordinates(),
             tile_size=128,
         ),
         65536,
     ),
 ]
 
+data_test_process_area_chunk = [
+
+]
+
+data_test_process_area_chunk_exceptions = [
+
+]
+
+data_test_process_area_eq = [
+
+]
+
+data_test_process_area_from_bounding_box = [
+
+]
+
+data_test_process_area_from_bounding_box_exceptions = [
+
+]
+
+data_test_process_area_from_gdf = [
+
+]
+
+data_test_process_area_from_gdf_exceptions = [
+
+]
+
 data_test_process_area_from_json = [
-    # test case 1: process area has no tiles
+    # test case 1: process_area contains no coordinates
     (
         '{"coordinates": [], "tile_size": 128}',
         ProcessArea(
@@ -40,74 +114,131 @@ data_test_process_area_from_json = [
             tile_size=128,
         ),
     ),
-    # test case 2: process area has one tile
-    (
-        '{"coordinates": [[-128, -128]], "tile_size": 128}',
-        ProcessArea(
-            coordinates=np.array([[-128, -128]], dtype=np.int32),
-            tile_size=128,
-        ),
-    ),
-    # test case 3: process area has four tiles
+    # test case 2: process_area contains coordinates
     (
         '{"coordinates": [[-128, -128], [0, -128], [-128, 0], [0, 0]], "tile_size": 128}',
         ProcessArea(
-            coordinates=np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32),
+            coordinates=get_process_area_coordinates(),
             tile_size=128,
         ),
     ),
 ]
 
+data_test_process_area_from_json_exceptions = [
+
+]
+
+data_test_process_area_getitem = [
+
+]
+
+data_test_process_area_getitem_slice = [
+
+]
+
 data_test_process_area_init = [
-    # test case 1: process area has no tiles
+    # test case 1: process_area contains no coordinates
     (
         None,
         128,
-        np.empty(shape=(0, 2), dtype=np.int32),
-    ),
-    # test case 2: process area has one tile
-    (
-        np.array([[-128, -128]], dtype=np.int32),
+        np.empty(
+            shape=(0, 2),
+            dtype=np.int32,
+        ),
         128,
-        np.array([[-128, -128]], dtype=np.int32),
     ),
-    # test case 3: process area has four tiles
+    # test case 2: process_area contains coordinates
     (
-        np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32),
+        get_process_area_coordinates(),
         128,
-        np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32),
+        get_process_area_coordinates(),
+        128,
     ),
 ]
 
-data_test_process_area_validation = [
-    # test case 1: coordinates has not 2 dimensions
+data_test_process_area_init_exceptions = [
+    # test case 1: coordinates has one dimension
     (
-        np.arange(8, dtype=np.int32).reshape(4, 2, 1),
-        1,
-        re.escape('Invalid coordinates! coordinates must be an array of shape (n, 2) and data type int32.'),
+        np.arange(
+            8,
+            dtype=np.int32,
+        ),
+        128,
+        re.escape('Invalid coordinates! The coordinates must be in shape (n, 2) and data type int32.'),
     ),
-    # test case 2: coordinates has not 2 values in the second dimension
+    # test case 2: coordinates has three dimensions
     (
-        np.arange(8, dtype=np.int32).reshape(2, 4),
-        1,
-        re.escape('Invalid coordinates! coordinates must be an array of shape (n, 2) and data type int32.'),
+        np.arange(
+            8,
+            dtype=np.int32,
+        ).reshape(2, 2, 2),
+        128,
+        re.escape('Invalid coordinates! The coordinates must be in shape (n, 2) and data type int32.'),
     ),
-    # test case 3: coordinates is not of data type int32
+    # test case 3: coordinates has not two values in the second dimension
     (
-        np.arange(8, dtype=np.float32).reshape(4, 2),
-        1,
-        re.escape('Invalid coordinates! coordinates must be an array of shape (n, 2) and data type int32.'),
+        np.arange(
+            8,
+            dtype=np.int32,
+        ).reshape(2, 4),
+        128,
+        re.escape('Invalid coordinates! The coordinates must be in shape (n, 2) and data type int32.'),
     ),
-    # test case 4: tile_size is 0
+    # test case 4: coordinates is not of data type int32
     (
-        np.arange(8, dtype=np.int32).reshape(4, 2),
+        np.arange(
+            8,
+            dtype=np.float32,
+        ).reshape(4, 2),
+        128,
+        re.escape('Invalid coordinates! The coordinates must be in shape (n, 2) and data type int32.'),
+    ),
+    # test case 5: tile_size is 0
+    (
+        get_process_area_coordinates(),
         0,
-        re.escape('Invalid tile size! tile_size must be positive.'),
+        re.escape('Invalid tile_size! The tile size must be positive.'),
     ),
-    # test case 5: tile_size is negative
+    # test case 6: tile_size is negative
     (
-        np.arange(8, dtype=np.int32).reshape(4, 2),
-        -1,
-        re.escape('Invalid tile size! tile_size must be positive.'),
+        get_process_area_coordinates(),
+        -128,
+        re.escape('Invalid tile_size! The tile size must be positive.'),
     ),
+]
+
+data_test_process_area_init_warnings = [
+
+]
+
+data_test_process_area_remove = [
+
+]
+
+data_test_process_area_remove_inplace = [
+
+]
+
+data_test_process_area_remove_inplace_return = [
+
+]
+
+data_test_process_area_remove_inplace_return_warnings = [
+
+]
+
+data_test_process_area_remove_inplace_warnings = [
+
+]
+
+data_test_process_area_remove_warnings = [
+
+]
+
+data_test_process_area_sub = [
+
+]
+
+data_test_process_area_sub_exceptions = [
+
 ]
