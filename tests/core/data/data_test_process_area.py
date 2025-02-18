@@ -1,3 +1,4 @@
+import copy
 import re
 
 import numpy as np
@@ -91,28 +92,35 @@ data_test_process_area_and_exceptions = [
 ]
 
 data_test_process_area_append = [
-
+    # test case 1: Default
+    (
+        get_process_area(),
+        (128, -128),
+        ProcessArea(
+            coordinates=np.array(
+                [[-128, -128], [0, -128], [-128, 0], [0, 0], [128, -128]],
+                dtype=np.int32,
+            ),
+            tile_size=128,
+        ),
+    ),
 ]
 
-data_test_process_area_append_inplace = [
-
-]
-
-data_test_process_area_append_inplace_return = [
-
-]
-
-data_test_process_area_append_inplace_return_warnings = [
-
-]
-
-data_test_process_area_append_inplace_warnings = [
-
-]
+data_test_process_area_append_inplace = copy.deepcopy(data_test_process_area_append)
+data_test_process_area_append_inplace_return = copy.deepcopy(data_test_process_area_append)
 
 data_test_process_area_append_warnings = [
-
+    # test case 1: coordinates contains duplicates
+    (
+        get_process_area(),
+        (-128, -128),
+        get_process_area(),
+        re.escape('Invalid coordinates! The coordinates are already in the process area.'),
+    ),
 ]
+
+data_test_process_area_append_inplace_warnings = copy.deepcopy(data_test_process_area_append_warnings)
+data_test_process_area_append_inplace_return_warnings = copy.deepcopy(data_test_process_area_append_warnings)
 
 data_test_process_area_area = [
     # test case 1: process_area contains no coordinates
