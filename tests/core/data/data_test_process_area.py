@@ -176,14 +176,14 @@ data_test_process_area_chunk = [
         [
             ProcessArea(
                 coordinates=np.array(
-                    [[-128, -128], [0, -128], [-128, 0]],
+                    [[-128, -128], [0, -128], [128, -128]],
                     dtype=np.int32,
                 ),
                 tile_size=128,
             ),
             ProcessArea(
                 coordinates=np.array(
-                    [[0, 0], [128, -128]],
+                    [[-128, 0], [0, 0]],
                     dtype=np.int32,
                 ),
                 tile_size=128,
