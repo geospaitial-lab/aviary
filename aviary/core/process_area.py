@@ -638,7 +638,17 @@ class ProcessArea(Iterable[Coordinates]):
 
         Returns:
             Process areas
+
+        Raises:
+            AviaryUserError: Invalid `num_chunks` (the number of chunks is negative or zero)
         """
+        if num_chunks <= 0:
+            message = (
+                'Invalid num_chunks! '
+                'The number of chunks must be positive.'
+            )
+            raise AviaryUserError(message)
+
         return [
             ProcessArea(
                 coordinates=coordinates,
