@@ -640,12 +640,12 @@ class ProcessArea(Iterable[Coordinates]):
             Process areas
 
         Raises:
-            AviaryUserError: Invalid `num_chunks` (the number of chunks is negative or zero)
+            AviaryUserError: Invalid `num_chunks` (the number of chunks is not in the range [1, n])
         """
-        if num_chunks <= 0:
+        if num_chunks < 1 or num_chunks > len(self):
             message = (
                 'Invalid num_chunks! '
-                'The number of chunks must be positive.'
+                'The number of chunks must be in the range [1, n].'
             )
             raise AviaryUserError(message)
 
