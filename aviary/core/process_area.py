@@ -221,12 +221,20 @@ class ProcessArea(Iterable[Coordinates]):
 
         Raises:
             AviaryUserError: Invalid `gdf` (the geodataframe contains no geometries)
+            AviaryUserError: Invalid `gdf` (the geodataframe contains geometries other than polygons)
             AviaryUserError: Invalid `tile_size` (the tile size is negative or zero)
         """
         if gdf.empty:
             message = (
                 'Invalid gdf! '
                 'The geodataframe must contain at least one geometry.'
+            )
+            raise AviaryUserError(message)
+
+        if not all(gdf.geometry.geom_type == 'Polygon'):
+            message = (
+                'Invalid gdf! '
+                'The geodataframe must contain only polygons.'
             )
             raise AviaryUserError(message)
 
