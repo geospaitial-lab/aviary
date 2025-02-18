@@ -110,7 +110,7 @@ data_test_process_area_append_inplace = copy.deepcopy(data_test_process_area_app
 data_test_process_area_append_inplace_return = copy.deepcopy(data_test_process_area_append)
 
 data_test_process_area_append_warnings = [
-    # test case 1: coordinates contains duplicates
+    # test case 1: coordinates is already in process_area
     (
         get_process_area(),
         (-128, -128),
@@ -557,28 +557,36 @@ data_test_process_area_init_warnings = [
 ]
 
 data_test_process_area_remove = [
-
+    # test case 1: Default
+    (
+        get_process_area(),
+        (-128, -128),
+        ProcessArea(
+            coordinates=np.array(
+                [[0, -128], [-128, 0], [0, 0]],
+                dtype=np.int32,
+            ),
+            tile_size=128,
+        ),
+    ),
 ]
 
-data_test_process_area_remove_inplace = [
+data_test_process_area_remove_inplace = copy.deepcopy(data_test_process_area_remove)
+data_test_process_area_remove_inplace_return = copy.deepcopy(data_test_process_area_remove)
 
-]
-
-data_test_process_area_remove_inplace_return = [
-
-]
-
-data_test_process_area_remove_inplace_return_warnings = [
-
-]
-
-data_test_process_area_remove_inplace_warnings = [
-
-]
 
 data_test_process_area_remove_warnings = [
-
+    # test case 1: coordinates is not in process_area
+    (
+        get_process_area(),
+        (128, -128),
+        get_process_area(),
+        re.escape('Invalid coordinates! The coordinates are not in the process area.'),
+    ),
 ]
+
+data_test_process_area_remove_inplace_warnings = copy.deepcopy(data_test_process_area_remove_warnings)
+data_test_process_area_remove_inplace_return_warnings = copy.deepcopy(data_test_process_area_remove_warnings)
 
 data_test_process_area_sub = [
     # test case 1: other contains no coordinates

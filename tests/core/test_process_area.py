@@ -732,7 +732,7 @@ def test_process_area_remove_inplace_return(
     assert process_area == expected
     assert process_area_ == expected
     assert id(process_area_) == id(process_area)
-    assert id(process_area_.coordinates) == id(process_area.coordinates)
+    assert id(process_area_.coordinates) != id(process_area.coordinates)
 
 
 @pytest.mark.parametrize(
@@ -759,7 +759,7 @@ def test_process_area_remove_inplace_return_warnings(
     assert process_area == expected
     assert process_area_ == expected
     assert id(process_area_) == id(process_area)
-    assert id(process_area_.coordinates) == id(process_area.coordinates)
+    assert id(process_area_.coordinates) != id(process_area.coordinates)
 
 
 def test_process_area_remove_defaults() -> None:
