@@ -338,7 +338,17 @@ data_test_process_area_init_exceptions = [
 ]
 
 data_test_process_area_init_warnings = [
-
+    # test case 1: coordinates contains duplicates
+    (
+        np.array(
+            [[-128, -128], [0, -128], [-128, 0], [0, 0], [-128, -128], [0, 0]],
+            dtype=np.int32,
+        ),
+        128,
+        get_process_area_coordinates(),
+        128,
+        re.escape('Invalid coordinates! The coordinates must contain unique coordinates. Duplicates are removed.'),
+    ),
 ]
 
 data_test_process_area_remove = [
