@@ -4,6 +4,7 @@ import numpy as np
 
 from aviary.core.process_area import ProcessArea
 from tests.core.conftest import (
+    get_bounding_box,
     get_process_area,
     get_process_area_coordinates,
 )
@@ -282,11 +283,45 @@ data_test_process_area_eq = [
 ]
 
 data_test_process_area_from_bounding_box = [
-
+    # test case 1: quantize is False
+    (
+        get_bounding_box(),
+        128,
+        False,
+        ProcessArea(
+            coordinates=np.array(
+                [[-128, -64], [0, -64], [-128, 64], [0, 64]],
+                dtype=np.int32,
+            ),
+            tile_size=128,
+        ),
+    ),
+    # test case 2: quantize is True
+    (
+        get_bounding_box(),
+        128,
+        True,
+        ProcessArea(
+            coordinates=np.array(
+                [[-128, -128], [0, -128], [-128, 0], [0, 0], [-128, 128], [0, 128]],
+                dtype=np.int32,
+            ),
+            tile_size=128,
+        ),
+    ),
 ]
 
 data_test_process_area_from_bounding_box_exceptions = [
-
+    # test case 1: tile_size is negative
+    (
+        -128,
+        re.escape('Invalid tile_size! The tile size must be positive.'),
+    ),
+    # test case 2: tile_size is 0
+    (
+        0,
+        re.escape('Invalid tile_size! The tile size must be positive.'),
+    ),
 ]
 
 data_test_process_area_from_gdf = [
