@@ -149,7 +149,32 @@ data_test_process_area_chunk_exceptions = [
 ]
 
 data_test_process_area_eq = [
-
+    # test case 1: other is equal
+    (
+        get_process_area(),
+        True,
+    ),
+    # test case 2: coordinates is not equal
+    (
+        ProcessArea(
+            coordinates=None,
+            tile_size=128,
+        ),
+        False,
+    ),
+    # test case 3: tile_size is not equal
+    (
+        ProcessArea(
+            coordinates=get_process_area_coordinates(),
+            tile_size=64,
+        ),
+        False,
+    ),
+    # test case 4: other is not of type ProcessArea
+    (
+        'invalid',
+        False,
+    ),
 ]
 
 data_test_process_area_from_bounding_box = [
