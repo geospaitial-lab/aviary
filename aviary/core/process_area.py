@@ -228,7 +228,7 @@ class ProcessArea(Iterable[Coordinates]):
             )
             raise AviaryUserError(message)
 
-        if not all(gdf.geometry.geom_type == 'Polygon'):
+        if not all(gdf.geometry.geom_type.isin(['Polygon', 'MultiPolygon'])):
             message = (
                 'Invalid gdf! '
                 'The geodataframe must contain only polygons.'
