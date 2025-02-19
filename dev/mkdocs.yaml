@@ -57,7 +57,6 @@ nav:
         - SievePostprocessor: api_reference/geodata/geodata_postprocessor/sieve_postprocessor.md
         - SimplifyPostprocessor: api_reference/geodata/geodata_postprocessor/simplify_postprocessor.md
         - ValuePostprocessor: api_reference/geodata/geodata_postprocessor/value_postprocessor.md
-      - GridGenerator: api_reference/geodata/grid_generator.md
     - aviary.inference:
       - Exporter:
         - Exporter: api_reference/inference/exporter/exporter.md

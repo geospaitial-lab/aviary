@@ -3,6 +3,7 @@ import re
 
 import geopandas as gpd
 from shapely.geometry import (
+    MultiPolygon,
     Point,
     Polygon,
     box,
@@ -400,12 +401,14 @@ data_test_bounding_box_from_gdf = [
         ),
         get_bounding_box(),
     ),
-    # test case 6: gdf contains points
+    # test case 6: gdf contains a multi polygon
     (
         gpd.GeoDataFrame(
             geometry=[
-                Point(-128, -64),
-                Point(128, 192),
+                MultiPolygon([
+                    Polygon([[-128, -64], [-96, -64], [-96, -32], [-128, -32]]),
+                    Polygon([[96, 160], [128, 160], [128, 192], [96, 192]]),
+                ]),
             ],
         ),
         get_bounding_box(),
@@ -417,6 +420,13 @@ data_test_bounding_box_from_gdf_exceptions = [
     (
         gpd.GeoDataFrame(),
         re.escape('Invalid gdf! The geodataframe must contain at least one geometry.'),
+    ),
+    # test case 2: gdf contains geometries other than polygons
+    (
+        gpd.GeoDataFrame(
+            geometry=[Point(0, 0)],
+        ),
+        re.escape('Invalid gdf! The geodataframe must contain only polygons.'),
     ),
 ]
 

@@ -36,6 +36,7 @@ def test_bounding_box_init() -> None:
     y_min = -64
     x_max = 128
     y_max = 192
+
     bounding_box = BoundingBox(
         x_min=x_min,
         y_min=y_min,
@@ -231,6 +232,7 @@ def test_bounding_box_buffer_exceptions(
 def test_bounding_box_buffer_defaults() -> None:
     signature = inspect.signature(BoundingBox.buffer)
     inplace = signature.parameters['inplace'].default
+
     expected_inplace = False
 
     assert inplace is expected_inplace
@@ -300,6 +302,7 @@ def test_bounding_box_quantize_exceptions(
 def test_bounding_box_quantize_defaults() -> None:
     signature = inspect.signature(BoundingBox.quantize)
     inplace = signature.parameters['inplace'].default
+
     expected_inplace = False
 
     assert inplace is expected_inplace
@@ -313,10 +316,10 @@ def test_bounding_box_to_gdf(
     gdf = bounding_box.to_gdf(epsg_code=epsg_code)
 
     expected_geometry = [box(-128, -64, 128, 192)]
-    expected_epsg_code = 25832
+    expected_epsg_code = 'EPSG:25832'
     expected = gpd.GeoDataFrame(
         geometry=expected_geometry,
-        crs=f'EPSG:{expected_epsg_code}',
+        crs=expected_epsg_code,
     )
 
     gpd.testing.assert_geodataframe_equal(gdf, expected)

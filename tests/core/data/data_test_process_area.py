@@ -4,6 +4,7 @@ import re
 import geopandas as gpd
 import numpy as np
 from shapely.geometry import (
+    MultiPolygon,
     Point,
     Polygon,
     box,
@@ -439,6 +440,46 @@ data_test_process_area_from_gdf = [
         ProcessArea(
             coordinates=np.array(
                 [[-128, -128], [0, -128], [-128, 0], [0, 0], [-128, 128], [0, 128]],
+                dtype=np.int32,
+            ),
+            tile_size=128,
+        ),
+    ),
+    # test case 7: gdf contains a multi polygon and quantize is False
+    (
+        gpd.GeoDataFrame(
+            geometry=[
+                MultiPolygon([
+                    Polygon([[-128, -64], [-96, -64], [-96, -32], [-128, -32]]),
+                    Polygon([[96, 160], [128, 160], [128, 192], [96, 192]]),
+                ]),
+            ],
+        ),
+        128,
+        False,
+        ProcessArea(
+            coordinates=np.array(
+                [[-128, -64], [0, 64]],
+                dtype=np.int32,
+            ),
+            tile_size=128,
+        ),
+    ),
+    # test case 8: gdf contains a multi polygon and quantize is True
+    (
+        gpd.GeoDataFrame(
+            geometry=[
+                MultiPolygon([
+                    Polygon([[-128, -64], [-96, -64], [-96, -32], [-128, -32]]),
+                    Polygon([[96, 160], [128, 160], [128, 192], [96, 192]]),
+                ]),
+            ],
+        ),
+        128,
+        True,
+        ProcessArea(
+            coordinates=np.array(
+                [[-128, -128], [0, 128]],
                 dtype=np.int32,
             ),
             tile_size=128,

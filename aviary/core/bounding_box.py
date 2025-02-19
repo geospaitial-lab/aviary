@@ -124,11 +124,19 @@ class BoundingBox(Iterable[Coordinate]):
 
         Raises:
             AviaryUserError: Invalid `gdf` (the geodataframe contains no geometries)
+            AviaryUserError: Invalid `gdf` (the geodataframe contains geometries other than polygons)
         """
         if gdf.empty:
             message = (
                 'Invalid gdf! '
                 'The geodataframe must contain at least one geometry.'
+            )
+            raise AviaryUserError(message)
+
+        if not all(gdf.geometry.geom_type.isin(['Polygon', 'MultiPolygon'])):
+            message = (
+                'Invalid gdf! '
+                'The geodataframe must contain only polygons.'
             )
             raise AviaryUserError(message)
 
