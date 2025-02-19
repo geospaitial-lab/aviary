@@ -24,9 +24,6 @@ from aviary._functional.geodata.coordinates_filter import (
     geospatial_filter,
     set_filter,
 )
-
-# noinspection PyProtectedMember
-from aviary._functional.geodata.grid_generator import compute_coordinates
 from aviary.core.bounding_box import BoundingBox
 from aviary.core.enums import (
     GeospatialFilterMode,
@@ -192,7 +189,7 @@ class ProcessArea(Iterable[Coordinates]):
             )
             raise AviaryUserError(message)
 
-        coordinates = compute_coordinates(
+        coordinates = cls._compute_coordinates(
             bounding_box=bounding_box,
             tile_size=tile_size,
             quantize=quantize,
@@ -246,7 +243,7 @@ class ProcessArea(Iterable[Coordinates]):
             raise AviaryUserError(message)
 
         bounding_box = BoundingBox.from_gdf(gdf=gdf)
-        coordinates = compute_coordinates(
+        coordinates = cls._compute_coordinates(
             bounding_box=bounding_box,
             tile_size=tile_size,
             quantize=quantize,
@@ -261,6 +258,36 @@ class ProcessArea(Iterable[Coordinates]):
             coordinates=coordinates,
             tile_size=tile_size,
         )
+
+    @staticmethod
+    def _compute_coordinates(
+        bounding_box: BoundingBox,
+        tile_size: TileSize,
+        quantize: bool = True,
+    ) -> CoordinatesSet:
+        """Computes the coordinates of the bottom left corner of each tile.
+
+        Parameters:
+            bounding_box: Bounding box
+            tile_size: Tile size in meters
+            quantize: If True, the bounding box is quantized to `tile_size`
+
+        Returns:
+            Coordinates (x_min, y_min) of each tile in meters
+        """
+        if quantize:
+            bounding_box = bounding_box.quantize(
+                value=tile_size,
+                inplace=False,
+            )
+
+        coordinates_range_x = np.arange(bounding_box.x_min, bounding_box.x_max, tile_size)
+        coordinates_range_y = np.arange(bounding_box.y_min, bounding_box.y_max, tile_size)
+        coordinates_x, coordinates_y = np.meshgrid(coordinates_range_x, coordinates_range_y)
+
+        coordinates_x = coordinates_x.reshape(-1)[..., np.newaxis]
+        coordinates_y = coordinates_y.reshape(-1)[..., np.newaxis]
+        return np.concatenate((coordinates_x, coordinates_y), axis=-1).astype(np.int32)
 
     @classmethod
     def from_json(

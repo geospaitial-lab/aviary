@@ -5,8 +5,11 @@ from typing import TYPE_CHECKING
 import geopandas as gpd
 import numpy as np
 from numpy import typing as npt
+from shapely.geometry import (
+    Polygon,
+    box,
+)
 
-from aviary._functional.geodata.grid_generator import _generate_tiles
 from aviary.core.enums import (
     GeospatialFilterMode,
     SetFilterMode,
@@ -128,6 +131,25 @@ def _generate_grid(
         geometry=tiles,
         crs=epsg_code,
     )
+
+
+def _generate_tiles(
+    coordinates: CoordinatesSet,
+    tile_size: TileSize,
+) -> list[Polygon]:
+    """Generates a list of tiles from the coordinates.
+
+    Parameters:
+        coordinates: coordinates (x_min, y_min) of each tile
+        tile_size: tile size in meters
+
+    Returns:
+        list of tiles
+    """
+    return [
+        box(x_min, y_min, x_min + tile_size, y_min + tile_size)
+        for x_min, y_min in coordinates
+    ]
 
 
 def _geospatial_filter_difference(

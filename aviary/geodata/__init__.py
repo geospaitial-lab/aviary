@@ -24,7 +24,6 @@ from .geodata_postprocessor import (
     ValuePostprocessor,
     ValuePostprocessorConfig,
 )
-from .grid_generator import GridGenerator
 
 __all__ = [
     'ClipPostprocessor',
@@ -41,7 +40,6 @@ __all__ = [
     'GeodataPostprocessor',
     'GeodataPostprocessorConfig',
     'GeospatialFilter',
-    'GridGenerator',
     'MaskFilter',
     'SetFilter',
     'SievePostprocessor',

@@ -4,7 +4,6 @@ import geopandas as gpd
 import numpy as np
 import pytest
 
-from aviary.core.bounding_box import BoundingBox
 from aviary.core.enums import (
     GeospatialFilterMode,
     SetFilterMode,
@@ -27,7 +26,6 @@ from aviary.geodata.geodata_postprocessor import (
     SimplifyPostprocessor,
     ValuePostprocessor,
 )
-from aviary.geodata.grid_generator import GridGenerator
 
 
 @pytest.fixture(scope='session')
@@ -102,21 +100,6 @@ def geospatial_filter() -> GeospatialFilter:
         tile_size=tile_size,
         gdf=gdf,
         mode=mode,
-    )
-
-
-@pytest.fixture(scope='session')
-def grid_generator() -> GridGenerator:
-    bounding_box = BoundingBox(
-        x_min=-128,
-        y_min=-128,
-        x_max=128,
-        y_max=128,
-    )
-    epsg_code = 25832
-    return GridGenerator(
-        bounding_box=bounding_box,
-        epsg_code=epsg_code,
     )
 
 
