@@ -28,6 +28,25 @@ class ChannelName(Enum):
     R = 'r'
 
 
+_built_in_channel_names = frozenset(channel_name.value for channel_name in ChannelName)
+
+
+def _parse_channel_name(
+    channel_name: ChannelName | str,
+) -> ChannelName:
+    """Parses `channel_name` to `ChannelName`.
+
+    Parameters:
+        channel_name: Channel name
+
+    Returns:
+        Channel name
+    """
+    if isinstance(channel_name, str) and channel_name in _built_in_channel_names:
+        return ChannelName(channel_name)
+    return channel_name
+
+
 class Device(Enum):
     """
     Attributes:

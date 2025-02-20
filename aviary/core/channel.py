@@ -12,7 +12,10 @@ if TYPE_CHECKING:
     import geopandas as gpd
     import numpy.typing as npt
 
-from aviary.core.enums import ChannelName
+from aviary.core.enums import (
+    ChannelName,
+    _parse_channel_name,
+)
 from aviary.core.exceptions import AviaryUserError
 
 if TYPE_CHECKING:
@@ -36,7 +39,6 @@ class Channel(ABC):
         - `RasterChannel`: Contains raster data
         - `VectorChannel`: Contains vector data
     """
-    _built_in_channel_names = frozenset(channel_name.value for channel_name in ChannelName)
 
     def __init__(
         self,
@@ -68,7 +70,7 @@ class Channel(ABC):
     def _validate(self) -> None:
         """Validates the channel."""
         self._validate_data()
-        self._parse_name()
+        self._name = _parse_channel_name(channel_name=self._name)
         self._validate_buffer_size()
 
     @abstractmethod
@@ -82,11 +84,6 @@ class Channel(ABC):
     def _mark_as_copied(self) -> None:
         """Sets `_copy` to True if the data is copied before the initialization."""
         self._copy = True
-
-    def _parse_name(self) -> None:
-        """Parses `name` to `ChannelName`."""
-        if isinstance(self._name, str) and self._name in self._built_in_channel_names:
-            self._name = ChannelName(self._name)
 
     def _validate_buffer_size(self) -> None:
         """Validates `buffer_size`.
@@ -257,7 +254,7 @@ class RasterChannel(Channel):
         """Computes the buffer size in pixels.
 
         Returns:
-            Buffer size
+            Buffer size in pixels
 
         Raises:
             AviaryUserError: Invalid `buffer_size` (the buffer size does not match the spatial extent of the data,
@@ -462,7 +459,7 @@ class VectorChannel(Channel):
         """Computes the buffer size in coordinate units.
 
         Returns:
-            Buffer size
+            Buffer size in coordinate units
         """
         return self._buffer_size / (1. + 2. * self._buffer_size)
 
@@ -503,7 +500,7 @@ class VectorChannel(Channel):
         translate_y = target_bounding_box[1] - source_bounding_box[1] * scale
 
         transform = [scale, 0., 0., scale, translate_x, translate_y]
-        data['geometry'] = data['geometry'].affine_transform(transform)
+        data.geometry = data.geometry.affine_transform(transform)
         return data
 
     @property

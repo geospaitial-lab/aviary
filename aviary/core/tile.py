@@ -12,13 +12,17 @@ if TYPE_CHECKING:
     import numpy.typing as npt
 
 from aviary.core.bounding_box import BoundingBox
-from aviary.core.channel import Channel
+from aviary.core.channel import (
+    Channel,
+    _parse_channel_name,
+)
 from aviary.core.enums import ChannelName
 from aviary.core.exceptions import AviaryUserError
 from aviary.core.type_aliases import (
     ChannelKey,
     ChannelNameSet,
-    _is_channel_key,
+    _parse_channel_key,
+    _parse_channel_keys,
 )
 
 if TYPE_CHECKING:
@@ -118,71 +122,6 @@ class Tile(Iterable[Channel]):
             Channels dictionary
         """
         return {channel.key: channel for channel in self._channels}
-
-    def _parse_channel_name(
-        self,
-        channel_name: ChannelName | str,
-    ) -> ChannelName:
-        """Parses `channel_name` to `ChannelName`.
-
-        Parameters:
-            channel_name: Channel name
-
-        Returns:
-            Channel name
-        """
-        if isinstance(channel_name, str) and channel_name in self._built_in_channel_names:
-            return ChannelName(channel_name)
-        return channel_name
-
-    def _parse_channel_key(
-        self,
-        channel_key: ChannelName | str | ChannelKey,
-    ) -> ChannelKey:
-        """Parses `channel_key` to `ChannelKey`.
-
-        Parameters:
-            channel_key: Channel name or channel name and time step combination
-
-        Returns:
-            Channel name and time step combination
-        """
-        if _is_channel_key(channel_key):
-            channel_name, time_step = channel_key
-        else:
-            channel_name = channel_key
-            time_step = None
-
-        channel_name = self._parse_channel_name(channel_name=channel_name)
-        return channel_name, time_step
-
-    def _parse_channel_keys(
-        self,
-        channel_keys:
-            ChannelName | str |
-            ChannelKey |
-            ChannelNameSet | ChannelKeySet | ChannelNameKeySet |
-            None,
-    ) -> ChannelKeySet:
-        """Parses `channel_keys` to `ChannelKeySet`.
-
-        Parameters:
-            channel_keys: Channel name, channel name and time step combination, channel names,
-                or channel name and time step combinations
-
-        Returns:
-            Channel name and time step combinations
-        """
-        if channel_keys is None:
-            return set()
-
-        if isinstance(channel_keys, (ChannelName | str)) or _is_channel_key(channel_keys):
-            return set(self._parse_channel_key(channel_key=channel_keys))
-
-        return {
-            self._parse_channel_key(channel_key=channel_key)
-            for channel_key in channel_keys
-        }
 
     @property
     def channels(self) -> Channels:
@@ -322,8 +261,7 @@ class Tile(Iterable[Channel]):
             data = data.copy()
 
         channel_names = [
-            ChannelName(channel_name)
-            if isinstance(channel_name, str) and channel_name in cls._built_in_channel_names else channel_name
+            _parse_channel_name(channel_name=channel_name)
             for channel_name in channel_names
         ]
         channels_dict = {}
@@ -490,7 +428,7 @@ class Tile(Iterable[Channel]):
         Returns:
             True if the channel is in the tile, False otherwise
         """
-        channel_key = self._parse_channel_key(channel_key=channel_key)
+        channel_key = _parse_channel_key(channel_key=channel_key)
         return channel_key in self.channel_keys
 
     def __getattr__(
@@ -529,7 +467,7 @@ class Tile(Iterable[Channel]):
         Returns:
             Channel
         """
-        channel_key = self._parse_channel_key(channel_key=channel_key)
+        channel_key = _parse_channel_key(channel_key=channel_key)
         return self._channels_dict[channel_key]
 
     def __iter__(self) -> Iterator[Channel]:
@@ -574,7 +512,7 @@ class Tile(Iterable[Channel]):
         Returns:
             Tile
         """
-        channel_keys = self._parse_channel_keys(channel_keys=channel_keys)
+        channel_keys = _parse_channel_keys(channel_keys=channel_keys)
 
         if inplace:
             self._channels = [channel for channel in self if channel.key not in channel_keys]
@@ -610,7 +548,7 @@ class Tile(Iterable[Channel]):
         Returns:
             Tile
         """
-        ignore_channel_keys = self._parse_channel_keys(channel_keys=ignore_channel_keys)
+        ignore_channel_keys = _parse_channel_keys(channel_keys=ignore_channel_keys)
 
         if inplace:
             for channel in self:
