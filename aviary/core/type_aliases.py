@@ -3,7 +3,10 @@ from typing import TypeAlias
 import numpy as np
 import numpy.typing as npt
 
-from aviary.core.channel import Channel
+from aviary.core.channel import (
+    Channel,
+    _parse_channel_name,
+)
 from aviary.core.enums import ChannelName
 
 BufferSize: TypeAlias = int
@@ -26,10 +29,10 @@ TileSize: TypeAlias = int
 def _is_channel_key(
     value: object,
 ) -> bool:
-    """Checks if `value` is a valid ChannelKey.
+    """Checks if `value` is a valid `ChannelKey`.
 
     Parameters:
-        value: value
+        value: Value
 
     Returns:
         True if the value is a valid ChannelKey, False otherwise
@@ -45,3 +48,52 @@ def _is_channel_key(
         isinstance(value[1], (TimeStep | None)),
     ]
     return all(conditions)
+
+
+def _parse_channel_key(
+    channel_key: ChannelName | str | ChannelKey,
+) -> ChannelKey:
+    """Parses `channel_key` to `ChannelKey`.
+
+    Parameters:
+        channel_key: Channel name or channel name and time step combination
+
+    Returns:
+        Channel name and time step combination
+    """
+    if _is_channel_key(channel_key):
+        channel_name, time_step = channel_key
+    else:
+        channel_name = channel_key
+        time_step = None
+
+    channel_name = _parse_channel_name(channel_name=channel_name)
+    return channel_name, time_step
+
+
+def _parse_channel_keys(
+    channel_keys:
+        ChannelName | str |
+        ChannelKey |
+        ChannelNameSet | ChannelKeySet | ChannelNameKeySet |
+        None,
+) -> ChannelKeySet:
+    """Parses `channel_keys` to `ChannelKeySet`.
+
+    Parameters:
+        channel_keys: Channel name, channel name and time step combination, channel names,
+            or channel name and time step combinations
+
+    Returns:
+        Channel name and time step combinations
+    """
+    if channel_keys is None:
+        return set()
+
+    if isinstance(channel_keys, (ChannelName | str)) or _is_channel_key(channel_keys):
+        return set(_parse_channel_key(channel_key=channel_keys))
+
+    return {
+        _parse_channel_key(channel_key=channel_key)
+        for channel_key in channel_keys
+    }
