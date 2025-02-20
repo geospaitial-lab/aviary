@@ -91,7 +91,7 @@ def _parse_channel_keys(
         return set()
 
     if isinstance(channel_keys, (ChannelName | str)) or _is_channel_key(channel_keys):
-        return set(_parse_channel_key(channel_key=channel_keys))
+        return {_parse_channel_key(channel_key=channel_keys)}
 
     return {
         _parse_channel_key(channel_key=channel_key)

@@ -33,7 +33,7 @@ _built_in_channel_names = frozenset(channel_name.value for channel_name in Chann
 
 def _parse_channel_name(
     channel_name: ChannelName | str,
-) -> ChannelName:
+) -> ChannelName | str:
     """Parses `channel_name` to `ChannelName`.
 
     Parameters:
