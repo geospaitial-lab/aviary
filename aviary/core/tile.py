@@ -35,7 +35,7 @@ if TYPE_CHECKING:
 
 
 class Tile(Iterable[Channel]):
-    """A tile specifies the channels and the spatial extent of a tile.
+    """A tile specifies the channels and its spatial extent.
 
     Notes:
         - The `channels` property returns a reference to the channels
@@ -168,7 +168,7 @@ class Tile(Iterable[Channel]):
 
         Parameters:
             channel_keys: Channel name, channel name and time step combination, channel names,
-                or channel name and time step combinations to ignore
+                or channel name and time step combinations
 
         Returns:
             Channel name and time step combinations
@@ -368,7 +368,7 @@ class Tile(Iterable[Channel]):
             Tile
 
         Raises:
-            AviaryUserError: Invalid `tiles` (the tiles are empty)
+            AviaryUserError: Invalid `tiles` (the tiles contain no tiles)
             AviaryUserError: Invalid `tiles` (the coordinates and tile sizes of the tiles are not equal)
         """
         if not tiles:
@@ -553,6 +553,41 @@ class Tile(Iterable[Channel]):
             copy=True,
         )
 
+    def remove(
+        self,
+        channel_keys:
+            ChannelName | str |
+            ChannelKey |
+            ChannelNameSet | ChannelKeySet | ChannelNameKeySet,
+        inplace: bool = False,
+    ) -> Tile:
+        """Removes the channels.
+
+        Notes:
+            - Removing a channel by its name assumes the time step is None
+
+        Parameters:
+            channel_keys: Channel name, channel name and time step combination, channel names,
+                or channel name and time step combinations
+            inplace: If True, the channels are removed inplace
+
+        Returns:
+            Tile
+        """
+        channel_keys = self._parse_channel_keys(channel_keys=channel_keys)
+
+        if inplace:
+            self._channels = [channel for channel in self if channel.key not in channel_keys]
+            self._channels_dict = self._compute_channels_dict()
+            self._validate()
+            return self
+
+        tile = self.copy()
+        tile._channels = [channel for channel in tile if channel.key not in channel_keys]  # noqa: SLF001
+        tile._channels_dict = tile._compute_channels_dict()  # noqa: SLF001
+        tile._validate()  # noqa: SLF001
+        return tile
+
     def remove_buffer(
         self,
         ignore_channel_keys:
@@ -582,7 +617,6 @@ class Tile(Iterable[Channel]):
                 if channel.key not in ignore_channel_keys:
                     channel.remove_buffer(inplace=True)
 
-            self._validate()
             return self
 
         tile = self.copy()
