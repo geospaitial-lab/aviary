@@ -432,7 +432,7 @@ def _request_wms(
                 raise AviaryUserError(message)
 
             conditions = [
-                data.shape[-1] != 3,  # noqa: PLR2004
+                data.shape[0] != 3,  # noqa: PLR2004
                 data.dtype != np.uint8,
             ]
 

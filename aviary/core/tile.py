@@ -14,9 +14,9 @@ if TYPE_CHECKING:
 from aviary.core.bounding_box import BoundingBox
 from aviary.core.channel import (
     Channel,
+    RasterChannel,
     _parse_channel_name,
 )
-from aviary.core.enums import ChannelName
 from aviary.core.exceptions import AviaryUserError
 from aviary.core.type_aliases import (
     ChannelKey,
@@ -26,6 +26,7 @@ from aviary.core.type_aliases import (
 )
 
 if TYPE_CHECKING:
+    from aviary.core.enums import ChannelName
     from aviary.core.type_aliases import (
         BufferSize,
         ChannelKeySet,
@@ -45,7 +46,6 @@ class Tile(Iterable[Channel]):
         - The `channels` property returns a reference to the channels
         - The dunder methods `__getattr__`, `__getitem__`, and `__iter__` return or yield a reference to a channel
     """
-    _built_in_channel_names = frozenset(channel_name.value for channel_name in ChannelName)
 
     def __init__(
         self,
@@ -269,7 +269,7 @@ class Tile(Iterable[Channel]):
 
         for i, channel_name in enumerate(channel_names):
             if channel_name not in channels_dict:
-                channels_dict[channel_name] = Channel(
+                channels_dict[channel_name] = RasterChannel(
                     data=data[..., i],
                     name=channel_name,
                     buffer_size=buffer_size,
