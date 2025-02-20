@@ -448,9 +448,8 @@ class Tile(Iterable[Channel]):
         """
         try:
             return self[channel_name]
-        except KeyError:
-            # noinspection PyUnresolvedReferences
-            return super().__getattr__(channel_name)
+        except KeyError as error:
+            raise AttributeError from error
 
     def __getitem__(
         self,
