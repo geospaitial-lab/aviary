@@ -24,17 +24,25 @@ from aviary.inference.tile_fetcher import (
 
 
 @pytest.fixture(scope='session')
+def aviary(
+    model_card: ModelCard,
+) -> Aviary:
+    model_cards = [model_card] * 3
+    return Aviary(
+        model_cards=model_cards,
+    )
+
+
+@pytest.fixture(scope='session')
 def composite_fetcher() -> CompositeFetcher:
     tile_fetchers = [
         MagicMock(spec=TileFetcher),
         MagicMock(spec=TileFetcher),
         MagicMock(spec=TileFetcher),
     ]
-    axis = 'channel'
     num_workers = 1
     return CompositeFetcher(
         tile_fetchers=tile_fetchers,
-        axis=axis,
         num_workers=num_workers,
     )
 
@@ -64,16 +72,6 @@ def model_card() -> ModelCard:
 
 
 @pytest.fixture(scope='session')
-def aviary(
-    model_card: ModelCard,
-) -> Aviary:
-    model_cards = [model_card] * 3
-    return Aviary(
-        model_cards=model_cards,
-    )
-
-
-@pytest.fixture(scope='session')
 def segmentation_exporter() -> SegmentationExporter:
     path = Path('test')
     tile_size = 128
@@ -94,7 +92,7 @@ def segmentation_exporter() -> SegmentationExporter:
 @pytest.fixture(scope='session')
 def vrt_fetcher() -> VRTFetcher:
     path = Path('test/test.vrt')
-    channels = [
+    channel_names = [
         ChannelName.R,
         ChannelName.G,
         ChannelName.B,
@@ -105,15 +103,17 @@ def vrt_fetcher() -> VRTFetcher:
     ground_sampling_distance = .2
     interpolation_mode = InterpolationMode.BILINEAR
     buffer_size = 0
-    ignore_channels = None
+    ignore_channel_names = None
+    time_step = None
     return VRTFetcher(
         path=path,
-        channels=channels,
+        channel_names=channel_names,
         tile_size=tile_size,
         ground_sampling_distance=ground_sampling_distance,
         interpolation_mode=interpolation_mode,
         buffer_size=buffer_size,
-        ignore_channels=ignore_channels,
+        ignore_channel_names=ignore_channel_names,
+        time_step=time_step,
     )
 
 
@@ -124,7 +124,7 @@ def wms_fetcher() -> WMSFetcher:
     layer = 'test_layer'
     epsg_code = 25832
     response_format = 'image/png'
-    channels = [
+    channel_names = [
         ChannelName.R,
         ChannelName.G,
         ChannelName.B,
@@ -133,17 +133,19 @@ def wms_fetcher() -> WMSFetcher:
     ground_sampling_distance = .2
     style = None
     buffer_size = 0
-    ignore_channels = None
+    ignore_channel_names = None
+    time_step = None
     return WMSFetcher(
         url=url,
         version=version,
         layer=layer,
         epsg_code=epsg_code,
         response_format=response_format,
-        channels=channels,
+        channel_names=channel_names,
         tile_size=tile_size,
         ground_sampling_distance=ground_sampling_distance,
         style=style,
         buffer_size=buffer_size,
-        ignore_channels=ignore_channels,
+        ignore_channel_names=ignore_channel_names,
+        time_step=time_step,
     )
