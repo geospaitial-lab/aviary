@@ -73,7 +73,6 @@ norecursedirs = [
     "tests/_functional",
     "tests/data",
     "tests/geodata",
-    "tests/inference",
     "tests/pipeline",
 ]
 pythonpath = ["."]
