@@ -363,10 +363,14 @@ def _parse_ignore_channel_names(
     Returns:
         Channel name and time step combinations to ignore
     """
-    ignore_channel_names = [
-        _parse_channel_name(channel_name=ignore_channel_name)
-        for ignore_channel_name in ignore_channel_names
-    ]
+    if isinstance(ignore_channel_names, (ChannelName | str)):
+        ignore_channel_names = {_parse_channel_name(channel_name=ignore_channel_names)}
+    else:
+        ignore_channel_names = {
+            _parse_channel_name(channel_name=ignore_channel_name)
+            for ignore_channel_name in ignore_channel_names
+        }
+
     return {
         (ignore_channel_name, time_step)
         for ignore_channel_name in ignore_channel_names
