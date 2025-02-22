@@ -3,7 +3,6 @@ from __future__ import annotations
 from pathlib import Path  # noqa: TC003
 from typing import (
     TYPE_CHECKING,
-    Literal,
     Protocol,
 )
 
@@ -16,17 +15,19 @@ from aviary._functional.inference.tile_fetcher import (
     wms_fetcher,
 )
 from aviary.core.enums import (
+    ChannelName,
     InterpolationMode,
     WMSVersion,
 )
 from aviary.core.type_aliases import (  # noqa: TC001
     BufferSize,
-    ChannelTypes,
-    ChannelTypeSet,
+    ChannelNames,
+    ChannelNameSet,
     Coordinates,
     EPSGCode,
     GroundSamplingDistance,
     TileSize,
+    TimeStep,
 )
 
 if TYPE_CHECKING:
@@ -40,7 +41,7 @@ class TileFetcher(Protocol):
     These coordinates correspond to the bottom left corner of a tile.
     The tile fetcher is used by the tile set to fetch data for each tile.
 
-    Currently implemented tile fetchers:
+    Implemented tile fetchers:
         - `CompositeFetcher`: Composes multiple tile fetchers
         - `VRTFetcher`: Fetches a tile from a virtual raster
         - `WMSFetcher`: Fetches a tile from a web map service
@@ -56,10 +57,10 @@ class TileFetcher(Protocol):
         """Fetches a tile from the source.
 
         Parameters:
-            coordinates: coordinates (x_min, y_min) of the tile
+            coordinates: Coordinates (x_min, y_min) of the tile in meters
 
         Returns:
-            tile
+            Tile
         """
         ...
 
@@ -73,17 +74,14 @@ class CompositeFetcher:
     def __init__(
         self,
         tile_fetchers: list[TileFetcher],
-        axis: Literal['channel', 'time_step'] = 'channel',
         num_workers: int = 1,
     ) -> None:
         """
         Parameters:
-            tile_fetchers: tile fetchers
-            axis: axis to concatenate the tiles (`channel`, `time_step`)
-            num_workers: number of workers
+            tile_fetchers: Tile fetchers
+            num_workers: Number of workers
         """
         self._tile_fetchers = tile_fetchers
-        self._axis = axis
         self._num_workers = num_workers
 
     @classmethod
@@ -94,10 +92,10 @@ class CompositeFetcher:
         """Creates a composite fetcher from the configuration.
 
         Parameters:
-            config: configuration
+            config: Configuration
 
         Returns:
-            composite fetcher
+            Composite fetcher
         """
         tile_fetchers = []
 
@@ -108,7 +106,6 @@ class CompositeFetcher:
 
         return cls(
             tile_fetchers=tile_fetchers,
-            axis=config.axis,
             num_workers=config.num_workers,
         )
 
@@ -119,15 +116,14 @@ class CompositeFetcher:
         """Fetches a tile from the sources.
 
         Parameters:
-            coordinates: coordinates (x_min, y_min) of the tile
+            coordinates: Coordinates (x_min, y_min) of the tile in meters
 
         Returns:
-            tile
+            Tile
         """
         return composite_fetcher(
             coordinates=coordinates,
             tile_fetchers=self._tile_fetchers,
-            axis=self._axis,
             num_workers=self._num_workers,
         )
 
@@ -136,12 +132,10 @@ class CompositeFetcherConfig(pydantic.BaseModel):
     """Configuration for the `from_config` class method of `CompositeFetcher`
 
     Attributes:
-        tile_fetchers_configs: configurations of the tile fetchers
-        axis: axis to concatenate the tiles (`channel`, `time_step`)
-        num_workers: number of workers
+        tile_fetchers_configs: Configurations of the tile fetchers
+        num_workers: Number of workers
     """
     tile_fetchers_configs: list[TileFetcherConfig]
-    axis: Literal['channel', 'time_step'] = 'channel'
     num_workers: int = 1
 
 
@@ -149,8 +143,8 @@ class TileFetcherConfig(pydantic.BaseModel):
     """Configuration for tile fetchers
 
     Attributes:
-        name: name of the tile fetcher
-        config: configuration of the tile fetcher
+        name: Name
+        config: Configuration
     """
     name: str
     config: (
@@ -170,43 +164,46 @@ class VRTFetcher:
     def __init__(
         self,
         path: Path,
-        channels: ChannelTypes,
+        channel_names: ChannelNames,
         tile_size: TileSize,
         ground_sampling_distance: GroundSamplingDistance,
         interpolation_mode: InterpolationMode = InterpolationMode.BILINEAR,
         buffer_size: BufferSize = 0,
-        ignore_channels: ChannelTypeSet | None = None,
+        ignore_channel_names: ChannelName | str | ChannelNameSet | None = None,
+        time_step: TimeStep | None = None,
     ) -> None:
         """
         Parameters:
-            path: path to the virtual raster (.vrt file)
-            channels: channels
-            tile_size: tile size in meters
-            ground_sampling_distance: ground sampling distance in meters
-            interpolation_mode: interpolation mode (`BILINEAR` or `NEAREST`)
-            buffer_size: buffer size in meters (specifies the area around the tile that is additionally fetched)
-            ignore_channels: channels to ignore
+            path: Path to the virtual raster (.vrt file)
+            channel_names: Channel names
+            tile_size: Tile size in meters
+            ground_sampling_distance: Ground sampling distance in meters
+            interpolation_mode: Interpolation mode (`BILINEAR` or `NEAREST`)
+            buffer_size: Buffer size in meters
+            ignore_channel_names: Channel name or channel names to ignore
+            time_step: Time step
         """
         self._path = path
-        self._channels = channels
+        self._channel_names = channel_names
         self._tile_size = tile_size
         self._ground_sampling_distance = ground_sampling_distance
         self._interpolation_mode = interpolation_mode
         self._buffer_size = buffer_size
-        self._ignore_channels = ignore_channels
+        self._ignore_channel_names = ignore_channel_names
+        self._time_step = time_step
 
     @classmethod
     def from_config(
         cls,
         config: VRTFetcherConfig,
     ) -> VRTFetcher:
-        """Creates a vrt fetcher from the configuration.
+        """Creates a VRT fetcher from the configuration.
 
         Parameters:
-            config: configuration
+            config: Configuration
 
         Returns:
-            vrt fetcher
+            VRT fetcher
         """
         config = config.model_dump()
         return cls(**config)
@@ -218,20 +215,21 @@ class VRTFetcher:
         """Fetches a tile from the virtual raster.
 
         Parameters:
-            coordinates: coordinates (x_min, y_min) of the tile
+            coordinates: Coordinates (x_min, y_min) of the tile in meters
 
         Returns:
-            tile
+            Tile
         """
         return vrt_fetcher(
             coordinates=coordinates,
             path=self._path,
-            channels=self._channels,
+            channel_names=self._channel_names,
             tile_size=self._tile_size,
             ground_sampling_distance=self._ground_sampling_distance,
             interpolation_mode=self._interpolation_mode,
             buffer_size=self._buffer_size,
-            ignore_channels=self._ignore_channels,
+            ignore_channel_names=self._ignore_channel_names,
+            time_step=self._time_step,
             fill_value=self._FILL_VALUE,
         )
 
@@ -240,21 +238,23 @@ class VRTFetcherConfig(pydantic.BaseModel):
     """Configuration for the `from_config` class method of `VRTFetcher`
 
     Attributes:
-        path: path to the virtual raster (.vrt file)
-        channels: channels
-        tile_size: tile size in meters
-        ground_sampling_distance: ground sampling distance in meters
-        interpolation_mode: interpolation mode ('bilinear' or 'nearest')
-        buffer_size: buffer size in meters (specifies the area around the tile that is additionally fetched)
-        ignore_channels: channels to ignore
+        path: Path to the virtual raster (.vrt file)
+        channel_names: Channel names
+        tile_size: Tile size in meters
+        ground_sampling_distance: Ground sampling distance in meters
+        interpolation_mode: Interpolation mode ('bilinear' or 'nearest')
+        buffer_size: Buffer size in meters (specifies the area around the tile that is additionally fetched)
+        ignore_channel_names: Channel name or channel names to ignore
+        time_step: Time step
     """
     path: Path
-    channels: ChannelTypes
+    channel_names: ChannelNames
     tile_size: TileSize
     ground_sampling_distance: GroundSamplingDistance
     interpolation_mode: InterpolationMode = InterpolationMode.BILINEAR
     buffer_size: BufferSize = 0
-    ignore_channels: ChannelTypeSet | None = None
+    ignore_channel_names: ChannelName | str | ChannelNameSet | None = None
+    time_step: TimeStep | None = None
 
 
 class WMSFetcher:
@@ -271,51 +271,54 @@ class WMSFetcher:
         layer: str,
         epsg_code: EPSGCode,
         response_format: str,
-        channels: ChannelTypes,
+        channel_names: ChannelNames,
         tile_size: TileSize,
         ground_sampling_distance: GroundSamplingDistance,
         style: str | None = None,
         buffer_size: BufferSize = 0,
-        ignore_channels: ChannelTypeSet | None = None,
+        ignore_channel_names: ChannelName | str | ChannelNameSet | None = None,
+        time_step: TimeStep | None = None,
     ) -> None:
         """
         Parameters:
-            url: url of the web map service
-            version: version of the web map service (`V1_1_1` or `V1_3_0`)
-            layer: name of the layer
+            url: URL of the web map service
+            version: Version of the web map service (`V1_1_1` or `V1_3_0`)
+            layer: Layer
             epsg_code: EPSG code
-            response_format: format of the response (MIME type, e.g., 'image/png')
-            channels: channels
-            tile_size: tile size in meters
-            ground_sampling_distance: ground sampling distance in meters
-            style: name of the style
-            buffer_size: buffer size in meters (specifies the area around the tile that is additionally fetched)
-            ignore_channels: channels to ignore
+            response_format: Format of the response (MIME type, e.g., 'image/png')
+            channel_names: Channel names
+            tile_size: Tile size in meters
+            ground_sampling_distance: Ground sampling distance in meters
+            style: Style
+            buffer_size: Buffer size in meters
+            ignore_channel_names: Channel name or channel names to ignore
+            time_step: Time step
         """
         self._url = url
         self._version = version
         self._layer = layer
         self._epsg_code = epsg_code
         self._response_format = response_format
+        self._channel_names = channel_names
         self._tile_size = tile_size
-        self._channels = channels
         self._ground_sampling_distance = ground_sampling_distance
         self._style = style
         self._buffer_size = buffer_size
-        self._ignore_channels = ignore_channels
+        self._ignore_channel_names = ignore_channel_names
+        self._time_step = time_step
 
     @classmethod
     def from_config(
         cls,
         config: WMSFetcherConfig,
     ) -> WMSFetcher:
-        """Creates a wms fetcher from the configuration.
+        """Creates a WMS fetcher from the configuration.
 
         Parameters:
-            config: configuration
+            config: Configuration
 
         Returns:
-            wms fetcher
+            WMS fetcher
         """
         config = config.model_dump()
         return cls(**config)
@@ -327,10 +330,10 @@ class WMSFetcher:
         """Fetches a tile from the web map service.
 
         Parameters:
-            coordinates: coordinates (x_min, y_min) of the tile
+            coordinates: Coordinates (x_min, y_min) of the tile in meters
 
         Returns:
-            tile
+            Tile
         """
         return wms_fetcher(
             coordinates=coordinates,
@@ -339,12 +342,13 @@ class WMSFetcher:
             layer=self._layer,
             epsg_code=self._epsg_code,
             response_format=self._response_format,
-            channels=self._channels,
+            channel_names=self._channel_names,
             tile_size=self._tile_size,
             ground_sampling_distance=self._ground_sampling_distance,
             style=self._style,
             buffer_size=self._buffer_size,
-            ignore_channels=self._ignore_channels,
+            ignore_channel_names=self._ignore_channel_names,
+            time_step=self._time_step,
             fill_value=self._FILL_VALUE,
         )
 
@@ -353,26 +357,28 @@ class WMSFetcherConfig(pydantic.BaseModel):
     """Configuration for the `from_config` class method of `WMSFetcher`
 
     Attributes:
-        url: url of the web map service
-        version: version of the web map service ('1.1.1' or '1.3.0')
-        layer: name of the layer
+        url: URL of the web map service
+        version: Version of the web map service ('1.1.1' or '1.3.0')
+        layer: Layer
         epsg_code: EPSG code
-        response_format: format of the response (MIME type, e.g., 'image/png')
-        channels: channels
-        tile_size: tile size in meters
-        ground_sampling_distance: ground sampling distance in meters
-        style: name of the style
-        buffer_size: buffer size in meters (specifies the area around the tile that is additionally fetched)
-        ignore_channels: channels to ignore
+        response_format: Format of the response (MIME type, e.g., 'image/png')
+        channel_names: Channel names
+        tile_size: Tile size in meters
+        ground_sampling_distance: Ground sampling distance in meters
+        style: Style
+        buffer_size: Buffer size in meters
+        ignore_channel_names: Channel name or channel names to ignore
+        time_step: Time step
     """
     url: str
     version: WMSVersion
     layer: str
     epsg_code: EPSGCode
     response_format: str
-    channels: ChannelTypes
+    channel_names: ChannelNames
     tile_size: TileSize
     ground_sampling_distance: GroundSamplingDistance
     style: str | None = None
     buffer_size: BufferSize = 0
-    ignore_channels: ChannelTypeSet | None = None
+    ignore_channel_names: ChannelName | str | ChannelNameSet | None = None
+    time_step: TimeStep | None = None

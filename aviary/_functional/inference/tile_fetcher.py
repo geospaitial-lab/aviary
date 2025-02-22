@@ -5,10 +5,7 @@ from concurrent.futures import (
     ThreadPoolExecutor,
     as_completed,
 )
-from typing import (
-    TYPE_CHECKING,
-    Literal,
-)
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -20,9 +17,13 @@ import rasterio.windows
 import requests
 
 from aviary.core.bounding_box import BoundingBox
+
+# noinspection PyProtectedMember
 from aviary.core.enums import (
+    ChannelName,
     InterpolationMode,
     WMSVersion,
+    _parse_channel_name,
 )
 from aviary.core.exceptions import AviaryUserError
 from aviary.core.tile import Tile
@@ -30,12 +31,14 @@ from aviary.core.tile import Tile
 if TYPE_CHECKING:
     from aviary.core.type_aliases import (
         BufferSize,
-        ChannelTypes,
-        ChannelTypeSet,
+        ChannelKeySet,
+        ChannelNames,
+        ChannelNameSet,
         Coordinates,
         EPSGCode,
         GroundSamplingDistance,
         TileSize,
+        TimeStep,
     )
     from aviary.inference.tile_fetcher import TileFetcher
 
@@ -43,19 +46,17 @@ if TYPE_CHECKING:
 def composite_fetcher(
     coordinates: Coordinates,
     tile_fetchers: list[TileFetcher],
-    axis: Literal['channel', 'time_step'] = 'channel',
     num_workers: int = 1,
 ) -> Tile:
     """Fetches a tile from the sources.
 
     Parameters:
-        coordinates: coordinates (x_min, y_min) of the tile
-        tile_fetchers: tile fetchers
-        axis: axis to concatenate the tiles (`channel`, `time_step`)
-        num_workers: number of workers
+        coordinates: Coordinates (x_min, y_min) of the tile in meters
+        tile_fetchers: Tile fetchers
+        num_workers: Number of workers
 
     Returns:
-        tile
+        Tile
     """
     with ThreadPoolExecutor(max_workers=num_workers) as executor:
         tasks = [
@@ -71,43 +72,47 @@ def composite_fetcher(
 
     return Tile.from_tiles(
         tiles=tiles,
-        axis=axis,
+        copy=False,
     )
 
 
 def vrt_fetcher(
     coordinates: Coordinates,
     path: Path,
-    channels: ChannelTypes,
+    channel_names: ChannelNames,
     tile_size: TileSize,
     ground_sampling_distance: GroundSamplingDistance,
     interpolation_mode: InterpolationMode = InterpolationMode.BILINEAR,
     buffer_size: BufferSize = 0,
-    ignore_channels: ChannelTypeSet | None = None,
+    ignore_channel_names: ChannelName | str | ChannelNameSet | None = None,
+    time_step: TimeStep | None = None,
     fill_value: int = 0,
 ) -> Tile:
     """Fetches a tile from the virtual raster.
 
     Parameters:
-        coordinates: coordinates (x_min, y_min) of the tile
-        path: path to the virtual raster (.vrt file)
-        channels: channels
-        tile_size: tile size in meters
-        ground_sampling_distance: ground sampling distance in meters
-        interpolation_mode: interpolation mode (`BILINEAR` or `NEAREST`)
-        buffer_size: buffer size in meters (specifies the area around the tile that is additionally fetched)
-        ignore_channels: channels to ignore
-        fill_value: fill value of nodata pixels
+        coordinates: Coordinates (x_min, y_min) of the tile in meters
+        path: Path to the virtual raster (.vrt file)
+        channel_names: Channel names
+        tile_size: Tile size in meters
+        ground_sampling_distance: Ground sampling distance in meters
+        interpolation_mode: Interpolation mode (`BILINEAR` or `NEAREST`)
+        buffer_size: Buffer size in meters
+        ignore_channel_names: Channel name or channel names to ignore
+        time_step: Time step
+        fill_value: Fill value of no-data pixels
 
     Returns:
-        tile
+        Tile
     """
     x_min, y_min = coordinates
+    x_max = x_min + tile_size
+    y_max = y_min + tile_size
     bounding_box = BoundingBox(
         x_min=x_min,
         y_min=y_min,
-        x_max=x_min + tile_size,
-        y_max=y_min + tile_size,
+        x_max=x_max,
+        y_max=y_max,
     )
     bounding_box = bounding_box.buffer(
         buffer_size=buffer_size,
@@ -138,20 +143,25 @@ def vrt_fetcher(
     data = _permute_data(
         data=data,
     )
-    tile = Tile.from_composite(
+    tile = Tile.from_composite_raster(
         data=data,
-        channels=channels,
+        channel_names=channel_names,
         coordinates=coordinates,
         tile_size=tile_size,
         buffer_size=buffer_size,
+        time_step=time_step,
+        copy=False,
     )
 
-    if ignore_channels is not None:
-        for channel in ignore_channels:
-            tile = tile.remove_channel(
-                channel=channel,
-                inplace=True,
-            )
+    if ignore_channel_names is not None:
+        channel_keys = _parse_ignore_channel_names(
+            ignore_channel_names=ignore_channel_names,
+            time_step=time_step,
+        )
+        tile.remove(
+            channel_keys=channel_keys,
+            inplace=True,
+        )
 
     return tile
 
@@ -163,40 +173,44 @@ def wms_fetcher(
     layer: str,
     epsg_code: EPSGCode,
     response_format: str,
-    channels: ChannelTypes,
+    channel_names: ChannelNames,
     tile_size: TileSize,
     ground_sampling_distance: GroundSamplingDistance,
     style: str | None = None,
     buffer_size: BufferSize = 0,
-    ignore_channels: ChannelTypeSet | None = None,
+    ignore_channel_names: ChannelName | str | ChannelNameSet | None = None,
+    time_step: TimeStep | None = None,
     fill_value: str = '0x000000',
 ) -> Tile:
     """Fetches a tile from the web map service.
 
     Parameters:
-        coordinates: coordinates (x_min, y_min) of the tile
-        url: url of the web map service
-        version: version of the web map service (`V1_1_1` or `V1_3_0`)
-        layer: name of the layer
+        coordinates: Coordinates (x_min, y_min) of the tile in meters
+        url: URL of the web map service
+        version: Version of the web map service (`V1_1_1` or `V1_3_0`)
+        layer: Layer
         epsg_code: EPSG code
-        response_format: format of the response (MIME type, e.g., 'image/png')
-        channels: channels
-        tile_size: tile size in meters
-        ground_sampling_distance: ground sampling distance in meters
-        style: name of the style
-        buffer_size: buffer size in meters (specifies the area around the tile that is additionally fetched)
-        ignore_channels: channels to ignore
-        fill_value: fill value of nodata pixels
+        response_format: Format of the response (MIME type, e.g., 'image/png')
+        channel_names: Channel names
+        tile_size: Tile size in meters
+        ground_sampling_distance: Ground sampling distance in meters
+        style: Style
+        buffer_size: Buffer size in meters
+        ignore_channel_names: Channel name or channel names to ignore
+        time_step: Time step
+        fill_value: Fill value of no-data pixels
 
     Returns:
-        tile
+        Tile
     """
     x_min, y_min = coordinates
+    x_max = x_min + tile_size
+    y_max = y_min + tile_size
     bounding_box = BoundingBox(
         x_min=x_min,
         y_min=y_min,
-        x_max=x_min + tile_size,
-        y_max=y_min + tile_size,
+        x_max=x_max,
+        y_max=y_max,
     )
     bounding_box = bounding_box.buffer(
         buffer_size=buffer_size,
@@ -226,20 +240,25 @@ def wms_fetcher(
     data = _permute_data(
         data=data,
     )
-    tile = Tile.from_composite(
+    tile = Tile.from_composite_raster(
         data=data,
-        channels=channels,
+        channel_names=channel_names,
         coordinates=coordinates,
         tile_size=tile_size,
         buffer_size=buffer_size,
+        time_step=time_step,
+        copy=False,
     )
 
-    if ignore_channels is not None:
-        for channel in ignore_channels:
-            tile = tile.remove_channel(
-                channel=channel,
-                inplace=True,
-            )
+    if ignore_channel_names is not None:
+        channel_keys = _parse_ignore_channel_names(
+            ignore_channel_names=ignore_channel_names,
+            time_step=time_step,
+        )
+        tile.remove(
+            channel_keys=channel_keys,
+            inplace=True,
+        )
 
     return tile
 
@@ -248,20 +267,31 @@ def _compute_tile_size_pixels(
     tile_size: TileSize,
     buffer_size: BufferSize,
     ground_sampling_distance: GroundSamplingDistance,
-) -> int:
+) -> TileSize:
     """Computes the tile size in pixels.
 
     Parameters:
-        tile_size: tile size in meters
-        ground_sampling_distance: ground sampling distance in meters
+        tile_size: Tile size in meters
+        ground_sampling_distance: Ground sampling distance in meters
 
     Returns:
-        tile size in pixels
-    """
-    if buffer_size == 0:
-        return int(tile_size / ground_sampling_distance)
+        Tile size in pixels
 
-    return int((tile_size + 2 * buffer_size) / ground_sampling_distance)
+    Raises:
+        AviaryUserError: Invalid `tile_size` (the tile size does not match the spatial extent of the data,
+            resulting in a fractional number of pixels)
+    """
+    tile_size_pixels = (tile_size + 2 * buffer_size) / ground_sampling_distance
+
+    if not tile_size_pixels.is_integer():
+        message = (
+            'Invalid tile_size! '
+            'The tile size must match the spatial extent of the data, '
+            'resulting in a whole number of pixels.'
+        )
+        raise AviaryUserError(message)
+
+    return int(tile_size_pixels)
 
 
 def _get_wms_params(
@@ -277,20 +307,20 @@ def _get_wms_params(
     """Returns the parameters of the request to the web map service.
 
     Parameters:
-        version: version of the web map service (`V1_1_1` or `V1_3_0`)
-        layer: name of the layer
+        version: Version of the web map service (`V1_1_1` or `V1_3_0`)
+        layer: Layer
         epsg_code: EPSG code
-        response_format: format of the response (MIME type, e.g., 'image/png')
-        tile_size_pixels: tile size in pixels
-        bounding_box: bounding box
-        style: name of the style
-        fill_value: fill value of nodata pixels
+        response_format: Format of the response (MIME type, e.g., 'image/png')
+        tile_size_pixels: Tile size in pixels
+        bounding_box: Bounding box
+        style: Style
+        fill_value: Fill value of no-data pixels
 
     Returns:
-        params
+        Params
 
     Raises:
-        AviaryUserError: Invalid WMS version
+        AviaryUserError: Invalid `version`
     """
     params = {
         'service': 'WMS',
@@ -311,7 +341,7 @@ def _get_wms_params(
     elif version == WMSVersion.V1_3_0:
         params['crs'] = f'EPSG:{epsg_code}'
     else:
-        message = 'Invalid WMS version!'
+        message = 'Invalid version!'
         raise AviaryUserError(message)
 
     if style is not None:
@@ -320,16 +350,43 @@ def _get_wms_params(
     return params
 
 
+def _parse_ignore_channel_names(
+    ignore_channel_names: ChannelName | str | ChannelNameSet,
+    time_step: TimeStep | None,
+) -> ChannelKeySet:
+    """Parses `ignore_channel_names` to `ChannelKeySet`.
+
+    Parameters:
+        ignore_channel_names: Channel name or channel names to ignore
+        time_step: Time step
+
+    Returns:
+        Channel name and time step combinations to ignore
+    """
+    if isinstance(ignore_channel_names, (ChannelName | str)):
+        ignore_channel_names = {_parse_channel_name(channel_name=ignore_channel_names)}
+    else:
+        ignore_channel_names = {
+            _parse_channel_name(channel_name=ignore_channel_name)
+            for ignore_channel_name in ignore_channel_names
+        }
+
+    return {
+        (ignore_channel_name, time_step)
+        for ignore_channel_name in ignore_channel_names
+    }
+
+
 def _permute_data(
     data: npt.NDArray,
 ) -> npt.NDArray:
     """Permutes the data from channels-first to channels-last.
 
     Parameters:
-        data: data
+        data: Data
 
     Returns:
-        data
+        Data
     """
     return np.transpose(data, (1, 2, 0))
 
@@ -341,14 +398,15 @@ def _request_wms(
     """Requests the web map service.
 
     Parameters:
-        url: url of the web map service
-        params: parameters of the request
+        url: URL of the web map service
+        params: Parameters of the request
 
     Returns:
-        data
+        Data
 
     Raises:
-        AviaryUserError: Invalid request (response is not an image)
+        AviaryUserError: Invalid request (the response is not an image)
+        AviaryUserError: Invalid request (the response is not in shape (n, n, 3) and data type uint8)
     """
     response = requests.get(
         url=url,
@@ -370,8 +428,14 @@ def _request_wms(
         with file.open() as src:
             data = src.read()
 
+            if data.ndim != 3:  # noqa: PLR2004
+                message = (
+                    'Invalid request! '
+                    'The response must be in shape (n, n, 3) and data type uint8.'
+                )
+                raise AviaryUserError(message)
+
             conditions = [
-                data.ndim != 3,  # noqa: PLR2004
                 data.shape[0] != 3,  # noqa: PLR2004
                 data.dtype != np.uint8,
             ]
@@ -379,7 +443,7 @@ def _request_wms(
             if any(conditions):
                 message = (
                     'Invalid request! '
-                    'The response must be an array of shape (n, n, 3) and data type uint8.'
+                    'The response must be in shape (n, n, 3) and data type uint8.'
                 )
                 raise AviaryUserError(message)
 

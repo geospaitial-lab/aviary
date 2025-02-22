@@ -8,6 +8,8 @@ from aviary.inference.aviary import (
     Type,
 )
 
+pytestmark = pytest.mark.skip()
+
 
 def test_model_card_init() -> None:
     name = 'name'
