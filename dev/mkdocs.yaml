@@ -39,7 +39,6 @@ nav:
         - CompositePreprocessor: api_reference/data/data_preprocessor/composite_preprocessor.md
         - NormalizePreprocessor: api_reference/data/data_preprocessor/normalize_preprocessor.md
         - StandardizePreprocessor: api_reference/data/data_preprocessor/standardize_preprocessor.md
-      - Dataset: api_reference/data/dataset.md
     - aviary.geodata:
       - CoordinatesFilter:
         - CoordinatesFilter: api_reference/geodata/coordinates_filter/coordinates_filter.md
@@ -70,6 +69,7 @@ nav:
           - CompositeFetcher: api_reference/inference/tile_fetcher/composite_fetcher.md
           - VRTFetcher: api_reference/inference/tile_fetcher/vrt_fetcher.md
           - WMSFetcher: api_reference/inference/tile_fetcher/wms_fetcher.md
+      - TileSet: api_reference/inference/tile_set.md
     - aviary.pipeline:
       - PostprocessingPipeline: api_reference/pipeline/postprocessing_pipeline.md
       - SegmentationPipeline: api_reference/pipeline/segmentation_pipeline.md

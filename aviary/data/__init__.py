@@ -9,7 +9,6 @@ from .data_preprocessor import (
     StandardizePreprocessor,
     StandardizePreprocessorConfig,
 )
-from .dataset import Dataset
 
 __all__ = [
     'CompositePreprocessor',
@@ -17,7 +16,6 @@ __all__ = [
     'DataLoader',
     'DataPreprocessor',
     'DataPreprocessorConfig',
-    'Dataset',
     'NormalizePreprocessor',
     'NormalizePreprocessorConfig',
     'StandardizePreprocessor',
