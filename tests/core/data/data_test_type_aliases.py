@@ -73,5 +73,6 @@ data_test__parse_channel_keys = [
             ('custom', None),
         },
     ),
+    (set(), set()),
     (None, set()),
 ]

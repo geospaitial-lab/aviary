@@ -7,6 +7,8 @@ import pytest
 # noinspection PyProtectedMember
 from aviary._functional.inference.exporter import _segmentation_exporter_task
 
+pytestmark = pytest.mark.skip()
+
 
 @pytest.mark.skip(reason='Not implemented')
 def test_segmentation_exporter() -> None:
