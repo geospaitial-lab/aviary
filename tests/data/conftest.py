@@ -1,6 +1,5 @@
 from unittest.mock import MagicMock
 
-import numpy as np
 import pytest
 
 from aviary.data.data_preprocessor import (
@@ -9,8 +8,6 @@ from aviary.data.data_preprocessor import (
     NormalizePreprocessor,
     StandardizePreprocessor,
 )
-from aviary.data.dataset import Dataset
-from aviary.inference.tile_fetcher import TileFetcher
 
 
 @pytest.fixture(scope='session')
@@ -22,18 +19,6 @@ def composite_preprocessor() -> CompositePreprocessor:
     ]
     return CompositePreprocessor(
         data_preprocessors=data_preprocessors,
-    )
-
-
-@pytest.fixture(scope='session')
-def dataset() -> Dataset:
-    data_fetcher = MagicMock(spec=TileFetcher)
-    coordinates = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32)
-    data_preprocessor = None
-    return Dataset(
-        data_fetcher=data_fetcher,
-        coordinates=coordinates,
-        data_preprocessor=data_preprocessor,
     )
 
 
