@@ -385,7 +385,7 @@ class Tile(Iterable[Channel]):
 
     def __eq__(
         self,
-        other: Tile,
+        other: object,
     ) -> bool:
         """Compares the tiles.
 

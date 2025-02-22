@@ -424,7 +424,7 @@ class ProcessArea(Iterable[Coordinates]):
 
     def __eq__(
         self,
-        other: ProcessArea,
+        other: object,
     ) -> bool:
         """Compares the process areas.
 
@@ -627,7 +627,7 @@ class ProcessArea(Iterable[Coordinates]):
         coordinates: Coordinates,
         inplace: bool = False,
     ) -> ProcessArea:
-        """Appends the coordinates to the process area.
+        """Appends the coordinates.
 
         Parameters:
             coordinates: Coordinates (x_min, y_min) of the tile in meters
@@ -725,7 +725,7 @@ class ProcessArea(Iterable[Coordinates]):
         coordinates: Coordinates,
         inplace: bool = False,
     ) -> ProcessArea:
-        """Removes the coordinates from the process area.
+        """Removes the coordinates.
 
         Parameters:
             coordinates: Coordinates (x_min, y_min) of the tile in meters
