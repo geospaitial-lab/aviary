@@ -1,4 +1,4 @@
-::: aviary.data.Dataset
+::: aviary.inference.TileSet
     options:
       filters:
       - "!^_"

@@ -37,9 +37,9 @@ if TYPE_CHECKING:
 class TileFetcher(Protocol):
     """Protocol for tile fetchers
 
-    Tile fetchers are callables that fetch data from a source given a minimum x and y coordinate.
+    Tile fetchers are callables that fetch a tile from a source given a minimum x and y coordinate.
     These coordinates correspond to the bottom left corner of a tile.
-    The tile fetcher is used by the tile set to fetch data for each tile.
+    The tile fetcher is used by the tile set to fetch a tile for each coordinates in the process area.
 
     Implemented tile fetchers:
         - `CompositeFetcher`: Composes multiple tile fetchers
