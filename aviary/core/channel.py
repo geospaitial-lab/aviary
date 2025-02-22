@@ -299,7 +299,7 @@ class RasterChannel(Channel):
 
     def __eq__(
         self,
-        other: RasterChannel,
+        other: object,
     ) -> bool:
         """Compares the raster channels.
 
@@ -606,7 +606,7 @@ class VectorChannel(Channel):
 
     def __eq__(
         self,
-        other: VectorChannel,
+        other: object,
     ) -> bool:
         """Compares the vector channels.
 

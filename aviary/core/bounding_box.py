@@ -169,7 +169,7 @@ class BoundingBox(Iterable[Coordinate]):
 
     def __eq__(
         self,
-        other: BoundingBox,
+        other: object,
     ) -> bool:
         """Compares the bounding boxes.
 
