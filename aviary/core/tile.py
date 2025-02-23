@@ -32,7 +32,6 @@ if TYPE_CHECKING:
         ChannelKeySet,
         ChannelNameKeySet,
         ChannelNames,
-        Channels,
         Coordinates,
         TileSize,
         TimeStep,
@@ -49,7 +48,7 @@ class Tile(Iterable[Channel]):
 
     def __init__(
         self,
-        channels: Channels,
+        channels: list[Channel],
         coordinates: Coordinates,
         tile_size: TileSize,
         copy: bool = False,
@@ -124,7 +123,7 @@ class Tile(Iterable[Channel]):
         return {channel.key: channel for channel in self._channels}
 
     @property
-    def channels(self) -> Channels:
+    def channels(self) -> list[Channel]:
         """
         Returns:
             Channels

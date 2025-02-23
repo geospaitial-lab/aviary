@@ -10,7 +10,6 @@ from aviary.core.exceptions import AviaryUserError
 from aviary.core.tile import Tile
 from aviary.core.type_aliases import (
     ChannelKey,
-    Channels,
     TileSize,
 )
 from tests.core.data.data_test_tile import (
@@ -23,7 +22,7 @@ from tests.core.data.data_test_tile import (
 
 
 def test_tile_init(
-    tile_channels: Channels,
+    tile_channels: list[Channel],
 ) -> None:
     coordinates = (0, 0)
     tile_size = 128
@@ -44,7 +43,7 @@ def test_tile_init(
 
 @pytest.mark.parametrize(('channels', 'tile_size', 'message'), data_test_tile_init_exceptions)
 def test_tile_init_exceptions(
-    channels: Channels,
+    channels: list[Channel],
     tile_size: TileSize,
     message: str,
 ) -> None:
@@ -69,7 +68,7 @@ def test_tile_init_defaults() -> None:
 
 
 def test_tile_mutability_no_copy(
-    tile_channels: Channels,
+    tile_channels: list[Channel],
 ) -> None:
     coordinates = (0, 0)
     tile_size = 128
@@ -87,7 +86,7 @@ def test_tile_mutability_no_copy(
 
 
 def test_tile_mutability_copy(
-    tile_channels: Channels,
+    tile_channels: list[Channel],
 ) -> None:
     coordinates = (0, 0)
     tile_size = 128
@@ -238,7 +237,7 @@ def test_tile_getitem(
 
 def test_tile_iter(
     tile: Tile,
-    tile_channels: Channels,
+    tile_channels: list[Channel],
 ) -> None:
     assert list(tile) == tile_channels
 
