@@ -8,7 +8,10 @@ from collections.abc import (
     Iterable,
     Iterator,
 )
-from typing import TYPE_CHECKING
+from typing import (
+    TYPE_CHECKING,
+    overload,
+)
 
 import geopandas as gpd
 import numpy as np
@@ -36,6 +39,7 @@ class Channel(ABC, Iterable[object]):
 
     Notes:
         - The `data` property returns a reference to the data
+        - The dunder methods `__getitem__` and `__iter__` return or yield a reference to a data item
 
     Implemented channels:
         - `RasterChannel`: Contains batched raster data
@@ -192,17 +196,31 @@ class Channel(ABC, Iterable[object]):
         """
         return len(self._data)
 
+    @overload
     def __getitem__(
         self,
         index: int,
     ) -> object:
+        ...
+
+    @overload
+    def __getitem__(
+        self,
+        index: slice,
+    ) -> list[object]:
+        ...
+
+    def __getitem__(
+        self,
+        index: int | slice,
+    ) -> object | list[object]:
         """Returns the data item.
 
         Parameters:
-            index: Index of the data item
+            index: Index or slice of the data item
 
         Returns:
-            Data item
+            Data item or sliced data
         """
         return self._data[index]
 
@@ -243,6 +261,7 @@ class RasterChannel(Channel, Iterable[npt.NDArray]):
     Notes:
         - The data items are assumed to be in shape (n, n), where n is the spatial extent in x and y direction
         - The `data` property returns a reference to the data
+        - The dunder methods `__getitem__` and `__iter__` return or yield a reference to a data item
     """
     _data: list[npt.NDArray]
 
@@ -402,17 +421,31 @@ class RasterChannel(Channel, Iterable[npt.NDArray]):
         ]
         return all(conditions)
 
+    @overload
     def __getitem__(
         self,
         index: int,
     ) -> npt.NDArray:
+        ...
+
+    @overload
+    def __getitem__(
+        self,
+        index: slice,
+    ) -> list[npt.NDArray]:
+        ...
+
+    def __getitem__(
+        self,
+        index: int | slice,
+    ) -> npt.NDArray | list[npt.NDArray]:
         """Returns the data item.
 
         Parameters:
-            index: Index of the data item
+            index: Index or slice of the data item
 
         Returns:
-            Data item
+            Data item or sliced data
         """
         return super().__getitem__(index=index)
 
@@ -510,6 +543,7 @@ class VectorChannel(Channel, Iterable[gpd.GeoDataFrame]):
         - The data items are assumed to be scaled to the spatial extent [0, 1] in x and y direction
             without a coordinate reference system
         - The `data` property returns a reference to the data
+        - The dunder methods `__getitem__` and `__iter__` return or yield a reference to a data item
     """
     _data: list[gpd.GeoDataFrame]
 
@@ -816,17 +850,31 @@ class VectorChannel(Channel, Iterable[gpd.GeoDataFrame]):
         ]
         return all(conditions)
 
+    @overload
     def __getitem__(
         self,
         index: int,
     ) -> gpd.GeoDataFrame:
+        ...
+
+    @overload
+    def __getitem__(
+        self,
+        index: slice,
+    ) -> list[gpd.GeoDataFrame]:
+        ...
+
+    def __getitem__(
+        self,
+        index: int | slice,
+    ) -> gpd.GeoDataFrame | list[gpd.GeoDataFrame]:
         """Returns the data item.
 
         Parameters:
-            index: Index of the data item
+            index: Index or slice of the data item
 
         Returns:
-            Data item
+            Data item or sliced data
         """
         return super().__getitem__(index=index)
 
