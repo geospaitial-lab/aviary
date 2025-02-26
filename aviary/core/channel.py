@@ -4,13 +4,15 @@ from abc import (
     ABC,
     abstractmethod,
 )
+from collections.abc import (
+    Iterable,
+    Iterator,
+)
 from typing import TYPE_CHECKING
 
+import geopandas as gpd
 import numpy as np
-
-if TYPE_CHECKING:
-    import geopandas as gpd
-    import numpy.typing as npt
+import numpy.typing as npt
 
 from aviary.core.enums import (
     ChannelName,
@@ -29,20 +31,20 @@ if TYPE_CHECKING:
     )
 
 
-class Channel(ABC):
+class Channel(ABC, Iterable[object]):
     """Abstract class for channels
 
     Notes:
         - The `data` property returns a reference to the data
 
     Implemented channels:
-        - `RasterChannel`: Contains raster data
-        - `VectorChannel`: Contains vector data
+        - `RasterChannel`: Contains batched raster data
+        - `VectorChannel`: Contains batched vector data
     """
 
     def __init__(
         self,
-        data: object,
+        data: object | list[object],
         name: ChannelName | str,
         buffer_size: FractionalBufferSize = 0.,
         time_step: TimeStep | None = None,
@@ -69,9 +71,15 @@ class Channel(ABC):
 
     def _validate(self) -> None:
         """Validates the channel."""
+        self._parse_data()
         self._validate_data()
         self._name = _parse_channel_name(channel_name=self._name)
         self._validate_buffer_size()
+
+    def _parse_data(self) -> None:
+        """Parses `data`."""
+        if not isinstance(self._data, list):
+            self._data = [self._data]
 
     @abstractmethod
     def _validate_data(self) -> None:
@@ -139,6 +147,14 @@ class Channel(ABC):
         return self._copy
 
     @property
+    def batch_size(self) -> int:
+        """
+        Returns:
+            Batch size
+        """
+        return len(self)
+
+    @property
     def key(self) -> ChannelKey:
         """
         Returns:
@@ -168,6 +184,36 @@ class Channel(ABC):
             True if the channels are equal, False otherwise
         """
 
+    def __len__(self) -> int:
+        """Computes the batch size.
+
+        Returns:
+            Batch size
+        """
+        return len(self._data)
+
+    def __getitem__(
+        self,
+        index: int,
+    ) -> object:
+        """Returns the data item.
+
+        Parameters:
+            index: Index of the data item
+
+        Returns:
+            Data item
+        """
+        return self._data[index]
+
+    def __iter__(self) -> Iterator[object]:
+        """Iterates over the data.
+
+        Yields:
+            Data item
+        """
+        yield from self._data
+
     @abstractmethod
     def copy(self) -> Channel:
         """Copies the channel.
@@ -191,18 +237,18 @@ class Channel(ABC):
         """
 
 
-class RasterChannel(Channel):
-    """Channel that contains raster data
+class RasterChannel(Channel, Iterable[npt.NDArray]):
+    """Channel that contains batched raster data
 
     Notes:
-        - The data is assumed to be in shape (n, n), where n is the spatial extent in x and y direction
+        - The data items are assumed to be in shape (n, n), where n is the spatial extent in x and y direction
         - The `data` property returns a reference to the data
     """
-    _data: npt.NDArray
+    _data: list[npt.NDArray]
 
     def __init__(
         self,
-        data: npt.NDArray,
+        data: npt.NDArray | list[npt.NDArray],
         name: ChannelName | str,
         buffer_size: FractionalBufferSize = 0.,
         time_step: TimeStep | None = None,
@@ -230,25 +276,57 @@ class RasterChannel(Channel):
         """Validates `data`.
 
         Raises:
-            AviaryUserError: Invalid `data` (the data is not in shape (n, n))
+            AviaryUserError: Invalid `data` (the data contains no data items)
         """
-        if self._data.ndim != 2:  # noqa: PLR2004
+        if len(self._data) == 0:
             message = (
                 'Invalid data! '
-                'The data must be in shape (n, n).'
+                'The data must contain at least one data item.'
             )
             raise AviaryUserError(message)
 
-        if self._data.shape[0] != self._data.shape[1]:
+        for data_item in self:
+            self._validate_data_item(data_item=data_item)
+
+    def _validate_data_item(
+        self,
+        data_item: npt.NDArray,
+    ) -> None:
+        """Validates the data item.
+
+        Parameters:
+            data_item: Data item
+
+        Raises:
+            AviaryUserError: Invalid `data` (the data item is not in shape (n, n))
+            AviaryUserError: Invalid `data` (the shapes of the data items are not equal)
+        """
+        first_data_item = self[0]
+
+        if data_item.ndim != 2:  # noqa: PLR2004
             message = (
                 'Invalid data! '
-                'The data must be in shape (n, n).'
+                'The data item must be in shape (n, n).'
+            )
+            raise AviaryUserError(message)
+
+        if data_item.shape[0] != data_item.shape[1]:
+            message = (
+                'Invalid data! '
+                'The data item must be in shape (n, n).'
+            )
+            raise AviaryUserError(message)
+
+        if data_item.shape != first_data_item.shape:
+            message = (
+                'Invalid data! '
+                'The shapes of the data items must be equal.'
             )
             raise AviaryUserError(message)
 
     def _copy_data(self) -> None:
         """Copies `data`."""
-        self._data = self._data.copy()
+        self._data = [data_item.copy() for data_item in self]
 
     def _compute_buffer_size_pixels(self) -> BufferSize:
         """Computes the buffer size in pixels.
@@ -260,7 +338,7 @@ class RasterChannel(Channel):
             AviaryUserError: Invalid `buffer_size` (the buffer size does not match the spatial extent of the data,
                 resulting in a fractional number of pixels)
         """
-        buffer_size_pixels = self._buffer_size * self._data.shape[0] / (1. + 2. * self._buffer_size)
+        buffer_size_pixels = self._buffer_size * self[0].shape[0] / (1. + 2. * self._buffer_size)
 
         if not buffer_size_pixels.is_integer():
             message = (
@@ -286,7 +364,7 @@ class RasterChannel(Channel):
         Returns:
             String representation
         """
-        data_repr = self._data.shape
+        data_repr = len(self)
         return (
             'RasterChannel(\n'
             f'    data={data_repr},\n'
@@ -313,12 +391,37 @@ class RasterChannel(Channel):
             return False
 
         conditions = [
-            np.array_equal(self._data, other.data),
+            all(
+                np.array_equal(data_item, other_data_item)
+                for data_item, other_data_item in zip(self, other, strict=True)
+            ),
             self._name == other.name,
             self._buffer_size == other.buffer_size,
             self._time_step == other.time_step,
         ]
         return all(conditions)
+
+    def __getitem__(
+        self,
+        index: int,
+    ) -> npt.NDArray:
+        """Returns the data item.
+
+        Parameters:
+            index: Index of the data item
+
+        Returns:
+            Data item
+        """
+        return super().__getitem__(index=index)
+
+    def __iter__(self) -> Iterator[npt.NDArray]:
+        """Iterates over the data.
+
+        Yields:
+            Data item
+        """
+        return super().__iter__()
 
     def copy(self) -> RasterChannel:
         """Copies the raster channel.
@@ -359,18 +462,18 @@ class RasterChannel(Channel):
             )
 
         if inplace:
-            self._data = self._data[
-                self._buffer_size_pixels:-self._buffer_size_pixels,
-                self._buffer_size_pixels:-self._buffer_size_pixels,
+            self._data = [
+                self._remove_buffer_item(data_item=data_item)
+                for data_item in self
             ]
             self._buffer_size = 0.
             self._validate()
             self._buffer_size_pixels = self._compute_buffer_size_pixels()
             return self
 
-        data = self._data[
-            self._buffer_size_pixels:-self._buffer_size_pixels,
-            self._buffer_size_pixels:-self._buffer_size_pixels,
+        data = [
+            self._remove_buffer_item(data_item=data_item)
+            for data_item in self
         ]
         buffer_size = 0.
         return RasterChannel(
@@ -381,20 +484,37 @@ class RasterChannel(Channel):
             copy=True,
         )
 
+    def _remove_buffer_item(
+        self,
+        data_item: npt.NDArray,
+    ) -> npt.NDArray:
+        """Removes the buffer from the data item.
 
-class VectorChannel(Channel):
-    """Channel that contains vector data
+        Parameters:
+            data_item: Data item
+
+        Returns:
+            Data item
+        """
+        return data_item[
+            self._buffer_size_pixels:-self._buffer_size_pixels,
+            self._buffer_size_pixels:-self._buffer_size_pixels,
+        ]
+
+
+class VectorChannel(Channel, Iterable[gpd.GeoDataFrame]):
+    """Channel that contains batched vector data
 
     Notes:
-        - The data is assumed to be scaled to the spatial extent [0, 1] in x and y direction
+        - The data items are assumed to be scaled to the spatial extent [0, 1] in x and y direction
             without a coordinate reference system
         - The `data` property returns a reference to the data
     """
-    _data: gpd.GeoDataFrame
+    _data: list[gpd.GeoDataFrame]
 
     def __init__(
         self,
-        data: gpd.GeoDataFrame,
+        data: gpd.GeoDataFrame | list[gpd.GeoDataFrame],
         name: ChannelName | str,
         buffer_size: FractionalBufferSize = 0.,
         time_step: TimeStep | None = None,
@@ -423,20 +543,43 @@ class VectorChannel(Channel):
         """Validates `data`.
 
         Raises:
-            AviaryUserError: Invalid `data` (the data has a coordinate reference system)
-            AviaryUserError: Invalid `data` (the data is not scaled to the spatial extent [0, 1] in x and y direction)
+            AviaryUserError: Invalid `data` (the data contains no data items)
         """
-        if self._data.crs is not None:
+        if not self._data:
             message = (
                 'Invalid data! '
-                'The data must not have a coordinate reference system.'
+                'The data must contain at least one data item.'
             )
             raise AviaryUserError(message)
 
-        if self._data.empty:
+        for data_item in self:
+            self._validate_data_item(data_item=data_item)
+
+    @staticmethod
+    def _validate_data_item(
+        data_item: gpd.GeoDataFrame,
+    ) -> None:
+        """Validates the data item.
+
+        Parameters:
+            data_item: Data item
+
+        Raises:
+            AviaryUserError: Invalid `data` (the data item has a coordinate reference system)
+            AviaryUserError: Invalid `data` (the data item is not scaled to the spatial extent [0, 1]
+                in x and y direction)
+        """
+        if data_item.crs is not None:
+            message = (
+                'Invalid data! '
+                'The data item must not have a coordinate reference system.'
+            )
+            raise AviaryUserError(message)
+
+        if data_item.empty:
             return
 
-        x_min, y_min, x_max, y_max = self._data.total_bounds
+        x_min, y_min, x_max, y_max = data_item.total_bounds
         conditions = [
             x_min < 0.,
             y_min < 0.,
@@ -447,13 +590,13 @@ class VectorChannel(Channel):
         if any(conditions):
             message = (
                 'Invalid data! '
-                'The data must be scaled to the spatial extent [0, 1] in x and y direction.'
+                'The data item must be scaled to the spatial extent [0, 1] in x and y direction.'
             )
             raise AviaryUserError(message)
 
     def _copy_data(self) -> None:
         """Copies `data`."""
-        self._data = self._data.copy()
+        self._data = [data_item.copy() for data_item in self]
 
     def _compute_buffer_size_coordinate_units(self) -> BufferSize:
         """Computes the buffer size in coordinate units.
@@ -476,20 +619,20 @@ class VectorChannel(Channel):
         return x_min, y_min, x_max, y_max
 
     @staticmethod
-    def _scale_data(
-        data: gpd.GeoDataFrame,
+    def _scale_data_item(
+        data_item: gpd.GeoDataFrame,
         source_bounding_box: tuple[float, float, float, float],
         target_bounding_box: tuple[float, float, float, float],
     ) -> gpd.GeoDataFrame:
-        """Scales the data to the spatial extent [0, 1] in x and y direction.
+        """Scales the data item to the spatial extent [0, 1] in x and y direction.
 
         Parameters:
-            data: Data
+            data_item: Data item
             source_bounding_box: Source bounding box
             target_bounding_box: Target bounding box
 
         Returns:
-            Data
+            Data item
         """
         source_size = source_bounding_box[2] - source_bounding_box[0]
         target_size = target_bounding_box[2] - target_bounding_box[0]
@@ -500,8 +643,8 @@ class VectorChannel(Channel):
         translate_y = target_bounding_box[1] - source_bounding_box[1] * scale
 
         transform = [scale, 0., 0., scale, translate_x, translate_y]
-        data.geometry = data.geometry.affine_transform(transform)
-        return data
+        data_item.geometry = data_item.geometry.affine_transform(transform)
+        return data_item
 
     @property
     def data(self) -> gpd.GeoDataFrame:
@@ -514,7 +657,7 @@ class VectorChannel(Channel):
     @classmethod
     def from_unscaled_data(
         cls,
-        data: gpd.GeoDataFrame,
+        data: gpd.GeoDataFrame | list[gpd.GeoDataFrame],
         name: ChannelName | str,
         coordinates: Coordinates,
         tile_size: TileSize,
@@ -534,9 +677,20 @@ class VectorChannel(Channel):
             copy: If True, the data is copied during initialization
 
         Raises:
+            AviaryUserError: Invalid `data` (the data contains no data items)
             AviaryUserError: Invalid `tile_size` (the tile size is negative or zero)
             AviaryUserError: Invalid `buffer_size` (the buffer size is negative)
         """
+        if not isinstance(data, list):
+            data = [data]
+
+        if not data:
+            message = (
+                'Invalid data! '
+                'The data must contain at least one data item.'
+            )
+            raise AviaryUserError(message)
+
         if tile_size <= 0:
             message = (
                 'Invalid tile_size! '
@@ -552,27 +706,17 @@ class VectorChannel(Channel):
             raise AviaryUserError(message)
 
         if copy:
-            data = data.copy()
+            data = [data_item.copy() for data_item in data]
 
-        data = data.set_crs(
-            crs=None,
-            allow_override=True,
-        )
-
-        if not data.empty:
-            source_bounding_box = (
-                float(coordinates[0] - buffer_size),
-                float(coordinates[1] - buffer_size),
-                float(coordinates[0] + tile_size + buffer_size),
-                float(coordinates[1] + tile_size + buffer_size),
+        data = [
+            cls._from_unscaled_data_item(
+                data_item=data_item,
+                coordinates=coordinates,
+                tile_size=tile_size,
+                buffer_size=buffer_size,
             )
-            target_bounding_box = (0., 0., 1., 1.)
-            data = cls._scale_data(
-                data=data,
-                source_bounding_box=source_bounding_box,
-                target_bounding_box=target_bounding_box,
-            )
-
+            for data_item in data
+        ]
         buffer_size = buffer_size / tile_size
         vector_channel = cls(
             data=data,
@@ -587,13 +731,53 @@ class VectorChannel(Channel):
 
         return vector_channel
 
+    @classmethod
+    def _from_unscaled_data_item(
+        cls,
+        data_item: gpd.GeoDataFrame,
+        coordinates: Coordinates,
+        tile_size: TileSize,
+        buffer_size: BufferSize = 0,
+    ) -> gpd.GeoDataFrame:
+        """Creates a data item from unscaled data.
+
+        Parameters:
+            data_item: Data item
+            coordinates: Coordinates (x_min, y_min) of the tile in meters
+            tile_size: Tile size in meters
+            buffer_size: Buffer size in meters
+
+        Returns:
+            Data item
+        """
+        data_item = data_item.set_crs(
+            crs=None,
+            allow_override=True,
+        )
+
+        if data_item.empty:
+            return data_item
+
+        source_bounding_box = (
+            float(coordinates[0] - buffer_size),
+            float(coordinates[1] - buffer_size),
+            float(coordinates[0] + tile_size + buffer_size),
+            float(coordinates[1] + tile_size + buffer_size),
+        )
+        target_bounding_box = (0., 0., 1., 1.)
+        return cls._scale_data_item(
+            data_item=data_item,
+            source_bounding_box=source_bounding_box,
+            target_bounding_box=target_bounding_box,
+        )
+
     def __repr__(self) -> str:
         """Returns the string representation.
 
         Returns:
             String representation
         """
-        data_repr = len(self._data)
+        data_repr = len(self)
         return (
             'VectorChannel(\n'
             f'    data={data_repr},\n'
@@ -620,12 +804,37 @@ class VectorChannel(Channel):
             return False
 
         conditions = [
-            self._data.equals(other.data),
+            all(
+                data_item.equals(other_data_item)
+                for data_item, other_data_item in zip(self, other, strict=True)
+            ),
             self._name == other.name,
             self._buffer_size == other.buffer_size,
             self._time_step == other.time_step,
         ]
         return all(conditions)
+
+    def __getitem__(
+        self,
+        index: int,
+    ) -> gpd.GeoDataFrame:
+        """Returns the data item.
+
+        Parameters:
+            index: Index of the data item
+
+        Returns:
+            Data item
+        """
+        return super().__getitem__(index=index)
+
+    def __iter__(self) -> Iterator[gpd.GeoDataFrame]:
+        """Iterates over the data.
+
+        Yields:
+            Data item
+        """
+        return super().__iter__()
 
     def copy(self) -> VectorChannel:
         """Copies the vector channel.
@@ -653,23 +862,6 @@ class VectorChannel(Channel):
         Returns:
             Vector channel
         """
-        if self._data.empty:
-            if inplace:
-                self._buffer_size = 0.
-                self._validate()
-                self._buffer_size_coordinate_units = self._compute_buffer_size_coordinate_units()
-                self._unbuffered_bounding_box = self._compute_unbuffered_bounding_box()
-                return self
-
-            buffer_size = 0.
-            return VectorChannel(
-                data=self._data,
-                name=self._name,
-                buffer_size=buffer_size,
-                time_step=self._time_step,
-                copy=True,
-            )
-
         if self._buffer_size == 0.:
             if inplace:
                 return self
@@ -682,36 +874,21 @@ class VectorChannel(Channel):
                 copy=True,
             )
 
-        source_bounding_box = self._unbuffered_bounding_box
-        target_bounding_box = (0., 0., 1., 1.)
-
         if inplace:
-            self._data = self._data.clip(
-                mask=self._unbuffered_bounding_box,
-                keep_geom_type=True,
-            )
-            self._data = self._data.reset_index(drop=True)
-            self._data = self._scale_data(
-                data=self._data,
-                source_bounding_box=source_bounding_box,
-                target_bounding_box=target_bounding_box,
-            )
+            self._data = [
+                self._remove_buffer_item(data_item=data_item)
+                for data_item in self
+            ]
             self._buffer_size = 0.
             self._validate()
             self._buffer_size_coordinate_units = self._compute_buffer_size_coordinate_units()
             self._unbuffered_bounding_box = self._compute_unbuffered_bounding_box()
             return self
 
-        data = self._data.clip(  # returns a copy
-            mask=self._unbuffered_bounding_box,
-            keep_geom_type=True,
-        )
-        data = data.reset_index(drop=True)
-        data = self._scale_data(
-            data=data,
-            source_bounding_box=source_bounding_box,
-            target_bounding_box=target_bounding_box,
-        )
+        data = [
+            self._remove_buffer_item(data_item=data_item)
+            for data_item in self
+        ]
         buffer_size = 0.
         vector_channel = VectorChannel(
             data=data,
@@ -722,3 +899,32 @@ class VectorChannel(Channel):
         )
         vector_channel._mark_as_copied()  # noqa: SLF001
         return vector_channel
+
+    def _remove_buffer_item(
+        self,
+        data_item: gpd.GeoDataFrame,
+    ) -> gpd.GeoDataFrame:
+        """Removes the buffer from the data item.
+
+        Parameters:
+            data_item: Data item
+
+        Returns:
+            Data item
+        """
+        if data_item.empty:
+            return data_item
+
+        source_bounding_box = self._unbuffered_bounding_box
+        target_bounding_box = (0., 0., 1., 1.)
+
+        data_item = data_item.clip(  # returns a copy
+            mask=self._unbuffered_bounding_box,
+            keep_geom_type=True,
+        )
+        data_item = data_item.reset_index(drop=True)
+        return self._scale_data_item(
+            data_item=data_item,
+            source_bounding_box=source_bounding_box,
+            target_bounding_box=target_bounding_box,
+        )
