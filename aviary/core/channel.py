@@ -915,7 +915,7 @@ class VectorChannel(Channel, Iterable[gpd.GeoDataFrame]):
             Data item
         """
         if data_item.empty:
-            return data_item
+            return data_item.copy()
 
         source_bounding_box = self._unbuffered_bounding_box
         target_bounding_box = (0., 0., 1., 1.)
