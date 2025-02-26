@@ -80,7 +80,7 @@ def get_raster_channel() -> RasterChannel:
 
 
 @pytest.fixture(scope='function')
-def raster_channel_data() -> npt.NDArray:
+def raster_channel_data() -> list[npt.NDArray]:
     return get_raster_channel_data()
 
 
