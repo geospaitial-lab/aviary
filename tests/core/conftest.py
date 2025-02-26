@@ -84,14 +84,26 @@ def raster_channel_data() -> npt.NDArray:
     return get_raster_channel_data()
 
 
-def get_raster_channel_data() -> npt.NDArray:
+def get_raster_channel_data() -> list[npt.NDArray]:
+    return [
+        get_raster_channel_data_item(),
+        get_raster_channel_data_item(),
+    ]
+
+
+@pytest.fixture(scope='function')
+def raster_channel_data_item() -> npt.NDArray:
+    return get_raster_channel_data_item()
+
+
+def get_raster_channel_data_item() -> npt.NDArray:
     return np.ones(
         shape=(640, 640),
         dtype=np.uint8,
     )
 
 
-def get_raster_channel_buffered_data() -> npt.NDArray:
+def get_raster_channel_buffered_data_item() -> npt.NDArray:
     data = np.zeros(
         shape=(960, 960),
         dtype=np.uint8,
@@ -233,18 +245,30 @@ def get_vector_channel() -> VectorChannel:
 
 
 @pytest.fixture(scope='function')
-def vector_channel_data() -> gpd.GeoDataFrame:
+def vector_channel_data() -> list[gpd.GeoDataFrame]:
     return get_vector_channel_data()
 
 
-def get_vector_channel_data() -> gpd.GeoDataFrame:
+def get_vector_channel_data() -> list[gpd.GeoDataFrame]:
+    return [
+        get_vector_channel_data_item(),
+        get_vector_channel_data_item(),
+    ]
+
+
+@pytest.fixture(scope='function')
+def vector_channel_data_item() -> gpd.GeoDataFrame:
+    return get_vector_channel_data_item()
+
+
+def get_vector_channel_data_item() -> gpd.GeoDataFrame:
     geometries = [
         box(.425, .425, .575, .575),
     ]
     return gpd.GeoDataFrame(geometry=geometries)
 
 
-def get_vector_channel_buffered_data() -> gpd.GeoDataFrame:
+def get_vector_channel_buffered_data_item() -> gpd.GeoDataFrame:
     geometries = [
         box(0., 0., .1, .1),
         box(.9, 0., 1., .1),
@@ -255,6 +279,6 @@ def get_vector_channel_buffered_data() -> gpd.GeoDataFrame:
     return gpd.GeoDataFrame(geometry=geometries)
 
 
-def get_vector_channel_empty_data() -> gpd.GeoDataFrame:
+def get_vector_channel_empty_data_item() -> gpd.GeoDataFrame:
     geometries = []
     return gpd.GeoDataFrame(geometry=geometries)
