@@ -25,11 +25,15 @@ from tests.core.data.data_test_channel import (
     data_test_raster_channel_init,
     data_test_raster_channel_init_exceptions,
     data_test_raster_channel_remove_buffer,
+    data_test_raster_channel_remove_buffer_inplace,
+    data_test_raster_channel_remove_buffer_inplace_return,
     data_test_vector_channel_eq,
     data_test_vector_channel_from_unscaled_data_exceptions,
     data_test_vector_channel_init,
     data_test_vector_channel_init_exceptions,
     data_test_vector_channel_remove_buffer,
+    data_test_vector_channel_remove_buffer_inplace,
+    data_test_vector_channel_remove_buffer_inplace_return,
 )
 
 
@@ -49,12 +53,12 @@ from tests.core.data.data_test_channel import (
     data_test_raster_channel_init,
 )
 def test_raster_channel_init(
-    data: npt.NDArray,
+    data: npt.NDArray | list[npt.NDArray],
     name: ChannelName | str,
     buffer_size: FractionalBufferSize,
     time_step: TimeStep | None,
     copy: bool,
-    expected_data: npt.NDArray,
+    expected_data: list[npt.NDArray],
     expected_name: ChannelName | str,
     expected_buffer_size: FractionalBufferSize,
     expected_time_step: TimeStep | None,
@@ -68,7 +72,9 @@ def test_raster_channel_init(
         copy=copy,
     )
 
-    np.testing.assert_array_equal(raster_channel.data, expected_data)
+    for data_item, expected_data_item in zip(raster_channel, expected_data, strict=True):
+        np.testing.assert_array_equal(data_item, expected_data_item)
+
     assert raster_channel.name == expected_name
     assert raster_channel.buffer_size == expected_buffer_size
     assert raster_channel.time_step == expected_time_step
@@ -77,7 +83,7 @@ def test_raster_channel_init(
 
 @pytest.mark.parametrize(('data', 'buffer_size', 'message'), data_test_raster_channel_init_exceptions)
 def test_raster_channel_init_exceptions(
-    data: npt.NDArray,
+    data: list[npt.NDArray],
     buffer_size: FractionalBufferSize,
     message: str,
 ) -> None:
@@ -100,6 +106,7 @@ def test_raster_channel_init_defaults() -> None:
     buffer_size = signature.parameters['buffer_size'].default
     time_step = signature.parameters['time_step'].default
     copy = signature.parameters['copy'].default
+
     expected_buffer_size = 0.
     expected_time_step = None
     expected_copy = False
@@ -110,7 +117,7 @@ def test_raster_channel_init_defaults() -> None:
 
 
 def test_raster_channel_mutability_no_copy(
-    raster_channel_data: npt.NDArray,
+    raster_channel_data: list[npt.NDArray],
 ) -> None:
     name = ChannelName.R
     buffer_size = 0.
@@ -126,11 +133,15 @@ def test_raster_channel_mutability_no_copy(
     )
 
     assert id(raster_channel._data) == id(raster_channel_data)
+
+    for data_item, data_item_ in zip(raster_channel, raster_channel_data, strict=True):
+        assert id(data_item) == id(data_item_)
+
     assert id(raster_channel.data) == id(raster_channel._data)
 
 
 def test_raster_channel_mutability_copy(
-    raster_channel_data: npt.NDArray,
+    raster_channel_data: list[npt.NDArray],
 ) -> None:
     name = ChannelName.R
     buffer_size = 0.
@@ -146,6 +157,10 @@ def test_raster_channel_mutability_copy(
     )
 
     assert id(raster_channel._data) != id(raster_channel_data)
+
+    for data_item, data_item_ in zip(raster_channel, raster_channel_data, strict=True):
+        assert id(data_item) != id(data_item_)
+
     assert id(raster_channel.data) == id(raster_channel._data)
 
 
@@ -209,6 +224,9 @@ def test_raster_channel_copy(
     assert id(copied_raster_channel) != id(raster_channel)
     assert id(copied_raster_channel.data) != id(raster_channel.data)
 
+    for copied_data_item, data_item in zip(copied_raster_channel, raster_channel, strict=True):
+        assert id(copied_data_item) != id(data_item)
+
 
 @pytest.mark.parametrize(('raster_channel', 'expected'), data_test_raster_channel_remove_buffer)
 def test_raster_channel_remove_buffer(
@@ -222,11 +240,16 @@ def test_raster_channel_remove_buffer(
     assert raster_channel == copied_raster_channel
     assert raster_channel_ == expected
     assert id(raster_channel_) != id(raster_channel)
+    assert id(raster_channel_.data) != id(raster_channel.data)
+
+    for data_item_, data_item in zip(raster_channel_, raster_channel, strict=True):
+        assert id(data_item_) != id(data_item)
+
     assert raster_channel.is_copied is False
     assert raster_channel_.is_copied is True
 
 
-@pytest.mark.parametrize(('raster_channel', 'expected'), data_test_raster_channel_remove_buffer)
+@pytest.mark.parametrize(('raster_channel', 'expected'), data_test_raster_channel_remove_buffer_inplace)
 def test_raster_channel_remove_buffer_inplace(
     raster_channel: RasterChannel,
     expected: RasterChannel,
@@ -236,7 +259,7 @@ def test_raster_channel_remove_buffer_inplace(
     assert raster_channel == expected
 
 
-@pytest.mark.parametrize(('raster_channel', 'expected'), data_test_raster_channel_remove_buffer)
+@pytest.mark.parametrize(('raster_channel', 'expected'), data_test_raster_channel_remove_buffer_inplace_return)
 def test_raster_channel_remove_buffer_inplace_return(
     raster_channel: RasterChannel,
     expected: RasterChannel,
@@ -246,11 +269,16 @@ def test_raster_channel_remove_buffer_inplace_return(
     assert raster_channel == expected
     assert raster_channel_ == expected
     assert id(raster_channel_) == id(raster_channel)
+    assert id(raster_channel_.data) == id(raster_channel.data)
+
+    for data_item_, data_item in zip(raster_channel_, raster_channel, strict=True):
+        assert id(data_item_) == id(data_item)
 
 
 def test_raster_channel_remove_buffer_defaults() -> None:
     signature = inspect.signature(RasterChannel.remove_buffer)
     inplace = signature.parameters['inplace'].default
+
     expected_inplace = False
 
     assert inplace is expected_inplace
@@ -272,12 +300,12 @@ def test_raster_channel_remove_buffer_defaults() -> None:
     data_test_vector_channel_init,
 )
 def test_vector_channel_init(
-    data: gpd.GeoDataFrame,
+    data: gpd.GeoDataFrame | list[gpd.GeoDataFrame],
     name: ChannelName | str,
     buffer_size: FractionalBufferSize,
     time_step: TimeStep | None,
     copy: bool,
-    expected_data: gpd.GeoDataFrame,
+    expected_data: list[gpd.GeoDataFrame],
     expected_name: ChannelName | str,
     expected_buffer_size: FractionalBufferSize,
     expected_time_step: TimeStep | None,
@@ -291,7 +319,9 @@ def test_vector_channel_init(
         copy=copy,
     )
 
-    gpd.testing.assert_geodataframe_equal(vector_channel.data, expected_data)
+    for data_item, expected_data_item in zip(vector_channel, expected_data, strict=True):
+        gpd.testing.assert_geodataframe_equal(data_item, expected_data_item)
+
     assert vector_channel.name == expected_name
     assert vector_channel.buffer_size == expected_buffer_size
     assert vector_channel.time_step == expected_time_step
@@ -300,7 +330,7 @@ def test_vector_channel_init(
 
 @pytest.mark.parametrize(('data', 'buffer_size', 'message'), data_test_vector_channel_init_exceptions)
 def test_vector_channel_init_exceptions(
-    data: gpd.GeoDataFrame,
+    data: list[gpd.GeoDataFrame],
     buffer_size: FractionalBufferSize,
     message: str,
 ) -> None:
@@ -323,6 +353,7 @@ def test_vector_channel_init_defaults() -> None:
     buffer_size = signature.parameters['buffer_size'].default
     time_step = signature.parameters['time_step'].default
     copy = signature.parameters['copy'].default
+
     expected_buffer_size = 0.
     expected_time_step = None
     expected_copy = False
@@ -333,7 +364,7 @@ def test_vector_channel_init_defaults() -> None:
 
 
 def test_vector_channel_mutability_no_copy(
-    vector_channel_data: gpd.GeoDataFrame,
+    vector_channel_data: list[gpd.GeoDataFrame],
 ) -> None:
     name = ChannelName.R
     buffer_size = 0.
@@ -349,11 +380,15 @@ def test_vector_channel_mutability_no_copy(
     )
 
     assert id(vector_channel._data) == id(vector_channel_data)
+
+    for data_item, data_item_ in zip(vector_channel, vector_channel_data, strict=True):
+        assert id(data_item) == id(data_item_)
+
     assert id(vector_channel.data) == id(vector_channel._data)
 
 
 def test_vector_channel_mutability_copy(
-    vector_channel_data: gpd.GeoDataFrame,
+    vector_channel_data: list[gpd.GeoDataFrame],
 ) -> None:
     name = ChannelName.R
     buffer_size = 0.
@@ -369,6 +404,10 @@ def test_vector_channel_mutability_copy(
     )
 
     assert id(vector_channel._data) != id(vector_channel_data)
+
+    for data_item, data_item_ in zip(vector_channel, vector_channel_data, strict=True):
+        assert id(data_item) != id(data_item_)
+
     assert id(vector_channel.data) == id(vector_channel._data)
 
 
@@ -418,6 +457,7 @@ def test_vector_channel_from_unscaled_data() -> None:
 
 @pytest.mark.parametrize(
     (
+        'data',
         'tile_size',
         'buffer_size',
         'message',
@@ -425,10 +465,10 @@ def test_vector_channel_from_unscaled_data() -> None:
     data_test_vector_channel_from_unscaled_data_exceptions,
 )
 def test_vector_channel_from_unscaled_data_exceptions(
+    data: list[gpd.GeoDataFrame],
     tile_size: TileSize,
     buffer_size: BufferSize,
     message: str,
-    vector_channel_data: gpd.GeoDataFrame,
 ) -> None:
     name = ChannelName.R
     coordinates = (0, 0)
@@ -437,7 +477,7 @@ def test_vector_channel_from_unscaled_data_exceptions(
 
     with pytest.raises(AviaryUserError, match=message):
         _ = VectorChannel.from_unscaled_data(
-            data=vector_channel_data,
+            data=data,
             name=name,
             coordinates=coordinates,
             tile_size=tile_size,
@@ -452,6 +492,7 @@ def test_vector_channel_from_unscaled_data_defaults() -> None:
     buffer_size = signature.parameters['buffer_size'].default
     time_step = signature.parameters['time_step'].default
     copy = signature.parameters['copy'].default
+
     expected_buffer_size = 0.
     expected_time_step = None
     expected_copy = False
@@ -482,6 +523,9 @@ def test_vector_channel_copy(
     assert id(copied_vector_channel) != id(vector_channel)
     assert id(copied_vector_channel.data) != id(vector_channel.data)
 
+    for copied_data_item, data_item in zip(copied_vector_channel, vector_channel, strict=True):
+        assert id(copied_data_item) != id(data_item)
+
 
 @pytest.mark.parametrize(('vector_channel', 'expected'), data_test_vector_channel_remove_buffer)
 def test_vector_channel_remove_buffer(
@@ -495,11 +539,16 @@ def test_vector_channel_remove_buffer(
     assert vector_channel == copied_vector_channel
     assert vector_channel_ == expected
     assert id(vector_channel_) != id(vector_channel)
+    assert id(vector_channel_.data) != id(vector_channel.data)
+
+    for data_item_, data_item in zip(vector_channel_, vector_channel, strict=True):
+        assert id(data_item_) != id(data_item)
+
     assert vector_channel.is_copied is False
     assert vector_channel_.is_copied is True
 
 
-@pytest.mark.parametrize(('vector_channel', 'expected'), data_test_vector_channel_remove_buffer)
+@pytest.mark.parametrize(('vector_channel', 'expected'), data_test_vector_channel_remove_buffer_inplace)
 def test_vector_channel_remove_buffer_inplace(
     vector_channel: VectorChannel,
     expected: VectorChannel,
@@ -509,7 +558,7 @@ def test_vector_channel_remove_buffer_inplace(
     assert vector_channel == expected
 
 
-@pytest.mark.parametrize(('vector_channel', 'expected'), data_test_vector_channel_remove_buffer)
+@pytest.mark.parametrize(('vector_channel', 'expected'), data_test_vector_channel_remove_buffer_inplace_return)
 def test_vector_channel_remove_buffer_inplace_return(
     vector_channel: VectorChannel,
     expected: VectorChannel,
@@ -519,11 +568,16 @@ def test_vector_channel_remove_buffer_inplace_return(
     assert vector_channel == expected
     assert vector_channel_ == expected
     assert id(vector_channel_) == id(vector_channel)
+    assert id(vector_channel_.data) == id(vector_channel.data)
+
+    for data_item_, data_item in zip(vector_channel_, vector_channel, strict=True):
+        assert id(data_item_) == id(data_item)
 
 
 def test_vector_channel_remove_buffer_defaults() -> None:
     signature = inspect.signature(VectorChannel.remove_buffer)
     inplace = signature.parameters['inplace'].default
+
     expected_inplace = False
 
     assert inplace is expected_inplace
