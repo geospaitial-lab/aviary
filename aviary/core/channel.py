@@ -391,9 +391,10 @@ class RasterChannel(Channel, Iterable[npt.NDArray]):
             return False
 
         conditions = [
+            len(self) == len(other),
             all(
                 np.array_equal(data_item, other_data_item)
-                for data_item, other_data_item in zip(self, other, strict=True)
+                for data_item, other_data_item in zip(self, other, strict=False)
             ),
             self._name == other.name,
             self._buffer_size == other.buffer_size,
@@ -804,9 +805,10 @@ class VectorChannel(Channel, Iterable[gpd.GeoDataFrame]):
             return False
 
         conditions = [
+            len(self) == len(other),
             all(
                 data_item.equals(other_data_item)
-                for data_item, other_data_item in zip(self, other, strict=True)
+                for data_item, other_data_item in zip(self, other, strict=False)
             ),
             self._name == other.name,
             self._buffer_size == other.buffer_size,
