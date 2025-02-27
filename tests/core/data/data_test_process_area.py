@@ -156,6 +156,22 @@ data_test_process_area_area = [
     ),
 ]
 
+data_test_process_area_bool = [
+    # test case 1: process_area contains no coordinates
+    (
+        ProcessArea(
+            coordinates=None,
+            tile_size=128,
+        ),
+        False,
+    ),
+    # test case 2: process_area contains coordinates
+    (
+        get_process_area(),
+        True,
+    ),
+]
+
 data_test_process_area_chunk = [
     # test case 1: len(coordinates) is divisible by num_chunks
     (
