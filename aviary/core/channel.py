@@ -255,15 +255,13 @@ class Channel(ABC, Iterable[object]):
             return self
 
         data = self._data + data
-        channel = self.__class__(
+        return self.__class__(
             data=data,
             name=self._name,
             buffer_size=self._buffer_size,
             time_step=self._time_step,
-            copy=False,
+            copy=True,
         )
-        channel._mark_as_copied()  # noqa: SLF001
-        return channel
 
     @abstractmethod
     def copy(self) -> Channel:
