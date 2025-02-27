@@ -21,6 +21,10 @@ from aviary.core.type_aliases import (
     TimeStep,
 )
 from tests.core.data.data_test_channel import (
+    data_test_raster_channel_append,
+    data_test_raster_channel_append_exceptions,
+    data_test_raster_channel_append_inplace,
+    data_test_raster_channel_append_inplace_return,
     data_test_raster_channel_eq,
     data_test_raster_channel_getitem,
     data_test_raster_channel_getitem_slice,
@@ -268,6 +272,87 @@ def test_get_raster_channel_iter(
 
     for data_item, expected_data_item in zip(raster_channel, expected, strict=True):
         np.testing.assert_array_equal(data_item, expected_data_item)
+
+
+@pytest.mark.parametrize(('data', 'expected'), data_test_raster_channel_append)
+def test_raster_channel_append(
+    data: npt.NDArray | list[npt.NDArray],
+    expected: RasterChannel,
+    raster_channel: RasterChannel,
+) -> None:
+    copied_raster_channel = copy.deepcopy(raster_channel)
+
+    raster_channel_ = raster_channel.append(
+        data=data,
+        inplace=False,
+    )
+
+    assert raster_channel == copied_raster_channel
+    assert raster_channel_ == expected
+    assert id(raster_channel_) != id(raster_channel)
+    assert id(raster_channel_.data) != id(raster_channel.data)
+
+    for data_item_, data_item in zip(raster_channel_, raster_channel, strict=False):
+        assert id(data_item_) != id(data_item)
+
+    assert raster_channel.is_copied is False
+    assert raster_channel_.is_copied is True
+
+
+@pytest.mark.parametrize(('data', 'expected'), data_test_raster_channel_append_inplace)
+def test_raster_channel_append_inplace(
+    data: npt.NDArray | list[npt.NDArray],
+    expected: RasterChannel,
+    raster_channel: RasterChannel,
+) -> None:
+    raster_channel.append(
+        data=data,
+        inplace=True,
+    )
+
+    assert raster_channel == expected
+
+
+@pytest.mark.parametrize(('data', 'expected'), data_test_raster_channel_append_inplace_return)
+def test_raster_channel_append_inplace_return(
+    data: npt.NDArray | list[npt.NDArray],
+    expected: RasterChannel,
+    raster_channel: RasterChannel,
+) -> None:
+    raster_channel_ = raster_channel.append(
+        data=data,
+        inplace=True,
+    )
+
+    assert raster_channel == expected
+    assert raster_channel_ == expected
+    assert id(raster_channel_) == id(raster_channel)
+    assert id(raster_channel_.data) == id(raster_channel.data)
+
+    for data_item_, data_item in zip(raster_channel_, raster_channel, strict=False):
+        assert id(data_item_) == id(data_item)
+
+
+@pytest.mark.parametrize(('data', 'message'), data_test_raster_channel_append_exceptions)
+def test_raster_channel_append_exceptions(
+    data: list[npt.NDArray],
+    message: str,
+    raster_channel: RasterChannel,
+) -> None:
+    with pytest.raises(AviaryUserError, match=message):
+        _ = raster_channel.append(
+            data=data,
+            inplace=False,
+        )
+
+
+def test_raster_channel_append_defaults() -> None:
+    signature = inspect.signature(RasterChannel.append)
+    inplace = signature.parameters['inplace'].default
+
+    expected_inplace = False
+
+    assert inplace is expected_inplace
 
 
 def test_raster_channel_copy(

@@ -22,6 +22,51 @@ from tests.core.conftest import (
     get_vector_channel_empty_data_item,
 )
 
+data_test_raster_channel_append = [
+    # test case 1: Default
+    (
+        get_raster_channel_data(),
+        RasterChannel(
+            data=[
+                get_raster_channel_data_item(),
+                get_raster_channel_data_item(),
+                get_raster_channel_data_item(),
+                get_raster_channel_data_item(),
+            ],
+            name=ChannelName.R,
+            buffer_size=0.,
+            time_step=None,
+            copy=False,
+        ),
+    ),
+    # test case 2: data is a single data item
+    (
+        get_raster_channel_data_item(),
+        RasterChannel(
+            data=[
+                get_raster_channel_data_item(),
+                get_raster_channel_data_item(),
+                get_raster_channel_data_item(),
+            ],
+            name=ChannelName.R,
+            buffer_size=0.,
+            time_step=None,
+            copy=False,
+        ),
+    ),
+]
+
+data_test_raster_channel_append_exceptions = [
+    # test case 1: data contains no data items
+    (
+        [],
+        re.escape('Invalid data! The data must contain at least one data item.'),
+    ),
+]
+
+data_test_raster_channel_append_inplace = copy.deepcopy(data_test_raster_channel_append)
+data_test_raster_channel_append_inplace_return = copy.deepcopy(data_test_raster_channel_append)
+
 data_test_raster_channel_eq = [
     # test case 1: other is equal
     (
