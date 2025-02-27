@@ -52,9 +52,6 @@ class ProcessArea(Iterable[Coordinates]):
     Notes:
         - The coordinates are assumed to be in shape (n, 2) and data type int32, where n is the number of coordinates
         - The coordinates are sorted
-        - The `+` operator can be used to add two process areas
-        - The `-` operator can be used to subtract two process areas
-        - The `&` operator can be used to intersect two process areas
     """
     _coordinates: CoordinatesSet
 
