@@ -232,6 +232,39 @@ class Channel(ABC, Iterable[object]):
         """
         yield from self._data
 
+    def append(
+        self,
+        data: object | list[object],
+        inplace: bool = False,
+    ) -> Channel:
+        """Appends the data.
+
+        Parameters:
+            data: Data
+            inplace: If True, the data is appended inplace
+
+        Returns:
+            Channel
+        """
+        if not isinstance(data, list):
+            data = [data]
+
+        if inplace:
+            self._data.extend(data)
+            self._validate()
+            return self
+
+        data = self._data + data
+        channel = self.__class__(
+            data=data,
+            name=self._name,
+            buffer_size=self._buffer_size,
+            time_step=self._time_step,
+            copy=False,
+        )
+        channel._mark_as_copied()  # noqa: SLF001
+        return channel
+
     @abstractmethod
     def copy(self) -> Channel:
         """Copies the channel.
@@ -456,6 +489,25 @@ class RasterChannel(Channel, Iterable[npt.NDArray]):
             Data item
         """
         return super().__iter__()
+
+    def append(
+        self,
+        data: npt.NDArray | list[npt.NDArray],
+        inplace: bool = False,
+    ) -> RasterChannel:
+        """Appends the data.
+
+        Parameters:
+            data: Data
+            inplace: If True, the data is appended inplace
+
+        Returns:
+            Raster channel
+        """
+        return super().append(
+            data=data,
+            inplace=inplace,
+        )
 
     def copy(self) -> RasterChannel:
         """Copies the raster channel.
@@ -886,6 +938,25 @@ class VectorChannel(Channel, Iterable[gpd.GeoDataFrame]):
         """
         return super().__iter__()
 
+    def append(
+        self,
+        data: gpd.GeoDataFrame | list[gpd.GeoDataFrame],
+        inplace: bool = False,
+    ) -> VectorChannel:
+        """Appends the data.
+
+        Parameters:
+            data: Data
+            inplace: If True, the data is appended inplace
+
+        Returns:
+            Vector channel
+        """
+        return super().append(
+            data=data,
+            inplace=inplace,
+        )
+
     def copy(self) -> VectorChannel:
         """Copies the vector channel.
 
@@ -968,7 +1039,7 @@ class VectorChannel(Channel, Iterable[gpd.GeoDataFrame]):
         source_bounding_box = self._unbuffered_bounding_box
         target_bounding_box = (0., 0., 1., 1.)
 
-        data_item = data_item.clip(  # returns a copy
+        data_item = data_item.clip(
             mask=self._unbuffered_bounding_box,
             keep_geom_type=True,
         )
