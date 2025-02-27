@@ -121,6 +121,28 @@ data_test_raster_channel_eq = [
     ),
 ]
 
+data_test_raster_channel_getitem = [
+    (0, get_raster_channel_data_item()),
+    (1, get_raster_channel_data_item()),
+    (-1, get_raster_channel_data_item()),
+    (-2, get_raster_channel_data_item()),
+]
+
+data_test_raster_channel_getitem_slice = [
+    (
+        slice(None, 1),
+        [
+            get_raster_channel_data_item(),
+        ],
+    ),
+    (
+        slice(1, None),
+        [
+            get_raster_channel_data_item(),
+        ],
+    ),
+]
+
 data_test_raster_channel_init = [
     # test case 1: Default
     (
@@ -439,6 +461,28 @@ data_test_vector_channel_from_unscaled_data_exceptions = [
         128,
         -32,
         re.escape('Invalid buffer_size! The buffer size must be positive or zero.'),
+    ),
+]
+
+data_test_vector_channel_getitem = [
+    (0, get_vector_channel_data_item()),
+    (1, get_vector_channel_data_item()),
+    (-1, get_vector_channel_data_item()),
+    (-2, get_vector_channel_data_item()),
+]
+
+data_test_vector_channel_getitem_slice = [
+    (
+        slice(None, 1),
+        [
+            get_vector_channel_data_item(),
+        ],
+    ),
+    (
+        slice(1, None),
+        [
+            get_vector_channel_data_item(),
+        ],
     ),
 ]
 
