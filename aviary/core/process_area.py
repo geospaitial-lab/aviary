@@ -73,8 +73,17 @@ class ProcessArea(Iterable[Coordinates]):
 
     def _validate(self) -> None:
         """Validates the process area."""
+        self._parse_coordinates()
         self._validate_coordinates()
         self._validate_tile_size()
+
+    def _parse_coordinates(self) -> None:
+        """Parses `coordinates`."""
+        if self._coordinates is None:
+            self._coordinates = np.empty(
+                shape=(0, 2),
+                dtype=np.int32,
+            )
 
     def _validate_coordinates(self) -> None:
         """Validates `coordinates`.
@@ -82,13 +91,6 @@ class ProcessArea(Iterable[Coordinates]):
         Raises:
             AviaryUserError: Invalid `coordinates` (the coordinates are not in shape (n, 2) and data type int32)
         """
-        if self._coordinates is None:
-            self._coordinates = np.empty(
-                shape=(0, 2),
-                dtype=np.int32,
-            )
-            return
-
         if self._coordinates.ndim != 2:  # noqa: PLR2004
             message = (
                 'Invalid coordinates! '
@@ -451,6 +453,14 @@ class ProcessArea(Iterable[Coordinates]):
         """
         return len(self._coordinates)
 
+    def __bool__(self) -> bool:
+        """Checks if the process area contains coordinates.
+
+        Returns:
+            True if the process area contains coordinates, False otherwise
+        """
+        return bool(len(self))
+
     def __contains__(
         self,
         coordinates: Coordinates,
@@ -467,7 +477,6 @@ class ProcessArea(Iterable[Coordinates]):
         coordinates = np.concatenate([self._coordinates, coordinates], axis=0)
         unique_coordinates = duplicates_filter(coordinates=coordinates)
         return len(coordinates) != len(unique_coordinates)
-
 
     @overload
     def __getitem__(
