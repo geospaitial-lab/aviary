@@ -574,6 +574,37 @@ class Tiles(Iterable[Channel]):
         """
         yield from self._channels
 
+    def append(
+        self,
+        channels: Channel | list[Channel],
+        inplace: bool = False,
+    ) -> Tiles:
+        """Appends the channels.
+
+        Parameters:
+            channels: Channels
+            inplace: If True, the channels are appended inplace
+
+        Returns:
+            Tiles
+        """
+        if not isinstance(channels, list):
+            channels = [channels]
+
+        if inplace:
+            self._channels.extend(channels)
+            self._validate()
+            self._channels_dict = self._compute_channels_dict()
+            return self
+
+        channels = self._channels + channels
+        return Tiles(
+            channels=channels,
+            coordinates=self._coordinates,
+            tile_size=self._tile_size,
+            copy=True,
+        )
+
     def copy(self) -> Tiles:
         """Copies the tiles.
 
@@ -612,14 +643,14 @@ class Tiles(Iterable[Channel]):
 
         if inplace:
             self._channels = [channel for channel in self if channel.key not in channel_keys]
-            self._channels_dict = self._compute_channels_dict()
             self._validate()
+            self._channels_dict = self._compute_channels_dict()
             return self
 
         tiles = self.copy()
         tiles._channels = [channel for channel in tiles if channel.key not in channel_keys]  # noqa: SLF001
-        tiles._channels_dict = tiles._compute_channels_dict()  # noqa: SLF001
         tiles._validate()  # noqa: SLF001
+        tiles._channels_dict = tiles._compute_channels_dict()  # noqa: SLF001
         return tiles
 
     def remove_buffer(
@@ -651,6 +682,7 @@ class Tiles(Iterable[Channel]):
                 if channel.key not in ignore_channel_keys:
                     channel.remove_buffer(inplace=True)
 
+            self._validate()
             return self
 
         tiles = self.copy()
@@ -659,6 +691,7 @@ class Tiles(Iterable[Channel]):
             if channel.key not in ignore_channel_keys:
                 channel.remove_buffer(inplace=True)
 
+        tiles._validate()  # noqa: SLF001
         return tiles
 
 
