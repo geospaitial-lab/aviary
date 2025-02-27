@@ -214,13 +214,13 @@ class Channel(ABC, Iterable[object]):
         self,
         index: int | slice,
     ) -> object | list[object]:
-        """Returns the data item.
+        """Returns the data item or the sliced data.
 
         Parameters:
             index: Index or slice of the data item
 
         Returns:
-            Data item or sliced data
+            Data item or data
         """
         return self._data[index]
 
