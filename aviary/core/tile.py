@@ -616,11 +616,6 @@ class Tiles(Iterable[Channel]):
             self._validate()
             return self
 
-        tile = self.copy()
-        tile._channels = [channel for channel in tile if channel.key not in channel_keys]  # noqa: SLF001
-        tile._channels_dict = tile._compute_channels_dict()  # noqa: SLF001
-        tile._validate()  # noqa: SLF001
-        return tile
         tiles = self.copy()
         tiles._channels = [channel for channel in tiles if channel.key not in channel_keys]  # noqa: SLF001
         tiles._channels_dict = tiles._compute_channels_dict()  # noqa: SLF001
