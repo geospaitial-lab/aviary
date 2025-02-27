@@ -51,6 +51,7 @@ class ProcessArea(Iterable[Coordinates]):
 
     Notes:
         - The coordinates are assumed to be in shape (n, 2) and data type int32, where n is the number of coordinates
+        - The coordinates are sorted
         - The `+` operator can be used to add two process areas
         - The `-` operator can be used to subtract two process areas
         - The `&` operator can be used to intersect two process areas
@@ -502,7 +503,7 @@ class ProcessArea(Iterable[Coordinates]):
             index: Index or slice of the coordinates
 
         Returns:
-            Coordinates in meters or sliced process area
+            Coordinates in meters or process area
         """
         if isinstance(index, slice):
             coordinates = self._coordinates[index]
