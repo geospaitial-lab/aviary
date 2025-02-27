@@ -22,6 +22,8 @@ from aviary.core.type_aliases import (
 )
 from tests.core.data.data_test_channel import (
     data_test_raster_channel_eq,
+    data_test_raster_channel_getitem,
+    data_test_raster_channel_getitem_slice,
     data_test_raster_channel_init,
     data_test_raster_channel_init_exceptions,
     data_test_raster_channel_remove_buffer,
@@ -29,6 +31,8 @@ from tests.core.data.data_test_channel import (
     data_test_raster_channel_remove_buffer_inplace_return,
     data_test_vector_channel_eq,
     data_test_vector_channel_from_unscaled_data_exceptions,
+    data_test_vector_channel_getitem,
+    data_test_vector_channel_getitem_slice,
     data_test_vector_channel_init,
     data_test_vector_channel_init_exceptions,
     data_test_vector_channel_remove_buffer,
@@ -193,6 +197,14 @@ def test_raster_channel_serializability(
     assert raster_channel == deserialized_raster_channel
 
 
+def test_raster_channel_batch_size(
+    raster_channel: RasterChannel,
+) -> None:
+    expected = 2
+
+    assert raster_channel.batch_size == expected
+
+
 def test_raster_channel_key(
     raster_channel: RasterChannel,
 ) -> None:
@@ -212,6 +224,50 @@ def test_raster_channel_eq(
     equals = raster_channel == other
 
     assert equals is expected
+
+
+def test_raster_channel_len(
+    raster_channel: RasterChannel,
+) -> None:
+    expected = 2
+
+    assert len(raster_channel) == expected
+
+
+@pytest.mark.parametrize(('index', 'expected'), data_test_raster_channel_getitem)
+def test_raster_channel_getitem(
+    index: int,
+    expected: npt.NDArray,
+    raster_channel: RasterChannel,
+) -> None:
+    data_item = raster_channel[index]
+
+    np.testing.assert_array_equal(data_item, expected)
+
+
+@pytest.mark.parametrize(('index', 'expected'), data_test_raster_channel_getitem_slice)
+def test_raster_channel_getitem_slice(
+    index: slice,
+    expected: list[npt.NDArray],
+    raster_channel: RasterChannel,
+) -> None:
+    data = raster_channel[index]
+
+    for data_item, expected_data_item in zip(data, expected, strict=True):
+        np.testing.assert_array_equal(data_item, expected_data_item)
+
+
+def test_get_raster_channel_iter(
+    raster_channel: RasterChannel,
+    raster_channel_data_item: npt.NDArray,
+) -> None:
+    expected = [
+        raster_channel_data_item,
+        raster_channel_data_item,
+    ]
+
+    for data_item, expected_data_item in zip(raster_channel, expected, strict=True):
+        np.testing.assert_array_equal(data_item, expected_data_item)
 
 
 def test_raster_channel_copy(
@@ -440,6 +496,14 @@ def test_vector_channel_serializability(
     assert vector_channel == deserialized_vector_channel
 
 
+def test_vector_channel_batch_size(
+    vector_channel: VectorChannel,
+) -> None:
+    expected = 2
+
+    assert vector_channel.batch_size == expected
+
+
 def test_vector_channel_key(
     vector_channel: VectorChannel,
 ) -> None:
@@ -511,6 +575,50 @@ def test_vector_channel_eq(
     equals = vector_channel == other
 
     assert equals is expected
+
+
+def test_vector_channel_len(
+    vector_channel: VectorChannel,
+) -> None:
+    expected = 2
+
+    assert len(vector_channel) == expected
+
+
+@pytest.mark.parametrize(('index', 'expected'), data_test_vector_channel_getitem)
+def test_vector_channel_getitem(
+    index: int,
+    expected: gpd.GeoDataFrame,
+    vector_channel: VectorChannel,
+) -> None:
+    data_item = vector_channel[index]
+
+    gpd.testing.assert_geodataframe_equal(data_item, expected)
+
+
+@pytest.mark.parametrize(('index', 'expected'), data_test_vector_channel_getitem_slice)
+def test_vector_channel_getitem_slice(
+    index: slice,
+    expected: list[gpd.GeoDataFrame],
+    vector_channel: VectorChannel,
+) -> None:
+    data = vector_channel[index]
+
+    for data_item, expected_data_item in zip(data, expected, strict=True):
+        gpd.testing.assert_geodataframe_equal(data_item, expected_data_item)
+
+
+def test_get_vector_channel_iter(
+    vector_channel: VectorChannel,
+    vector_channel_data_item: gpd.GeoDataFrame,
+) -> None:
+    expected = [
+        vector_channel_data_item,
+        vector_channel_data_item,
+    ]
+
+    for data_item, expected_data_item in zip(vector_channel, expected, strict=True):
+        gpd.testing.assert_geodataframe_equal(data_item, expected_data_item)
 
 
 def test_vector_channel_copy(
