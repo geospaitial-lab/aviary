@@ -33,6 +33,10 @@ from tests.core.data.data_test_channel import (
     data_test_raster_channel_remove_buffer,
     data_test_raster_channel_remove_buffer_inplace,
     data_test_raster_channel_remove_buffer_inplace_return,
+    data_test_vector_channel_append,
+    data_test_vector_channel_append_exceptions,
+    data_test_vector_channel_append_inplace,
+    data_test_vector_channel_append_inplace_return,
     data_test_vector_channel_eq,
     data_test_vector_channel_from_unscaled_data_exceptions,
     data_test_vector_channel_getitem,
@@ -704,6 +708,87 @@ def test_get_vector_channel_iter(
 
     for data_item, expected_data_item in zip(vector_channel, expected, strict=True):
         gpd.testing.assert_geodataframe_equal(data_item, expected_data_item)
+
+
+@pytest.mark.parametrize(('data', 'expected'), data_test_vector_channel_append)
+def test_vector_channel_append(
+    data: gpd.GeoDataFrame | list[gpd.GeoDataFrame],
+    expected: VectorChannel,
+    vector_channel: VectorChannel,
+) -> None:
+    copied_vector_channel = copy.deepcopy(vector_channel)
+
+    vector_channel_ = vector_channel.append(
+        data=data,
+        inplace=False,
+    )
+
+    assert vector_channel == copied_vector_channel
+    assert vector_channel_ == expected
+    assert id(vector_channel_) != id(vector_channel)
+    assert id(vector_channel_.data) != id(vector_channel.data)
+
+    for data_item_, data_item in zip(vector_channel_, vector_channel, strict=False):
+        assert id(data_item_) != id(data_item)
+
+    assert vector_channel.is_copied is False
+    assert vector_channel_.is_copied is True
+
+
+@pytest.mark.parametrize(('data', 'expected'), data_test_vector_channel_append_inplace)
+def test_vector_channel_append_inplace(
+    data: gpd.GeoDataFrame | list[gpd.GeoDataFrame],
+    expected: VectorChannel,
+    vector_channel: VectorChannel,
+) -> None:
+    vector_channel.append(
+        data=data,
+        inplace=True,
+    )
+
+    assert vector_channel == expected
+
+
+@pytest.mark.parametrize(('data', 'expected'), data_test_vector_channel_append_inplace_return)
+def test_vector_channel_append_inplace_return(
+    data: gpd.GeoDataFrame | list[gpd.GeoDataFrame],
+    expected: VectorChannel,
+    vector_channel: VectorChannel,
+) -> None:
+    vector_channel_ = vector_channel.append(
+        data=data,
+        inplace=True,
+    )
+
+    assert vector_channel == expected
+    assert vector_channel_ == expected
+    assert id(vector_channel_) == id(vector_channel)
+    assert id(vector_channel_.data) == id(vector_channel.data)
+
+    for data_item_, data_item in zip(vector_channel_, vector_channel, strict=False):
+        assert id(data_item_) == id(data_item)
+
+
+@pytest.mark.parametrize(('data', 'message'), data_test_vector_channel_append_exceptions)
+def test_vector_channel_append_exceptions(
+    data: list[gpd.GeoDataFrame],
+    message: str,
+    vector_channel: VectorChannel,
+) -> None:
+    with pytest.raises(AviaryUserError, match=message):
+        _ = vector_channel.append(
+            data=data,
+            inplace=False,
+        )
+
+
+def test_vector_channel_append_defaults() -> None:
+    signature = inspect.signature(VectorChannel.append)
+    inplace = signature.parameters['inplace'].default
+
+    expected_inplace = False
+
+    assert inplace is expected_inplace
 
 
 def test_vector_channel_copy(

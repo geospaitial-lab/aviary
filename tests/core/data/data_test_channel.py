@@ -379,6 +379,51 @@ data_test_raster_channel_remove_buffer = [
 data_test_raster_channel_remove_buffer_inplace = copy.deepcopy(data_test_raster_channel_remove_buffer)
 data_test_raster_channel_remove_buffer_inplace_return = copy.deepcopy(data_test_raster_channel_remove_buffer)
 
+data_test_vector_channel_append = [
+    # test case 1: Default
+    (
+        get_vector_channel_data(),
+        VectorChannel(
+            data=[
+                get_vector_channel_data_item(),
+                get_vector_channel_data_item(),
+                get_vector_channel_data_item(),
+                get_vector_channel_data_item(),
+            ],
+            name=ChannelName.R,
+            buffer_size=0.,
+            time_step=None,
+            copy=False,
+        ),
+    ),
+    # test case 2: data is a single data item
+    (
+        get_vector_channel_data_item(),
+        VectorChannel(
+            data=[
+                get_vector_channel_data_item(),
+                get_vector_channel_data_item(),
+                get_vector_channel_data_item(),
+            ],
+            name=ChannelName.R,
+            buffer_size=0.,
+            time_step=None,
+            copy=False,
+        ),
+    ),
+]
+
+data_test_vector_channel_append_exceptions = [
+    # test case 1: data contains no data items
+    (
+        [],
+        re.escape('Invalid data! The data must contain at least one data item.'),
+    ),
+]
+
+data_test_vector_channel_append_inplace = copy.deepcopy(data_test_vector_channel_append)
+data_test_vector_channel_append_inplace_return = copy.deepcopy(data_test_vector_channel_append)
+
 data_test_vector_channel_eq = [
     # test case 1: other is equal
     (
