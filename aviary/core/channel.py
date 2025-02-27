@@ -45,6 +45,7 @@ class Channel(ABC, Iterable[object]):
         - `RasterChannel`: Contains batched raster data
         - `VectorChannel`: Contains batched vector data
     """
+    _data: list[object]
 
     def __init__(
         self,
