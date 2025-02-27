@@ -56,6 +56,7 @@ class ProcessArea(Iterable[Coordinates]):
         - The `-` operator can be used to subtract two process areas
         - The `&` operator can be used to intersect two process areas
     """
+    _coordinates: CoordinatesSet
 
     def __init__(
         self,
