@@ -361,6 +361,46 @@ class ProcessArea(Iterable[Coordinates]):
         )
 
     @classmethod
+    def from_process_areas(
+        cls,
+        process_areas: list[ProcessArea],
+    ) -> ProcessArea:
+        """Creates a process area from process areas.
+
+        Parameters:
+            process_areas: Process areas
+
+        Returns:
+            Process area
+
+        Raises:
+            AviaryUserError: Invalid `process_areas` (the process areas contain no process area)
+            AviaryUserError: Invalid `process_areas` (the tile sizes of the process areas are not equal
+        """
+        if not process_areas:
+            message = (
+                'Invalid process_areas! '
+                'The process areas must contain at least one process area.'
+            )
+            raise AviaryUserError(message)
+
+        tile_sizes = {process_area.tile_size for process_area in process_areas}
+
+        if len(tile_sizes) > 1:
+            message = (
+                'Invalid process_areas! '
+                'The tile sizes of the process areas must be equal.'
+            )
+            raise AviaryUserError(message)
+
+        coordinates = np.concatenate([process_area.coordinates for process_area in process_areas], axis=0)
+        tile_size = process_areas[0].tile_size
+        return cls(
+            coordinates=coordinates,
+            tile_size=tile_size,
+        )
+
+    @classmethod
     def from_config(
         cls,
         config: ProcessAreaConfig,
