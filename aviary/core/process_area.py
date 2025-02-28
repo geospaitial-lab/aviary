@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import json
-import warnings
 from collections.abc import (
     Iterable,
     Iterator,
@@ -29,10 +28,7 @@ from aviary.core.enums import (
     GeospatialFilterMode,
     SetFilterMode,
 )
-from aviary.core.exceptions import (
-    AviaryUserError,
-    AviaryUserWarning,
-)
+from aviary.core.exceptions import AviaryUserError
 from aviary.core.type_aliases import (
     Coordinate,
     Coordinates,
@@ -110,22 +106,8 @@ class ProcessArea(Iterable[Coordinates]):
             )
             raise AviaryUserError(message)
 
-        unique_coordinates = duplicates_filter(coordinates=self._coordinates)  # returns a copy
-
-        if len(self._coordinates) != len(unique_coordinates):
-            message = (
-                'Invalid coordinates! '
-                'The coordinates must contain unique coordinates. '
-                'Duplicates are removed.'
-            )
-            warnings.warn(
-                message=message,
-                category=AviaryUserWarning,
-                stacklevel=2,
-            )
-
-        coordinates_x_remainders = unique_coordinates[:, 0] % self._tile_size
-        coordinates_y_remainders = unique_coordinates[:, 1] % self._tile_size
+        coordinates_x_remainders = self._coordinates[:, 0] % self._tile_size
+        coordinates_y_remainders = self._coordinates[:, 1] % self._tile_size
         unique_coordinates_x_remainders = np.unique(coordinates_x_remainders)
         unique_coordinates_y_remainders = np.unique(coordinates_y_remainders)
         conditions = [
@@ -140,8 +122,8 @@ class ProcessArea(Iterable[Coordinates]):
             )
             raise AviaryUserError(message)
 
-        sorted_indices = np.lexsort((unique_coordinates[:, 0], unique_coordinates[:, 1]))
-        self._coordinates = unique_coordinates[sorted_indices]
+        sorted_indices = np.lexsort((self._coordinates[:, 0], self._coordinates[:, 1]))
+        self._coordinates = self._coordinates[sorted_indices]
 
     def _validate_tile_size(self) -> None:
         """Validates `tile_size`.
@@ -689,34 +671,26 @@ class ProcessArea(Iterable[Coordinates]):
 
     def append(
         self,
-        coordinates: Coordinates,
+        coordinates: Coordinates | CoordinatesSet,
         inplace: bool = False,
     ) -> ProcessArea:
         """Appends the coordinates.
 
         Parameters:
-            coordinates: Coordinates (x_min, y_min) of the tile in meters
+            coordinates: Coordinates (x_min, y_min) of the tile or of each tile in meters
             inplace: If True, the coordinates are appended inplace
 
         Returns:
             Process area
         """
-        coordinates = np.array([coordinates], dtype=np.int32)
-        coordinates = np.concatenate([self._coordinates, coordinates], axis=0)
-        unique_coordinates = duplicates_filter(coordinates=coordinates)
+        if not isinstance(coordinates, np.ndarray):
+            coordinates = np.array([coordinates], dtype=np.int32)
 
-        if len(coordinates) != len(unique_coordinates):
-            message = (
-                'Invalid coordinates! '
-                'The coordinates are already in the process area.'
-            )
-            warnings.warn(
-                message=message,
-                category=AviaryUserWarning,
-                stacklevel=2,
-            )
-
-        coordinates = unique_coordinates
+        coordinates = set_filter(
+            coordinates=self._coordinates,
+            other=coordinates,
+            mode=SetFilterMode.UNION,
+        )
 
         if inplace:
             self._coordinates = coordinates
@@ -787,35 +761,26 @@ class ProcessArea(Iterable[Coordinates]):
 
     def remove(
         self,
-        coordinates: Coordinates,
+        coordinates: Coordinates | CoordinatesSet,
         inplace: bool = False,
     ) -> ProcessArea:
         """Removes the coordinates.
 
         Parameters:
-            coordinates: Coordinates (x_min, y_min) of the tile in meters
+            coordinates: Coordinates (x_min, y_min) of the tile or of each tile in meters
             inplace: If True, the coordinates are removed inplace
 
         Returns:
             Process area
         """
-        coordinates = np.array([coordinates], dtype=np.int32)
+        if not isinstance(coordinates, np.ndarray):
+            coordinates = np.array([coordinates], dtype=np.int32)
+
         coordinates = set_filter(
             coordinates=self._coordinates,
             other=coordinates,
             mode=SetFilterMode.DIFFERENCE,
         )
-
-        if np.array_equal(self._coordinates, coordinates):
-            message = (
-                'Invalid coordinates! '
-                'The coordinates are not in the process area.'
-            )
-            warnings.warn(
-                message=message,
-                category=AviaryUserWarning,
-                stacklevel=2,
-            )
 
         if inplace:
             self._coordinates = coordinates
