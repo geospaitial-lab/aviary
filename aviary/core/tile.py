@@ -498,9 +498,9 @@ class Tiles(Iterable[Channel]):
             return False
 
         conditions = (
-            self._channels == other._channels,
+            self._channels == other.channels,
             np.array_equal(self._coordinates, other._coordinates),
-            self._tile_size == other._tile_size,
+            self._tile_size == other.tile_size,
         )
         return all(conditions)
 
