@@ -131,7 +131,7 @@ class Tiles(Iterable[Channel]):
         Raises:
             AviaryUserError: Invalid `channels` (the batch sizes of the channels are not equal)
         """
-        first_channel = self[0]
+        first_channel = self._channels[0]
 
         if channel.batch_size != first_channel.batch_size:
             message = (
@@ -150,7 +150,7 @@ class Tiles(Iterable[Channel]):
 
     def _parse_coordinates(self) -> None:
         """Parses `coordinates`."""
-        if not isinstance(self._coordinates, CoordinatesSet):
+        if not isinstance(self._coordinates, np.ndarray):
             self._coordinates = np.array([self._coordinates], dtype=np.int32)
 
     def _validate_coordinates(self) -> None:
@@ -190,7 +190,9 @@ class Tiles(Iterable[Channel]):
             )
             raise AviaryUserError(message)
 
-        if len(self._coordinates) != self[0].batch_size:
+        first_channel = self._channels[0]
+
+        if len(self._coordinates) != first_channel.batch_size:
             message = (
                 'Invalid coordinates! '
                 'The number of coordinates must be equal to the batch size of the channels.'
