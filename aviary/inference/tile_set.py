@@ -1,9 +1,14 @@
+from collections.abc import (
+    Iterable,
+    Iterator,
+)
+
 from aviary.core.process_area import ProcessArea
 from aviary.core.tiles import Tile
 from aviary.inference.tile_fetcher import TileFetcher
 
 
-class TileSet:
+class TileSet(Iterable[Tile]):
     """A tile set is an iterable that returns a tile for each coordinates in the process area
     by calling the tile fetcher.
     The tile set is used by the tile loader to fetch the tiles for each batch.
@@ -57,3 +62,12 @@ class TileSet:
         """
         coordinates = self._process_area[index]
         return self._tile_fetcher(coordinates=coordinates)
+
+    def __iter__(self) -> Iterator[Tile]:
+        """Iterates over the tiles.
+
+        Yields:
+            Tile
+        """
+        for index in range(len(self)):
+            yield self[index]
