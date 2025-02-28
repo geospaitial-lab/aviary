@@ -15,12 +15,16 @@ if TYPE_CHECKING:
     import numpy.typing as npt
 
 # noinspection PyProtectedMember
-from aviary._functional.geodata.coordinates_filter import duplicates_filter
+from aviary._functional.geodata.coordinates_filter import (
+    duplicates_filter,
+    set_filter,
+)
 from aviary.core.channel import (
     Channel,
     RasterChannel,
     _parse_channel_name,
 )
+from aviary.core.enums import SetFilterMode
 from aviary.core.exceptions import AviaryUserError
 from aviary.core.process_area import ProcessArea
 from aviary.core.type_aliases import (
@@ -575,6 +579,72 @@ class Tiles(Iterable[Channel]):
             Channel
         """
         yield from self._channels
+
+    def __add__(
+        self,
+        other: Tiles,
+    ) -> Tiles:
+        """Adds the tiles.
+
+        Parameters:
+            other: Other tiles
+
+        Returns:
+            Tiles
+
+        Raises:
+            AviaryUserError: Invalid `other` (the tile sizes of the tiles are not equal)
+            AviaryUserError: Invalid `other` (the channel name and time step combinations of the tiles are not equal)
+            AviaryUserError: Invalid `other` (the coordinates of the tiles do not contain equal or unique coordinates)
+        """
+        if self._tile_size != other.tile_size:
+            message = (
+                'Invalid other! '
+                'The tile sizes of the tiles must be equal.'
+            )
+            raise AviaryUserError(message)
+
+        coordinates_equal = np.array_equal(self._coordinates, other._coordinates)
+
+        if coordinates_equal:
+            return self.append(
+                channels=other.channels,
+                inplace=False,
+            )
+
+        coordinates = set_filter(
+            coordinates=self._coordinates,
+            other=other._coordinates,
+            mode=SetFilterMode.UNION,
+        )
+        coordinates_unique = len(coordinates) == len(self._coordinates) + len(other._coordinates)
+
+        if coordinates_unique:
+            if self.channel_keys != other.channel_keys:
+                message = (
+                    'Invalid other! '
+                    'The channel name and time step combinations of the tiles must be equal.'
+                )
+                raise AviaryUserError(message)
+
+            channels = [
+                self[channel_key] + other[channel_key]
+                for channel_key in self.channel_keys
+            ]
+            tiles = Tiles(
+                channels=channels,
+                coordinates=coordinates,
+                tile_size=self._tile_size,
+                copy=False,
+            )
+            tiles._mark_as_copied()
+            return tiles
+
+        message = (
+            'Invalid other! '
+            'The coordinates of the tiles must contain equal or unique coordinates.'
+        )
+        raise AviaryUserError(message)
 
     def append(
         self,
