@@ -715,13 +715,40 @@ data_test_process_area_init_exceptions = [
         128,
         re.escape('Invalid coordinates! The coordinates must be in shape (n, 2) and data type int32.'),
     ),
-    # test case 5: tile_size is negative
+    # test case 5: coordinates is not quantized regularly
+    (
+        np.array(
+            [[-128, -128], [0, -128], [-128, 0], [0, 0], [64, -128]],
+            dtype=np.int32,
+        ),
+        128,
+        re.escape('Invalid coordinates! The coordinates must be quantized regularly.'),
+    ),
+    # test case 6: coordinates is not quantized regularly
+    (
+        np.array(
+            [[-128, -128], [0, -128], [-128, 0], [0, 0], [128, -64]],
+            dtype=np.int32,
+        ),
+        128,
+        re.escape('Invalid coordinates! The coordinates must be quantized regularly.'),
+    ),
+    # test case 7: coordinates is not quantized regularly
+    (
+        np.array(
+            [[-128, -128], [0, -128], [-128, 0], [0, 0], [64, -64]],
+            dtype=np.int32,
+        ),
+        128,
+        re.escape('Invalid coordinates! The coordinates must be quantized regularly.'),
+    ),
+    # test case 8: tile_size is negative
     (
         get_process_area_coordinates(),
         -128,
         re.escape('Invalid tile_size! The tile size must be positive.'),
     ),
-    # test case 6: tile_size is 0
+    # test case 9: tile_size is 0
     (
         get_process_area_coordinates(),
         0,
