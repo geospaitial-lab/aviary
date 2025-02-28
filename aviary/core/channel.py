@@ -246,14 +246,14 @@ class Channel(ABC, Iterable[object]):
             Channel
 
         Raises:
-            AviaryUserError: Invalid other (the channel names of the channels are not equal)
+            AviaryUserError: Invalid other (the names of the channels are not equal)
             AviaryUserError: Invalid other (the buffer sizes of the channels are not equal)
             AviaryUserError: Invalid other (the time steps of the channels are not equal)
         """
         if self._name != other.name:
             message = (
                 'Invalid other! '
-                'The channel names of the channels must be equal.'
+                'The names of the channels must be equal.'
             )
             raise AviaryUserError(message)
 
