@@ -1,4 +1,6 @@
-::: aviary.Tile
+::: aviary.Tiles
     options:
       filters:
       - "!^_"
+
+::: aviary.Tile

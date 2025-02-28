@@ -1,5 +1,5 @@
 from aviary.core.process_area import ProcessArea
-from aviary.core.tile import Tile
+from aviary.core.tiles import Tile
 from aviary.inference.tile_fetcher import TileFetcher
 
 

@@ -7,7 +7,7 @@ from aviary.core.bounding_box import BoundingBox
 from aviary.core.channel import Channel
 from aviary.core.enums import ChannelName
 from aviary.core.exceptions import AviaryUserError
-from aviary.core.tile import Tile
+from aviary.core.tiles import Tile
 from aviary.core.type_aliases import (
     ChannelKey,
     TileSize,

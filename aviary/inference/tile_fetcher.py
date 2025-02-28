@@ -31,7 +31,7 @@ from aviary.core.type_aliases import (  # noqa: TC001
 )
 
 if TYPE_CHECKING:
-    from aviary.core.tile import Tile
+    from aviary.core.tiles import Tile
 
 
 class TileFetcher(Protocol):

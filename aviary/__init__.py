@@ -20,7 +20,10 @@ from .core.process_area import (
     ProcessArea,
     ProcessAreaConfig,
 )
-from .core.tile import Tile
+from .core.tiles import (
+    Tile,
+    Tiles,
+)
 from .core.type_aliases import (
     BufferSize,
     ChannelKey,
@@ -65,6 +68,7 @@ __all__ = [
     'SetFilterMode',
     'Tile',
     'TileSize',
+    'Tiles',
     'TimeStep',
     'VectorChannel',
     'WMSVersion',

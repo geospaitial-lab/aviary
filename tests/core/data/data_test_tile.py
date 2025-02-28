@@ -1,7 +1,7 @@
 import re
 
 from aviary.core.enums import ChannelName
-from aviary.core.tile import Tile
+from aviary.core.tiles import Tile
 from tests.core.conftest import (
     get_tile,
     get_tile_channel_1,

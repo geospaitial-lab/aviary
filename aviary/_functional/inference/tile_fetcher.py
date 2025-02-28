@@ -26,7 +26,7 @@ from aviary.core.enums import (
     _parse_channel_name,
 )
 from aviary.core.exceptions import AviaryUserError
-from aviary.core.tile import Tile
+from aviary.core.tiles import Tile
 
 if TYPE_CHECKING:
     from aviary.core.type_aliases import (

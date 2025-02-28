@@ -12,7 +12,7 @@ from aviary.core.channel import (
 )
 from aviary.core.enums import ChannelName
 from aviary.core.process_area import ProcessArea
-from aviary.core.tile import Tile
+from aviary.core.tiles import Tile
 
 
 @pytest.fixture(scope='function')
