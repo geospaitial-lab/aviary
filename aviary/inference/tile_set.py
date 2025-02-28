@@ -9,9 +9,8 @@ from aviary.inference.tile_fetcher import TileFetcher
 
 
 class TileSet(Iterable[Tile]):
-    """A tile set is an iterable that returns a tile for each coordinates in the process area
+    """A tile set is an iterable that yields a tile for each coordinates in the process area
     by calling the tile fetcher.
-    The tile set is used by the tile loader to fetch the tiles for each batch.
 
     Examples:
         Assume the process area and the tile fetcher are already created.

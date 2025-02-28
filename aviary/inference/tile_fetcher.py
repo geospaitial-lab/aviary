@@ -39,7 +39,6 @@ class TileFetcher(Protocol):
 
     Tile fetchers are callables that fetch a tile from a source given a minimum x and y coordinate.
     These coordinates correspond to the bottom left corner of a tile.
-    The tile fetcher is used by the tile set to fetch a tile for each coordinates in the process area.
 
     Implemented tile fetchers:
         - `CompositeFetcher`: Composes multiple tile fetchers
