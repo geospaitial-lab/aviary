@@ -10,10 +10,7 @@ import pytest
 from shapely.geometry import box
 
 from aviary.core.bounding_box import BoundingBox
-from aviary.core.exceptions import (
-    AviaryUserError,
-    AviaryUserWarning,
-)
+from aviary.core.exceptions import AviaryUserError
 from aviary.core.process_area import ProcessArea
 from aviary.core.type_aliases import (
     Coordinates,
@@ -29,9 +26,6 @@ from tests.core.data.data_test_process_area import (
     data_test_process_area_append,
     data_test_process_area_append_inplace,
     data_test_process_area_append_inplace_return,
-    data_test_process_area_append_inplace_return_warnings,
-    data_test_process_area_append_inplace_warnings,
-    data_test_process_area_append_warnings,
     data_test_process_area_area,
     data_test_process_area_bool,
     data_test_process_area_chunk,
@@ -50,13 +44,9 @@ from tests.core.data.data_test_process_area import (
     data_test_process_area_getitem_slice,
     data_test_process_area_init,
     data_test_process_area_init_exceptions,
-    data_test_process_area_init_warnings,
     data_test_process_area_remove,
     data_test_process_area_remove_inplace,
     data_test_process_area_remove_inplace_return,
-    data_test_process_area_remove_inplace_return_warnings,
-    data_test_process_area_remove_inplace_warnings,
-    data_test_process_area_remove_warnings,
     data_test_process_area_sub,
     data_test_process_area_sub_exceptions,
 )
@@ -81,33 +71,6 @@ def test_process_area_init(
         coordinates=coordinates,
         tile_size=tile_size,
     )
-
-    np.testing.assert_array_equal(process_area.coordinates, expected_coordinates)
-    assert process_area.tile_size == expected_tile_size
-
-
-@pytest.mark.parametrize(
-    (
-        'coordinates',
-        'tile_size',
-        'expected_coordinates',
-        'expected_tile_size',
-        'message',
-    ),
-    data_test_process_area_init_warnings,
-)
-def test_process_area_init_warnings(
-    coordinates: CoordinatesSet,
-    tile_size: TileSize,
-    expected_coordinates: CoordinatesSet,
-    expected_tile_size: TileSize,
-    message: str,
-) -> None:
-    with pytest.warns(AviaryUserWarning, match=message):
-        process_area = ProcessArea(
-            coordinates=coordinates,
-            tile_size=tile_size,
-        )
 
     np.testing.assert_array_equal(process_area.coordinates, expected_coordinates)
     assert process_area.tile_size == expected_tile_size
@@ -457,27 +420,6 @@ def test_process_area_append(
     assert id(process_area_.coordinates) != id(process_area.coordinates)
 
 
-@pytest.mark.parametrize(('process_area', 'coordinates', 'expected', 'message'), data_test_process_area_append_warnings)
-def test_process_area_append_warnings(
-    process_area: ProcessArea,
-    coordinates: Coordinates,
-    expected: ProcessArea,
-    message: str,
-) -> None:
-    copied_process_area = copy.deepcopy(process_area)
-
-    with pytest.warns(AviaryUserWarning, match=message):
-        process_area_ = process_area.append(
-            coordinates=coordinates,
-            inplace=False,
-        )
-
-    assert process_area == copied_process_area
-    assert process_area_ == expected
-    assert id(process_area_) != id(process_area)
-    assert id(process_area_.coordinates) != id(process_area.coordinates)
-
-
 @pytest.mark.parametrize(('process_area', 'coordinates', 'expected'), data_test_process_area_append_inplace)
 def test_process_area_append_inplace(
     process_area: ProcessArea,
@@ -492,30 +434,6 @@ def test_process_area_append_inplace(
     assert process_area == expected
 
 
-@pytest.mark.parametrize(
-    (
-        'process_area',
-        'coordinates',
-        'expected',
-        'message',
-    ),
-    data_test_process_area_append_inplace_warnings,
-)
-def test_process_area_append_inplace_warnings(
-    process_area: ProcessArea,
-    coordinates: Coordinates,
-    expected: ProcessArea,
-    message: str,
-) -> None:
-    with pytest.warns(AviaryUserWarning, match=message):
-        process_area.append(
-            coordinates=coordinates,
-            inplace=True,
-        )
-
-    assert process_area == expected
-
-
 @pytest.mark.parametrize(('process_area', 'coordinates', 'expected'), data_test_process_area_append_inplace_return)
 def test_process_area_append_inplace_return(
     process_area: ProcessArea,
@@ -526,33 +444,6 @@ def test_process_area_append_inplace_return(
         coordinates=coordinates,
         inplace=True,
     )
-
-    assert process_area == expected
-    assert process_area_ == expected
-    assert id(process_area_) == id(process_area)
-    assert id(process_area_.coordinates) != id(process_area.coordinates)
-
-
-@pytest.mark.parametrize(
-    (
-        'process_area',
-        'coordinates',
-        'expected',
-        'message',
-    ),
-    data_test_process_area_append_inplace_return_warnings,
-)
-def test_process_area_append_inplace_return_warnings(
-    process_area: ProcessArea,
-    coordinates: Coordinates,
-    expected: ProcessArea,
-    message: str,
-) -> None:
-    with pytest.warns(AviaryUserWarning, match=message):
-        process_area_ = process_area.append(
-            coordinates=coordinates,
-            inplace=True,
-        )
 
     assert process_area == expected
     assert process_area_ == expected
@@ -693,27 +584,6 @@ def test_process_area_remove(
     assert id(process_area_.coordinates) != id(process_area.coordinates)
 
 
-@pytest.mark.parametrize(('process_area', 'coordinates', 'expected', 'message'), data_test_process_area_remove_warnings)
-def test_process_area_remove_warnings(
-    process_area: ProcessArea,
-    coordinates: Coordinates,
-    expected: ProcessArea,
-    message: str,
-) -> None:
-    copied_process_area = copy.deepcopy(process_area)
-
-    with pytest.warns(AviaryUserWarning, match=message):
-        process_area_ = process_area.remove(
-            coordinates=coordinates,
-            inplace=False,
-        )
-
-    assert process_area == copied_process_area
-    assert process_area_ == expected
-    assert id(process_area_) != id(process_area)
-    assert id(process_area_.coordinates) != id(process_area.coordinates)
-
-
 @pytest.mark.parametrize(('process_area', 'coordinates', 'expected'), data_test_process_area_remove_inplace)
 def test_process_area_remove_inplace(
     process_area: ProcessArea,
@@ -728,30 +598,6 @@ def test_process_area_remove_inplace(
     assert process_area == expected
 
 
-@pytest.mark.parametrize(
-    (
-        'process_area',
-        'coordinates',
-        'expected',
-        'message',
-    ),
-    data_test_process_area_remove_inplace_warnings,
-)
-def test_process_area_remove_inplace_warnings(
-    process_area: ProcessArea,
-    coordinates: Coordinates,
-    expected: ProcessArea,
-    message: str,
-) -> None:
-    with pytest.warns(AviaryUserWarning, match=message):
-        process_area.remove(
-            coordinates=coordinates,
-            inplace=True,
-        )
-
-    assert process_area == expected
-
-
 @pytest.mark.parametrize(('process_area', 'coordinates', 'expected'), data_test_process_area_remove_inplace_return)
 def test_process_area_remove_inplace_return(
     process_area: ProcessArea,
@@ -762,33 +608,6 @@ def test_process_area_remove_inplace_return(
         coordinates=coordinates,
         inplace=True,
     )
-
-    assert process_area == expected
-    assert process_area_ == expected
-    assert id(process_area_) == id(process_area)
-    assert id(process_area_.coordinates) != id(process_area.coordinates)
-
-
-@pytest.mark.parametrize(
-    (
-        'process_area',
-        'coordinates',
-        'expected',
-        'message',
-    ),
-    data_test_process_area_remove_inplace_return_warnings,
-)
-def test_process_area_remove_inplace_return_warnings(
-    process_area: ProcessArea,
-    coordinates: Coordinates,
-    expected: ProcessArea,
-    message: str,
-) -> None:
-    with pytest.warns(AviaryUserWarning, match=message):
-        process_area_ = process_area.remove(
-            coordinates=coordinates,
-            inplace=True,
-        )
 
     assert process_area == expected
     assert process_area_ == expected

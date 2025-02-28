@@ -116,19 +116,6 @@ data_test_process_area_append = [
 data_test_process_area_append_inplace = copy.deepcopy(data_test_process_area_append)
 data_test_process_area_append_inplace_return = copy.deepcopy(data_test_process_area_append)
 
-data_test_process_area_append_warnings = [
-    # test case 1: coordinates is already in process_area
-    (
-        get_process_area(),
-        (-128, -128),
-        get_process_area(),
-        re.escape('Invalid coordinates! The coordinates are already in the process area.'),
-    ),
-]
-
-data_test_process_area_append_inplace_warnings = copy.deepcopy(data_test_process_area_append_warnings)
-data_test_process_area_append_inplace_return_warnings = copy.deepcopy(data_test_process_area_append_warnings)
-
 data_test_process_area_area = [
     # test case 1: process_area contains no coordinates
     (
@@ -801,20 +788,6 @@ data_test_process_area_init_exceptions = [
     ),
 ]
 
-data_test_process_area_init_warnings = [
-    # test case 1: coordinates contains duplicates
-    (
-        np.array(
-            [[-128, -128], [0, -128], [-128, 0], [0, 0], [-128, -128], [0, 0]],
-            dtype=np.int32,
-        ),
-        128,
-        get_process_area_coordinates(),
-        128,
-        re.escape('Invalid coordinates! The coordinates must contain unique coordinates. Duplicates are removed.'),
-    ),
-]
-
 data_test_process_area_remove = [
     # test case 1: Default
     (
@@ -832,20 +805,6 @@ data_test_process_area_remove = [
 
 data_test_process_area_remove_inplace = copy.deepcopy(data_test_process_area_remove)
 data_test_process_area_remove_inplace_return = copy.deepcopy(data_test_process_area_remove)
-
-
-data_test_process_area_remove_warnings = [
-    # test case 1: coordinates is not in process_area
-    (
-        get_process_area(),
-        (128, -128),
-        get_process_area(),
-        re.escape('Invalid coordinates! The coordinates are not in the process area.'),
-    ),
-]
-
-data_test_process_area_remove_inplace_warnings = copy.deepcopy(data_test_process_area_remove_warnings)
-data_test_process_area_remove_inplace_return_warnings = copy.deepcopy(data_test_process_area_remove_warnings)
 
 data_test_process_area_sub = [
     # test case 1: other contains no coordinates
