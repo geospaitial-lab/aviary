@@ -22,7 +22,6 @@ from aviary.core.type_aliases import (
 )
 from tests.core.data.data_test_channel import (
     data_test_raster_channel_append,
-    data_test_raster_channel_append_exceptions,
     data_test_raster_channel_append_inplace,
     data_test_raster_channel_append_inplace_return,
     data_test_raster_channel_eq,
@@ -34,7 +33,6 @@ from tests.core.data.data_test_channel import (
     data_test_raster_channel_remove_buffer_inplace,
     data_test_raster_channel_remove_buffer_inplace_return,
     data_test_vector_channel_append,
-    data_test_vector_channel_append_exceptions,
     data_test_vector_channel_append_inplace,
     data_test_vector_channel_append_inplace_return,
     data_test_vector_channel_eq,
@@ -335,19 +333,6 @@ def test_raster_channel_append_inplace_return(
 
     for data_item_, data_item in zip(raster_channel_, raster_channel, strict=False):
         assert id(data_item_) == id(data_item)
-
-
-@pytest.mark.parametrize(('data', 'message'), data_test_raster_channel_append_exceptions)
-def test_raster_channel_append_exceptions(
-    data: list[npt.NDArray],
-    message: str,
-    raster_channel: RasterChannel,
-) -> None:
-    with pytest.raises(AviaryUserError, match=message):
-        _ = raster_channel.append(
-            data=data,
-            inplace=False,
-        )
 
 
 def test_raster_channel_append_defaults() -> None:
@@ -767,19 +752,6 @@ def test_vector_channel_append_inplace_return(
 
     for data_item_, data_item in zip(vector_channel_, vector_channel, strict=False):
         assert id(data_item_) == id(data_item)
-
-
-@pytest.mark.parametrize(('data', 'message'), data_test_vector_channel_append_exceptions)
-def test_vector_channel_append_exceptions(
-    data: list[gpd.GeoDataFrame],
-    message: str,
-    vector_channel: VectorChannel,
-) -> None:
-    with pytest.raises(AviaryUserError, match=message):
-        _ = vector_channel.append(
-            data=data,
-            inplace=False,
-        )
 
 
 def test_vector_channel_append_defaults() -> None:

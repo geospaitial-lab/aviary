@@ -246,19 +246,9 @@ class Channel(ABC, Iterable[object]):
 
         Returns:
             Channel
-
-        Raises:
-            AviaryUserError: Invalid `data` (the data contains no data items)
         """
         if not isinstance(data, list):
             data = [data]
-
-        if not data:
-            message = (
-                'Invalid data! '
-                'The data must contain at least one data item.'
-            )
-            raise AviaryUserError(message)
 
         if inplace:
             self._data.extend(data)

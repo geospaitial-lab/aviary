@@ -54,13 +54,10 @@ data_test_raster_channel_append = [
             copy=False,
         ),
     ),
-]
-
-data_test_raster_channel_append_exceptions = [
-    # test case 1: data contains no data items
+    # test case 3: data contains no data items
     (
         [],
-        re.escape('Invalid data! The data must contain at least one data item.'),
+        get_raster_channel(),
     ),
 ]
 
@@ -411,13 +408,10 @@ data_test_vector_channel_append = [
             copy=False,
         ),
     ),
-]
-
-data_test_vector_channel_append_exceptions = [
-    # test case 1: data contains no data items
+    # test case 3: data contains no data items
     (
         [],
-        re.escape('Invalid data! The data must contain at least one data item.'),
+        get_vector_channel(),
     ),
 ]
 
