@@ -233,6 +233,49 @@ class Channel(ABC, Iterable[object]):
         """
         yield from self._data
 
+    def __add__(
+        self,
+        other: Channel,
+    ) -> Channel:
+        """Adds the channels.
+
+        Parameters:
+            other: Other channel
+
+        Returns:
+            Channel
+
+        Raises:
+            AviaryUserError: Invalid other (the channel names of the channels are not equal)
+            AviaryUserError: Invalid other (the buffer sizes of the channels are not equal)
+            AviaryUserError: Invalid other (the time steps of the channels are not equal)
+        """
+        if self._name != other.name:
+            message = (
+                'Invalid other! '
+                'The channel names of the channels must be equal.'
+            )
+            raise AviaryUserError(message)
+
+        if self._buffer_size != other.buffer_size:
+            message = (
+                'Invalid other! '
+                'The buffer sizes of the channels must be equal.'
+            )
+            raise AviaryUserError(message)
+
+        if self._time_step != other.time_step:
+            message = (
+                'Invalid other! '
+                'The time steps of the channels must be equal.'
+            )
+            raise AviaryUserError(message)
+
+        return self.append(
+            data=other.data,
+            inplace=False,
+        )
+
     def append(
         self,
         data: object | list[object],
@@ -488,6 +531,20 @@ class RasterChannel(Channel, Iterable[npt.NDArray]):
             Data item
         """
         return super().__iter__()
+
+    def __add__(
+        self,
+        other: RasterChannel,
+    ) -> RasterChannel:
+        """Adds the raster channels.
+
+        Parameters:
+            other: Other raster channel
+
+        Returns:
+            Raster channel
+        """
+        return super().__add__(other=other)
 
     def append(
         self,
@@ -936,6 +993,20 @@ class VectorChannel(Channel, Iterable[gpd.GeoDataFrame]):
             Data item
         """
         return super().__iter__()
+
+    def __add__(
+        self,
+        other: VectorChannel,
+    ) -> VectorChannel:
+        """Adds the vector channels.
+
+        Parameters:
+            other: Other vector channel
+
+        Returns:
+            Vector channel
+        """
+        return super().__add__(other=other)
 
     def append(
         self,
