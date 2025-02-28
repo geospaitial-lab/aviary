@@ -404,7 +404,7 @@ def test_process_area_and_exceptions(
 @pytest.mark.parametrize(('process_area', 'coordinates', 'expected'), data_test_process_area_append)
 def test_process_area_append(
     process_area: ProcessArea,
-    coordinates: Coordinates,
+    coordinates: Coordinates | CoordinatesSet,
     expected: ProcessArea,
 ) -> None:
     copied_process_area = copy.deepcopy(process_area)
@@ -423,7 +423,7 @@ def test_process_area_append(
 @pytest.mark.parametrize(('process_area', 'coordinates', 'expected'), data_test_process_area_append_inplace)
 def test_process_area_append_inplace(
     process_area: ProcessArea,
-    coordinates: Coordinates,
+    coordinates: Coordinates | CoordinatesSet,
     expected: ProcessArea,
 ) -> None:
     process_area.append(
@@ -437,7 +437,7 @@ def test_process_area_append_inplace(
 @pytest.mark.parametrize(('process_area', 'coordinates', 'expected'), data_test_process_area_append_inplace_return)
 def test_process_area_append_inplace_return(
     process_area: ProcessArea,
-    coordinates: Coordinates,
+    coordinates: Coordinates | CoordinatesSet,
     expected: ProcessArea,
 ) -> None:
     process_area_ = process_area.append(
@@ -568,7 +568,7 @@ def test_process_area_filter_defaults() -> None:
 @pytest.mark.parametrize(('process_area', 'coordinates', 'expected'), data_test_process_area_remove)
 def test_process_area_remove(
     process_area: ProcessArea,
-    coordinates: Coordinates,
+    coordinates: Coordinates | CoordinatesSet,
     expected: ProcessArea,
 ) -> None:
     copied_process_area = copy.deepcopy(process_area)
@@ -587,7 +587,7 @@ def test_process_area_remove(
 @pytest.mark.parametrize(('process_area', 'coordinates', 'expected'), data_test_process_area_remove_inplace)
 def test_process_area_remove_inplace(
     process_area: ProcessArea,
-    coordinates: Coordinates,
+    coordinates: Coordinates | CoordinatesSet,
     expected: ProcessArea,
 ) -> None:
     process_area.remove(
@@ -601,7 +601,7 @@ def test_process_area_remove_inplace(
 @pytest.mark.parametrize(('process_area', 'coordinates', 'expected'), data_test_process_area_remove_inplace_return)
 def test_process_area_remove_inplace_return(
     process_area: ProcessArea,
-    coordinates: Coordinates,
+    coordinates: Coordinates | CoordinatesSet,
     expected: ProcessArea,
 ) -> None:
     process_area_ = process_area.remove(

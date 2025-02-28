@@ -111,6 +111,30 @@ data_test_process_area_append = [
             tile_size=128,
         ),
     ),
+    # test case 2: coordinates contains no coordinates
+    (
+        get_process_area(),
+        np.empty(
+            shape=(0, 2),
+            dtype=np.int32,
+        ),
+        get_process_area(),
+    ),
+    # test case 3: coordinates contains coordinates
+    (
+        get_process_area(),
+        np.array(
+            [[128, -128], [128, 0]],
+            dtype=np.int32,
+        ),
+        ProcessArea(
+            coordinates=np.array(
+                [[-128, -128], [0, -128], [-128, 0], [0, 0], [128, -128], [128, 0]],
+                dtype=np.int32,
+            ),
+            tile_size=128,
+        ),
+    ),
 ]
 
 data_test_process_area_append_inplace = copy.deepcopy(data_test_process_area_append)
@@ -796,6 +820,30 @@ data_test_process_area_remove = [
         ProcessArea(
             coordinates=np.array(
                 [[0, -128], [-128, 0], [0, 0]],
+                dtype=np.int32,
+            ),
+            tile_size=128,
+        ),
+    ),
+    # test case 2: coordinates contains no coordinates
+    (
+        get_process_area(),
+        np.empty(
+            shape=(0, 2),
+            dtype=np.int32,
+        ),
+        get_process_area(),
+    ),
+    # test case 3: coordinates contains coordinates
+    (
+        get_process_area(),
+        np.array(
+            [[-128, 0], [0, 0]],
+            dtype=np.int32,
+        ),
+        ProcessArea(
+            coordinates=np.array(
+                [[-128, -128], [0, -128]],
                 dtype=np.int32,
             ),
             tile_size=128,
