@@ -313,8 +313,8 @@ class Tiles(Iterable[Channel]):
         buffer_size: BufferSize = 0,
         time_step: TimeStep | None = None,
         copy: bool = False,
-    ) -> Tile:
-        """Creates a tile from composite raster data.
+    ) -> Tiles:
+        """Creates tiles from composite raster data.
 
         Parameters:
             data: Data
@@ -326,7 +326,7 @@ class Tiles(Iterable[Channel]):
             copy: If True, the channels are copied during initialization
 
         Returns:
-            Tile
+            Tiles
 
         Raises:
             AviaryUserError: Invalid `data` (the data is not in shape (n, n, c))
@@ -368,17 +368,19 @@ class Tiles(Iterable[Channel]):
         buffer_size = buffer_size / tile_size
 
         for i, channel_name in enumerate(channel_names):
-            if channel_name not in channels_dict:
-                channels_dict[channel_name] = RasterChannel(
-                    data=data[..., i],
-                    name=channel_name,
-                    buffer_size=buffer_size,
-                    time_step=time_step,
-                    copy=False,
-                )
+            if channel_name in channels_dict:
+                continue
+
+            channels_dict[channel_name] = RasterChannel(
+                data=data[..., i],
+                name=channel_name,
+                buffer_size=buffer_size,
+                time_step=time_step,
+                copy=False,
+            )
 
         channels = list(channels_dict.values())
-        tile = cls(
+        tiles = cls(
             channels=channels,
             coordinates=coordinates,
             tile_size=tile_size,
@@ -386,9 +388,9 @@ class Tiles(Iterable[Channel]):
         )
 
         if copy:
-            tile._mark_as_copied()  # noqa: SLF001
+            tiles._mark_as_copied()  # noqa: SLF001
 
-        return tile
+        return tiles
 
     @classmethod
     def from_tiles(
