@@ -89,6 +89,7 @@ class ProcessArea(Iterable[Coordinates]):
 
         Raises:
             AviaryUserError: Invalid `coordinates` (the coordinates are not in shape (n, 2) and data type int32)
+            AviaryUserError: Invalid `coordinates` (the coordinates are not quantized regularly)
         """
         if self._coordinates.ndim != 2:  # noqa: PLR2004
             message = (
@@ -122,6 +123,22 @@ class ProcessArea(Iterable[Coordinates]):
                 category=AviaryUserWarning,
                 stacklevel=2,
             )
+
+        coordinates_x_remainders = unique_coordinates[:, 0] % self._tile_size
+        coordinates_y_remainders = unique_coordinates[:, 1] % self._tile_size
+        unique_coordinates_x_remainders = np.unique(coordinates_x_remainders)
+        unique_coordinates_y_remainders = np.unique(coordinates_y_remainders)
+        conditions = [
+            len(unique_coordinates_x_remainders) > 1,
+            len(unique_coordinates_y_remainders) > 1,
+        ]
+
+        if any(conditions):
+            message = (
+                'Invalid coordinates! '
+                'The coordinates must be quantized regularly.'
+            )
+            raise AviaryUserError(message)
 
         sorted_indices = np.lexsort((unique_coordinates[:, 0], unique_coordinates[:, 1]))
         self._coordinates = unique_coordinates[sorted_indices]
