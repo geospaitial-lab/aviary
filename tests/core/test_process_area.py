@@ -44,6 +44,8 @@ from tests.core.data.data_test_process_area import (
     data_test_process_area_from_gdf_exceptions,
     data_test_process_area_from_json,
     data_test_process_area_from_json_exceptions,
+    data_test_process_area_from_process_areas,
+    data_test_process_area_from_process_areas_exceptions,
     data_test_process_area_getitem,
     data_test_process_area_getitem_slice,
     data_test_process_area_init,
@@ -274,6 +276,25 @@ def test_process_area_from_json_exceptions(
 ) -> None:
     with pytest.raises(AviaryUserError, match=message):
         _ = ProcessArea.from_json(json_string=json_string)
+
+
+@pytest.mark.parametrize(('process_areas', 'expected'), data_test_process_area_from_process_areas)
+def test_process_area_from_process_areas(
+    process_areas: list[ProcessArea],
+    expected: ProcessArea,
+) -> None:
+    process_area = ProcessArea.from_process_areas(process_areas=process_areas)
+
+    assert process_area == expected
+
+
+@pytest.mark.parametrize(('process_areas', 'message'), data_test_process_area_from_process_areas_exceptions)
+def test_process_area_from_process_areas_exceptions(
+    process_areas: list[ProcessArea],
+    message: str,
+) -> None:
+    with pytest.raises(AviaryUserError, match=message):
+        _ = ProcessArea.from_process_areas(process_areas=process_areas)
 
 
 @pytest.mark.skip(reason='Not implemented')

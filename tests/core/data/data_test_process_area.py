@@ -570,6 +570,51 @@ data_test_process_area_from_json_exceptions = [
     ),
 ]
 
+data_test_process_area_from_process_areas = [
+    # test case 1: Default
+    (
+        [
+            get_process_area(),
+            ProcessArea(
+                coordinates=np.array(
+                    [[128, -128], [128, 0]],
+                    dtype=np.int32,
+                ),
+                tile_size=128,
+            ),
+        ],
+        ProcessArea(
+            coordinates=np.array(
+                [[-128, -128], [0, -128], [-128, 0], [0, 0], [128, -128], [128, 0]],
+                dtype=np.int32,
+            ),
+            tile_size=128,
+        ),
+    ),
+]
+
+data_test_process_area_from_process_areas_exceptions = [
+    # test case 1: process_areas contains no process area
+    (
+        [],
+        re.escape('Invalid process_areas! The process areas must contain at least one process area.'),
+    ),
+    # test case 2: tile_size is not equal
+    (
+        [
+            get_process_area(),
+            ProcessArea(
+                coordinates=np.array(
+                    [[128, -128], [128, 0]],
+                    dtype=np.int32,
+                ),
+                tile_size=64,
+            ),
+        ],
+        re.escape('Invalid process_areas! The tile sizes of the process areas must be equal.'),
+    ),
+]
+
 data_test_process_area_getitem = [
     (0, (-128, -128)),
     (1, (0, -128)),
