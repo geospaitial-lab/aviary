@@ -21,6 +21,8 @@ from aviary.core.type_aliases import (
     TimeStep,
 )
 from tests.core.data.data_test_channel import (
+    data_test_raster_channel_add,
+    data_test_raster_channel_add_exceptions,
     data_test_raster_channel_append,
     data_test_raster_channel_append_inplace,
     data_test_raster_channel_append_inplace_return,
@@ -32,6 +34,8 @@ from tests.core.data.data_test_channel import (
     data_test_raster_channel_remove_buffer,
     data_test_raster_channel_remove_buffer_inplace,
     data_test_raster_channel_remove_buffer_inplace_return,
+    data_test_vector_channel_add,
+    data_test_vector_channel_add_exceptions,
     data_test_vector_channel_append,
     data_test_vector_channel_append_inplace,
     data_test_vector_channel_append_inplace_return,
@@ -274,6 +278,27 @@ def test_get_raster_channel_iter(
 
     for data_item, expected_data_item in zip(raster_channel, expected, strict=True):
         np.testing.assert_array_equal(data_item, expected_data_item)
+
+
+@pytest.mark.parametrize(('other', 'expected'), data_test_raster_channel_add)
+def test_raster_channel_add(
+    other: RasterChannel,
+    expected: RasterChannel,
+    raster_channel: RasterChannel,
+) -> None:
+    raster_channel = raster_channel + other
+
+    assert raster_channel == expected
+
+
+@pytest.mark.parametrize(('other', 'message'), data_test_raster_channel_add_exceptions)
+def test_raster_channel_add_exceptions(
+    other: RasterChannel,
+    message: str,
+    raster_channel: RasterChannel,
+) -> None:
+    with pytest.raises(AviaryUserError, match=message):
+        _ = raster_channel + other
 
 
 @pytest.mark.parametrize(('data', 'expected'), data_test_raster_channel_append)
@@ -693,6 +718,27 @@ def test_get_vector_channel_iter(
 
     for data_item, expected_data_item in zip(vector_channel, expected, strict=True):
         gpd.testing.assert_geodataframe_equal(data_item, expected_data_item)
+
+
+@pytest.mark.parametrize(('other', 'expected'), data_test_vector_channel_add)
+def test_vector_channel_add(
+    other: VectorChannel,
+    expected: VectorChannel,
+    vector_channel: VectorChannel,
+) -> None:
+    vector_channel = vector_channel + other
+
+    assert vector_channel == expected
+
+
+@pytest.mark.parametrize(('other', 'message'), data_test_vector_channel_add_exceptions)
+def test_vector_channel_add_exceptions(
+    other: VectorChannel,
+    message: str,
+    vector_channel: VectorChannel,
+) -> None:
+    with pytest.raises(AviaryUserError, match=message):
+        _ = vector_channel + other
 
 
 @pytest.mark.parametrize(('data', 'expected'), data_test_vector_channel_append)

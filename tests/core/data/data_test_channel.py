@@ -22,6 +22,61 @@ from tests.core.conftest import (
     get_vector_channel_empty_data_item,
 )
 
+data_test_raster_channel_add = [
+    # test case 1: Default
+    (
+        get_raster_channel(),
+        RasterChannel(
+            data=[
+                get_raster_channel_data_item(),
+                get_raster_channel_data_item(),
+                get_raster_channel_data_item(),
+                get_raster_channel_data_item(),
+            ],
+            name=ChannelName.R,
+            buffer_size=0.,
+            time_step=None,
+            copy=True,
+        ),
+    ),
+]
+
+data_test_raster_channel_add_exceptions = [
+    # test case 1: name is not equal
+    (
+        RasterChannel(
+            data=get_raster_channel_data(),
+            name=ChannelName.B,
+            buffer_size=0.,
+            time_step=None,
+            copy=False,
+        ),
+        re.escape('Invalid other! The names of the channels must be equal.'),
+    ),
+    # test case 2: buffer_size is not equal
+    (
+        RasterChannel(
+            data=get_raster_channel_data(),
+            name=ChannelName.R,
+            buffer_size=.125,
+            time_step=None,
+            copy=False,
+        ),
+        re.escape('Invalid other! The buffer sizes of the channels must be equal.'),
+    ),
+    # test case 3: time_step is not equal
+    (
+        RasterChannel(
+            data=get_raster_channel_data(),
+            name=ChannelName.R,
+            buffer_size=0.,
+            time_step=0,
+            copy=False,
+        ),
+        re.escape('Invalid other! The time steps of the channels must be equal.'),
+    ),
+]
+
 data_test_raster_channel_append = [
     # test case 1: Default
     (
@@ -375,6 +430,61 @@ data_test_raster_channel_remove_buffer = [
 
 data_test_raster_channel_remove_buffer_inplace = copy.deepcopy(data_test_raster_channel_remove_buffer)
 data_test_raster_channel_remove_buffer_inplace_return = copy.deepcopy(data_test_raster_channel_remove_buffer)
+
+data_test_vector_channel_add = [
+    # test case 1: Default
+    (
+        get_vector_channel(),
+        VectorChannel(
+            data=[
+                get_vector_channel_data_item(),
+                get_vector_channel_data_item(),
+                get_vector_channel_data_item(),
+                get_vector_channel_data_item(),
+            ],
+            name=ChannelName.R,
+            buffer_size=0.,
+            time_step=None,
+            copy=True,
+        ),
+    ),
+]
+
+data_test_vector_channel_add_exceptions = [
+    # test case 1: name is not equal
+    (
+        VectorChannel(
+            data=get_vector_channel_data(),
+            name=ChannelName.B,
+            buffer_size=0.,
+            time_step=None,
+            copy=False,
+        ),
+        re.escape('Invalid other! The names of the channels must be equal.'),
+    ),
+    # test case 2: buffer_size is not equal
+    (
+        VectorChannel(
+            data=get_vector_channel_data(),
+            name=ChannelName.R,
+            buffer_size=.125,
+            time_step=None,
+            copy=False,
+        ),
+        re.escape('Invalid other! The buffer sizes of the channels must be equal.'),
+    ),
+    # test case 3: time_step is not equal
+    (
+        VectorChannel(
+            data=get_vector_channel_data(),
+            name=ChannelName.R,
+            buffer_size=0.,
+            time_step=0,
+            copy=False,
+        ),
+        re.escape('Invalid other! The time steps of the channels must be equal.'),
+    ),
+]
 
 data_test_vector_channel_append = [
     # test case 1: Default
