@@ -24,6 +24,7 @@ from tests.core.data.data_test_process_area import (
     data_test_process_area_and,
     data_test_process_area_and_exceptions,
     data_test_process_area_append,
+    data_test_process_area_append_exceptions,
     data_test_process_area_append_inplace,
     data_test_process_area_append_inplace_return,
     data_test_process_area_area,
@@ -45,6 +46,7 @@ from tests.core.data.data_test_process_area import (
     data_test_process_area_init,
     data_test_process_area_init_exceptions,
     data_test_process_area_remove,
+    data_test_process_area_remove_exceptions,
     data_test_process_area_remove_inplace,
     data_test_process_area_remove_inplace_return,
     data_test_process_area_sub,
@@ -451,6 +453,19 @@ def test_process_area_append_inplace_return(
     assert id(process_area_.coordinates) != id(process_area.coordinates)
 
 
+@pytest.mark.parametrize(('coordinates', 'message'), data_test_process_area_append_exceptions)
+def test_process_area_append_exceptions(
+    coordinates: CoordinatesSet,
+    message: str,
+    process_area: ProcessArea,
+) -> None:
+    with pytest.raises(AviaryUserError, match=message):
+        _ = process_area.append(
+            coordinates=coordinates,
+            inplace=False,
+        )
+
+
 def test_process_area_append_defaults() -> None:
     signature = inspect.signature(ProcessArea.append)
     inplace = signature.parameters['inplace'].default
@@ -613,6 +628,19 @@ def test_process_area_remove_inplace_return(
     assert process_area_ == expected
     assert id(process_area_) == id(process_area)
     assert id(process_area_.coordinates) != id(process_area.coordinates)
+
+
+@pytest.mark.parametrize(('coordinates', 'message'), data_test_process_area_remove_exceptions)
+def test_process_area_remove_exceptions(
+    coordinates: CoordinatesSet,
+    message: str,
+    process_area: ProcessArea,
+) -> None:
+    with pytest.raises(AviaryUserError, match=message):
+        _ = process_area.remove(
+            coordinates=coordinates,
+            inplace=False,
+        )
 
 
 def test_process_area_remove_defaults() -> None:

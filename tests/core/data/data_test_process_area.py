@@ -137,6 +137,41 @@ data_test_process_area_append = [
     ),
 ]
 
+data_test_process_area_append_exceptions = [
+    # test case 1: coordinates has one dimension
+    (
+        np.arange(
+            8,
+            dtype=np.int32,
+        ),
+        re.escape('Invalid coordinates! The coordinates must be in shape (n, 2) and data type int32.'),
+    ),
+    # test case 2: coordinates has three dimensions
+    (
+        np.arange(
+            8,
+            dtype=np.int32,
+        ).reshape(2, 2, 2),
+        re.escape('Invalid coordinates! The coordinates must be in shape (n, 2) and data type int32.'),
+    ),
+    # test case 3: coordinates has not two values in the second dimension
+    (
+        np.arange(
+            8,
+            dtype=np.int32,
+        ).reshape(2, 4),
+        re.escape('Invalid coordinates! The coordinates must be in shape (n, 2) and data type int32.'),
+    ),
+    # test case 4: coordinates is not of data type int32
+    (
+        np.arange(
+            8,
+            dtype=np.float32,
+        ).reshape(4, 2),
+        re.escape('Invalid coordinates! The coordinates must be in shape (n, 2) and data type int32.'),
+    ),
+]
+
 data_test_process_area_append_inplace = copy.deepcopy(data_test_process_area_append)
 data_test_process_area_append_inplace_return = copy.deepcopy(data_test_process_area_append)
 
@@ -848,6 +883,41 @@ data_test_process_area_remove = [
             ),
             tile_size=128,
         ),
+    ),
+]
+
+data_test_process_area_remove_exceptions = [
+    # test case 1: coordinates has one dimension
+    (
+        np.arange(
+            8,
+            dtype=np.int32,
+        ),
+        re.escape('Invalid coordinates! The coordinates must be in shape (n, 2) and data type int32.'),
+    ),
+    # test case 2: coordinates has three dimensions
+    (
+        np.arange(
+            8,
+            dtype=np.int32,
+        ).reshape(2, 2, 2),
+        re.escape('Invalid coordinates! The coordinates must be in shape (n, 2) and data type int32.'),
+    ),
+    # test case 3: coordinates has not two values in the second dimension
+    (
+        np.arange(
+            8,
+            dtype=np.int32,
+        ).reshape(2, 4),
+        re.escape('Invalid coordinates! The coordinates must be in shape (n, 2) and data type int32.'),
+    ),
+    # test case 4: coordinates is not of data type int32
+    (
+        np.arange(
+            8,
+            dtype=np.float32,
+        ).reshape(4, 2),
+        re.escape('Invalid coordinates! The coordinates must be in shape (n, 2) and data type int32.'),
     ),
 ]
 
