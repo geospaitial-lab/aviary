@@ -27,6 +27,8 @@ from tests.core.data.data_test_channel import (
     data_test_raster_channel_append_inplace,
     data_test_raster_channel_append_inplace_return,
     data_test_raster_channel_eq,
+    data_test_raster_channel_from_channels,
+    data_test_raster_channel_from_channels_exceptions,
     data_test_raster_channel_getitem,
     data_test_raster_channel_getitem_slice,
     data_test_raster_channel_init,
@@ -40,6 +42,8 @@ from tests.core.data.data_test_channel import (
     data_test_vector_channel_append_inplace,
     data_test_vector_channel_append_inplace_return,
     data_test_vector_channel_eq,
+    data_test_vector_channel_from_channels,
+    data_test_vector_channel_from_channels_exceptions,
     data_test_vector_channel_from_unscaled_data_exceptions,
     data_test_vector_channel_getitem,
     data_test_vector_channel_getitem_slice,
@@ -223,6 +227,43 @@ def test_raster_channel_key(
     expected = (expected_name, expected_time_step)
 
     assert raster_channel.key == expected
+
+
+@pytest.mark.parametrize(('channels', 'copy', 'expected'), data_test_raster_channel_from_channels)
+def test_raster_channel_from_channels(
+    channels: list[RasterChannel],
+    copy: bool,
+    expected: RasterChannel,
+) -> None:
+    raster_channel = RasterChannel.from_channels(
+        channels=channels,
+        copy=copy,
+    )
+
+    assert raster_channel == expected
+
+
+@pytest.mark.parametrize(('channels', 'message'), data_test_raster_channel_from_channels_exceptions)
+def test_raster_channel_from_channels_exceptions(
+    channels: list[RasterChannel],
+    message: str,
+) -> None:
+    copy = False
+
+    with pytest.raises(AviaryUserError, match=message):
+        _ = RasterChannel.from_channels(
+            channels=channels,
+            copy=copy,
+        )
+
+
+def test_raster_channel_from_channels_defaults() -> None:
+    signature = inspect.signature(RasterChannel.from_channels)
+    copy = signature.parameters['copy'].default
+
+    expected_copy = False
+
+    assert copy is expected_copy
 
 
 @pytest.mark.parametrize(('other', 'expected'), data_test_raster_channel_eq)
@@ -611,6 +652,43 @@ def test_vector_channel_key(
     expected = (expected_name, expected_time_step)
 
     assert vector_channel.key == expected
+
+
+@pytest.mark.parametrize(('channels', 'copy', 'expected'), data_test_vector_channel_from_channels)
+def test_vector_channel_from_channels(
+    channels: list[VectorChannel],
+    copy: bool,
+    expected: VectorChannel,
+) -> None:
+    vector_channel = VectorChannel.from_channels(
+        channels=channels,
+        copy=copy,
+    )
+
+    assert vector_channel == expected
+
+
+@pytest.mark.parametrize(('channels', 'message'), data_test_vector_channel_from_channels_exceptions)
+def test_vector_channel_from_channels_exceptions(
+    channels: list[VectorChannel],
+    message: str,
+) -> None:
+    copy = False
+
+    with pytest.raises(AviaryUserError, match=message):
+        _ = VectorChannel.from_channels(
+            channels=channels,
+            copy=copy,
+        )
+
+
+def test_vector_channel_from_channels_defaults() -> None:
+    signature = inspect.signature(VectorChannel.from_channels)
+    copy = signature.parameters['copy'].default
+
+    expected_copy = False
+
+    assert copy is expected_copy
 
 
 @pytest.mark.skip(reason='Not implemented')

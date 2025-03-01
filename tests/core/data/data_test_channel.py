@@ -218,6 +218,79 @@ data_test_raster_channel_eq = [
     ),
 ]
 
+data_test_raster_channel_from_channels = [
+    # test case 1: Default
+    (
+        [
+            get_raster_channel(),
+            get_raster_channel(),
+        ],
+        False,
+        RasterChannel(
+            data=[
+                get_raster_channel_data_item(),
+                get_raster_channel_data_item(),
+                get_raster_channel_data_item(),
+                get_raster_channel_data_item(),
+            ],
+            name=ChannelName.R,
+            buffer_size=0.,
+            time_step=None,
+            copy=False,
+        ),
+    ),
+]
+
+data_test_raster_channel_from_channels_exceptions = [
+    # test case 1: channels contain no channels
+    (
+        [],
+        re.escape('Invalid channels! The channels must contain at least one channel.'),
+    ),
+    # test case 2: name is not equal
+    (
+        [
+            get_raster_channel(),
+            RasterChannel(
+                data=get_raster_channel_data(),
+                name=ChannelName.B,
+                buffer_size=0.,
+                time_step=None,
+                copy=False,
+            ),
+        ],
+        re.escape('Invalid channels! The names of the channels must be equal.'),
+    ),
+    # test case 3: buffer_size is not equal
+    (
+        [
+            get_raster_channel(),
+            RasterChannel(
+                data=get_raster_channel_data(),
+                name=ChannelName.R,
+                buffer_size=.125,
+                time_step=None,
+                copy=False,
+            ),
+        ],
+        re.escape('Invalid channels! The buffer sizes of the channels must be equal.'),
+    ),
+    # test case 4: time_step is not equal
+    (
+        [
+            get_raster_channel(),
+            RasterChannel(
+                data=get_raster_channel_data(),
+                name=ChannelName.R,
+                buffer_size=0.,
+                time_step=0,
+                copy=False,
+            ),
+        ],
+        re.escape('Invalid channels! The time steps of the channels must be equal.'),
+    ),
+]
+
 data_test_raster_channel_getitem = [
     (0, get_raster_channel_data_item()),
     (1, get_raster_channel_data_item()),
@@ -624,6 +697,79 @@ data_test_vector_channel_eq = [
     (
         'invalid',
         False,
+    ),
+]
+
+data_test_vector_channel_from_channels = [
+    # test case 1: Default
+    (
+        [
+            get_vector_channel(),
+            get_vector_channel(),
+        ],
+        False,
+        VectorChannel(
+            data=[
+                get_vector_channel_data_item(),
+                get_vector_channel_data_item(),
+                get_vector_channel_data_item(),
+                get_vector_channel_data_item(),
+            ],
+            name=ChannelName.R,
+            buffer_size=0.,
+            time_step=None,
+            copy=False,
+        ),
+    ),
+]
+
+data_test_vector_channel_from_channels_exceptions = [
+    # test case 1: channels contain no channels
+    (
+        [],
+        re.escape('Invalid channels! The channels must contain at least one channel.'),
+    ),
+    # test case 2: name is not equal
+    (
+        [
+            get_vector_channel(),
+            VectorChannel(
+                data=get_vector_channel_data(),
+                name=ChannelName.B,
+                buffer_size=0.,
+                time_step=None,
+                copy=False,
+            ),
+        ],
+        re.escape('Invalid channels! The names of the channels must be equal.'),
+    ),
+    # test case 3: buffer_size is not equal
+    (
+        [
+            get_vector_channel(),
+            VectorChannel(
+                data=get_vector_channel_data(),
+                name=ChannelName.R,
+                buffer_size=.125,
+                time_step=None,
+                copy=False,
+            ),
+        ],
+        re.escape('Invalid channels! The buffer sizes of the channels must be equal.'),
+    ),
+    # test case 4: time_step is not equal
+    (
+        [
+            get_vector_channel(),
+            VectorChannel(
+                data=get_vector_channel_data(),
+                name=ChannelName.R,
+                buffer_size=0.,
+                time_step=0,
+                copy=False,
+            ),
+        ],
+        re.escape('Invalid channels! The time steps of the channels must be equal.'),
     ),
 ]
 
