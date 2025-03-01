@@ -19,6 +19,7 @@ from .tile_fetcher import (
     WMSFetcher,
     WMSFetcherConfig,
 )
+from .tile_loader import TileLoader
 from .tile_set import TileSet
 
 __all__ = [
@@ -33,6 +34,7 @@ __all__ = [
     'SegmentationModelConfig',
     'TileFetcher',
     'TileFetcherConfig',
+    'TileLoader',
     'TileSet',
     'VRTFetcher',
     'VRTFetcherConfig',

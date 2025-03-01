@@ -1,4 +1,3 @@
-from .data_loader import DataLoader
 from .data_preprocessor import (
     CompositePreprocessor,
     CompositePreprocessorConfig,
@@ -13,7 +12,6 @@ from .data_preprocessor import (
 __all__ = [
     'CompositePreprocessor',
     'CompositePreprocessorConfig',
-    'DataLoader',
     'DataPreprocessor',
     'DataPreprocessorConfig',
     'NormalizePreprocessor',

@@ -1,4 +1,4 @@
-::: aviary.data.DataLoader
+::: aviary.inference.TileLoader
     options:
       filters:
       - "!^_"

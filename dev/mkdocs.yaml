@@ -33,7 +33,6 @@ nav:
       - Tiles: api_reference/tiles.md
       - Type Aliases: api_reference/type_aliases.md
     - aviary.data:
-      - DataLoader: api_reference/data/data_loader.md
       - DataPreprocessor:
         - DataPreprocessor: api_reference/data/data_preprocessor/data_preprocessor.md
         - CompositePreprocessor: api_reference/data/data_preprocessor/composite_preprocessor.md
@@ -69,6 +68,7 @@ nav:
           - CompositeFetcher: api_reference/inference/tile_fetcher/composite_fetcher.md
           - VRTFetcher: api_reference/inference/tile_fetcher/vrt_fetcher.md
           - WMSFetcher: api_reference/inference/tile_fetcher/wms_fetcher.md
+      - TileLoader: api_reference/inference/tile_loader.md
       - TileSet: api_reference/inference/tile_set.md
     - aviary.pipeline:
       - PostprocessingPipeline: api_reference/pipeline/postprocessing_pipeline.md
