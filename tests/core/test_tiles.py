@@ -12,7 +12,7 @@ from aviary.core.type_aliases import (
     ChannelKey,
     TileSize,
 )
-from tests.core.data.data_test_tile import (
+from tests.core.data.data_test_tiles import (
     data_test_tile_contains,
     data_test_tile_eq,
     data_test_tile_getattr,
