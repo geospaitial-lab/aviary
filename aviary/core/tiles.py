@@ -476,10 +476,11 @@ class Tiles(Iterable[Channel]):
             for channel in self
         )
         channels_repr = '\n' + channels_repr
+        coordinates_repr = len(self._coordinates)
         return (
             'Tiles(\n'
             f'    channels={channels_repr}\n'
-            f'    coordinates={self._coordinates},\n'
+            f'    coordinates={coordinates_repr},\n'
             f'    tile_size={self._tile_size},\n'
             f'    copy={self._copy},\n'
             ')'
