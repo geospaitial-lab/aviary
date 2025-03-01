@@ -609,9 +609,12 @@ class Tiles(Iterable[Channel]):
         coordinates_equal = np.array_equal(self._coordinates, other._coordinates)
 
         if coordinates_equal:
-            return self.append(
-                channels=other.channels,
-                inplace=False,
+            channels = self._channels + other.channels
+            return Tiles(
+                channels=channels,
+                coordinates=self._coordinates,
+                tile_size=self._tile_size,
+                copy=True,
             )
 
         coordinates = set_filter(
