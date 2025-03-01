@@ -357,7 +357,7 @@ class ProcessArea(Iterable[Coordinates]):
 
         Raises:
             AviaryUserError: Invalid `process_areas` (the process areas contain no process area)
-            AviaryUserError: Invalid `process_areas` (the tile sizes of the process areas are not equal
+            AviaryUserError: Invalid `process_areas` (the tile sizes of the process areas are not equal)
         """
         if not process_areas:
             message = (
