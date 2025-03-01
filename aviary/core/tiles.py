@@ -15,16 +15,12 @@ if TYPE_CHECKING:
     import numpy.typing as npt
 
 # noinspection PyProtectedMember
-from aviary._functional.geodata.coordinates_filter import (
-    duplicates_filter,
-    set_filter,
-)
+from aviary._functional.geodata.coordinates_filter import duplicates_filter
 from aviary.core.channel import (
     Channel,
     RasterChannel,
     _parse_channel_name,
 )
-from aviary.core.enums import SetFilterMode
 from aviary.core.exceptions import AviaryUserError
 from aviary.core.process_area import ProcessArea
 from aviary.core.type_aliases import (
@@ -603,12 +599,9 @@ class Tiles(Iterable[Channel]):
                 copy=True,
             )
 
-        coordinates = set_filter(
-            coordinates=self._coordinates,
-            other=other._coordinates,
-            mode=SetFilterMode.UNION,
-        )
-        coordinates_unique = len(coordinates) == len(self._coordinates) + len(other._coordinates)
+        coordinates = np.concatenate([self._coordinates, other._coordinates], axis=0)
+        unique_coordinates = duplicates_filter(coordinates=coordinates)
+        coordinates_unique = len(coordinates) == len(unique_coordinates)
 
         if coordinates_unique:
             if self.channel_keys != other.channel_keys:
