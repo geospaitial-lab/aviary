@@ -167,6 +167,75 @@ class Channel(ABC, Iterable[object]):
         """
         return self._name, self._time_step
 
+    @classmethod
+    def from_channels(
+        cls,
+        channels: list[Channel],
+        copy: bool = False,
+    ) -> Channel:
+        """Creates a channel from channels.
+
+        Parameters:
+            channels: Channels
+            copy: If True, the data is copied during initialization
+
+        Returns:
+            Channel
+
+        Raises:
+            AviaryUserError: Invalid channels (the channels must contain at least one channel)
+            AviaryUserError: Invalid channels (the names of the channels are not equal)
+            AviaryUserError: Invalid channels (the buffer sizes of the channels are not equal)
+            AviaryUserError: Invalid channels (the time steps of the channels are not equal)
+        """
+        if not channels:
+            message = (
+                'Invalid channels! '
+                'The channels must contain at least one channel.'
+            )
+            raise AviaryUserError(message)
+
+        channel_names = {channel.name for channel in channels}
+
+        if len(channel_names) > 1:
+            message = (
+                'Invalid channels! '
+                'The names of the channels must be equal.'
+            )
+            raise AviaryUserError(message)
+
+        buffer_sizes = {channel.buffer_size for channel in channels}
+
+        if len(buffer_sizes) > 1:
+            message = (
+                'Invalid channels! '
+                'The buffer sizes of the channels must be equal.'
+            )
+            raise AviaryUserError(message)
+
+        time_steps = {channel.time_step for channel in channels}
+
+        if len(time_steps) > 1:
+            message = (
+                'Invalid channels! '
+                'The time steps of the channels must be equal.'
+            )
+            raise AviaryUserError(message)
+
+        first_channel = channels[0]
+
+        data = [data_item for channel in channels for data_item in channel]
+        name = first_channel.name
+        buffer_size = first_channel.buffer_size
+        time_step = first_channel.time_step
+        return cls(
+            data=data,
+            name=name,
+            buffer_size=buffer_size,
+            time_step=time_step,
+            copy=copy,
+        )
+
     @abstractmethod
     def __repr__(self) -> str:
         """Returns the string representation.
@@ -455,6 +524,26 @@ class RasterChannel(Channel, Iterable[npt.NDArray]):
             Data
         """
         return self._data
+
+    @classmethod
+    def from_channels(
+        cls,
+        channels: list[RasterChannel],
+        copy: bool = False,
+    ) -> RasterChannel:
+        """Creates a raster channel from raster channels.
+
+        Parameters:
+            channels: Raster channels
+            copy: If True, the data is copied during initialization
+
+        Returns:
+            Raster channel
+        """
+        return super().from_channels(
+            channels=channels,
+            copy=copy,
+        )
 
     def __repr__(self) -> str:
         """Returns the string representation.
@@ -800,6 +889,26 @@ class VectorChannel(Channel, Iterable[gpd.GeoDataFrame]):
             Data
         """
         return self._data
+
+    @classmethod
+    def from_channels(
+        cls,
+        channels: list[VectorChannel],
+        copy: bool = False,
+    ) -> VectorChannel:
+        """Creates a vector channel from vector channels.
+
+        Parameters:
+            channels: Vector channels
+            copy: If True, the data is copied during initialization
+
+        Returns:
+            Vector channel
+        """
+        return super().from_channels(
+            channels=channels,
+            copy=copy,
+        )
 
     @classmethod
     def from_unscaled_data(
