@@ -345,9 +345,6 @@ class Tiles(Iterable[Channel]):
             )
             raise AviaryUserError(message)
 
-        if copy:
-            data = data.copy()
-
         channel_names = [
             _parse_channel_name(channel_name=channel_name)
             for channel_name in channel_names
@@ -368,17 +365,12 @@ class Tiles(Iterable[Channel]):
             )
 
         channels = list(channels_dict.values())
-        tiles = cls(
+        return cls(
             channels=channels,
             coordinates=coordinates,
             tile_size=tile_size,
-            copy=False,
+            copy=copy,
         )
-
-        if copy:
-            tiles._mark_as_copied()  # noqa: SLF001
-
-        return tiles
 
     @classmethod
     def from_tiles(
