@@ -501,7 +501,7 @@ class ProcessArea(Iterable[Coordinates]):
 
     def __contains__(
         self,
-        coordinates: Coordinates,
+        coordinates: Coordinates | CoordinatesSet,
     ) -> bool:
         """Checks if the coordinates are in the process area.
 
@@ -510,11 +510,35 @@ class ProcessArea(Iterable[Coordinates]):
 
         Returns:
             True if the coordinates are in the process area, False otherwise
+
+        Raises:
+            AviaryUserError: Invalid `coordinates` (the coordinates are not in shape (n, 2) and data type int32)
         """
-        coordinates = np.array([coordinates], dtype=np.int32)
+        if not isinstance(coordinates, np.ndarray):
+            coordinates = np.array([coordinates], dtype=np.int32)
+
+        if coordinates.ndim != 2:  # noqa: PLR2004
+            message = (
+                'Invalid coordinates! '
+                'The coordinates must be in shape (n, 2) and data type int32.'
+            )
+            raise AviaryUserError(message)
+
+        conditions = [
+            coordinates.shape[1] != 2,  # noqa: PLR2004
+            coordinates.dtype != np.int32,
+        ]
+
+        if any(conditions):
+            message = (
+                'Invalid coordinates! '
+                'The coordinates must be in shape (n, 2) and data type int32.'
+            )
+            raise AviaryUserError(message)
+
         coordinates = np.concatenate([self._coordinates, coordinates], axis=0)
         unique_coordinates = duplicates_filter(coordinates=coordinates)
-        return len(coordinates) != len(unique_coordinates)
+        return len(self) == len(unique_coordinates)
 
     @overload
     def __getitem__(

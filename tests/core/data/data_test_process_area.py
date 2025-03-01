@@ -337,6 +337,34 @@ data_test_process_area_contains = [
     ((0, 0), True),
     ((128, -128), False),
     ((128, 0), False),
+    (
+        np.array(
+            [[-128, -128], [0, -128]],
+            dtype=np.int32,
+        ),
+        True,
+    ),
+    (
+        np.array(
+            [[-128, -128], [0, -128], [-128, 0], [0, 0]],
+            dtype=np.int32,
+        ),
+        True,
+    ),
+    (
+        np.array(
+            [[128, -128], [128, 0]],
+            dtype=np.int32,
+        ),
+        False,
+    ),
+    (
+        np.array(
+            [[-128, -128], [0, -128], [128, -128], [128, 0]],
+            dtype=np.int32,
+        ),
+        False,
+    ),
 ]
 
 data_test_process_area_eq = [

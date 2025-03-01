@@ -296,7 +296,7 @@ def test_process_area_bool(
 
 @pytest.mark.parametrize(('coordinates', 'expected'), data_test_process_area_contains)
 def test_process_area_contains(
-    coordinates: Coordinates,
+    coordinates: Coordinates | CoordinatesSet,
     expected: bool,
     process_area: ProcessArea,
 ) -> None:
