@@ -98,6 +98,7 @@ class Tiles(Iterable[Channel]):
         Raises:
             AviaryUserError: Invalid `channels` (the channels contain no channels)
             AviaryUserError: Invalid `channels` (the channels contain duplicate channel name and time step combinations)
+            AviaryUserError: Invalid `channels` (the batch sizes of the channels are not equal)
         """
         if not self._channels:
             message = (
@@ -116,24 +117,9 @@ class Tiles(Iterable[Channel]):
             )
             raise AviaryUserError(message)
 
-        for channel in self:
-            self._validate_channel(channel=channel)
+        batch_sizes = {channel.batch_size for channel in self}
 
-    def _validate_channel(
-        self,
-        channel: Channel,
-    ) -> None:
-        """Validates the channel.
-
-        Parameters:
-            channel: Channel
-
-        Raises:
-            AviaryUserError: Invalid `channels` (the batch sizes of the channels are not equal)
-        """
-        first_channel = self._channels[0]
-
-        if channel.batch_size != first_channel.batch_size:
+        if len(batch_sizes) > 1:
             message = (
                 'Invalid channels! '
                 'The batch sizes of the channels must be equal.'
