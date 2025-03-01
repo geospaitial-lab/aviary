@@ -271,9 +271,13 @@ class Channel(ABC, Iterable[object]):
             )
             raise AviaryUserError(message)
 
-        return self.append(
-            data=other.data,
-            inplace=False,
+        data = self._data + other.data
+        return self.__class__(
+            data=data,
+            name=self._name,
+            buffer_size=self._buffer_size,
+            time_step=self._time_step,
+            copy=True,
         )
 
     def append(
