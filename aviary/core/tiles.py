@@ -383,21 +383,23 @@ class Tiles(Iterable[Channel]):
     @classmethod
     def from_tiles(
         cls,
-        tiles: list[Tile],
+        tiles: list[Tiles],
         copy: bool = False,
-    ) -> Tile:
-        """Creates a tile from tiles that specify the same spatial extent.
+    ) -> Tiles:
+        """Creates tiles from tiles.
 
         Parameters:
             tiles: Tiles
             copy: If True, the channels are copied during initialization
 
         Returns:
-            Tile
+            Tiles
 
         Raises:
             AviaryUserError: Invalid `tiles` (the tiles contain no tiles)
-            AviaryUserError: Invalid `tiles` (the coordinates and tile sizes of the tiles are not equal)
+            AviaryUserError: Invalid `tiles` (the tile sizes of the tiles are not equal)
+            AviaryUserError: Invalid `tiles` (the channel name and time step combinations of the tiles are not equal)
+            AviaryUserError: Invalid `tiles` (the coordinates of the tiles do not contain equal or unique coordinates)
         """
         if not tiles:
             message = (
@@ -406,30 +408,70 @@ class Tiles(Iterable[Channel]):
             )
             raise AviaryUserError(message)
 
+        tile_sizes = {tile.tile_size for tile in tiles}
+
+        if len(tile_sizes) > 1:
+            message = (
+                'Invalid tiles! '
+                'The tile sizes of the tiles must be equal.'
+            )
+            raise AviaryUserError(message)
+
         first_tile = tiles[0]
-        coordinates = first_tile.coordinates
-        tile_size = first_tile.tile_size
 
-        for tile in tiles:
-            conditions = [
-                tile.coordinates != coordinates,
-                tile.tile_size != tile_size,
-            ]
+        coordinates_equal = all(
+            np.array_equal(tile._coordinates, first_tile._coordinates)  # noqa: SLF001
+            for tile in tiles
+        )
 
-            if any(conditions):
+        if coordinates_equal:
+            channels = [channel for tile in tiles for channel in tile]
+            coordinates = first_tile._coordinates  # noqa: SLF001
+            tile_size = first_tile.tile_size
+            return cls(
+                channels=channels,
+                coordinates=coordinates,
+                tile_size=tile_size,
+                copy=copy,
+            )
+
+        coordinates = np.concatenate([tile._coordinates for tile in tiles], axis=0)  # noqa: SLF001
+        unique_coordinates = duplicates_filter(coordinates=coordinates)
+        coordinates_unique = len(coordinates) == len(unique_coordinates)
+
+        if coordinates_unique:
+            channel_keys_equal = all(
+                tile.channel_keys == first_tile.channel_keys
+                for tile in tiles
+            )
+
+            if not channel_keys_equal:
                 message = (
                     'Invalid tiles! '
-                    'The coordinates and tile sizes of the tiles must be equal.'
+                    'The channel name and time step combinations of the tiles must be equal.'
                 )
                 raise AviaryUserError(message)
 
-        channels = [channel for tile in tiles for channel in tile]
-        return cls(
-            channels=channels,
-            coordinates=coordinates,
-            tile_size=tile_size,
-            copy=copy,
+            channels = [
+                first_tile[channel_key].__class__.from_channels(
+                    channels=[tile[channel_key] for tile in tiles],
+                    copy=False,
+                )
+                for channel_key in first_tile.channel_keys
+            ]
+            tile_size = first_tile.tile_size
+            return cls(
+                channels=channels,
+                coordinates=coordinates,
+                tile_size=tile_size,
+                copy=copy,
+            )
+
+        message = (
+            'Invalid tiles! '
+            'The coordinates of the tiles must contain equal or unique coordinates.'
         )
+        raise AviaryUserError(message)
 
     def __repr__(self) -> str:
         """Returns the string representation.
