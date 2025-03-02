@@ -22,7 +22,7 @@ from aviary.core.channel import (
     _parse_channel_name,
 )
 from aviary.core.exceptions import AviaryUserError
-from aviary.core.process_area import ProcessArea
+from aviary.core.grid import Grid
 from aviary.core.type_aliases import (
     ChannelKey,
     ChannelNameSet,
@@ -246,7 +246,7 @@ class Tiles(Iterable[Channel]):
         Returns:
             Area in square meters
         """
-        return self.process_area.area
+        return self.grid.area
 
     @property
     def batch_size(self) -> int:
@@ -273,23 +273,23 @@ class Tiles(Iterable[Channel]):
         return {channel.name for channel in self}
 
     @property
+    def grid(self) -> Grid:
+        """
+        Returns:
+            Grid
+        """
+        return Grid(
+            coordinates=self._coordinates,
+            tile_size=self._tile_size,
+        )
+
+    @property
     def num_channels(self) -> int:
         """
         Returns:
             Number of channels
         """
         return len(self)
-
-    @property
-    def process_area(self) -> ProcessArea:
-        """
-        Returns:
-            Process area
-        """
-        return ProcessArea(
-            coordinates=self._coordinates,
-            tile_size=self._tile_size,
-        )
 
     @classmethod
     def from_composite_raster(
