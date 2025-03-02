@@ -2,12 +2,13 @@
 
 [:simple-github: View source on GitHub][GitHub]
 
-  [GitHub]: https://github.com/geospaitial-lab/aviary/blob/main/aviary/inference/tile_loader.py
+  [GitHub]: https://github.com/geospaitial-lab/aviary/blob/main/aviary/core/bounding_box.py
 
 </div>
 
-::: aviary.inference.TileLoader
+::: aviary.BoundingBox
     options:
       filters:
       - "!^_"
       - "^__"
+      - "!__repr__"
