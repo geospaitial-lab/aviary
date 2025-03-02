@@ -28,10 +28,8 @@ data_test_raster_channel_add = [
         get_raster_channel(),
         RasterChannel(
             data=[
-                get_raster_channel_data_item(),
-                get_raster_channel_data_item(),
-                get_raster_channel_data_item(),
-                get_raster_channel_data_item(),
+                *get_raster_channel_data(),
+                *get_raster_channel_data(),
             ],
             name=ChannelName.R,
             buffer_size=0.,
@@ -83,10 +81,8 @@ data_test_raster_channel_append = [
         get_raster_channel_data(),
         RasterChannel(
             data=[
-                get_raster_channel_data_item(),
-                get_raster_channel_data_item(),
-                get_raster_channel_data_item(),
-                get_raster_channel_data_item(),
+                *get_raster_channel_data(),
+                *get_raster_channel_data(),
             ],
             name=ChannelName.R,
             buffer_size=0.,
@@ -99,8 +95,7 @@ data_test_raster_channel_append = [
         get_raster_channel_data_item(),
         RasterChannel(
             data=[
-                get_raster_channel_data_item(),
-                get_raster_channel_data_item(),
+                *get_raster_channel_data(),
                 get_raster_channel_data_item(),
             ],
             name=ChannelName.R,
@@ -228,10 +223,8 @@ data_test_raster_channel_from_channels = [
         False,
         RasterChannel(
             data=[
-                get_raster_channel_data_item(),
-                get_raster_channel_data_item(),
-                get_raster_channel_data_item(),
-                get_raster_channel_data_item(),
+                *get_raster_channel_data(),
+                *get_raster_channel_data(),
             ],
             name=ChannelName.R,
             buffer_size=0.,
@@ -510,10 +503,8 @@ data_test_vector_channel_add = [
         get_vector_channel(),
         VectorChannel(
             data=[
-                get_vector_channel_data_item(),
-                get_vector_channel_data_item(),
-                get_vector_channel_data_item(),
-                get_vector_channel_data_item(),
+                *get_vector_channel_data(),
+                *get_vector_channel_data(),
             ],
             name=ChannelName.R,
             buffer_size=0.,
@@ -565,10 +556,8 @@ data_test_vector_channel_append = [
         get_vector_channel_data(),
         VectorChannel(
             data=[
-                get_vector_channel_data_item(),
-                get_vector_channel_data_item(),
-                get_vector_channel_data_item(),
-                get_vector_channel_data_item(),
+                *get_vector_channel_data(),
+                *get_vector_channel_data(),
             ],
             name=ChannelName.R,
             buffer_size=0.,
@@ -581,8 +570,7 @@ data_test_vector_channel_append = [
         get_vector_channel_data_item(),
         VectorChannel(
             data=[
-                get_vector_channel_data_item(),
-                get_vector_channel_data_item(),
+                *get_vector_channel_data(),
                 get_vector_channel_data_item(),
             ],
             name=ChannelName.R,
@@ -710,10 +698,8 @@ data_test_vector_channel_from_channels = [
         False,
         VectorChannel(
             data=[
-                get_vector_channel_data_item(),
-                get_vector_channel_data_item(),
-                get_vector_channel_data_item(),
-                get_vector_channel_data_item(),
+                *get_vector_channel_data(),
+                *get_vector_channel_data(),
             ],
             name=ChannelName.R,
             buffer_size=0.,

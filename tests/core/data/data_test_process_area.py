@@ -345,10 +345,7 @@ data_test_process_area_contains = [
         True,
     ),
     (
-        np.array(
-            [[-128, -128], [0, -128], [-128, 0], [0, 0]],
-            dtype=np.int32,
-        ),
+        get_process_area_coordinates(),
         True,
     ),
     (
