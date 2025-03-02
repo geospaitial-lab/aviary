@@ -11,7 +11,7 @@ from aviary.core.channel import (
     VectorChannel,
 )
 from aviary.core.enums import ChannelName
-from aviary.core.process_area import ProcessArea
+from aviary.core.grid import Grid
 from aviary.core.tiles import Tiles
 from aviary.core.type_aliases import CoordinatesSet
 
@@ -35,25 +35,25 @@ def get_bounding_box() -> BoundingBox:
 
 
 @pytest.fixture(scope='function')
-def process_area() -> ProcessArea:
-    return get_process_area()
+def grid() -> Grid:
+    return get_grid()
 
 
-def get_process_area() -> ProcessArea:
-    coordinates = get_process_area_coordinates()
+def get_grid() -> Grid:
+    coordinates = get_grid_coordinates()
     tile_size = 128
-    return ProcessArea(
+    return Grid(
         coordinates=coordinates,
         tile_size=tile_size,
     )
 
 
 @pytest.fixture(scope='function')
-def process_area_coordinates() -> CoordinatesSet:
-    return get_process_area_coordinates()
+def grid_coordinates() -> CoordinatesSet:
+    return get_grid_coordinates()
 
 
-def get_process_area_coordinates() -> CoordinatesSet:
+def get_grid_coordinates() -> CoordinatesSet:
     return np.array(
         [[-128, -128], [0, -128], [-128, 0], [0, 0]],
         dtype=np.int32,

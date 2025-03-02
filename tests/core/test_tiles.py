@@ -6,7 +6,7 @@ import pytest
 from aviary.core.channel import Channel
 from aviary.core.enums import ChannelName
 from aviary.core.exceptions import AviaryUserError
-from aviary.core.process_area import ProcessArea
+from aviary.core.grid import Grid
 from aviary.core.tiles import (
     Tile,
     Tiles,
@@ -217,17 +217,17 @@ def test_tiles_num_channels(
     assert tiles.num_channels == expected
 
 
-def test_tiles_process_area(
+def test_tiles_grid(
     tiles: Tiles,
     tiles_coordinates: CoordinatesSet,
 ) -> None:
     expected_tile_size = 128
-    expected = ProcessArea(
+    expected = Grid(
         coordinates=tiles_coordinates,
         tile_size=expected_tile_size,
     )
 
-    assert tiles.process_area == expected
+    assert tiles.grid == expected
 
 
 @pytest.mark.parametrize(('other', 'expected'), data_test_tiles_eq)
