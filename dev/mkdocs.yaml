@@ -107,6 +107,7 @@ plugins:
             show_docstring_raises: false
             annotations_path: source
             show_signature: false
+            show_overloads: false
           paths:
             - ../
 
