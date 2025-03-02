@@ -96,7 +96,7 @@ def test_raster_channel_init(
     assert raster_channel.name == expected_name
     assert raster_channel.buffer_size == expected_buffer_size
     assert raster_channel.time_step == expected_time_step
-    assert raster_channel.is_copied == expected_copy
+    assert raster_channel.is_copied is expected_copy
 
 
 @pytest.mark.parametrize(('data', 'buffer_size', 'message'), data_test_raster_channel_init_exceptions)
@@ -521,7 +521,7 @@ def test_vector_channel_init(
     assert vector_channel.name == expected_name
     assert vector_channel.buffer_size == expected_buffer_size
     assert vector_channel.time_step == expected_time_step
-    assert vector_channel.is_copied == expected_copy
+    assert vector_channel.is_copied is expected_copy
 
 
 @pytest.mark.parametrize(('data', 'buffer_size', 'message'), data_test_vector_channel_init_exceptions)
