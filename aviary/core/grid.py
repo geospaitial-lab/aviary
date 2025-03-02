@@ -41,8 +41,8 @@ if TYPE_CHECKING:
     from aviary.geodata.coordinates_filter import CoordinatesFilter
 
 
-class ProcessArea(Iterable[Coordinates]):
-    """A process area specifies the spatial extent of an area of interest by a set of coordinates
+class Grid(Iterable[Coordinates]):
+    """A grid specifies the spatial extent of an area of interest by a set of coordinates
     of the bottom left corner of each tile and the tile size.
 
     Notes:
@@ -67,7 +67,7 @@ class ProcessArea(Iterable[Coordinates]):
         self._validate()
 
     def _validate(self) -> None:
-        """Validates the process area."""
+        """Validates the grid."""
         self._parse_coordinates()
         self._validate_coordinates()
         self._validate_tile_size()
@@ -168,8 +168,8 @@ class ProcessArea(Iterable[Coordinates]):
         bounding_box: BoundingBox,
         tile_size: TileSize,
         quantize: bool = True,
-    ) -> ProcessArea:
-        """Creates a process area from a bounding box.
+    ) -> Grid:
+        """Creates a grid from a bounding box.
 
         Parameters:
             bounding_box: Bounding box
@@ -177,7 +177,7 @@ class ProcessArea(Iterable[Coordinates]):
             quantize: If True, the bounding box is quantized to `tile_size`
 
         Returns:
-            Process area
+            Grid
 
         Raises:
             AviaryUserError: Invalid `tile_size` (the tile size is negative or zero)
@@ -205,8 +205,8 @@ class ProcessArea(Iterable[Coordinates]):
         gdf: gpd.GeoDataFrame,
         tile_size: TileSize,
         quantize: bool = True,
-    ) -> ProcessArea:
-        """Creates a process area from a geodataframe.
+    ) -> Grid:
+        """Creates a grid from a geodataframe.
 
         Parameters:
             gdf: Geodataframe
@@ -214,7 +214,7 @@ class ProcessArea(Iterable[Coordinates]):
             quantize: If True, the bounding box is quantized to `tile_size`
 
         Returns:
-            Process area
+            Grid
 
         Raises:
             AviaryUserError: Invalid `gdf` (the geodataframe contains no geometries)
@@ -293,8 +293,8 @@ class ProcessArea(Iterable[Coordinates]):
     def from_json(
         cls,
         json_string: str,
-    ) -> ProcessArea:
-        """Creates a process area from a JSON string.
+    ) -> Grid:
+        """Creates a grid from a JSON string.
 
         Notes:
             - The JSON string contains a list of coordinates (x_min, y_min) of each tile and the tile size
@@ -302,11 +302,11 @@ class ProcessArea(Iterable[Coordinates]):
         Examples:
             Assume the JSON string is '{"coordinates":
             [[363084, 5715326], [363212, 5715326], [363084, 5715454], [363212, 5715454]],
-            "tile_size": 1}'.
+            "tile_size": 128}'.
 
-            You can create a process area from the JSON string.
+            You can create a grid from the JSON string.
 
-            >>> process_area = ProcessArea.from_json(
+            >>> grid = Grid.from_json(
             ...     json_string=(
             ...         '{"coordinates": '
             ...         '[[363084, 5715326], '
@@ -321,7 +321,7 @@ class ProcessArea(Iterable[Coordinates]):
             json_string: JSON string
 
         Returns:
-            Process area
+            Grid
 
         Raises:
             AviaryUserError: Invalid `json_string` (the JSON string does not contain the keys coordinates and tile_size)
@@ -343,40 +343,40 @@ class ProcessArea(Iterable[Coordinates]):
         )
 
     @classmethod
-    def from_process_areas(
+    def from_grids(
         cls,
-        process_areas: list[ProcessArea],
-    ) -> ProcessArea:
-        """Creates a process area from process areas.
+        grids: list[Grid],
+    ) -> Grid:
+        """Creates a grid from grids.
 
         Parameters:
-            process_areas: Process areas
+            grids: Grids
 
         Returns:
-            Process area
+            Grid
 
         Raises:
-            AviaryUserError: Invalid `process_areas` (the process areas contain no process area)
-            AviaryUserError: Invalid `process_areas` (the tile sizes of the process areas are not equal)
+            AviaryUserError: Invalid `grids` (the grids contain no grid)
+            AviaryUserError: Invalid `grids` (the tile sizes of the grids are not equal)
         """
-        if not process_areas:
+        if not grids:
             message = (
-                'Invalid process_areas! '
-                'The process areas must contain at least one process area.'
+                'Invalid grids! '
+                'The grids must contain at least one grid.'
             )
             raise AviaryUserError(message)
 
-        tile_sizes = {process_area.tile_size for process_area in process_areas}
+        tile_sizes = {grid.tile_size for grid in grids}
 
         if len(tile_sizes) > 1:
             message = (
-                'Invalid process_areas! '
-                'The tile sizes of the process areas must be equal.'
+                'Invalid grids! '
+                'The tile sizes of the grids must be equal.'
             )
             raise AviaryUserError(message)
 
-        coordinates = np.concatenate([process_area.coordinates for process_area in process_areas], axis=0)
-        tile_size = process_areas[0].tile_size
+        coordinates = np.concatenate([grid.coordinates for grid in grids], axis=0)
+        tile_size = grids[0].tile_size
         return cls(
             coordinates=coordinates,
             tile_size=tile_size,
@@ -385,61 +385,61 @@ class ProcessArea(Iterable[Coordinates]):
     @classmethod
     def from_config(
         cls,
-        config: ProcessAreaConfig,
-    ) -> ProcessArea:
-        """Creates a process area from the configuration.
+        config: GridConfig,
+    ) -> Grid:
+        """Creates a grid from the configuration.
 
         Parameters:
             config: Configuration
 
         Returns:
-            Process area
+            Grid
 
         Raises:
             AviaryUserError: Invalid config
         """
         if config.json_string is not None:
-            process_area = cls.from_json(
+            grid = cls.from_json(
                 json_string=cast(str, config.json_string),
             )
 
             if config.processed_coordinates_json_string is not None:
-                processed_process_area = cls.from_json(
+                processed_grid = cls.from_json(
                     json_string=cast(str, config.processed_coordinates_json_string),
                 )
-                process_area = process_area - processed_process_area
+                grid = grid - processed_grid
 
-            return process_area
+            return grid
 
         if config.gdf is not None:
-            process_area = cls.from_gdf(
+            grid = cls.from_gdf(
                 gdf=cast(gpd.GeoDataFrame, config.gdf),
                 tile_size=config.tile_size,
                 quantize=config.quantize,
             )
 
             if config.processed_coordinates_json_string is not None:
-                processed_process_area = cls.from_json(
+                processed_grid = cls.from_json(
                     json_string=cast(str, config.processed_coordinates_json_string),
                 )
-                process_area = process_area - processed_process_area
+                grid = grid - processed_grid
 
-            return process_area
+            return grid
 
         if config.bounding_box is not None:
-            process_area = cls.from_bounding_box(
+            grid = cls.from_bounding_box(
                 bounding_box=cast(BoundingBox, config.bounding_box),
                 tile_size=config.tile_size,
                 quantize=config.quantize,
             )
 
             if config.processed_coordinates_json_string is not None:
-                processed_process_area = cls.from_json(
+                processed_grid = cls.from_json(
                     json_string=cast(str, config.processed_coordinates_json_string),
                 )
-                process_area = process_area - processed_process_area
+                grid = grid - processed_grid
 
-            return process_area
+            return grid
 
         message = (
             'Invalid config! '
@@ -456,7 +456,7 @@ class ProcessArea(Iterable[Coordinates]):
         """
         coordinates_repr = len(self)
         return (
-            'ProcessArea(\n'
+            'Grid(\n'
             f'    coordinates={coordinates_repr},\n'
             f'    tile_size={self._tile_size},\n'
             ')'
@@ -466,15 +466,15 @@ class ProcessArea(Iterable[Coordinates]):
         self,
         other: object,
     ) -> bool:
-        """Compares the process areas.
+        """Compares the grids.
 
         Parameters:
-            other: Other process area
+            other: Other grid
 
         Returns:
-            True if the process areas are equal, False otherwise
+            True if the grids are equal, False otherwise
         """
-        if not isinstance(other, ProcessArea):
+        if not isinstance(other, Grid):
             return False
 
         conditions = [
@@ -492,10 +492,10 @@ class ProcessArea(Iterable[Coordinates]):
         return len(self._coordinates)
 
     def __bool__(self) -> bool:
-        """Checks if the process area contains coordinates.
+        """Checks if the grid contains coordinates.
 
         Returns:
-            True if the process area contains coordinates, False otherwise
+            True if the grid contains coordinates, False otherwise
         """
         return bool(len(self))
 
@@ -503,13 +503,13 @@ class ProcessArea(Iterable[Coordinates]):
         self,
         coordinates: Coordinates | CoordinatesSet,
     ) -> bool:
-        """Checks if the coordinates are in the process area.
+        """Checks if the coordinates are in the grid.
 
         Parameters:
             coordinates: Coordinates (x_min, y_min) of the tile in meters
 
         Returns:
-            True if the coordinates are in the process area, False otherwise
+            True if the coordinates are in the grid, False otherwise
 
         Raises:
             AviaryUserError: Invalid `coordinates` (the coordinates are not in shape (n, 2) and data type int32)
@@ -551,24 +551,24 @@ class ProcessArea(Iterable[Coordinates]):
     def __getitem__(
         self,
         index: slice,
-    ) -> ProcessArea:
+    ) -> Grid:
         ...
 
     def __getitem__(
         self,
         index: int | slice,
-    ) -> Coordinates | ProcessArea:
-        """Returns the coordinates or the sliced process area.
+    ) -> Coordinates | Grid:
+        """Returns the coordinates or the sliced grid.
 
         Parameters:
             index: Index or slice of the coordinates
 
         Returns:
-            Coordinates in meters or process area
+            Coordinates in meters or grid
         """
         if isinstance(index, slice):
             coordinates = self._coordinates[index]
-            return ProcessArea(
+            return Grid(
                 coordinates=coordinates,
                 tile_size=self._tile_size,
             )
@@ -587,27 +587,27 @@ class ProcessArea(Iterable[Coordinates]):
 
     def __add__(
         self,
-        other: ProcessArea,
-    ) -> ProcessArea:
-        """Adds the process areas.
+        other: Grid,
+    ) -> Grid:
+        """Adds the grids.
 
         Notes:
             - This method is equivalent to applying the set filter with the `UNION` set filter mode
               to the coordinates
 
         Parameters:
-            other: Other process area
+            other: Other grid
 
         Returns:
-            Process area
+            Grid
 
         Raises:
-            AviaryUserError: Invalid `other` (the tile sizes of the process areas are not equal)
+            AviaryUserError: Invalid `other` (the tile sizes of the grids are not equal)
         """
         if self._tile_size != other.tile_size:
             message = (
                 'Invalid other! '
-                'The tile sizes of the process areas must be equal.'
+                'The tile sizes of the grids must be equal.'
             )
             raise AviaryUserError(message)
 
@@ -616,34 +616,34 @@ class ProcessArea(Iterable[Coordinates]):
             other=other.coordinates,
             mode=SetFilterMode.UNION,
         )
-        return ProcessArea(
+        return Grid(
             coordinates=coordinates,
             tile_size=self._tile_size,
         )
 
     def __sub__(
         self,
-        other: ProcessArea,
-    ) -> ProcessArea:
-        """Subtracts the process areas.
+        other: Grid,
+    ) -> Grid:
+        """Subtracts the grids.
 
         Notes:
             - This method is equivalent to applying the set filter with the `DIFFERENCE` set filter mode
               to the coordinates
 
         Parameters:
-            other: Other process area
+            other: Other grid
 
         Returns:
-            Process area
+            Grid
 
         Raises:
-            AviaryUserError: Invalid `other` (the tile sizes of the process areas are not equal)
+            AviaryUserError: Invalid `other` (the tile sizes of the grids are not equal)
         """
         if self._tile_size != other.tile_size:
             message = (
                 'Invalid other! '
-                'The tile sizes of the process areas must be equal.'
+                'The tile sizes of the grids must be equal.'
             )
             raise AviaryUserError(message)
 
@@ -652,34 +652,34 @@ class ProcessArea(Iterable[Coordinates]):
             other=other.coordinates,
             mode=SetFilterMode.DIFFERENCE,
         )
-        return ProcessArea(
+        return Grid(
             coordinates=coordinates,
             tile_size=self._tile_size,
         )
 
     def __and__(
         self,
-        other: ProcessArea,
-    ) -> ProcessArea:
-        """Intersects the process areas.
+        other: Grid,
+    ) -> Grid:
+        """Intersects the grids.
 
         Notes:
             - This method is equivalent to applying the set filter with the `INTERSECTION` set filter mode
               to the coordinates
 
         Parameters:
-            other: Other process area
+            other: Other grid
 
         Returns:
-            Process area
+            Grid
 
         Raises:
-            AviaryUserError: Invalid `other` (the tile sizes of the process areas are not equal)
+            AviaryUserError: Invalid `other` (the tile sizes of the grids are not equal)
         """
         if self._tile_size != other.tile_size:
             message = (
                 'Invalid other! '
-                'The tile sizes of the process areas must be equal.'
+                'The tile sizes of the grids must be equal.'
             )
             raise AviaryUserError(message)
 
@@ -688,7 +688,7 @@ class ProcessArea(Iterable[Coordinates]):
             other=other.coordinates,
             mode=SetFilterMode.INTERSECTION,
         )
-        return ProcessArea(
+        return Grid(
             coordinates=coordinates,
             tile_size=self._tile_size,
         )
@@ -697,7 +697,7 @@ class ProcessArea(Iterable[Coordinates]):
         self,
         coordinates: Coordinates | CoordinatesSet,
         inplace: bool = False,
-    ) -> ProcessArea:
+    ) -> Grid:
         """Appends the coordinates.
 
         Parameters:
@@ -705,7 +705,7 @@ class ProcessArea(Iterable[Coordinates]):
             inplace: If True, the coordinates are appended inplace
 
         Returns:
-            Process area
+            Grid
 
         Raises:
             AviaryUserError: Invalid `coordinates` (the coordinates are not in shape (n, 2) and data type int32)
@@ -743,7 +743,7 @@ class ProcessArea(Iterable[Coordinates]):
             self._validate()
             return self
 
-        return ProcessArea(
+        return Grid(
             coordinates=coordinates,
             tile_size=self._tile_size,
         )
@@ -751,14 +751,14 @@ class ProcessArea(Iterable[Coordinates]):
     def chunk(
         self,
         num_chunks: int,
-    ) -> list[ProcessArea]:
-        """Chunks the process area.
+    ) -> list[Grid]:
+        """Chunks the grid.
 
         Parameters:
             num_chunks: Number of chunks
 
         Returns:
-            Process areas
+            Grids
 
         Raises:
             AviaryUserError: Invalid `num_chunks` (the number of chunks is not in the range [1, n])
@@ -771,7 +771,7 @@ class ProcessArea(Iterable[Coordinates]):
             raise AviaryUserError(message)
 
         return [
-            ProcessArea(
+            Grid(
                 coordinates=coordinates,
                 tile_size=self._tile_size,
             )
@@ -783,15 +783,15 @@ class ProcessArea(Iterable[Coordinates]):
         self,
         coordinates_filter: CoordinatesFilter,
         inplace: bool = False,
-    ) -> ProcessArea:
-        """Filters the process area.
+    ) -> Grid:
+        """Filters the grid.
 
         Parameters:
             coordinates_filter: Coordinates filter
             inplace: If True, the coordinates are filtered inplace
 
         Returns:
-            Process area
+            Grid
         """
         coordinates = coordinates_filter(coordinates=self._coordinates)
 
@@ -800,7 +800,7 @@ class ProcessArea(Iterable[Coordinates]):
             self._validate()
             return self
 
-        return ProcessArea(
+        return Grid(
             coordinates=coordinates,
             tile_size=self._tile_size,
         )
@@ -809,7 +809,7 @@ class ProcessArea(Iterable[Coordinates]):
         self,
         coordinates: Coordinates | CoordinatesSet,
         inplace: bool = False,
-    ) -> ProcessArea:
+    ) -> Grid:
         """Removes the coordinates.
 
         Parameters:
@@ -817,7 +817,7 @@ class ProcessArea(Iterable[Coordinates]):
             inplace: If True, the coordinates are removed inplace
 
         Returns:
-            Process area
+            Grid
 
         Raises:
             AviaryUserError: Invalid `coordinates` (the coordinates are not in shape (n, 2) and data type int32)
@@ -855,7 +855,7 @@ class ProcessArea(Iterable[Coordinates]):
             self._validate()
             return self
 
-        return ProcessArea(
+        return Grid(
             coordinates=coordinates,
             tile_size=self._tile_size,
         )
@@ -864,7 +864,7 @@ class ProcessArea(Iterable[Coordinates]):
         self,
         epsg_code: EPSGCode,
     ) -> gpd.GeoDataFrame:
-        """Converts the process area to a geodataframe.
+        """Converts the grid to a geodataframe.
 
         Parameters:
             epsg_code: EPSG code
@@ -883,7 +883,7 @@ class ProcessArea(Iterable[Coordinates]):
         )
 
     def to_json(self) -> str:
-        """Converts the process area to a JSON string.
+        """Converts the grid to a JSON string.
 
         Notes:
             - The JSON string contains a list of coordinates (x_min, y_min) of each tile and the tile size
@@ -898,8 +898,8 @@ class ProcessArea(Iterable[Coordinates]):
         return json.dumps(dict_)
 
 
-class ProcessAreaConfig(pydantic.BaseModel):
-    """Configuration for the `from_config` class method of `ProcessArea`
+class GridConfig(pydantic.BaseModel):
+    """Configuration for the `from_config` class method of `Grid`
 
     The configuration must have one of the following field sets:
         - `json_string`
@@ -979,7 +979,7 @@ class ProcessAreaConfig(pydantic.BaseModel):
             return json.load(file)
 
     @pydantic.model_validator(mode='after')
-    def validate(self) -> ProcessAreaConfig:
+    def validate(self) -> GridConfig:
         """Validates the configuration."""
         conditions = [
             self.json_string is not None,

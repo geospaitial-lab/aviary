@@ -16,9 +16,9 @@ from .core.exceptions import (
     AviaryUserError,
     AviaryUserWarning,
 )
-from .core.process_area import (
-    ProcessArea,
-    ProcessAreaConfig,
+from .core.grid import (
+    Grid,
+    GridConfig,
 )
 from .core.tiles import (
     Tile,
@@ -60,10 +60,10 @@ __all__ = [
     'EPSGCode',
     'FractionalBufferSize',
     'GeospatialFilterMode',
+    'Grid',
+    'GridConfig',
     'GroundSamplingDistance',
     'InterpolationMode',
-    'ProcessArea',
-    'ProcessAreaConfig',
     'RasterChannel',
     'SetFilterMode',
     'Tile',
