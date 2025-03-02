@@ -310,14 +310,9 @@ def test_raster_channel_getitem_slice(
 
 def test_get_raster_channel_iter(
     raster_channel: RasterChannel,
-    raster_channel_data_item: npt.NDArray,
+    raster_channel_data: list[npt.NDArray],
 ) -> None:
-    expected = [
-        raster_channel_data_item,
-        raster_channel_data_item,
-    ]
-
-    for data_item, expected_data_item in zip(raster_channel, expected, strict=True):
+    for data_item, expected_data_item in zip(raster_channel, raster_channel_data, strict=True):
         np.testing.assert_array_equal(data_item, expected_data_item)
 
 
@@ -787,14 +782,9 @@ def test_vector_channel_getitem_slice(
 
 def test_get_vector_channel_iter(
     vector_channel: VectorChannel,
-    vector_channel_data_item: gpd.GeoDataFrame,
+    vector_channel_data: list[gpd.GeoDataFrame],
 ) -> None:
-    expected = [
-        vector_channel_data_item,
-        vector_channel_data_item,
-    ]
-
-    for data_item, expected_data_item in zip(vector_channel, expected, strict=True):
+    for data_item, expected_data_item in zip(vector_channel, vector_channel_data, strict=True):
         gpd.testing.assert_geodataframe_equal(data_item, expected_data_item)
 
 
