@@ -2,11 +2,11 @@
 
 [:simple-github: View source on GitHub][GitHub]
 
-  [GitHub]: https://github.com/geospaitial-lab/aviary/blob/main/aviary/core/process_area.py
+  [GitHub]: https://github.com/geospaitial-lab/aviary/blob/main/aviary/core/grid.py
 
 </div>
 
-::: aviary.ProcessArea
+::: aviary.Grid
     options:
       filters:
       - "!^_"
@@ -15,7 +15,7 @@
 
 ---
 
-::: aviary.ProcessAreaConfig
+::: aviary.GridConfig
     options:
       filters:
       - "!^_"

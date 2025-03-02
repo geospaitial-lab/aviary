@@ -29,7 +29,7 @@ nav:
         - VectorChannel: api_reference/core/channel/vector_channel.md
       - Enums: api_reference/core/enums.md
       - Exceptions: api_reference/core/exceptions.md
-      - ProcessArea: api_reference/core/process_area.md
+      - Grid: api_reference/core/grid.md
       - Tiles: api_reference/core/tiles.md
       - Type Aliases: api_reference/core/type_aliases.md
     - aviary.inference:
