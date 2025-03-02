@@ -3,55 +3,81 @@ import pickle
 
 import pytest
 
-from aviary.core.bounding_box import BoundingBox
 from aviary.core.channel import Channel
 from aviary.core.enums import ChannelName
 from aviary.core.exceptions import AviaryUserError
-from aviary.core.tiles import Tile
+from aviary.core.process_area import ProcessArea
+from aviary.core.tiles import (
+    Tile,
+    Tiles,
+)
 from aviary.core.type_aliases import (
     ChannelKey,
+    Coordinates,
+    CoordinatesSet,
     TileSize,
 )
 from tests.core.data.data_test_tiles import (
-    data_test_tile_contains,
-    data_test_tile_eq,
-    data_test_tile_getattr,
-    data_test_tile_getitem,
-    data_test_tile_init_exceptions,
+    data_test_tiles_contains,
+    data_test_tiles_eq,
+    data_test_tiles_getattr,
+    data_test_tiles_getitem,
+    data_test_tiles_init,
+    data_test_tiles_init_exceptions,
 )
 
 
-def test_tile_init(
-    tile_channels: list[Channel],
-) -> None:
-    coordinates = (0, 0)
-    tile_size = 128
-    copy = False
+def test_tiles_type_alias() -> None:
+    assert Tile is Tiles
 
-    tile = Tile(
-        channels=tile_channels,
+
+@pytest.mark.parametrize(
+    (
+        'channels',
+        'coordinates',
+        'tile_size',
+        'copy',
+        'expected_channels',
+        'expected_coordinates',
+        'expected_tile_size',
+        'expected_copy',
+    ),
+    data_test_tiles_init,
+)
+def test_tiles_init(
+    channels: list[Channel],
+    coordinates: Coordinates | CoordinatesSet,
+    tile_size: TileSize,
+    copy: bool,
+    expected_channels: list[Channel],
+    expected_coordinates: Coordinates | CoordinatesSet,
+    expected_tile_size: TileSize,
+    expected_copy: bool,
+) -> None:
+    tiles = Tiles(
+        channels=channels,
         coordinates=coordinates,
         tile_size=tile_size,
         copy=copy,
     )
 
-    assert tile.channels == tile_channels
-    assert tile.coordinates == coordinates
-    assert tile.tile_size == tile_size
-    assert tile.is_copied == copy
+    assert tiles.channels == expected_channels
+    assert tiles.coordinates == expected_coordinates
+    assert tiles.tile_size == expected_tile_size
+    assert tiles.is_copied is expected_copy
 
 
-@pytest.mark.parametrize(('channels', 'tile_size', 'message'), data_test_tile_init_exceptions)
-def test_tile_init_exceptions(
+@pytest.mark.parametrize(('channels', 'coordinates', 'tile_size', 'message'), data_test_tiles_init_exceptions)
+def test_tiles_init_exceptions(
     channels: list[Channel],
+    coordinates: CoordinatesSet,
     tile_size: TileSize,
     message: str,
 ) -> None:
-    coordinates = (0, 0)
     copy = False
 
     with pytest.raises(AviaryUserError, match=message):
-        _ = Tile(
+        _ = Tiles(
             channels=channels,
             coordinates=coordinates,
             tile_size=tile_size,
@@ -59,102 +85,106 @@ def test_tile_init_exceptions(
         )
 
 
-def test_tile_init_defaults() -> None:
-    signature = inspect.signature(Tile)
+def test_tiles_init_defaults() -> None:
+    signature = inspect.signature(Tiles)
     copy = signature.parameters['copy'].default
+
     expected_copy = False
 
     assert copy is expected_copy
 
 
-def test_tile_mutability_no_copy(
-    tile_channels: list[Channel],
+def test_tiles_mutability_no_copy(
+    tiles_channels: list[Channel],
+    tiles_coordinates: CoordinatesSet,
 ) -> None:
-    coordinates = (0, 0)
     tile_size = 128
     copy = False
 
-    tile = Tile(
-        channels=tile_channels,
-        coordinates=coordinates,
+    tiles = Tiles(
+        channels=tiles_channels,
+        coordinates=tiles_coordinates,
         tile_size=tile_size,
         copy=copy,
     )
 
-    assert id(tile._channels) == id(tile_channels)
-    assert id(tile.channels) == id(tile._channels)
+    assert id(tiles._channels) == id(tiles_channels)
+
+    for channel, channel_ in zip(tiles, tiles_channels, strict=True):
+        assert id(channel) == id(channel_)
+
+    assert id(tiles.channels) == id(tiles._channels)
+    assert id(tiles._coordinates) != id(tiles_coordinates)
+    assert id(tiles.coordinates) != id(tiles._coordinates)
 
 
-def test_tile_mutability_copy(
-    tile_channels: list[Channel],
+def test_tiles_mutability_copy(
+    tiles_channels: list[Channel],
+    tiles_coordinates: CoordinatesSet,
 ) -> None:
-    coordinates = (0, 0)
     tile_size = 128
     copy = True
 
-    tile = Tile(
-        channels=tile_channels,
-        coordinates=coordinates,
+    tiles = Tiles(
+        channels=tiles_channels,
+        coordinates=tiles_coordinates,
         tile_size=tile_size,
         copy=copy,
     )
 
-    assert id(tile._channels) != id(tile_channels)
-    assert id(tile.channels) == id(tile._channels)
+    assert id(tiles._channels) != id(tiles_channels)
+
+    for channel, channel_ in zip(tiles, tiles_channels, strict=True):
+        assert id(channel) != id(channel_)
+
+    assert id(tiles.channels) == id(tiles._channels)
+    assert id(tiles._coordinates) != id(tiles_coordinates)
+    assert id(tiles.coordinates) != id(tiles._coordinates)
 
 
-def test_tile_setters(
-    tile: Tile,
+def test_tiles_setters(
+    tiles: Tiles,
 ) -> None:
     with pytest.raises(AttributeError):
         # noinspection PyPropertyAccess
-        tile.channels = None
+        tiles.channels = None
 
     with pytest.raises(AttributeError):
         # noinspection PyPropertyAccess
-        tile.coordinates = None
+        tiles.coordinates = None
 
     with pytest.raises(AttributeError):
         # noinspection PyPropertyAccess
-        tile.tile_size = None
+        tiles.tile_size = None
 
 
-def test_tile_serializability(
-    tile: Tile,
+def test_tiles_serializability(
+    tiles: Tiles,
 ) -> None:
-    serialized_tile = pickle.dumps(tile)
-    deserialized_tile_tile = pickle.loads(serialized_tile)  # noqa: S301
+    serialized_tiles = pickle.dumps(tiles)
+    deserialized_tiles = pickle.loads(serialized_tiles)  # noqa: S301
 
-    assert tile == deserialized_tile_tile
+    assert tiles == deserialized_tiles
 
 
-def test_tile_area(
-    tile: Tile,
+def test_tiles_area(
+    tiles: Tiles,
 ) -> None:
-    expected = 16384
+    expected = 32768
 
-    assert tile.area == expected
+    assert tiles.area == expected
 
 
-def test_tile_bounding_box(
-    tile: Tile,
+def test_tiles_batch_size(
+    tiles: Tiles,
 ) -> None:
-    expected_x_min = 0
-    expected_y_min = 0
-    expected_x_max = 128
-    expected_y_max = 128
-    expected = BoundingBox(
-        x_min=expected_x_min,
-        y_min=expected_y_min,
-        x_max=expected_x_max,
-        y_max=expected_y_max,
-    )
+    expected = 2
 
-    assert tile.bounding_box == expected
+    assert tiles.batch_size == expected
 
 
-def test_tile_channel_keys(
-    tile: Tile,
+def test_tiles_channel_keys(
+    tiles: Tiles,
 ) -> None:
     expected = {
         (ChannelName.R, None),
@@ -163,11 +193,11 @@ def test_tile_channel_keys(
         ('custom', None),
     }
 
-    assert tile.channel_keys == expected
+    assert tiles.channel_keys == expected
 
 
-def test_tile_channel_names(
-    tile: Tile,
+def test_tiles_channel_names(
+    tiles: Tiles,
 ) -> None:
     expected = {
         ChannelName.R,
@@ -176,78 +206,98 @@ def test_tile_channel_names(
         'custom',
     }
 
-    assert tile.channel_names == expected
+    assert tiles.channel_names == expected
 
 
-def test_tile_num_channels(
-    tile: Tile,
+def test_tiles_num_channels(
+    tiles: Tiles,
 ) -> None:
     expected = 4
 
-    assert tile.num_channels == expected
+    assert tiles.num_channels == expected
 
 
-@pytest.mark.parametrize(('other', 'expected'), data_test_tile_eq)
-def test_tile_eq(
+def test_tiles_process_area(
+    tiles: Tiles,
+    tiles_coordinates: CoordinatesSet,
+) -> None:
+    expected_tile_size = 128
+    expected = ProcessArea(
+        coordinates=tiles_coordinates,
+        tile_size=expected_tile_size,
+    )
+
+    assert tiles.process_area == expected
+
+
+@pytest.mark.parametrize(('other', 'expected'), data_test_tiles_eq)
+def test_tiles_eq(
     other: object,
     expected: bool,
-    tile: Tile,
+    tiles: Tiles,
 ) -> None:
-    equals = tile == other
+    equals = tiles == other
 
     assert equals is expected
 
 
-def test_tile_len(
-    tile: Tile,
+def test_tiles_len(
+    tiles: Tiles,
 ) -> None:
     expected = 4
 
-    assert len(tile) == expected
+    assert len(tiles) == expected
 
 
-@pytest.mark.parametrize(('channel_key', 'expected'), data_test_tile_contains)
-def test_tile_contains(
+@pytest.mark.parametrize(('channel_key', 'expected'), data_test_tiles_contains)
+def test_tiles_contains(
     channel_key: ChannelName | str | ChannelKey,
     expected: bool,
-    tile: Tile,
+    tiles: Tiles,
 ) -> None:
-    contains = channel_key in tile
+    contains = channel_key in tiles
 
     assert contains is expected
 
 
-@pytest.mark.parametrize(('channel_name', 'expected'), data_test_tile_getattr)
-def test_tile_getattr(
+@pytest.mark.parametrize(('channel_name', 'expected'), data_test_tiles_getattr)
+def test_tiles_getattr(
     channel_name: str,
     expected: Channel,
-    tile: Tile,
+    tiles: Tiles,
 ) -> None:
-    assert getattr(tile, channel_name) == expected
+    channel = getattr(tiles, channel_name)
+
+    assert channel == expected
 
 
-@pytest.mark.parametrize(('channel_key', 'expected'), data_test_tile_getitem)
-def test_tile_getitem(
+@pytest.mark.parametrize(('channel_key', 'expected'), data_test_tiles_getitem)
+def test_tiles_getitem(
     channel_key: ChannelName | str | ChannelKey,
     expected: Channel,
-    tile: Tile,
+    tiles: Tiles,
 ) -> None:
-    assert tile[channel_key] == expected
+    channel = tiles[channel_key]
+
+    assert channel == expected
 
 
-def test_tile_iter(
-    tile: Tile,
-    tile_channels: list[Channel],
+def test_tiles_iter(
+    tiles: Tiles,
+    tiles_channels: list[Channel],
 ) -> None:
-    assert list(tile) == tile_channels
+    assert list(tiles) == tiles_channels
 
 
-def test_tile_copy(
-    tile: Tile,
+def test_tiles_copy(
+    tiles: Tiles,
 ) -> None:
-    copied_tile = tile.copy()
+    copied_tiles = tiles.copy()
 
-    assert copied_tile == tile
-    assert copied_tile.is_copied is True
-    assert id(copied_tile) != id(tile)
-    assert id(copied_tile.channels) != id(tile.channels)
+    assert copied_tiles == tiles
+    assert copied_tiles.is_copied is True
+    assert id(copied_tiles) != id(tiles)
+    assert id(copied_tiles.channels) != id(tiles.channels)
+
+    for copied_channel, channel in zip(copied_tiles, tiles, strict=True):
+        assert id(copied_channel) != id(channel)

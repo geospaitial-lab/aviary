@@ -12,7 +12,8 @@ from aviary.core.channel import (
 )
 from aviary.core.enums import ChannelName
 from aviary.core.process_area import ProcessArea
-from aviary.core.tiles import Tile
+from aviary.core.tiles import Tiles
+from aviary.core.type_aliases import CoordinatesSet
 
 
 @pytest.fixture(scope='function')
@@ -48,11 +49,11 @@ def get_process_area() -> ProcessArea:
 
 
 @pytest.fixture(scope='function')
-def process_area_coordinates() -> np.ndarray:
+def process_area_coordinates() -> CoordinatesSet:
     return get_process_area_coordinates()
 
 
-def get_process_area_coordinates() -> np.ndarray:
+def get_process_area_coordinates() -> CoordinatesSet:
     return np.array(
         [[-128, -128], [0, -128], [-128, 0], [0, 0]],
         dtype=np.int32,
@@ -113,16 +114,16 @@ def get_raster_channel_buffered_data_item() -> npt.NDArray:
 
 
 @pytest.fixture(scope='function')
-def tile() -> Tile:
-    return get_tile()
+def tiles() -> Tiles:
+    return get_tiles()
 
 
-def get_tile() -> Tile:
-    channels = get_tile_channels()
-    coordinates = (0, 0)
+def get_tiles() -> Tiles:
+    channels = get_tiles_channels()
+    coordinates = get_tiles_coordinates()
     tile_size = 128
     copy = False
-    return Tile(
+    return Tiles(
         channels=channels,
         coordinates=coordinates,
         tile_size=tile_size,
@@ -131,25 +132,25 @@ def get_tile() -> Tile:
 
 
 @pytest.fixture(scope='function')
-def tile_channels() -> list[Channel]:
-    return get_tile_channels()
+def tiles_channels() -> list[Channel]:
+    return get_tiles_channels()
 
 
-def get_tile_channels() -> list[Channel]:
+def get_tiles_channels() -> list[Channel]:
     return [
-        get_tile_channel_1(),
-        get_tile_channel_2(),
-        get_tile_channel_3(),
-        get_tile_channel_4(),
+        get_tiles_channel_1(),
+        get_tiles_channel_2(),
+        get_tiles_channel_3(),
+        get_tiles_channel_4(),
     ]
 
 
 @pytest.fixture(scope='function')
-def tile_channel_1() -> RasterChannel:
-    return get_tile_channel_1()
+def tiles_channel_1() -> RasterChannel:
+    return get_tiles_channel_1()
 
 
-def get_tile_channel_1() -> RasterChannel:
+def get_tiles_channel_1() -> RasterChannel:
     data = get_raster_channel_data()
     name = ChannelName.R
     buffer_size = 0.
@@ -165,11 +166,11 @@ def get_tile_channel_1() -> RasterChannel:
 
 
 @pytest.fixture(scope='function')
-def tile_channel_2() -> RasterChannel:
-    return get_tile_channel_2()
+def tiles_channel_2() -> RasterChannel:
+    return get_tiles_channel_2()
 
 
-def get_tile_channel_2() -> RasterChannel:
+def get_tiles_channel_2() -> RasterChannel:
     data = get_raster_channel_data()
     name = ChannelName.G
     buffer_size = 0.
@@ -185,11 +186,11 @@ def get_tile_channel_2() -> RasterChannel:
 
 
 @pytest.fixture(scope='function')
-def tile_channel_3() -> RasterChannel:
-    return get_tile_channel_3()
+def tiles_channel_3() -> RasterChannel:
+    return get_tiles_channel_3()
 
 
-def get_tile_channel_3() -> RasterChannel:
+def get_tiles_channel_3() -> RasterChannel:
     data = get_raster_channel_data()
     name = ChannelName.B
     buffer_size = 0.
@@ -205,11 +206,11 @@ def get_tile_channel_3() -> RasterChannel:
 
 
 @pytest.fixture(scope='function')
-def tile_channel_4() -> VectorChannel:
-    return get_tile_channel_4()
+def tiles_channel_4() -> VectorChannel:
+    return get_tiles_channel_4()
 
 
-def get_tile_channel_4() -> VectorChannel:
+def get_tiles_channel_4() -> VectorChannel:
     data = get_vector_channel_data()
     name = 'custom'
     buffer_size = 0.
@@ -221,6 +222,18 @@ def get_tile_channel_4() -> VectorChannel:
         buffer_size=buffer_size,
         time_step=time_step,
         copy=copy,
+    )
+
+
+@pytest.fixture(scope='function')
+def tiles_coordinates() -> CoordinatesSet:
+    return get_tiles_coordinates()
+
+
+def get_tiles_coordinates() -> CoordinatesSet:
+    return np.array(
+        [[128, -128], [128, 0]],
+        dtype=np.int32,
     )
 
 
