@@ -983,7 +983,7 @@ class VectorChannel(Channel, Iterable[gpd.GeoDataFrame]):
         )
 
         if copy:
-            vector_channel._mark_as_copied()  # noqa: SLF001
+            vector_channel._mark_as_copied()
 
         return vector_channel
 
@@ -1201,7 +1201,7 @@ class VectorChannel(Channel, Iterable[gpd.GeoDataFrame]):
             time_step=self._time_step,
             copy=False,
         )
-        vector_channel._mark_as_copied()  # noqa: SLF001
+        vector_channel._mark_as_copied()
         return vector_channel
 
     def _remove_buffer_item(
