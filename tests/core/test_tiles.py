@@ -209,14 +209,6 @@ def test_tiles_channel_names(
     assert tiles.channel_names == expected
 
 
-def test_tiles_num_channels(
-    tiles: Tiles,
-) -> None:
-    expected = 4
-
-    assert tiles.num_channels == expected
-
-
 def test_tiles_grid(
     tiles: Tiles,
     tiles_coordinates: CoordinatesSet,
@@ -228,6 +220,14 @@ def test_tiles_grid(
     )
 
     assert tiles.grid == expected
+
+
+def test_tiles_num_channels(
+    tiles: Tiles,
+) -> None:
+    expected = 4
+
+    assert tiles.num_channels == expected
 
 
 @pytest.mark.parametrize(('other', 'expected'), data_test_tiles_eq)
