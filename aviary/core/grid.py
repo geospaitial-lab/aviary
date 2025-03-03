@@ -14,7 +14,6 @@ from typing import (
 import geopandas as gpd
 import numpy as np
 import pydantic
-from pydantic import Field
 from shapely.geometry import box
 
 # noinspection PyProtectedMember
@@ -914,30 +913,14 @@ class GridConfig(pydantic.BaseModel):
         tile_size: Tile size in meters
         quantize: If True, the bounding box is quantized to `tile_size`
     """
-    bounding_box_coordinates: tuple[Coordinate, Coordinate, Coordinate, Coordinate] | None = Field(
-        default=None,
-    )
-    gdf_path: Path | None = Field(
-        default=None,
-    )
-    json_path: Path | None = Field(
-        default=None,
-    )
-    ignore_bounding_box_coordinates: tuple[Coordinate, Coordinate, Coordinate, Coordinate] | None = Field(
-        default=None,
-    )
-    ignore_gdf_path: Path | None = Field(
-        default=None,
-    )
-    ignore_json_path: Path | None = Field(
-        default=None,
-    )
-    tile_size: TileSize | None = Field(
-        default=None,
-    )
-    quantize: bool = Field(
-        default=True,
-    )
+    bounding_box_coordinates: tuple[Coordinate, Coordinate, Coordinate, Coordinate] | None = None
+    gdf_path: Path | None = None
+    json_path: Path | None = None
+    ignore_bounding_box_coordinates: tuple[Coordinate, Coordinate, Coordinate, Coordinate] | None = None
+    ignore_gdf_path: Path | None = None
+    ignore_json_path: Path | None = None
+    tile_size: TileSize | None = None
+    quantize: bool = True
 
     @property
     def bounding_box(self) -> BoundingBox | None:
