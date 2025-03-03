@@ -8,13 +8,13 @@ from collections.abc import (
 from pathlib import Path  # noqa: TC003
 from typing import (
     TYPE_CHECKING,
-    cast,
     overload,
 )
 
 import geopandas as gpd
 import numpy as np
 import pydantic
+from pydantic import Field
 from shapely.geometry import box
 
 # noinspection PyProtectedMember
@@ -396,57 +396,55 @@ class Grid(Iterable[Coordinates]):
             Grid
 
         Raises:
-            AviaryUserError: Invalid config
+            AviaryUserError: Invalid `config`
         """
-        if config.json_string is not None:
-            grid = cls.from_json(
-                json_string=cast(str, config.json_string),
-            )
-
-            if config.processed_coordinates_json_string is not None:
-                processed_grid = cls.from_json(
-                    json_string=cast(str, config.processed_coordinates_json_string),
-                )
-                grid = grid - processed_grid
-
-            return grid
-
-        if config.gdf is not None:
-            grid = cls.from_gdf(
-                gdf=cast(gpd.GeoDataFrame, config.gdf),
-                tile_size=config.tile_size,
-                quantize=config.quantize,
-            )
-
-            if config.processed_coordinates_json_string is not None:
-                processed_grid = cls.from_json(
-                    json_string=cast(str, config.processed_coordinates_json_string),
-                )
-                grid = grid - processed_grid
-
-            return grid
-
         if config.bounding_box is not None:
             grid = cls.from_bounding_box(
-                bounding_box=cast(BoundingBox, config.bounding_box),
+                bounding_box=config.bounding_box,
                 tile_size=config.tile_size,
                 quantize=config.quantize,
             )
+        elif config.gdf is not None:
+            grid = cls.from_gdf(
+                gdf=config.gdf,
+                tile_size=config.tile_size,
+                quantize=config.quantize,
+            )
+        elif config.json_string is not None:
+            grid = cls.from_json(
+                json_string=config.json_string,
+            )
+        else:
+            message = (
+                'Invalid config! '
+                'The configuration must have exactly one of the following field combinations: '
+                'bounding_box_coordinates, tile_size | gdf_path, tile_size | json_path'
+            )
+            raise AviaryUserError(message)
 
-            if config.processed_coordinates_json_string is not None:
-                processed_grid = cls.from_json(
-                    json_string=cast(str, config.processed_coordinates_json_string),
-                )
-                grid = grid - processed_grid
+        if config.ignore_bounding_box is not None:
+            ignore_grid = cls.from_bounding_box(
+                bounding_box=config.ignore_bounding_box,
+                tile_size=config.tile_size,
+                quantize=config.quantize,
+            )
+            grid -= ignore_grid
 
-            return grid
+        if config.ignore_gdf is not None:
+            ignore_grid = cls.from_gdf(
+                gdf=config.ignore_gdf,
+                tile_size=config.tile_size,
+                quantize=config.quantize,
+            )
+            grid -= ignore_grid
 
-        message = (
-            'Invalid config! '
-            'The configuration must have one of the following field sets: '
-            'json_string | gdf, tile_size | bounding_box, tile_size'
-        )
-        raise AviaryUserError(message)
+        if config.ignore_json_string is not None:
+            ignore_grid = cls.from_json(
+                json_string=config.ignore_json_string,
+            )
+            grid -= ignore_grid
+
+        return grid
 
     def __repr__(self) -> str:
         """Returns the string representation.
@@ -901,44 +899,56 @@ class Grid(Iterable[Coordinates]):
 class GridConfig(pydantic.BaseModel):
     """Configuration for the `from_config` class method of `Grid`
 
-    The configuration must have one of the following field sets:
-        - `json_string`
-        - `gdf` and `tile_size`
-        - `bounding_box` and `tile_size`
+    The configuration must have exactly one of the following field combinations:
+        - `bounding_box_coordinates` and `tile_size`
+        - `gdf_path` and `tile_size`
+        - `json_path`
 
     Attributes:
-        bounding_box: Bounding box (x_min, y_min, x_max, y_max)
-        gdf: Path to the geodataframe
-        json_string: Path to the JSON file containing the coordinates (x_min, y_min) of each tile
-            and the tile size
-        processed_coordinates_json_string: Path to the JSON file containing the coordinates (x_min, y_min)
-            of each tile and the tile size of the processed tiles
+        bounding_box_coordinates: Bounding box coordinates (x_min, y_min, x_max, y_max) in meters
+        gdf_path: Path to the geodataframe (.gpkg file)
+        json_path: Path to the JSON file (.json file)
+        ignore_bounding_box_coordinates: Bounding box coordinates to ignore (x_min, y_min, x_max, y_max) in meters
+        ignore_gdf_path: Path to the geodataframe (.gpkg file) to ignore
+        ignore_json_path: Path to the JSON file (.json file) to ignore
         tile_size: Tile size in meters
         quantize: If True, the bounding box is quantized to `tile_size`
     """
-    bounding_box: list[Coordinate] | None = None
-    gdf: Path | None = None
-    json_string: Path | None = None
-    processed_coordinates_json_string: Path | None = None
-    tile_size: TileSize | None = None
-    quantize: bool = True
+    bounding_box_coordinates: tuple[Coordinate, Coordinate, Coordinate, Coordinate] | None = Field(
+        default=None,
+    )
+    gdf_path: Path | None = Field(
+        default=None,
+    )
+    json_path: Path | None = Field(
+        default=None,
+    )
+    ignore_bounding_box_coordinates: tuple[Coordinate, Coordinate, Coordinate, Coordinate] | None = Field(
+        default=None,
+    )
+    ignore_gdf_path: Path | None = Field(
+        default=None,
+    )
+    ignore_json_path: Path | None = Field(
+        default=None,
+    )
+    tile_size: TileSize | None = Field(
+        default=None,
+    )
+    quantize: bool = Field(
+        default=True,
+    )
 
-    # noinspection PyNestedDecorators
-    @pydantic.field_validator('bounding_box')
-    @classmethod
-    def parse_bounding_box(
-        cls,
-        bounding_box: list[Coordinate],
-    ) -> BoundingBox:
-        """Parses `bounding_box`."""
-        if len(bounding_box) != 4:  # noqa: PLR2004
-            message = (
-                'Invalid bounding_box! '
-                'The bounding box must be a list of length 4.'
-            )
-            raise ValueError(message)
+    @property
+    def bounding_box(self) -> BoundingBox | None:
+        """
+        Returns:
+            Bounding box
+        """
+        if self.bounding_box_coordinates is None:
+            return None
 
-        x_min, y_min, x_max, y_max = bounding_box
+        x_min, y_min, x_max, y_max = self.bounding_box_coordinates
         return BoundingBox(
             x_min=x_min,
             y_min=y_min,
@@ -946,52 +956,83 @@ class GridConfig(pydantic.BaseModel):
             y_max=y_max,
         )
 
-    # noinspection PyNestedDecorators
-    @pydantic.field_validator('gdf')
-    @classmethod
-    def parse_gdf(
-        cls,
-        gdf: Path,
-    ) -> gpd.GeoDataFrame:
-        """Parses `gdf`."""
-        return gpd.read_file(gdf)
+    @property
+    def gdf(self) -> gpd.GeoDataFrame | None:
+        """
+        Returns:
+            Geodataframe
+        """
+        if self.gdf_path is None:
+            return None
 
-    # noinspection PyNestedDecorators
-    @pydantic.field_validator('json_string')
-    @classmethod
-    def parse_json_string(
-        cls,
-        json_string: Path,
-    ) -> str:
-        """Parses `json_string`."""
-        with json_string.open() as file:
+        return gpd.read_file(self.gdf_path)
+
+    @property
+    def json_string(self) -> str | None:
+        """
+        Returns:
+            JSON string
+        """
+        if self.json_path is None:
+            return None
+
+        with self.json_path.open() as file:
             return json.load(file)
 
-    # noinspection PyNestedDecorators
-    @pydantic.field_validator('processed_coordinates_json_string')
-    @classmethod
-    def parse_processed_coordinates_json_string(
-        cls,
-        processed_coordinates_json_string: Path,
-    ) -> str:
-        """Parses `processed_coordinates_json_string`."""
-        with processed_coordinates_json_string.open() as file:
+    @property
+    def ignore_bounding_box(self) -> BoundingBox | None:
+        """
+        Returns:
+            Bounding box
+        """
+        if self.ignore_bounding_box_coordinates is None:
+            return None
+
+        x_min, y_min, x_max, y_max = self.ignore_bounding_box_coordinates
+        return BoundingBox(
+            x_min=x_min,
+            y_min=y_min,
+            x_max=x_max,
+            y_max=y_max,
+        )
+
+    @property
+    def ignore_gdf(self) -> gpd.GeoDataFrame | None:
+        """
+        Returns:
+            Geodataframe
+        """
+        if self.ignore_gdf_path is None:
+            return None
+
+        return gpd.read_file(self.ignore_gdf_path)
+
+    @property
+    def ignore_json_string(self) -> str | None:
+        """
+        Returns:
+            JSON string
+        """
+        if self.ignore_json_path is None:
+            return None
+
+        with self.ignore_json_path.open() as file:
             return json.load(file)
 
     @pydantic.model_validator(mode='after')
-    def validate(self) -> GridConfig:
+    def _validate(self) -> GridConfig:
         """Validates the configuration."""
         conditions = [
-            self.json_string is not None,
-            self.gdf is not None and self.tile_size is not None,
             self.bounding_box is not None and self.tile_size is not None,
+            self.gdf is not None and self.tile_size is not None,
+            self.json_string is not None,
         ]
 
-        if any(conditions) is False:
+        if sum(conditions) != 1:
             message = (
                 'Invalid config! '
-                'The configuration must have one of the following field sets: '
-                'json_string | gdf, tile_size | bounding_box, tile_size'
+                'The configuration must have exactly one of the following field combinations: '
+                'bounding_box_coordinates, tile_size | gdf_path, tile_size | json_path'
             )
             raise ValueError(message)
 
