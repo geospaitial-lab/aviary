@@ -18,4 +18,4 @@
 ::: aviary.GridConfig
     options:
       filters:
-      - "!^_"
+      - "!"
