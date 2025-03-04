@@ -44,9 +44,6 @@ class TileFetcher(Protocol):
         - `CompositeFetcher`: Composes multiple tile fetchers
         - `VRTFetcher`: Fetches a tile from a virtual raster
         - `WMSFetcher`: Fetches a tile from a web map service
-
-    Notes:
-        - Implementations must support concurrency (the tile fetcher is called concurrently by the tile loader)
     """
 
     def __call__(
@@ -64,8 +61,28 @@ class TileFetcher(Protocol):
         ...
 
 
+class TileFetcherConfig(pydantic.BaseModel):
+    """Configuration for tile fetchers
+
+    Attributes:
+        name: Name
+        config: Configuration
+    """
+    name: str
+    config: (
+        CompositeFetcherConfig |
+        VRTFetcherConfig |
+        WMSFetcherConfig
+    )
+
+
 class CompositeFetcher:
     """Tile fetcher that composes multiple tile fetchers
+
+    Notes:
+        - The tile fetchers are called concurrently depending on the number of workers
+        - If the number of workers is 1, the tile fetchers are composed vertically, i.e., in sequence
+        - If the number of workers is greater than 1, the tile fetchers are composed horizontally, i.e., in parallel
 
     Implements the `TileFetcher` protocol.
     """
@@ -98,7 +115,7 @@ class CompositeFetcher:
         """
         tile_fetchers = []
 
-        for tile_fetcher_config in config.tile_fetchers_configs:
+        for tile_fetcher_config in config.tile_fetcher_configs:
             tile_fetcher_class = globals()[tile_fetcher_config.name]
             tile_fetcher = tile_fetcher_class.from_config(tile_fetcher_config.config)
             tile_fetchers.append(tile_fetcher)
@@ -131,26 +148,11 @@ class CompositeFetcherConfig(pydantic.BaseModel):
     """Configuration for the `from_config` class method of `CompositeFetcher`
 
     Attributes:
-        tile_fetchers_configs: Configurations of the tile fetchers
+        tile_fetcher_configs: Configurations of the tile fetchers
         num_workers: Number of workers
     """
-    tile_fetchers_configs: list[TileFetcherConfig]
+    tile_fetcher_configs: list[TileFetcherConfig]
     num_workers: int = 1
-
-
-class TileFetcherConfig(pydantic.BaseModel):
-    """Configuration for tile fetchers
-
-    Attributes:
-        name: Name
-        config: Configuration
-    """
-    name: str
-    config: (
-        CompositeFetcherConfig |
-        VRTFetcherConfig |
-        WMSFetcherConfig
-    )
 
 
 class VRTFetcher:

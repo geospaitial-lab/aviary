@@ -15,7 +15,3 @@
 ---
 
 ::: aviary.inference.CompositeFetcherConfig
-
----
-
-::: aviary.inference.TileFetcherConfig

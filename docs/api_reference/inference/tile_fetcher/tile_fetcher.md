@@ -11,3 +11,7 @@
       filters:
       - "!^_"
       - "^__"
+
+---
+
+::: aviary.inference.TileFetcherConfig
