@@ -17,6 +17,8 @@ import geopandas as gpd
 import numpy as np
 import numpy.typing as npt
 
+# noinspection PyProtectedMember
+from aviary._functional.geodata.coordinates_filter import duplicates_filter
 from aviary.core.enums import (
     ChannelName,
     _parse_channel_name,
@@ -936,6 +938,7 @@ class VectorChannel(Channel, Iterable[gpd.GeoDataFrame]):
         Raises:
             AviaryUserError: Invalid `data` (the data contains no data items)
             AviaryUserError: Invalid `coordinates` (the coordinates are not in shape (n, 2) and data type int32)
+            AviaryUserError: Invalid `coordinates` (the coordinates contain duplicate coordinates)
             AviaryUserError: Invalid `coordinates` (the number of coordinates is not equal to the number of data items)
             AviaryUserError: Invalid `tile_size` (the tile size is negative or zero)
             AviaryUserError: Invalid `buffer_size` (the buffer size is negative)
@@ -969,6 +972,15 @@ class VectorChannel(Channel, Iterable[gpd.GeoDataFrame]):
             message = (
                 'Invalid coordinates! '
                 'The coordinates must be in shape (n, 2) and data type int32.'
+            )
+            raise AviaryUserError(message)
+
+        unique_coordinates = duplicates_filter(coordinates=coordinates)
+
+        if len(coordinates) != len(unique_coordinates):
+            message = (
+                'Invalid coordinates! '
+                'The coordinates must contain unique coordinates. '
             )
             raise AviaryUserError(message)
 
