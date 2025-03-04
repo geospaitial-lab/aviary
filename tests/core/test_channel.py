@@ -16,6 +16,7 @@ from aviary.core.enums import ChannelName
 from aviary.core.exceptions import AviaryUserError
 from aviary.core.type_aliases import (
     BufferSize,
+    CoordinatesSet,
     FractionalBufferSize,
     TileSize,
     TimeStep,
@@ -694,6 +695,7 @@ def test_vector_channel_from_unscaled_data() -> None:
 @pytest.mark.parametrize(
     (
         'data',
+        'coordinates',
         'tile_size',
         'buffer_size',
         'message',
@@ -702,12 +704,12 @@ def test_vector_channel_from_unscaled_data() -> None:
 )
 def test_vector_channel_from_unscaled_data_exceptions(
     data: list[gpd.GeoDataFrame],
+    coordinates: CoordinatesSet,
     tile_size: TileSize,
     buffer_size: BufferSize,
     message: str,
 ) -> None:
     name = ChannelName.R
-    coordinates = (0, 0)
     time_step = None
     copy = False
 

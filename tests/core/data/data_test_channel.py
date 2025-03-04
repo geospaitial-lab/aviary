@@ -763,27 +763,98 @@ data_test_vector_channel_from_unscaled_data_exceptions = [
     # test case 1: data contains no data items
     (
         [],
+        np.array(
+            [[128, -128], [128, 0]],
+            dtype=np.int32,
+        ),
         128,
         0,
         re.escape('Invalid data! The data must contain at least one data item.'),
     ),
-    # test case 2: tile_size is negative
+    # test case 2: coordinates has one dimension
     (
         get_vector_channel_data(),
+        np.arange(
+            8,
+            dtype=np.int32,
+        ),
+        128,
+        0,
+        re.escape('Invalid coordinates! The coordinates must be in shape (n, 2) and data type int32.'),
+    ),
+    # test case 3: coordinates has three dimensions
+    (
+        get_vector_channel_data(),
+        np.arange(
+            8,
+            dtype=np.int32,
+        ).reshape(2, 2, 2),
+        128,
+        0,
+        re.escape('Invalid coordinates! The coordinates must be in shape (n, 2) and data type int32.'),
+    ),
+    # test case 4: coordinates has not two values in the second dimension
+    (
+        get_vector_channel_data(),
+        np.arange(
+            8,
+            dtype=np.int32,
+        ).reshape(2, 4),
+        128,
+        0,
+        re.escape('Invalid coordinates! The coordinates must be in shape (n, 2) and data type int32.'),
+    ),
+    # test case 5: coordinates is not of data type int32
+    (
+        get_vector_channel_data(),
+        np.arange(
+            8,
+            dtype=np.float32,
+        ).reshape(4, 2),
+        128,
+        0,
+        re.escape('Invalid coordinates! The coordinates must be in shape (n, 2) and data type int32.'),
+    ),
+    # test case 6: len(coordinates) is not equal to len(data)
+    (
+        get_vector_channel_data(),
+        np.array(
+            [[128, -128]],
+            dtype=np.int32,
+        ),
+        128,
+        0,
+        re.escape('Invalid coordinates! The number of coordinates must be equal to the number of data items.'),
+    ),
+    # test case 7: tile_size is negative
+    (
+        get_vector_channel_data(),
+        np.array(
+            [[128, -128], [128, 0]],
+            dtype=np.int32,
+        ),
         -128,
         0,
         re.escape('Invalid tile_size! The tile size must be positive.'),
     ),
-    # test case 3: tile_size is 0
+    # test case 8: tile_size is 0
     (
         get_vector_channel_data(),
+        np.array(
+            [[128, -128], [128, 0]],
+            dtype=np.int32,
+        ),
         0,
         0,
         re.escape('Invalid tile_size! The tile size must be positive.'),
     ),
-    # test case 4: buffer_size is negative
+    # test case 9: buffer_size is negative
     (
         get_vector_channel_data(),
+        np.array(
+            [[128, -128], [128, 0]],
+            dtype=np.int32,
+        ),
         128,
         -32,
         re.escape('Invalid buffer_size! The buffer size must be positive or zero.'),
