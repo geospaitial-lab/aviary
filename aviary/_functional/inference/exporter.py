@@ -9,7 +9,7 @@ import numpy.typing as npt
 import rasterio as rio
 import rasterio.features
 
-from aviary.core.process_area import ProcessArea
+from aviary.core.grid import Grid
 from aviary.core.type_aliases import (
     Coordinate,
     CoordinatesSet,
@@ -171,9 +171,12 @@ def _export_coordinates_json(
         try:
             with json_path.open() as file:
                 json_string = json.load(file)
-            process_area = ProcessArea.from_json(json_string)
+            process_area = Grid.from_json(json_string)
         except FileNotFoundError:
-            process_area = ProcessArea(tile_size=tile_size)
+            process_area = Grid(
+                coordinates=None,
+                tile_size=tile_size,
+            )
 
         process_area = process_area.append(coordinates)
         json_string = process_area.to_json()
