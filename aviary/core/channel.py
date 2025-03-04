@@ -28,6 +28,7 @@ if TYPE_CHECKING:
         BufferSize,
         ChannelKey,
         Coordinates,
+        CoordinatesSet,
         FractionalBufferSize,
         TileSize,
         TimeStep,
@@ -911,11 +912,11 @@ class VectorChannel(Channel, Iterable[gpd.GeoDataFrame]):
         )
 
     @classmethod
-    def from_unscaled_data(
+    def from_unscaled_data(  # noqa: C901
         cls,
         data: gpd.GeoDataFrame | list[gpd.GeoDataFrame],
         name: ChannelName | str,
-        coordinates: Coordinates,
+        coordinates: Coordinates | CoordinatesSet,
         tile_size: TileSize,
         buffer_size: BufferSize = 0,
         time_step: TimeStep | None = None,
@@ -926,7 +927,7 @@ class VectorChannel(Channel, Iterable[gpd.GeoDataFrame]):
         Parameters:
             data: Data
             name: Name
-            coordinates: Coordinates (x_min, y_min) of the tile in meters
+            coordinates: Coordinates (x_min, y_min) of the tile or of each tile in meters
             tile_size: Tile size in meters
             buffer_size: Buffer size in meters
             time_step: Time step
@@ -934,6 +935,8 @@ class VectorChannel(Channel, Iterable[gpd.GeoDataFrame]):
 
         Raises:
             AviaryUserError: Invalid `data` (the data contains no data items)
+            AviaryUserError: Invalid `coordinates` (the coordinates are not in shape (n, 2) and data type int32)
+            AviaryUserError: Invalid `coordinates` (the number of coordinates is not equal to the number of data items)
             AviaryUserError: Invalid `tile_size` (the tile size is negative or zero)
             AviaryUserError: Invalid `buffer_size` (the buffer size is negative)
         """
@@ -944,6 +947,35 @@ class VectorChannel(Channel, Iterable[gpd.GeoDataFrame]):
             message = (
                 'Invalid data! '
                 'The data must contain at least one data item.'
+            )
+            raise AviaryUserError(message)
+
+        if not isinstance(coordinates, np.ndarray):
+            coordinates = np.array([coordinates], dtype=np.int32)
+
+        if coordinates.ndim != 2:  # noqa: PLR2004
+            message = (
+                'Invalid coordinates! '
+                'The coordinates must be in shape (n, 2) and data type int32.'
+            )
+            raise AviaryUserError(message)
+
+        conditions = [
+            coordinates.shape[1] != 2,  # noqa: PLR2004
+            coordinates.dtype != np.int32,
+        ]
+
+        if any(conditions):
+            message = (
+                'Invalid coordinates! '
+                'The coordinates must be in shape (n, 2) and data type int32.'
+            )
+            raise AviaryUserError(message)
+
+        if len(coordinates) != len(data):
+            message = (
+                'Invalid coordinates! '
+                'The number of coordinates must be equal to the number of data items.'
             )
             raise AviaryUserError(message)
 
@@ -964,14 +996,18 @@ class VectorChannel(Channel, Iterable[gpd.GeoDataFrame]):
         if copy:
             data = [data_item.copy() for data_item in data]
 
+        coordinates = [
+            (int(x_min), int(y_min))
+            for x_min, y_min in coordinates
+        ]
         data = [
             cls._from_unscaled_data_item(
                 data_item=data_item,
-                coordinates=coordinates,
+                coordinates=coordinates_item,
                 tile_size=tile_size,
                 buffer_size=buffer_size,
             )
-            for data_item in data
+            for data_item, coordinates_item in zip(data, coordinates, strict=True)
         ]
         buffer_size = buffer_size / tile_size
         vector_channel = cls(
