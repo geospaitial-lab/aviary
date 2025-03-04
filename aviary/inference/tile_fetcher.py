@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from pathlib import Path  # noqa: TC003
+from pathlib import Path
 from typing import (
     TYPE_CHECKING,
     Protocol,
@@ -19,7 +19,7 @@ from aviary.core.enums import (
     InterpolationMode,
     WMSVersion,
 )
-from aviary.core.type_aliases import (  # noqa: TC001
+from aviary.core.type_aliases import (
     BufferSize,
     ChannelNames,
     ChannelNameSet,

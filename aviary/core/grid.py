@@ -5,7 +5,7 @@ from collections.abc import (
     Iterable,
     Iterator,
 )
-from pathlib import Path  # noqa: TC003
+from pathlib import Path
 from typing import (
     TYPE_CHECKING,
     overload,
