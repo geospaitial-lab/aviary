@@ -912,7 +912,7 @@ data_test_vector_channel_init = [
         None,
         False,
     ),
-    # test case 3: data contains data items that contain no geometries (needed for coverage)
+    # test case 3: data contains data items that contain no geometries (necessary for coverage)
     (
         [
             get_vector_channel_empty_data_item(),

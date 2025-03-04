@@ -67,9 +67,9 @@ class Grid(Iterable[Coordinates]):
 
     def _validate(self) -> None:
         """Validates the grid."""
+        self._validate_tile_size()  # valid tile_size is necessary for _validate_coordinates
         self._parse_coordinates()
         self._validate_coordinates()
-        self._validate_tile_size()
 
     def _parse_coordinates(self) -> None:
         """Parses `coordinates`."""
