@@ -7,10 +7,6 @@
 </div>
 
 ::: aviary.inference.CompositeFetcher
-    options:
-      filters:
-      - "!^_"
-      - "^__"
 
 ---
 

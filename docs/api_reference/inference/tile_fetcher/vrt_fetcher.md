@@ -7,10 +7,6 @@
 </div>
 
 ::: aviary.inference.VRTFetcher
-    options:
-      filters:
-      - "!^_"
-      - "^__"
 
 ---
 

@@ -7,10 +7,6 @@
 </div>
 
 ::: aviary.inference.WMSFetcher
-    options:
-      filters:
-      - "!^_"
-      - "^__"
 
 ---
 
