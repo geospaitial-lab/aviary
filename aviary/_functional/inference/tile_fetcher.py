@@ -26,7 +26,7 @@ from aviary.core.enums import (
     _parse_channel_name,
 )
 from aviary.core.exceptions import AviaryUserError
-from aviary.core.tile import Tile
+from aviary.core.tiles import Tile
 
 if TYPE_CHECKING:
     from aviary.core.type_aliases import (
@@ -58,6 +58,16 @@ def composite_fetcher(
     Returns:
         Tile
     """
+    if num_workers == 1:
+        tiles = [
+            tile_fetcher(coordinates=coordinates)
+            for tile_fetcher in tile_fetchers
+        ]
+        return Tile.from_tiles(
+            tiles=tiles,
+            copy=False,
+        )
+
     with ThreadPoolExecutor(max_workers=num_workers) as executor:
         tasks = [
             executor.submit(

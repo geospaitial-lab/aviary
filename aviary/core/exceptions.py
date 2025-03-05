@@ -1,4 +1,4 @@
-class AviaryUserError(Exception):
+class AviaryUserError(ValueError):
     ...
 
 

@@ -16,11 +16,14 @@ from .core.exceptions import (
     AviaryUserError,
     AviaryUserWarning,
 )
-from .core.process_area import (
-    ProcessArea,
-    ProcessAreaConfig,
+from .core.grid import (
+    Grid,
+    GridConfig,
 )
-from .core.tile import Tile
+from .core.tiles import (
+    Tile,
+    Tiles,
+)
 from .core.type_aliases import (
     BufferSize,
     ChannelKey,
@@ -28,7 +31,6 @@ from .core.type_aliases import (
     ChannelNameKeySet,
     ChannelNames,
     ChannelNameSet,
-    Channels,
     Coordinate,
     Coordinates,
     CoordinatesSet,
@@ -51,7 +53,6 @@ __all__ = [
     'ChannelNameKeySet',
     'ChannelNameSet',
     'ChannelNames',
-    'Channels',
     'Coordinate',
     'Coordinates',
     'CoordinatesSet',
@@ -59,14 +60,15 @@ __all__ = [
     'EPSGCode',
     'FractionalBufferSize',
     'GeospatialFilterMode',
+    'Grid',
+    'GridConfig',
     'GroundSamplingDistance',
     'InterpolationMode',
-    'ProcessArea',
-    'ProcessAreaConfig',
     'RasterChannel',
     'SetFilterMode',
     'Tile',
     'TileSize',
+    'Tiles',
     'TimeStep',
     'VectorChannel',
     'WMSVersion',

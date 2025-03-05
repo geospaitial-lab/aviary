@@ -22,53 +22,23 @@ nav:
   - API Reference:
     - API Reference: api_reference/index.md
     - aviary:
-      - BoundingBox: api_reference/bounding_box.md
+      - BoundingBox: api_reference/core/bounding_box.md
       - Channel:
-        - Channel: api_reference/channel/channel.md
-        - RasterChannel: api_reference/channel/raster_channel.md
-        - VectorChannel: api_reference/channel/vector_channel.md
-      - Enums: api_reference/enums.md
-      - Exceptions: api_reference/exceptions.md
-      - ProcessArea: api_reference/process_area.md
-      - Tile: api_reference/tile.md
-      - Type Aliases: api_reference/type_aliases.md
-    - aviary.data:
-      - DataLoader: api_reference/data/data_loader.md
-      - DataPreprocessor:
-        - DataPreprocessor: api_reference/data/data_preprocessor/data_preprocessor.md
-        - CompositePreprocessor: api_reference/data/data_preprocessor/composite_preprocessor.md
-        - NormalizePreprocessor: api_reference/data/data_preprocessor/normalize_preprocessor.md
-        - StandardizePreprocessor: api_reference/data/data_preprocessor/standardize_preprocessor.md
-    - aviary.geodata:
-      - CoordinatesFilter:
-        - CoordinatesFilter: api_reference/geodata/coordinates_filter/coordinates_filter.md
-        - CompositeFilter: api_reference/geodata/coordinates_filter/composite_filter.md
-        - DuplicatesFilter: api_reference/geodata/coordinates_filter/duplicates_filter.md
-        - GeospatialFilter: api_reference/geodata/coordinates_filter/geospatial_filter.md
-        - MaskFilter: api_reference/geodata/coordinates_filter/mask_filter.md
-        - SetFilter: api_reference/geodata/coordinates_filter/set_filter.md
-      - GeodataPostprocessor:
-        - GeodataPostprocessor: api_reference/geodata/geodata_postprocessor/geodata_postprocessor.md
-        - ClipPostprocessor: api_reference/geodata/geodata_postprocessor/clip_postprocessor.md
-        - CompositePostprocessor: api_reference/geodata/geodata_postprocessor/composite_postprocessor.md
-        - FieldNamePostprocessor: api_reference/geodata/geodata_postprocessor/field_name_postprocessor.md
-        - FillPostprocessor: api_reference/geodata/geodata_postprocessor/fill_postprocessor.md
-        - SievePostprocessor: api_reference/geodata/geodata_postprocessor/sieve_postprocessor.md
-        - SimplifyPostprocessor: api_reference/geodata/geodata_postprocessor/simplify_postprocessor.md
-        - ValuePostprocessor: api_reference/geodata/geodata_postprocessor/value_postprocessor.md
+        - Channel: api_reference/core/channel/channel.md
+        - RasterChannel: api_reference/core/channel/raster_channel.md
+        - VectorChannel: api_reference/core/channel/vector_channel.md
+      - Enums: api_reference/core/enums.md
+      - Exceptions: api_reference/core/exceptions.md
+      - Grid: api_reference/core/grid.md
+      - Tiles: api_reference/core/tiles.md
+      - Type Aliases: api_reference/core/type_aliases.md
     - aviary.inference:
-      - Exporter:
-        - Exporter: api_reference/inference/exporter/exporter.md
-        - SegmentationExporter: api_reference/inference/exporter/segmentation_exporter.md
-      - Model:
-        - Model: api_reference/inference/model/model.md
-        - SegmentationModel: api_reference/inference/model/segmentation_model.md
-        - ONNXSegmentationModel: api_reference/inference/model/onnx_segmentation_model.md
       - TileFetcher:
           - TileFetcher: api_reference/inference/tile_fetcher/tile_fetcher.md
           - CompositeFetcher: api_reference/inference/tile_fetcher/composite_fetcher.md
           - VRTFetcher: api_reference/inference/tile_fetcher/vrt_fetcher.md
           - WMSFetcher: api_reference/inference/tile_fetcher/wms_fetcher.md
+      - TileLoader: api_reference/inference/tile_loader.md
       - TileSet: api_reference/inference/tile_set.md
     - aviary.pipeline:
       - PostprocessingPipeline: api_reference/pipeline/postprocessing_pipeline.md
@@ -134,8 +104,10 @@ plugins:
             docstring_style: google
             docstring_section_style: spacy
             merge_init_into_class: true
+            show_docstring_raises: false
             annotations_path: source
             show_signature: false
+            show_overloads: false
           paths:
             - ../
 
@@ -144,6 +116,9 @@ markdown_extensions:
   - attr_list
   - md_in_html
   - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
   - pymdownx.superfences
   - pymdownx.tabbed:
       alternate_style: true
@@ -212,4 +187,4 @@ extra_templates:
   - how_to_guides/api/maps/process_area_sub.html
 
 copyright:
-  © 2024 geospaitial lab
+  © 2025 geospaitial lab

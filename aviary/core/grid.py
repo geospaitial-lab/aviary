@@ -1,15 +1,13 @@
 from __future__ import annotations
 
 import json
-import warnings
 from collections.abc import (
     Iterable,
     Iterator,
 )
-from pathlib import Path  # noqa: TC003
+from pathlib import Path
 from typing import (
     TYPE_CHECKING,
-    cast,
     overload,
 )
 
@@ -29,10 +27,7 @@ from aviary.core.enums import (
     GeospatialFilterMode,
     SetFilterMode,
 )
-from aviary.core.exceptions import (
-    AviaryUserError,
-    AviaryUserWarning,
-)
+from aviary.core.exceptions import AviaryUserError
 from aviary.core.type_aliases import (
     Coordinate,
     Coordinates,
@@ -45,16 +40,15 @@ if TYPE_CHECKING:
     from aviary.geodata.coordinates_filter import CoordinatesFilter
 
 
-class ProcessArea(Iterable[Coordinates]):
-    """A process area specifies the spatial extent of an area of interest by a set of coordinates
+class Grid(Iterable[Coordinates]):
+    """A grid specifies the spatial extent of an area of interest by a set of coordinates
     of the bottom left corner of each tile and the tile size.
 
     Notes:
         - The coordinates are assumed to be in shape (n, 2) and data type int32, where n is the number of coordinates
-        - The `+` operator can be used to add two process areas
-        - The `-` operator can be used to subtract two process areas
-        - The `&` operator can be used to intersect two process areas
+        - The coordinates are sorted
     """
+    _coordinates: CoordinatesSet
 
     def __init__(
         self,
@@ -72,23 +66,26 @@ class ProcessArea(Iterable[Coordinates]):
         self._validate()
 
     def _validate(self) -> None:
-        """Validates the process area."""
+        """Validates the grid."""
+        self._validate_tile_size()  # valid tile_size is necessary for _validate_coordinates
+        self._parse_coordinates()
         self._validate_coordinates()
-        self._validate_tile_size()
+
+    def _parse_coordinates(self) -> None:
+        """Parses `coordinates`."""
+        if self._coordinates is None:
+            self._coordinates = np.empty(
+                shape=(0, 2),
+                dtype=np.int32,
+            )
 
     def _validate_coordinates(self) -> None:
         """Validates `coordinates`.
 
         Raises:
             AviaryUserError: Invalid `coordinates` (the coordinates are not in shape (n, 2) and data type int32)
+            AviaryUserError: Invalid `coordinates` (the coordinates are not quantized regularly)
         """
-        if self._coordinates is None:
-            self._coordinates = np.empty(
-                shape=(0, 2),
-                dtype=np.int32,
-            )
-            return
-
         if self._coordinates.ndim != 2:  # noqa: PLR2004
             message = (
                 'Invalid coordinates! '
@@ -108,22 +105,26 @@ class ProcessArea(Iterable[Coordinates]):
             )
             raise AviaryUserError(message)
 
-        unique_coordinates = duplicates_filter(coordinates=self._coordinates)  # returns a copy
+        self._coordinates = duplicates_filter(coordinates=self._coordinates)
 
-        if len(self._coordinates) != len(unique_coordinates):
+        coordinates_x_remainders = self._coordinates[:, 0] % self._tile_size
+        coordinates_y_remainders = self._coordinates[:, 1] % self._tile_size
+        unique_coordinates_x_remainders = np.unique(coordinates_x_remainders)
+        unique_coordinates_y_remainders = np.unique(coordinates_y_remainders)
+        conditions = [
+            len(unique_coordinates_x_remainders) > 1,
+            len(unique_coordinates_y_remainders) > 1,
+        ]
+
+        if any(conditions):
             message = (
                 'Invalid coordinates! '
-                'The coordinates must contain unique coordinates. '
-                'Duplicates are removed.'
+                'The coordinates must be quantized regularly.'
             )
-            warnings.warn(
-                message=message,
-                category=AviaryUserWarning,
-                stacklevel=2,
-            )
+            raise AviaryUserError(message)
 
-        sorted_indices = np.lexsort((unique_coordinates[:, 0], unique_coordinates[:, 1]))
-        self._coordinates = unique_coordinates[sorted_indices]
+        sorted_indices = np.lexsort((self._coordinates[:, 0], self._coordinates[:, 1]))
+        self._coordinates = self._coordinates[sorted_indices]
 
     def _validate_tile_size(self) -> None:
         """Validates `tile_size`.
@@ -168,8 +169,8 @@ class ProcessArea(Iterable[Coordinates]):
         bounding_box: BoundingBox,
         tile_size: TileSize,
         quantize: bool = True,
-    ) -> ProcessArea:
-        """Creates a process area from a bounding box.
+    ) -> Grid:
+        """Creates a grid from a bounding box.
 
         Parameters:
             bounding_box: Bounding box
@@ -177,7 +178,7 @@ class ProcessArea(Iterable[Coordinates]):
             quantize: If True, the bounding box is quantized to `tile_size`
 
         Returns:
-            Process area
+            Grid
 
         Raises:
             AviaryUserError: Invalid `tile_size` (the tile size is negative or zero)
@@ -205,8 +206,8 @@ class ProcessArea(Iterable[Coordinates]):
         gdf: gpd.GeoDataFrame,
         tile_size: TileSize,
         quantize: bool = True,
-    ) -> ProcessArea:
-        """Creates a process area from a geodataframe.
+    ) -> Grid:
+        """Creates a grid from a geodataframe.
 
         Parameters:
             gdf: Geodataframe
@@ -214,7 +215,7 @@ class ProcessArea(Iterable[Coordinates]):
             quantize: If True, the bounding box is quantized to `tile_size`
 
         Returns:
-            Process area
+            Grid
 
         Raises:
             AviaryUserError: Invalid `gdf` (the geodataframe contains no geometries)
@@ -293,8 +294,8 @@ class ProcessArea(Iterable[Coordinates]):
     def from_json(
         cls,
         json_string: str,
-    ) -> ProcessArea:
-        """Creates a process area from a JSON string.
+    ) -> Grid:
+        """Creates a grid from a JSON string.
 
         Notes:
             - The JSON string contains a list of coordinates (x_min, y_min) of each tile and the tile size
@@ -302,11 +303,11 @@ class ProcessArea(Iterable[Coordinates]):
         Examples:
             Assume the JSON string is '{"coordinates":
             [[363084, 5715326], [363212, 5715326], [363084, 5715454], [363212, 5715454]],
-            "tile_size": 1}'.
+            "tile_size": 128}'.
 
-            You can create a process area from the JSON string.
+            You can create a grid from the JSON string.
 
-            >>> process_area = ProcessArea.from_json(
+            >>> grid = Grid.from_json(
             ...     json_string=(
             ...         '{"coordinates": '
             ...         '[[363084, 5715326], '
@@ -321,7 +322,7 @@ class ProcessArea(Iterable[Coordinates]):
             json_string: JSON string
 
         Returns:
-            Process area
+            Grid
 
         Raises:
             AviaryUserError: Invalid `json_string` (the JSON string does not contain the keys coordinates and tile_size)
@@ -343,70 +344,108 @@ class ProcessArea(Iterable[Coordinates]):
         )
 
     @classmethod
+    def from_grids(
+        cls,
+        grids: list[Grid],
+    ) -> Grid:
+        """Creates a grid from grids.
+
+        Parameters:
+            grids: Grids
+
+        Returns:
+            Grid
+
+        Raises:
+            AviaryUserError: Invalid `grids` (the grids contain no grids)
+            AviaryUserError: Invalid `grids` (the tile sizes of the grids are not equal)
+        """
+        if not grids:
+            message = (
+                'Invalid grids! '
+                'The grids must contain at least one grid.'
+            )
+            raise AviaryUserError(message)
+
+        tile_sizes = {grid.tile_size for grid in grids}
+
+        if len(tile_sizes) > 1:
+            message = (
+                'Invalid grids! '
+                'The tile sizes of the grids must be equal.'
+            )
+            raise AviaryUserError(message)
+
+        coordinates = np.concatenate([grid.coordinates for grid in grids], axis=0)
+        tile_size = grids[0].tile_size
+        return cls(
+            coordinates=coordinates,
+            tile_size=tile_size,
+        )
+
+    @classmethod
     def from_config(
         cls,
-        config: ProcessAreaConfig,
-    ) -> ProcessArea:
-        """Creates a process area from the configuration.
+        config: GridConfig,
+    ) -> Grid:
+        """Creates a grid from the configuration.
 
         Parameters:
             config: Configuration
 
         Returns:
-            Process area
+            Grid
 
         Raises:
-            AviaryUserError: Invalid config
+            AviaryUserError: Invalid `config`
         """
-        if config.json_string is not None:
-            process_area = cls.from_json(
-                json_string=cast(str, config.json_string),
-            )
-
-            if config.processed_coordinates_json_string is not None:
-                processed_process_area = cls.from_json(
-                    json_string=cast(str, config.processed_coordinates_json_string),
-                )
-                process_area = process_area - processed_process_area
-
-            return process_area
-
-        if config.gdf is not None:
-            process_area = cls.from_gdf(
-                gdf=cast(gpd.GeoDataFrame, config.gdf),
-                tile_size=config.tile_size,
-                quantize=config.quantize,
-            )
-
-            if config.processed_coordinates_json_string is not None:
-                processed_process_area = cls.from_json(
-                    json_string=cast(str, config.processed_coordinates_json_string),
-                )
-                process_area = process_area - processed_process_area
-
-            return process_area
-
         if config.bounding_box is not None:
-            process_area = cls.from_bounding_box(
-                bounding_box=cast(BoundingBox, config.bounding_box),
+            grid = cls.from_bounding_box(
+                bounding_box=config.bounding_box,
                 tile_size=config.tile_size,
                 quantize=config.quantize,
             )
+        elif config.gdf is not None:
+            grid = cls.from_gdf(
+                gdf=config.gdf,
+                tile_size=config.tile_size,
+                quantize=config.quantize,
+            )
+        elif config.json_string is not None:
+            grid = cls.from_json(
+                json_string=config.json_string,
+            )
+        else:
+            message = (
+                'Invalid config! '
+                'The configuration must have exactly one of the following field combinations: '
+                'bounding_box_coordinates, tile_size | gdf_path, tile_size | json_path'
+            )
+            raise AviaryUserError(message)
 
-            if config.processed_coordinates_json_string is not None:
-                processed_process_area = cls.from_json(
-                    json_string=cast(str, config.processed_coordinates_json_string),
-                )
-                process_area = process_area - processed_process_area
+        if config.ignore_bounding_box is not None:
+            ignore_grid = cls.from_bounding_box(
+                bounding_box=config.ignore_bounding_box,
+                tile_size=config.tile_size,
+                quantize=config.quantize,
+            )
+            grid -= ignore_grid
 
-            return process_area
+        if config.ignore_gdf is not None:
+            ignore_grid = cls.from_gdf(
+                gdf=config.ignore_gdf,
+                tile_size=config.tile_size,
+                quantize=config.quantize,
+            )
+            grid -= ignore_grid
 
-        message = (
-            'Invalid config! '
-            'The configuration must have one of the following field sets: '
-            'json_string | gdf, tile_size | bounding_box, tile_size'
-        )
-        raise AviaryUserError(message)
+        if config.ignore_json_string is not None:
+            ignore_grid = cls.from_json(
+                json_string=config.ignore_json_string,
+            )
+            grid -= ignore_grid
+
+        return grid
 
     def __repr__(self) -> str:
         """Returns the string representation.
@@ -416,7 +455,7 @@ class ProcessArea(Iterable[Coordinates]):
         """
         coordinates_repr = len(self)
         return (
-            'ProcessArea(\n'
+            'Grid(\n'
             f'    coordinates={coordinates_repr},\n'
             f'    tile_size={self._tile_size},\n'
             ')'
@@ -426,15 +465,15 @@ class ProcessArea(Iterable[Coordinates]):
         self,
         other: object,
     ) -> bool:
-        """Compares the process areas.
+        """Compares the grids.
 
         Parameters:
-            other: Other process area
+            other: Other grid
 
         Returns:
-            True if the process areas are equal, False otherwise
+            True if the grids are equal, False otherwise
         """
-        if not isinstance(other, ProcessArea):
+        if not isinstance(other, Grid):
             return False
 
         conditions = [
@@ -451,23 +490,54 @@ class ProcessArea(Iterable[Coordinates]):
         """
         return len(self._coordinates)
 
+    def __bool__(self) -> bool:
+        """Checks if the grid contains coordinates.
+
+        Returns:
+            True if the grid contains coordinates, False otherwise
+        """
+        return bool(len(self))
+
     def __contains__(
         self,
-        coordinates: Coordinates,
+        coordinates: Coordinates | CoordinatesSet,
     ) -> bool:
-        """Checks if the coordinates are in the process area.
+        """Checks if the coordinates are in the grid.
 
         Parameters:
             coordinates: Coordinates (x_min, y_min) of the tile in meters
 
         Returns:
-            True if the coordinates are in the process area, False otherwise
+            True if the coordinates are in the grid, False otherwise
+
+        Raises:
+            AviaryUserError: Invalid `coordinates` (the coordinates are not in shape (n, 2) and data type int32)
         """
-        coordinates = np.array([coordinates], dtype=np.int32)
+        if not isinstance(coordinates, np.ndarray):
+            coordinates = np.array([coordinates], dtype=np.int32)
+
+        if coordinates.ndim != 2:  # noqa: PLR2004
+            message = (
+                'Invalid coordinates! '
+                'The coordinates must be in shape (n, 2) and data type int32.'
+            )
+            raise AviaryUserError(message)
+
+        conditions = [
+            coordinates.shape[1] != 2,  # noqa: PLR2004
+            coordinates.dtype != np.int32,
+        ]
+
+        if any(conditions):
+            message = (
+                'Invalid coordinates! '
+                'The coordinates must be in shape (n, 2) and data type int32.'
+            )
+            raise AviaryUserError(message)
+
         coordinates = np.concatenate([self._coordinates, coordinates], axis=0)
         unique_coordinates = duplicates_filter(coordinates=coordinates)
-        return len(coordinates) != len(unique_coordinates)
-
+        return len(self) == len(unique_coordinates)
 
     @overload
     def __getitem__(
@@ -480,24 +550,24 @@ class ProcessArea(Iterable[Coordinates]):
     def __getitem__(
         self,
         index: slice,
-    ) -> ProcessArea:
+    ) -> Grid:
         ...
 
     def __getitem__(
         self,
         index: int | slice,
-    ) -> Coordinates | ProcessArea:
-        """Returns the coordinates or the sliced process area.
+    ) -> Coordinates | Grid:
+        """Returns the coordinates or the sliced grid.
 
         Parameters:
             index: Index or slice of the coordinates
 
         Returns:
-            Coordinates in meters or sliced process area
+            Coordinates in meters or grid
         """
         if isinstance(index, slice):
             coordinates = self._coordinates[index]
-            return ProcessArea(
+            return Grid(
                 coordinates=coordinates,
                 tile_size=self._tile_size,
             )
@@ -516,27 +586,27 @@ class ProcessArea(Iterable[Coordinates]):
 
     def __add__(
         self,
-        other: ProcessArea,
-    ) -> ProcessArea:
-        """Adds the process areas.
+        other: Grid,
+    ) -> Grid:
+        """Adds the grids.
 
         Notes:
             - This method is equivalent to applying the set filter with the `UNION` set filter mode
               to the coordinates
 
         Parameters:
-            other: Other process area
+            other: Other grid
 
         Returns:
-            Process area
+            Grid
 
         Raises:
-            AviaryUserError: Invalid `other` (the tile sizes of the process areas are not equal)
+            AviaryUserError: Invalid `other` (the tile sizes of the grids are not equal)
         """
         if self._tile_size != other.tile_size:
             message = (
                 'Invalid other! '
-                'The tile sizes of the process areas must be equal.'
+                'The tile sizes of the grids must be equal.'
             )
             raise AviaryUserError(message)
 
@@ -545,34 +615,34 @@ class ProcessArea(Iterable[Coordinates]):
             other=other.coordinates,
             mode=SetFilterMode.UNION,
         )
-        return ProcessArea(
+        return Grid(
             coordinates=coordinates,
             tile_size=self._tile_size,
         )
 
     def __sub__(
         self,
-        other: ProcessArea,
-    ) -> ProcessArea:
-        """Subtracts the process areas.
+        other: Grid,
+    ) -> Grid:
+        """Subtracts the grids.
 
         Notes:
             - This method is equivalent to applying the set filter with the `DIFFERENCE` set filter mode
               to the coordinates
 
         Parameters:
-            other: Other process area
+            other: Other grid
 
         Returns:
-            Process area
+            Grid
 
         Raises:
-            AviaryUserError: Invalid `other` (the tile sizes of the process areas are not equal)
+            AviaryUserError: Invalid `other` (the tile sizes of the grids are not equal)
         """
         if self._tile_size != other.tile_size:
             message = (
                 'Invalid other! '
-                'The tile sizes of the process areas must be equal.'
+                'The tile sizes of the grids must be equal.'
             )
             raise AviaryUserError(message)
 
@@ -581,34 +651,34 @@ class ProcessArea(Iterable[Coordinates]):
             other=other.coordinates,
             mode=SetFilterMode.DIFFERENCE,
         )
-        return ProcessArea(
+        return Grid(
             coordinates=coordinates,
             tile_size=self._tile_size,
         )
 
     def __and__(
         self,
-        other: ProcessArea,
-    ) -> ProcessArea:
-        """Intersects the process areas.
+        other: Grid,
+    ) -> Grid:
+        """Intersects the grids.
 
         Notes:
             - This method is equivalent to applying the set filter with the `INTERSECTION` set filter mode
               to the coordinates
 
         Parameters:
-            other: Other process area
+            other: Other grid
 
         Returns:
-            Process area
+            Grid
 
         Raises:
-            AviaryUserError: Invalid `other` (the tile sizes of the process areas are not equal)
+            AviaryUserError: Invalid `other` (the tile sizes of the grids are not equal)
         """
         if self._tile_size != other.tile_size:
             message = (
                 'Invalid other! '
-                'The tile sizes of the process areas must be equal.'
+                'The tile sizes of the grids must be equal.'
             )
             raise AviaryUserError(message)
 
@@ -617,48 +687,62 @@ class ProcessArea(Iterable[Coordinates]):
             other=other.coordinates,
             mode=SetFilterMode.INTERSECTION,
         )
-        return ProcessArea(
+        return Grid(
             coordinates=coordinates,
             tile_size=self._tile_size,
         )
 
     def append(
         self,
-        coordinates: Coordinates,
+        coordinates: Coordinates | CoordinatesSet,
         inplace: bool = False,
-    ) -> ProcessArea:
+    ) -> Grid:
         """Appends the coordinates.
 
         Parameters:
-            coordinates: Coordinates (x_min, y_min) of the tile in meters
+            coordinates: Coordinates (x_min, y_min) of the tile or of each tile in meters
             inplace: If True, the coordinates are appended inplace
 
         Returns:
-            Process area
-        """
-        coordinates = np.array([coordinates], dtype=np.int32)
-        coordinates = np.concatenate([self._coordinates, coordinates], axis=0)
-        unique_coordinates = duplicates_filter(coordinates=coordinates)
+            Grid
 
-        if len(coordinates) != len(unique_coordinates):
+        Raises:
+            AviaryUserError: Invalid `coordinates` (the coordinates are not in shape (n, 2) and data type int32)
+        """
+        if not isinstance(coordinates, np.ndarray):
+            coordinates = np.array([coordinates], dtype=np.int32)
+
+        if coordinates.ndim != 2:  # noqa: PLR2004
             message = (
                 'Invalid coordinates! '
-                'The coordinates are already in the process area.'
+                'The coordinates must be in shape (n, 2) and data type int32.'
             )
-            warnings.warn(
-                message=message,
-                category=AviaryUserWarning,
-                stacklevel=2,
-            )
+            raise AviaryUserError(message)
 
-        coordinates = unique_coordinates
+        conditions = [
+            coordinates.shape[1] != 2,  # noqa: PLR2004
+            coordinates.dtype != np.int32,
+        ]
+
+        if any(conditions):
+            message = (
+                'Invalid coordinates! '
+                'The coordinates must be in shape (n, 2) and data type int32.'
+            )
+            raise AviaryUserError(message)
+
+        coordinates = set_filter(
+            coordinates=self._coordinates,
+            other=coordinates,
+            mode=SetFilterMode.UNION,
+        )
 
         if inplace:
             self._coordinates = coordinates
             self._validate()
             return self
 
-        return ProcessArea(
+        return Grid(
             coordinates=coordinates,
             tile_size=self._tile_size,
         )
@@ -666,14 +750,14 @@ class ProcessArea(Iterable[Coordinates]):
     def chunk(
         self,
         num_chunks: int,
-    ) -> list[ProcessArea]:
-        """Chunks the process area.
+    ) -> list[Grid]:
+        """Chunks the grid.
 
         Parameters:
             num_chunks: Number of chunks
 
         Returns:
-            Process areas
+            Grids
 
         Raises:
             AviaryUserError: Invalid `num_chunks` (the number of chunks is not in the range [1, n])
@@ -686,7 +770,7 @@ class ProcessArea(Iterable[Coordinates]):
             raise AviaryUserError(message)
 
         return [
-            ProcessArea(
+            Grid(
                 coordinates=coordinates,
                 tile_size=self._tile_size,
             )
@@ -698,15 +782,15 @@ class ProcessArea(Iterable[Coordinates]):
         self,
         coordinates_filter: CoordinatesFilter,
         inplace: bool = False,
-    ) -> ProcessArea:
-        """Filters the process area.
+    ) -> Grid:
+        """Filters the grid.
 
         Parameters:
             coordinates_filter: Coordinates filter
             inplace: If True, the coordinates are filtered inplace
 
         Returns:
-            Process area
+            Grid
         """
         coordinates = coordinates_filter(coordinates=self._coordinates)
 
@@ -715,49 +799,62 @@ class ProcessArea(Iterable[Coordinates]):
             self._validate()
             return self
 
-        return ProcessArea(
+        return Grid(
             coordinates=coordinates,
             tile_size=self._tile_size,
         )
 
     def remove(
         self,
-        coordinates: Coordinates,
+        coordinates: Coordinates | CoordinatesSet,
         inplace: bool = False,
-    ) -> ProcessArea:
+    ) -> Grid:
         """Removes the coordinates.
 
         Parameters:
-            coordinates: Coordinates (x_min, y_min) of the tile in meters
+            coordinates: Coordinates (x_min, y_min) of the tile or of each tile in meters
             inplace: If True, the coordinates are removed inplace
 
         Returns:
-            Process area
+            Grid
+
+        Raises:
+            AviaryUserError: Invalid `coordinates` (the coordinates are not in shape (n, 2) and data type int32)
         """
-        coordinates = np.array([coordinates], dtype=np.int32)
+        if not isinstance(coordinates, np.ndarray):
+            coordinates = np.array([coordinates], dtype=np.int32)
+
+        if coordinates.ndim != 2:  # noqa: PLR2004
+            message = (
+                'Invalid coordinates! '
+                'The coordinates must be in shape (n, 2) and data type int32.'
+            )
+            raise AviaryUserError(message)
+
+        conditions = [
+            coordinates.shape[1] != 2,  # noqa: PLR2004
+            coordinates.dtype != np.int32,
+        ]
+
+        if any(conditions):
+            message = (
+                'Invalid coordinates! '
+                'The coordinates must be in shape (n, 2) and data type int32.'
+            )
+            raise AviaryUserError(message)
+
         coordinates = set_filter(
             coordinates=self._coordinates,
             other=coordinates,
             mode=SetFilterMode.DIFFERENCE,
         )
 
-        if np.array_equal(self._coordinates, coordinates):
-            message = (
-                'Invalid coordinates! '
-                'The coordinates are not in the process area.'
-            )
-            warnings.warn(
-                message=message,
-                category=AviaryUserWarning,
-                stacklevel=2,
-            )
-
         if inplace:
             self._coordinates = coordinates
             self._validate()
             return self
 
-        return ProcessArea(
+        return Grid(
             coordinates=coordinates,
             tile_size=self._tile_size,
         )
@@ -766,7 +863,7 @@ class ProcessArea(Iterable[Coordinates]):
         self,
         epsg_code: EPSGCode,
     ) -> gpd.GeoDataFrame:
-        """Converts the process area to a geodataframe.
+        """Converts the grid to a geodataframe.
 
         Parameters:
             epsg_code: EPSG code
@@ -785,7 +882,7 @@ class ProcessArea(Iterable[Coordinates]):
         )
 
     def to_json(self) -> str:
-        """Converts the process area to a JSON string.
+        """Converts the grid to a JSON string.
 
         Notes:
             - The JSON string contains a list of coordinates (x_min, y_min) of each tile and the tile size
@@ -800,47 +897,43 @@ class ProcessArea(Iterable[Coordinates]):
         return json.dumps(dict_)
 
 
-class ProcessAreaConfig(pydantic.BaseModel):
-    """Configuration for the `from_config` class method of `ProcessArea`
+class GridConfig(pydantic.BaseModel):
+    """Configuration for the `from_config` class method of `Grid`
 
-    The configuration must have one of the following field sets:
-        - `json_string`
-        - `gdf` and `tile_size`
-        - `bounding_box` and `tile_size`
+    The configuration must have exactly one of the following field combinations:
+        - `bounding_box_coordinates` and `tile_size`
+        - `gdf_path` and `tile_size`
+        - `json_path`
 
     Attributes:
-        bounding_box: Bounding box (x_min, y_min, x_max, y_max)
-        gdf: Path to the geodataframe
-        json_string: Path to the JSON file containing the coordinates (x_min, y_min) of each tile
-            and the tile size
-        processed_coordinates_json_string: Path to the JSON file containing the coordinates (x_min, y_min)
-            of each tile and the tile size of the processed tiles
+        bounding_box_coordinates: Bounding box coordinates (x_min, y_min, x_max, y_max) in meters
+        gdf_path: Path to the geodataframe (.gpkg file)
+        json_path: Path to the JSON file (.json file)
+        ignore_bounding_box_coordinates: Bounding box coordinates to ignore (x_min, y_min, x_max, y_max) in meters
+        ignore_gdf_path: Path to the geodataframe (.gpkg file) to ignore
+        ignore_json_path: Path to the JSON file (.json file) to ignore
         tile_size: Tile size in meters
         quantize: If True, the bounding box is quantized to `tile_size`
     """
-    bounding_box: list[Coordinate] | None = None
-    gdf: Path | None = None
-    json_string: Path | None = None
-    processed_coordinates_json_string: Path | None = None
+    bounding_box_coordinates: tuple[Coordinate, Coordinate, Coordinate, Coordinate] | None = None
+    gdf_path: Path | None = None
+    json_path: Path | None = None
+    ignore_bounding_box_coordinates: tuple[Coordinate, Coordinate, Coordinate, Coordinate] | None = None
+    ignore_gdf_path: Path | None = None
+    ignore_json_path: Path | None = None
     tile_size: TileSize | None = None
     quantize: bool = True
 
-    # noinspection PyNestedDecorators
-    @pydantic.field_validator('bounding_box')
-    @classmethod
-    def parse_bounding_box(
-        cls,
-        bounding_box: list[Coordinate],
-    ) -> BoundingBox:
-        """Parses `bounding_box`."""
-        if len(bounding_box) != 4:  # noqa: PLR2004
-            message = (
-                'Invalid bounding_box! '
-                'The bounding box must be a list of length 4.'
-            )
-            raise ValueError(message)
+    @property
+    def bounding_box(self) -> BoundingBox | None:
+        """
+        Returns:
+            Bounding box
+        """
+        if self.bounding_box_coordinates is None:
+            return None
 
-        x_min, y_min, x_max, y_max = bounding_box
+        x_min, y_min, x_max, y_max = self.bounding_box_coordinates
         return BoundingBox(
             x_min=x_min,
             y_min=y_min,
@@ -848,52 +941,83 @@ class ProcessAreaConfig(pydantic.BaseModel):
             y_max=y_max,
         )
 
-    # noinspection PyNestedDecorators
-    @pydantic.field_validator('gdf')
-    @classmethod
-    def parse_gdf(
-        cls,
-        gdf: Path,
-    ) -> gpd.GeoDataFrame:
-        """Parses `gdf`."""
-        return gpd.read_file(gdf)
+    @property
+    def gdf(self) -> gpd.GeoDataFrame | None:
+        """
+        Returns:
+            Geodataframe
+        """
+        if self.gdf_path is None:
+            return None
 
-    # noinspection PyNestedDecorators
-    @pydantic.field_validator('json_string')
-    @classmethod
-    def parse_json_string(
-        cls,
-        json_string: Path,
-    ) -> str:
-        """Parses `json_string`."""
-        with json_string.open() as file:
+        return gpd.read_file(self.gdf_path)
+
+    @property
+    def json_string(self) -> str | None:
+        """
+        Returns:
+            JSON string
+        """
+        if self.json_path is None:
+            return None
+
+        with self.json_path.open() as file:
             return json.load(file)
 
-    # noinspection PyNestedDecorators
-    @pydantic.field_validator('processed_coordinates_json_string')
-    @classmethod
-    def parse_processed_coordinates_json_string(
-        cls,
-        processed_coordinates_json_string: Path,
-    ) -> str:
-        """Parses `processed_coordinates_json_string`."""
-        with processed_coordinates_json_string.open() as file:
+    @property
+    def ignore_bounding_box(self) -> BoundingBox | None:
+        """
+        Returns:
+            Bounding box
+        """
+        if self.ignore_bounding_box_coordinates is None:
+            return None
+
+        x_min, y_min, x_max, y_max = self.ignore_bounding_box_coordinates
+        return BoundingBox(
+            x_min=x_min,
+            y_min=y_min,
+            x_max=x_max,
+            y_max=y_max,
+        )
+
+    @property
+    def ignore_gdf(self) -> gpd.GeoDataFrame | None:
+        """
+        Returns:
+            Geodataframe
+        """
+        if self.ignore_gdf_path is None:
+            return None
+
+        return gpd.read_file(self.ignore_gdf_path)
+
+    @property
+    def ignore_json_string(self) -> str | None:
+        """
+        Returns:
+            JSON string
+        """
+        if self.ignore_json_path is None:
+            return None
+
+        with self.ignore_json_path.open() as file:
             return json.load(file)
 
     @pydantic.model_validator(mode='after')
-    def validate(self) -> ProcessAreaConfig:
+    def _validate(self) -> GridConfig:
         """Validates the configuration."""
         conditions = [
-            self.json_string is not None,
-            self.gdf is not None and self.tile_size is not None,
             self.bounding_box is not None and self.tile_size is not None,
+            self.gdf is not None and self.tile_size is not None,
+            self.json_string is not None,
         ]
 
-        if any(conditions) is False:
+        if sum(conditions) != 1:
             message = (
                 'Invalid config! '
-                'The configuration must have one of the following field sets: '
-                'json_string | gdf, tile_size | bounding_box, tile_size'
+                'The configuration must have exactly one of the following field combinations: '
+                'bounding_box_coordinates, tile_size | gdf_path, tile_size | json_path'
             )
             raise ValueError(message)
 

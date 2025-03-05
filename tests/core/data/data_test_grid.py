@@ -10,32 +10,32 @@ from shapely.geometry import (
     box,
 )
 
-from aviary.core.process_area import ProcessArea
+from aviary.core.grid import Grid
 from tests.core.conftest import (
     get_bounding_box,
-    get_process_area,
-    get_process_area_coordinates,
+    get_grid,
+    get_grid_coordinates,
 )
 
-data_test_process_area_add = [
+data_test_grid_add = [
     # test case 1: other contains no coordinates
     (
-        ProcessArea(
+        Grid(
             coordinates=None,
             tile_size=128,
         ),
-        get_process_area(),
+        get_grid(),
     ),
     # test case 2: other contains coordinates
     (
-        ProcessArea(
+        Grid(
             coordinates=np.array(
                 [[-128, 0], [0, 0], [128, -128], [128, 0]],
                 dtype=np.int32,
             ),
             tile_size=128,
         ),
-        ProcessArea(
+        Grid(
             coordinates=np.array(
                 [[-128, -128], [0, -128], [-128, 0], [0, 0], [128, -128], [128, 0]],
                 dtype=np.int32,
@@ -45,39 +45,39 @@ data_test_process_area_add = [
     ),
 ]
 
-data_test_process_area_add_exceptions = [
+data_test_grid_add_exceptions = [
     # test case 1: tile_size is not equal
     (
-        ProcessArea(
+        Grid(
             coordinates=None,
             tile_size=64,
         ),
-        re.escape('Invalid other! The tile sizes of the process areas must be equal.'),
+        re.escape('Invalid other! The tile sizes of the grids must be equal.'),
     ),
 ]
 
-data_test_process_area_and = [
+data_test_grid_and = [
     # test case 1: other contains no coordinates
     (
-        ProcessArea(
+        Grid(
             coordinates=None,
             tile_size=128,
         ),
-        ProcessArea(
+        Grid(
             coordinates=None,
             tile_size=128,
         ),
     ),
     # test case 2: other contains coordinates
     (
-        ProcessArea(
+        Grid(
             coordinates=np.array(
                 [[-128, 0], [0, 0], [128, -128], [128, 0]],
                 dtype=np.int32,
             ),
             tile_size=128,
         ),
-        ProcessArea(
+        Grid(
             coordinates=np.array(
                 [[-128, 0], [0, 0]],
                 dtype=np.int32,
@@ -87,23 +87,23 @@ data_test_process_area_and = [
     ),
 ]
 
-data_test_process_area_and_exceptions = [
+data_test_grid_and_exceptions = [
     # test case 1: tile_size is not equal
     (
-        ProcessArea(
+        Grid(
             coordinates=None,
             tile_size=64,
         ),
-        re.escape('Invalid other! The tile sizes of the process areas must be equal.'),
+        re.escape('Invalid other! The tile sizes of the grids must be equal.'),
     ),
 ]
 
-data_test_process_area_append = [
+data_test_grid_append = [
     # test case 1: Default
     (
-        get_process_area(),
+        get_grid(),
         (128, -128),
-        ProcessArea(
+        Grid(
             coordinates=np.array(
                 [[-128, -128], [0, -128], [-128, 0], [0, 0], [128, -128]],
                 dtype=np.int32,
@@ -111,36 +111,82 @@ data_test_process_area_append = [
             tile_size=128,
         ),
     ),
-]
-
-data_test_process_area_append_inplace = copy.deepcopy(data_test_process_area_append)
-data_test_process_area_append_inplace_return = copy.deepcopy(data_test_process_area_append)
-
-data_test_process_area_append_warnings = [
-    # test case 1: coordinates is already in process_area
+    # test case 2: coordinates contains no coordinates
     (
-        get_process_area(),
-        (-128, -128),
-        get_process_area(),
-        re.escape('Invalid coordinates! The coordinates are already in the process area.'),
+        get_grid(),
+        np.empty(
+            shape=(0, 2),
+            dtype=np.int32,
+        ),
+        get_grid(),
+    ),
+    # test case 3: coordinates contains coordinates
+    (
+        get_grid(),
+        np.array(
+            [[128, -128], [128, 0]],
+            dtype=np.int32,
+        ),
+        Grid(
+            coordinates=np.array(
+                [[-128, -128], [0, -128], [-128, 0], [0, 0], [128, -128], [128, 0]],
+                dtype=np.int32,
+            ),
+            tile_size=128,
+        ),
     ),
 ]
 
-data_test_process_area_append_inplace_warnings = copy.deepcopy(data_test_process_area_append_warnings)
-data_test_process_area_append_inplace_return_warnings = copy.deepcopy(data_test_process_area_append_warnings)
-
-data_test_process_area_area = [
-    # test case 1: process_area contains no coordinates
+data_test_grid_append_exceptions = [
+    # test case 1: coordinates has one dimension
     (
-        ProcessArea(
+        np.arange(
+            8,
+            dtype=np.int32,
+        ),
+        re.escape('Invalid coordinates! The coordinates must be in shape (n, 2) and data type int32.'),
+    ),
+    # test case 2: coordinates has three dimensions
+    (
+        np.arange(
+            8,
+            dtype=np.int32,
+        ).reshape(2, 2, 2),
+        re.escape('Invalid coordinates! The coordinates must be in shape (n, 2) and data type int32.'),
+    ),
+    # test case 3: coordinates has not two values in the second dimension
+    (
+        np.arange(
+            8,
+            dtype=np.int32,
+        ).reshape(2, 4),
+        re.escape('Invalid coordinates! The coordinates must be in shape (n, 2) and data type int32.'),
+    ),
+    # test case 4: coordinates is not of data type int32
+    (
+        np.arange(
+            8,
+            dtype=np.float32,
+        ).reshape(4, 2),
+        re.escape('Invalid coordinates! The coordinates must be in shape (n, 2) and data type int32.'),
+    ),
+]
+
+data_test_grid_append_inplace = copy.deepcopy(data_test_grid_append)
+data_test_grid_append_inplace_return = copy.deepcopy(data_test_grid_append)
+
+data_test_grid_area = [
+    # test case 1: coordinates contains no coordinates
+    (
+        Grid(
             coordinates=None,
             tile_size=128,
         ),
         0,
     ),
-    # test case 2: process_area contains one coordinates
+    # test case 2: coordinates contains one coordinates
     (
-        ProcessArea(
+        Grid(
             coordinates=np.array(
                 [[-128, -128]],
                 dtype=np.int32,
@@ -149,27 +195,43 @@ data_test_process_area_area = [
         ),
         16384,
     ),
-    # test case 3: process_area contains four coordinates
+    # test case 3: coordinates contains four coordinates
     (
-        get_process_area(),
+        get_grid(),
         65536,
     ),
 ]
 
-data_test_process_area_chunk = [
+data_test_grid_bool = [
+    # test case 1: coordinates contains no coordinates
+    (
+        Grid(
+            coordinates=None,
+            tile_size=128,
+        ),
+        False,
+    ),
+    # test case 2: coordinates contains coordinates
+    (
+        get_grid(),
+        True,
+    ),
+]
+
+data_test_grid_chunk = [
     # test case 1: len(coordinates) is divisible by num_chunks
     (
-        get_process_area(),
+        get_grid(),
         2,
         [
-            ProcessArea(
+            Grid(
                 coordinates=np.array(
                     [[-128, -128], [0, -128]],
                     dtype=np.int32,
                 ),
                 tile_size=128,
             ),
-            ProcessArea(
+            Grid(
                 coordinates=np.array(
                     [[-128, 0], [0, 0]],
                     dtype=np.int32,
@@ -180,7 +242,7 @@ data_test_process_area_chunk = [
     ),
     # test case 2: len(coordinates) is not divisible by num_chunks
     (
-        ProcessArea(
+        Grid(
             coordinates=np.array(
                 [[-128, -128], [0, -128], [-128, 0], [0, 0], [128, -128]],
                 dtype=np.int32,
@@ -189,14 +251,14 @@ data_test_process_area_chunk = [
         ),
         2,
         [
-            ProcessArea(
+            Grid(
                 coordinates=np.array(
                     [[-128, -128], [0, -128], [128, -128]],
                     dtype=np.int32,
                 ),
                 tile_size=128,
             ),
-            ProcessArea(
+            Grid(
                 coordinates=np.array(
                     [[-128, 0], [0, 0]],
                     dtype=np.int32,
@@ -207,31 +269,31 @@ data_test_process_area_chunk = [
     ),
     # test case 3: num_chunks is equal to len(coordinates)
     (
-        get_process_area(),
+        get_grid(),
         4,
         [
-            ProcessArea(
+            Grid(
                 coordinates=np.array(
                     [[-128, -128]],
                     dtype=np.int32,
                 ),
                 tile_size=128,
             ),
-            ProcessArea(
+            Grid(
                 coordinates=np.array(
                     [[0, -128]],
                     dtype=np.int32,
                 ),
                 tile_size=128,
             ),
-            ProcessArea(
+            Grid(
                 coordinates=np.array(
                     [[-128, 0]],
                     dtype=np.int32,
                 ),
                 tile_size=128,
             ),
-            ProcessArea(
+            Grid(
                 coordinates=np.array(
                     [[0, 0]],
                     dtype=np.int32,
@@ -242,15 +304,15 @@ data_test_process_area_chunk = [
     ),
     # test case 4: num_chunks is 1
     (
-        get_process_area(),
+        get_grid(),
         1,
         [
-            get_process_area(),
+            get_grid(),
         ],
     ),
 ]
 
-data_test_process_area_chunk_exceptions = [
+data_test_grid_chunk_exceptions = [
     # test case 1: num_chunks is negative
     (
         -2,
@@ -268,24 +330,84 @@ data_test_process_area_chunk_exceptions = [
     ),
 ]
 
-data_test_process_area_contains = [
+data_test_grid_contains = [
     ((-128, -128), True),
     ((0, -128), True),
     ((-128, 0), True),
     ((0, 0), True),
     ((128, -128), False),
     ((128, 0), False),
+    (
+        np.array(
+            [[-128, -128], [0, -128]],
+            dtype=np.int32,
+        ),
+        True,
+    ),
+    (
+        get_grid_coordinates(),
+        True,
+    ),
+    (
+        np.array(
+            [[128, -128], [128, 0]],
+            dtype=np.int32,
+        ),
+        False,
+    ),
+    (
+        np.array(
+            [[-128, -128], [0, -128], [128, -128], [128, 0]],
+            dtype=np.int32,
+        ),
+        False,
+    ),
 ]
 
-data_test_process_area_eq = [
+data_test_grid_contains_exceptions = [
+    # test case 1: coordinates has one dimension
+    (
+        np.arange(
+            8,
+            dtype=np.int32,
+        ),
+        re.escape('Invalid coordinates! The coordinates must be in shape (n, 2) and data type int32.'),
+    ),
+    # test case 2: coordinates has three dimensions
+    (
+        np.arange(
+            8,
+            dtype=np.int32,
+        ).reshape(2, 2, 2),
+        re.escape('Invalid coordinates! The coordinates must be in shape (n, 2) and data type int32.'),
+    ),
+    # test case 3: coordinates has not two values in the second dimension
+    (
+        np.arange(
+            8,
+            dtype=np.int32,
+        ).reshape(2, 4),
+        re.escape('Invalid coordinates! The coordinates must be in shape (n, 2) and data type int32.'),
+    ),
+    # test case 4: coordinates is not of data type int32
+    (
+        np.arange(
+            8,
+            dtype=np.float32,
+        ).reshape(4, 2),
+        re.escape('Invalid coordinates! The coordinates must be in shape (n, 2) and data type int32.'),
+    ),
+]
+
+data_test_grid_eq = [
     # test case 1: other is equal
     (
-        get_process_area(),
+        get_grid(),
         True,
     ),
     # test case 2: coordinates is not equal
     (
-        ProcessArea(
+        Grid(
             coordinates=None,
             tile_size=128,
         ),
@@ -293,26 +415,26 @@ data_test_process_area_eq = [
     ),
     # test case 3: tile_size is not equal
     (
-        ProcessArea(
-            coordinates=get_process_area_coordinates(),
+        Grid(
+            coordinates=get_grid_coordinates(),
             tile_size=64,
         ),
         False,
     ),
-    # test case 4: other is not of type ProcessArea
+    # test case 4: other is not of type Grid
     (
         'invalid',
         False,
     ),
 ]
 
-data_test_process_area_from_bounding_box = [
+data_test_grid_from_bounding_box = [
     # test case 1: quantize is False
     (
         get_bounding_box(),
         128,
         False,
-        ProcessArea(
+        Grid(
             coordinates=np.array(
                 [[-128, -64], [0, -64], [-128, 64], [0, 64]],
                 dtype=np.int32,
@@ -325,7 +447,7 @@ data_test_process_area_from_bounding_box = [
         get_bounding_box(),
         128,
         True,
-        ProcessArea(
+        Grid(
             coordinates=np.array(
                 [[-128, -128], [0, -128], [-128, 0], [0, 0], [-128, 128], [0, 128]],
                 dtype=np.int32,
@@ -335,7 +457,7 @@ data_test_process_area_from_bounding_box = [
     ),
 ]
 
-data_test_process_area_from_bounding_box_exceptions = [
+data_test_grid_from_bounding_box_exceptions = [
     # test case 1: tile_size is negative
     (
         -128,
@@ -348,7 +470,7 @@ data_test_process_area_from_bounding_box_exceptions = [
     ),
 ]
 
-data_test_process_area_from_gdf = [
+data_test_grid_from_gdf = [
     # test case 1: gdf contains a box and quantize is False
     (
         gpd.GeoDataFrame(
@@ -356,7 +478,7 @@ data_test_process_area_from_gdf = [
         ),
         128,
         False,
-        ProcessArea(
+        Grid(
             coordinates=np.array(
                 [[-128, -64], [0, -64], [-128, 64], [0, 64]],
                 dtype=np.int32,
@@ -371,7 +493,7 @@ data_test_process_area_from_gdf = [
         ),
         128,
         True,
-        ProcessArea(
+        Grid(
             coordinates=np.array(
                 [[-128, -128], [0, -128], [-128, 0], [0, 0], [-128, 128], [0, 128]],
                 dtype=np.int32,
@@ -389,7 +511,7 @@ data_test_process_area_from_gdf = [
         ),
         128,
         False,
-        ProcessArea(
+        Grid(
             coordinates=np.array(
                 [[-128, -64], [0, 64]],
                 dtype=np.int32,
@@ -407,7 +529,7 @@ data_test_process_area_from_gdf = [
         ),
         128,
         True,
-        ProcessArea(
+        Grid(
             coordinates=np.array(
                 [[-128, -128], [0, 128]],
                 dtype=np.int32,
@@ -422,7 +544,7 @@ data_test_process_area_from_gdf = [
         ),
         128,
         False,
-        ProcessArea(
+        Grid(
             coordinates=np.array(
                 [[-128, -64], [0, -64], [-128, 64], [0, 64]],
                 dtype=np.int32,
@@ -437,7 +559,7 @@ data_test_process_area_from_gdf = [
         ),
         128,
         True,
-        ProcessArea(
+        Grid(
             coordinates=np.array(
                 [[-128, -128], [0, -128], [-128, 0], [0, 0], [-128, 128], [0, 128]],
                 dtype=np.int32,
@@ -457,7 +579,7 @@ data_test_process_area_from_gdf = [
         ),
         128,
         False,
-        ProcessArea(
+        Grid(
             coordinates=np.array(
                 [[-128, -64], [0, 64]],
                 dtype=np.int32,
@@ -477,7 +599,7 @@ data_test_process_area_from_gdf = [
         ),
         128,
         True,
-        ProcessArea(
+        Grid(
             coordinates=np.array(
                 [[-128, -128], [0, 128]],
                 dtype=np.int32,
@@ -487,7 +609,7 @@ data_test_process_area_from_gdf = [
     ),
 ]
 
-data_test_process_area_from_gdf_exceptions = [
+data_test_grid_from_gdf_exceptions = [
     # test case 1: gdf contains no geometries
     (
         gpd.GeoDataFrame(),
@@ -520,23 +642,23 @@ data_test_process_area_from_gdf_exceptions = [
     ),
 ]
 
-data_test_process_area_from_json = [
-    # test case 1: process_area contains no coordinates
+data_test_grid_from_json = [
+    # test case 1: coordinates contains no coordinates
     (
         '{"coordinates": [], "tile_size": 128}',
-        ProcessArea(
+        Grid(
             coordinates=None,
             tile_size=128,
         ),
     ),
-    # test case 2: process_area contains coordinates
+    # test case 2: coordinates contains coordinates
     (
         '{"coordinates": [[-128, -128], [0, -128], [-128, 0], [0, 0]], "tile_size": 128}',
-        get_process_area(),
+        get_grid(),
     ),
 ]
 
-data_test_process_area_from_json_exceptions = [
+data_test_grid_from_json_exceptions = [
     # test case 1: json_string does not contain the keys coordinates and tile_size
     (
         '{}',
@@ -554,7 +676,52 @@ data_test_process_area_from_json_exceptions = [
     ),
 ]
 
-data_test_process_area_getitem = [
+data_test_grid_from_grids = [
+    # test case 1: Default
+    (
+        [
+            get_grid(),
+            Grid(
+                coordinates=np.array(
+                    [[128, -128], [128, 0]],
+                    dtype=np.int32,
+                ),
+                tile_size=128,
+            ),
+        ],
+        Grid(
+            coordinates=np.array(
+                [[-128, -128], [0, -128], [-128, 0], [0, 0], [128, -128], [128, 0]],
+                dtype=np.int32,
+            ),
+            tile_size=128,
+        ),
+    ),
+]
+
+data_test_grid_from_grids_exceptions = [
+    # test case 1: grids contains no grids
+    (
+        [],
+        re.escape('Invalid grids! The grids must contain at least one grid.'),
+    ),
+    # test case 2: tile_size is not equal
+    (
+        [
+            get_grid(),
+            Grid(
+                coordinates=np.array(
+                    [[128, -128], [128, 0]],
+                    dtype=np.int32,
+                ),
+                tile_size=64,
+            ),
+        ],
+        re.escape('Invalid grids! The tile sizes of the grids must be equal.'),
+    ),
+]
+
+data_test_grid_getitem = [
     (0, (-128, -128)),
     (1, (0, -128)),
     (2, (-128, 0)),
@@ -565,10 +732,10 @@ data_test_process_area_getitem = [
     (-4, (-128, -128)),
 ]
 
-data_test_process_area_getitem_slice = [
+data_test_grid_getitem_slice = [
     (
         slice(None, 2),
-        ProcessArea(
+        Grid(
             coordinates=np.array(
                 [[-128, -128], [0, -128]],
                 dtype=np.int32,
@@ -578,7 +745,7 @@ data_test_process_area_getitem_slice = [
     ),
     (
         slice(2, None),
-        ProcessArea(
+        Grid(
             coordinates=np.array(
                 [[-128, 0], [0, 0]],
                 dtype=np.int32,
@@ -588,7 +755,7 @@ data_test_process_area_getitem_slice = [
     ),
     (
         slice(1, -1),
-        ProcessArea(
+        Grid(
             coordinates=np.array(
                 [[0, -128], [-128, 0]],
                 dtype=np.int32,
@@ -598,11 +765,11 @@ data_test_process_area_getitem_slice = [
     ),
     (
         slice(None, None),
-        get_process_area(),
+        get_grid(),
     ),
     (
         slice(None, None, 2),
-        ProcessArea(
+        Grid(
             coordinates=np.array(
                 [[-128, -128], [-128, 0]],
                 dtype=np.int32,
@@ -612,7 +779,7 @@ data_test_process_area_getitem_slice = [
     ),
     (
         slice(None, None, -2),
-        ProcessArea(
+        Grid(
             coordinates=np.array(
                 [[0, 0], [0, -128]],
                 dtype=np.int32,
@@ -622,7 +789,7 @@ data_test_process_area_getitem_slice = [
     ),
     (
         slice(None, None, -1),
-        ProcessArea(
+        Grid(
             coordinates=np.array(
                 [[0, 0], [-128, 0], [0, -128], [-128, -128]],
                 dtype=np.int32,
@@ -632,8 +799,8 @@ data_test_process_area_getitem_slice = [
     ),
 ]
 
-data_test_process_area_init = [
-    # test case 1: process_area contains no coordinates
+data_test_grid_init = [
+    # test case 1: coordinates contains no coordinates
     (
         None,
         128,
@@ -643,26 +810,36 @@ data_test_process_area_init = [
         ),
         128,
     ),
-    # test case 2: process_area contains coordinates
+    # test case 2: coordinates contains coordinates
     (
-        get_process_area_coordinates(),
+        get_grid_coordinates(),
         128,
-        get_process_area_coordinates(),
+        get_grid_coordinates(),
         128,
     ),
-    # test case 3: coordinates is not sorted
+    # test case 3: coordinates contains duplicate coordinates
+    (
+        np.array(
+            [[-128, -128], [0, -128], [-128, 0], [0, 0], [-128, 0], [0, 0]],
+            dtype=np.int32,
+        ),
+        128,
+        get_grid_coordinates(),
+        128,
+    ),
+    # test case 4: coordinates is not sorted
     (
         np.array(
             [[0, 0], [-128, 0], [0, -128], [-128, -128]],
             dtype=np.int32,
         ),
         128,
-        get_process_area_coordinates(),
+        get_grid_coordinates(),
         128,
     ),
 ]
 
-data_test_process_area_init_exceptions = [
+data_test_grid_init_exceptions = [
     # test case 1: coordinates has one dimension
     (
         np.arange(
@@ -699,40 +876,53 @@ data_test_process_area_init_exceptions = [
         128,
         re.escape('Invalid coordinates! The coordinates must be in shape (n, 2) and data type int32.'),
     ),
-    # test case 5: tile_size is negative
+    # test case 5: coordinates is not quantized regularly
     (
-        get_process_area_coordinates(),
+        np.array(
+            [[-128, -128], [0, -128], [-128, 0], [0, 0], [64, -128]],
+            dtype=np.int32,
+        ),
+        128,
+        re.escape('Invalid coordinates! The coordinates must be quantized regularly.'),
+    ),
+    # test case 6: coordinates is not quantized regularly
+    (
+        np.array(
+            [[-128, -128], [0, -128], [-128, 0], [0, 0], [128, -64]],
+            dtype=np.int32,
+        ),
+        128,
+        re.escape('Invalid coordinates! The coordinates must be quantized regularly.'),
+    ),
+    # test case 7: coordinates is not quantized regularly
+    (
+        np.array(
+            [[-128, -128], [0, -128], [-128, 0], [0, 0], [64, -64]],
+            dtype=np.int32,
+        ),
+        128,
+        re.escape('Invalid coordinates! The coordinates must be quantized regularly.'),
+    ),
+    # test case 8: tile_size is negative
+    (
+        get_grid_coordinates(),
         -128,
         re.escape('Invalid tile_size! The tile size must be positive.'),
     ),
-    # test case 6: tile_size is 0
+    # test case 9: tile_size is 0
     (
-        get_process_area_coordinates(),
+        get_grid_coordinates(),
         0,
         re.escape('Invalid tile_size! The tile size must be positive.'),
     ),
 ]
 
-data_test_process_area_init_warnings = [
-    # test case 1: coordinates contains duplicates
-    (
-        np.array(
-            [[-128, -128], [0, -128], [-128, 0], [0, 0], [-128, -128], [0, 0]],
-            dtype=np.int32,
-        ),
-        128,
-        get_process_area_coordinates(),
-        128,
-        re.escape('Invalid coordinates! The coordinates must contain unique coordinates. Duplicates are removed.'),
-    ),
-]
-
-data_test_process_area_remove = [
+data_test_grid_remove = [
     # test case 1: Default
     (
-        get_process_area(),
+        get_grid(),
         (-128, -128),
-        ProcessArea(
+        Grid(
             coordinates=np.array(
                 [[0, -128], [-128, 0], [0, 0]],
                 dtype=np.int32,
@@ -740,44 +930,23 @@ data_test_process_area_remove = [
             tile_size=128,
         ),
     ),
-]
-
-data_test_process_area_remove_inplace = copy.deepcopy(data_test_process_area_remove)
-data_test_process_area_remove_inplace_return = copy.deepcopy(data_test_process_area_remove)
-
-
-data_test_process_area_remove_warnings = [
-    # test case 1: coordinates is not in process_area
+    # test case 2: coordinates contains no coordinates
     (
-        get_process_area(),
-        (128, -128),
-        get_process_area(),
-        re.escape('Invalid coordinates! The coordinates are not in the process area.'),
-    ),
-]
-
-data_test_process_area_remove_inplace_warnings = copy.deepcopy(data_test_process_area_remove_warnings)
-data_test_process_area_remove_inplace_return_warnings = copy.deepcopy(data_test_process_area_remove_warnings)
-
-data_test_process_area_sub = [
-    # test case 1: other contains no coordinates
-    (
-        ProcessArea(
-            coordinates=None,
-            tile_size=128,
+        get_grid(),
+        np.empty(
+            shape=(0, 2),
+            dtype=np.int32,
         ),
-        get_process_area(),
+        get_grid(),
     ),
-    # test case 2: other contains coordinates
+    # test case 3: coordinates contains coordinates
     (
-        ProcessArea(
-            coordinates=np.array(
-                [[-128, 0], [0, 0], [128, -128], [128, 0]],
-                dtype=np.int32,
-            ),
-            tile_size=128,
+        get_grid(),
+        np.array(
+            [[-128, 0], [0, 0]],
+            dtype=np.int32,
         ),
-        ProcessArea(
+        Grid(
             coordinates=np.array(
                 [[-128, -128], [0, -128]],
                 dtype=np.int32,
@@ -787,13 +956,79 @@ data_test_process_area_sub = [
     ),
 ]
 
-data_test_process_area_sub_exceptions = [
+data_test_grid_remove_exceptions = [
+    # test case 1: coordinates has one dimension
+    (
+        np.arange(
+            8,
+            dtype=np.int32,
+        ),
+        re.escape('Invalid coordinates! The coordinates must be in shape (n, 2) and data type int32.'),
+    ),
+    # test case 2: coordinates has three dimensions
+    (
+        np.arange(
+            8,
+            dtype=np.int32,
+        ).reshape(2, 2, 2),
+        re.escape('Invalid coordinates! The coordinates must be in shape (n, 2) and data type int32.'),
+    ),
+    # test case 3: coordinates has not two values in the second dimension
+    (
+        np.arange(
+            8,
+            dtype=np.int32,
+        ).reshape(2, 4),
+        re.escape('Invalid coordinates! The coordinates must be in shape (n, 2) and data type int32.'),
+    ),
+    # test case 4: coordinates is not of data type int32
+    (
+        np.arange(
+            8,
+            dtype=np.float32,
+        ).reshape(4, 2),
+        re.escape('Invalid coordinates! The coordinates must be in shape (n, 2) and data type int32.'),
+    ),
+]
+
+data_test_grid_remove_inplace = copy.deepcopy(data_test_grid_remove)
+data_test_grid_remove_inplace_return = copy.deepcopy(data_test_grid_remove)
+
+data_test_grid_sub = [
+    # test case 1: other contains no coordinates
+    (
+        Grid(
+            coordinates=None,
+            tile_size=128,
+        ),
+        get_grid(),
+    ),
+    # test case 2: other contains coordinates
+    (
+        Grid(
+            coordinates=np.array(
+                [[-128, 0], [0, 0], [128, -128], [128, 0]],
+                dtype=np.int32,
+            ),
+            tile_size=128,
+        ),
+        Grid(
+            coordinates=np.array(
+                [[-128, -128], [0, -128]],
+                dtype=np.int32,
+            ),
+            tile_size=128,
+        ),
+    ),
+]
+
+data_test_grid_sub_exceptions = [
     # test case 1: tile_size is not equal
     (
-        ProcessArea(
+        Grid(
             coordinates=None,
             tile_size=64,
         ),
-        re.escape('Invalid other! The tile sizes of the process areas must be equal.'),
+        re.escape('Invalid other! The tile sizes of the grids must be equal.'),
     ),
 ]

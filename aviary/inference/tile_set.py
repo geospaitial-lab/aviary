@@ -1,20 +1,23 @@
-from aviary.core.process_area import ProcessArea
-from aviary.core.tile import Tile
+from collections.abc import (
+    Iterable,
+    Iterator,
+)
+
+from aviary.core.grid import Grid
+from aviary.core.tiles import Tile
 from aviary.inference.tile_fetcher import TileFetcher
 
 
-class TileSet:
-    """A tile set is an iterable that returns a tile for each coordinates in the process area
-    by calling the tile fetcher.
-    The tile set is used by the tile loader to fetch the tiles for each batch.
+class TileSet(Iterable[Tile]):
+    """A tile set is an iterable that yields a tile for each coordinates in the grid by calling the tile fetcher.
 
     Examples:
-        Assume the process area and the tile fetcher are already created.
+        Assume the grid and the tile fetcher are already created.
 
         You can create a tile set and iterate over the tiles.
 
         >>> tile_set = TileSet(
-        ...     process_area=process_area,
+        ...     grid=grid,
         ...     tile_fetcher=tile_fetcher,
         ... )
         ...
@@ -24,15 +27,15 @@ class TileSet:
 
     def __init__(
         self,
-        process_area: ProcessArea,
+        grid: Grid,
         tile_fetcher: TileFetcher,
     ) -> None:
         """
         Parameters:
-            process_area: Process area
+            grid: Grid
             tile_fetcher: Tile fetcher
         """
-        self._process_area = process_area
+        self._grid = grid
         self._tile_fetcher = tile_fetcher
 
     def __len__(self) -> int:
@@ -41,7 +44,7 @@ class TileSet:
         Returns:
             Number of tiles
         """
-        return len(self._process_area)
+        return len(self._grid)
 
     def __getitem__(
         self,
@@ -55,5 +58,14 @@ class TileSet:
         Returns:
             Tile
         """
-        coordinates = self._process_area[index]
+        coordinates = self._grid[index]
         return self._tile_fetcher(coordinates=coordinates)
+
+    def __iter__(self) -> Iterator[Tile]:
+        """Iterates over the tiles.
+
+        Yields:
+            Tile
+        """
+        for index in range(len(self)):
+            yield self[index]
