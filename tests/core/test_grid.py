@@ -32,6 +32,7 @@ from tests.core.data.data_test_grid import (
     data_test_grid_chunk,
     data_test_grid_chunk_exceptions,
     data_test_grid_contains,
+    data_test_grid_contains_exceptions,
     data_test_grid_eq,
     data_test_grid_from_bounding_box,
     data_test_grid_from_bounding_box_exceptions,
@@ -303,6 +304,16 @@ def test_grid_contains(
     contains = coordinates in grid
 
     assert contains is expected
+
+
+@pytest.mark.parametrize(('coordinates', 'message'), data_test_grid_contains_exceptions)
+def test_grid_contains_exceptions(
+    coordinates: CoordinatesSet,
+    message: str,
+    grid: Grid,
+) -> None:
+    with pytest.raises(AviaryUserError, match=message):
+        _ = coordinates in grid
 
 
 @pytest.mark.parametrize(('index', 'expected'), data_test_grid_getitem)
