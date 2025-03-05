@@ -7,7 +7,7 @@ import numpy.typing as npt
 import pytest
 
 # noinspection PyProtectedMember
-from aviary._functional.geodata.coordinates_filter import (
+from aviary._functional.utils.coordinates_filter import (
     _geospatial_filter_difference,
     _geospatial_filter_intersection,
     _set_filter_difference,

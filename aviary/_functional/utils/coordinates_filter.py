@@ -22,7 +22,7 @@ if TYPE_CHECKING:
         EPSGCode,
         TileSize,
     )
-    from aviary.geodata.coordinates_filter import CoordinatesFilter
+    from aviary.utils.coordinates_filter import CoordinatesFilter
 
 
 def composite_filter(

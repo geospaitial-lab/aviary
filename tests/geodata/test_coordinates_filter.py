@@ -8,7 +8,7 @@ from aviary.core.enums import (
     GeospatialFilterMode,
     SetFilterMode,
 )
-from aviary.geodata.coordinates_filter import (
+from aviary.utils.coordinates_filter import (
     CompositeFilter,
     CoordinatesFilter,
     DuplicatesFilter,

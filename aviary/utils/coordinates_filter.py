@@ -5,7 +5,7 @@ import numpy as np
 import numpy.typing as npt
 
 # noinspection PyProtectedMember
-from aviary._functional.geodata.coordinates_filter import (
+from aviary._functional.utils.coordinates_filter import (
     composite_filter,
     duplicates_filter,
     geospatial_filter,

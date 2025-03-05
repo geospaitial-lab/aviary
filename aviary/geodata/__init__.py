@@ -1,11 +1,3 @@
-from .coordinates_filter import (
-    CompositeFilter,
-    CoordinatesFilter,
-    DuplicatesFilter,
-    GeospatialFilter,
-    MaskFilter,
-    SetFilter,
-)
 from .geodata_postprocessor import (
     ClipPostprocessor,
     ClipPostprocessorConfig,
@@ -28,20 +20,14 @@ from .geodata_postprocessor import (
 __all__ = [
     'ClipPostprocessor',
     'ClipPostprocessorConfig',
-    'CompositeFilter',
     'CompositePostprocessor',
     'CompositePostprocessorConfig',
-    'CoordinatesFilter',
-    'DuplicatesFilter',
     'FieldNamePostprocessor',
     'FieldNamePostprocessorConfig',
     'FillPostprocessor',
     'FillPostprocessorConfig',
     'GeodataPostprocessor',
     'GeodataPostprocessorConfig',
-    'GeospatialFilter',
-    'MaskFilter',
-    'SetFilter',
     'SievePostprocessor',
     'SievePostprocessorConfig',
     'SimplifyPostprocessor',

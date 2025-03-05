@@ -8,14 +8,6 @@ from aviary.core.enums import (
     GeospatialFilterMode,
     SetFilterMode,
 )
-from aviary.geodata.coordinates_filter import (
-    CompositeFilter,
-    CoordinatesFilter,
-    DuplicatesFilter,
-    GeospatialFilter,
-    MaskFilter,
-    SetFilter,
-)
 from aviary.geodata.geodata_postprocessor import (
     ClipPostprocessor,
     CompositePostprocessor,
@@ -25,6 +17,14 @@ from aviary.geodata.geodata_postprocessor import (
     SievePostprocessor,
     SimplifyPostprocessor,
     ValuePostprocessor,
+)
+from aviary.utils.coordinates_filter import (
+    CompositeFilter,
+    CoordinatesFilter,
+    DuplicatesFilter,
+    GeospatialFilter,
+    MaskFilter,
+    SetFilter,
 )
 
 

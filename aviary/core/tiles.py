@@ -15,7 +15,7 @@ if TYPE_CHECKING:
     import numpy.typing as npt
 
 # noinspection PyProtectedMember
-from aviary._functional.geodata.coordinates_filter import duplicates_filter
+from aviary._functional.utils.coordinates_filter import duplicates_filter
 from aviary.core.channel import (
     Channel,
     RasterChannel,

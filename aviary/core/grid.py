@@ -17,7 +17,7 @@ import pydantic
 from shapely.geometry import box
 
 # noinspection PyProtectedMember
-from aviary._functional.geodata.coordinates_filter import (
+from aviary._functional.utils.coordinates_filter import (
     duplicates_filter,
     geospatial_filter,
     set_filter,
@@ -37,7 +37,7 @@ from aviary.core.type_aliases import (
 )
 
 if TYPE_CHECKING:
-    from aviary.geodata.coordinates_filter import CoordinatesFilter
+    from aviary.utils.coordinates_filter import CoordinatesFilter
 
 
 class Grid(Iterable[Coordinates]):

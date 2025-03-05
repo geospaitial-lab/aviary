@@ -17,7 +17,7 @@ from aviary.core.type_aliases import (
     CoordinatesSet,
     TileSize,
 )
-from aviary.geodata.coordinates_filter import CoordinatesFilter
+from aviary.utils.coordinates_filter import CoordinatesFilter
 from tests.core.data.data_test_grid import (
     data_test_grid_add,
     data_test_grid_add_exceptions,
