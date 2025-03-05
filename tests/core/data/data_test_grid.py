@@ -176,7 +176,7 @@ data_test_grid_append_inplace = copy.deepcopy(data_test_grid_append)
 data_test_grid_append_inplace_return = copy.deepcopy(data_test_grid_append)
 
 data_test_grid_area = [
-    # test case 1: grid contains no coordinates
+    # test case 1: coordinates contains no coordinates
     (
         Grid(
             coordinates=None,
@@ -184,7 +184,7 @@ data_test_grid_area = [
         ),
         0,
     ),
-    # test case 2: grid contains one coordinates
+    # test case 2: coordinates contains one coordinates
     (
         Grid(
             coordinates=np.array(
@@ -195,7 +195,7 @@ data_test_grid_area = [
         ),
         16384,
     ),
-    # test case 3: grid contains four coordinates
+    # test case 3: coordinates contains four coordinates
     (
         get_grid(),
         65536,
@@ -203,7 +203,7 @@ data_test_grid_area = [
 ]
 
 data_test_grid_bool = [
-    # test case 1: grid contains no coordinates
+    # test case 1: coordinates contains no coordinates
     (
         Grid(
             coordinates=None,
@@ -211,7 +211,7 @@ data_test_grid_bool = [
         ),
         False,
     ),
-    # test case 2: grid contains coordinates
+    # test case 2: coordinates contains coordinates
     (
         get_grid(),
         True,
@@ -608,7 +608,7 @@ data_test_grid_from_gdf_exceptions = [
 ]
 
 data_test_grid_from_json = [
-    # test case 1: grid contains no coordinates
+    # test case 1: coordinates contains no coordinates
     (
         '{"coordinates": [], "tile_size": 128}',
         Grid(
@@ -616,7 +616,7 @@ data_test_grid_from_json = [
             tile_size=128,
         ),
     ),
-    # test case 2: grid contains coordinates
+    # test case 2: coordinates contains coordinates
     (
         '{"coordinates": [[-128, -128], [0, -128], [-128, 0], [0, 0]], "tile_size": 128}',
         get_grid(),
@@ -765,7 +765,7 @@ data_test_grid_getitem_slice = [
 ]
 
 data_test_grid_init = [
-    # test case 1: grid contains no coordinates
+    # test case 1: coordinates contains no coordinates
     (
         None,
         128,
@@ -775,14 +775,24 @@ data_test_grid_init = [
         ),
         128,
     ),
-    # test case 2: grid contains coordinates
+    # test case 2: coordinates contains coordinates
     (
         get_grid_coordinates(),
         128,
         get_grid_coordinates(),
         128,
     ),
-    # test case 3: coordinates is not sorted
+    # test case 3: coordinates contains duplicate coordinates
+    (
+        np.array(
+            [[-128, -128], [0, -128], [-128, 0], [0, 0], [-128, 0], [0, 0]],
+            dtype=np.int32,
+        ),
+        128,
+        get_grid_coordinates(),
+        128,
+    ),
+    # test case 4: coordinates is not sorted
     (
         np.array(
             [[0, 0], [-128, 0], [0, -128], [-128, -128]],

@@ -235,7 +235,7 @@ data_test_raster_channel_from_channels = [
 ]
 
 data_test_raster_channel_from_channels_exceptions = [
-    # test case 1: channels contain no channels
+    # test case 1: channels contains no channels
     (
         [],
         re.escape('Invalid channels! The channels must contain at least one channel.'),
@@ -710,7 +710,7 @@ data_test_vector_channel_from_channels = [
 ]
 
 data_test_vector_channel_from_channels_exceptions = [
-    # test case 1: channels contain no channels
+    # test case 1: channels contains no channels
     (
         [],
         re.escape('Invalid channels! The channels must contain at least one channel.'),
@@ -815,7 +815,18 @@ data_test_vector_channel_from_unscaled_data_exceptions = [
         0,
         re.escape('Invalid coordinates! The coordinates must be in shape (n, 2) and data type int32.'),
     ),
-    # test case 6: len(coordinates) is not equal to len(data)
+    # test case 6: coordinates contains duplicate coordinates
+    (
+        get_vector_channel_data(),
+        np.array(
+            [[128, -128], [128, -128]],
+            dtype=np.int32,
+        ),
+        128,
+        0,
+        re.escape('Invalid coordinates! The coordinates must contain unique coordinates.'),
+    ),
+    # test case 7: len(coordinates) is not equal to len(data)
     (
         get_vector_channel_data(),
         np.array(
@@ -826,7 +837,7 @@ data_test_vector_channel_from_unscaled_data_exceptions = [
         0,
         re.escape('Invalid coordinates! The number of coordinates must be equal to the number of data items.'),
     ),
-    # test case 7: tile_size is negative
+    # test case 8: tile_size is negative
     (
         get_vector_channel_data(),
         np.array(
@@ -837,7 +848,7 @@ data_test_vector_channel_from_unscaled_data_exceptions = [
         0,
         re.escape('Invalid tile_size! The tile size must be positive.'),
     ),
-    # test case 8: tile_size is 0
+    # test case 9: tile_size is 0
     (
         get_vector_channel_data(),
         np.array(
@@ -848,7 +859,7 @@ data_test_vector_channel_from_unscaled_data_exceptions = [
         0,
         re.escape('Invalid tile_size! The tile size must be positive.'),
     ),
-    # test case 9: buffer_size is negative
+    # test case 10: buffer_size is negative
     (
         get_vector_channel_data(),
         np.array(

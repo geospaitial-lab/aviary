@@ -980,7 +980,7 @@ class VectorChannel(Channel, Iterable[gpd.GeoDataFrame]):
         if len(coordinates) != len(unique_coordinates):
             message = (
                 'Invalid coordinates! '
-                'The coordinates must contain unique coordinates. '
+                'The coordinates must contain unique coordinates.'
             )
             raise AviaryUserError(message)
 

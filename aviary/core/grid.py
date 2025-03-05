@@ -105,6 +105,8 @@ class Grid(Iterable[Coordinates]):
             )
             raise AviaryUserError(message)
 
+        self._coordinates = duplicates_filter(coordinates=self._coordinates)
+
         coordinates_x_remainders = self._coordinates[:, 0] % self._tile_size
         coordinates_y_remainders = self._coordinates[:, 1] % self._tile_size
         unique_coordinates_x_remainders = np.unique(coordinates_x_remainders)
