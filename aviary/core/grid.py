@@ -357,7 +357,7 @@ class Grid(Iterable[Coordinates]):
             Grid
 
         Raises:
-            AviaryUserError: Invalid `grids` (the grids contain no grid)
+            AviaryUserError: Invalid `grids` (the grids contain no grids)
             AviaryUserError: Invalid `grids` (the tile sizes of the grids are not equal)
         """
         if not grids:

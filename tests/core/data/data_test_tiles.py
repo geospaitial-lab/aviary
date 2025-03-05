@@ -112,11 +112,22 @@ data_test_tiles_getitem = [
 ]
 
 data_test_tiles_init = [
-
+    # test case 1: Default
+    (
+        get_tiles_channels(),
+        get_tiles_coordinates(),
+        128,
+        False,
+        get_tiles_channels(),
+        get_tiles_coordinates(),
+        128,
+        False,
+    ),
+    # test case 2: batch_size is 1
 ]
 
 data_test_tiles_init_exceptions = [
-    # test case 1: channels contains no channel
+    # test case 1: channels contains no channels
     (
         [],
         get_tiles_coordinates(),
@@ -125,23 +136,83 @@ data_test_tiles_init_exceptions = [
     ),
     # test case 2: channels contains duplicate channel name and time step combinations
     (
-        [*get_tiles_channels(), get_tiles_channel_1()],
+        [
+            *get_tiles_channels(),
+            get_tiles_channel_1(),
+        ],
         get_tiles_coordinates(),
         128,
-        re.escape(
-            'Invalid channels! '
-            'The channels must contain unique channel name and time step combinations.',
-        ),
+        re.escape('Invalid channels! The channels must contain unique channel name and time step combinations.'),
     ),
     # test case 3: batch_size is not equal
-    # test case 4: tile_size is negative
+    # test case 4: coordinates has one dimension
+    (
+        get_tiles_channels(),
+        np.arange(
+            8,
+            dtype=np.int32,
+        ),
+        128,
+        re.escape('Invalid coordinates! The coordinates must be in shape (n, 2) and data type int32.'),
+    ),
+    # test case 5: coordinates has three dimensions
+    (
+        get_tiles_channels(),
+        np.arange(
+            8,
+            dtype=np.int32,
+        ).reshape(2, 2, 2),
+        128,
+        re.escape('Invalid coordinates! The coordinates must be in shape (n, 2) and data type int32.'),
+    ),
+    # test case 6: coordinates has not two values in the second dimension
+    (
+        get_tiles_channels(),
+        np.arange(
+            8,
+            dtype=np.int32,
+        ).reshape(2, 4),
+        128,
+        re.escape('Invalid coordinates! The coordinates must be in shape (n, 2) and data type int32.'),
+    ),
+    # test case 7: coordinates is not of data type int32
+    (
+        get_tiles_channels(),
+        np.arange(
+            8,
+            dtype=np.float32,
+        ).reshape(4, 2),
+        128,
+        re.escape('Invalid coordinates! The coordinates must be in shape (n, 2) and data type int32.'),
+    ),
+    # test case 8: coordinates contains duplicate coordinates
+    (
+        get_tiles_channels(),
+        np.array(
+            [[128, -128], [128, -128]],
+            dtype=np.int32,
+        ),
+        128,
+        re.escape('Invalid coordinates! The coordinates must contain unique coordinates.'),
+    ),
+    # test case 9: len(coordinates) is not equal to batch_size
+    (
+        get_tiles_channels(),
+        np.array(
+            [[128, -128]],
+            dtype=np.int32,
+        ),
+        128,
+        re.escape('Invalid coordinates! The number of coordinates must be equal to the batch size of the channels.'),
+    ),
+    # test case 10: tile_size is negative
     (
         get_tiles_channels(),
         get_tiles_coordinates(),
         -128,
         re.escape('Invalid tile_size! The tile size must be positive.'),
     ),
-    # test case 5: tile_size is 0
+    # test case 11: tile_size is 0
     (
         get_tiles_channels(),
         get_tiles_coordinates(),

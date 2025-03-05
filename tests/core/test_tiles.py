@@ -1,6 +1,7 @@
 import inspect
 import pickle
 
+import numpy as np
 import pytest
 
 from aviary.core.channel import Channel
@@ -62,7 +63,12 @@ def test_tiles_init(
     )
 
     assert tiles.channels == expected_channels
-    assert tiles.coordinates == expected_coordinates
+
+    if not isinstance(coordinates, np.ndarray):
+        assert tiles.coordinates == expected_coordinates
+    else:
+        np.testing.assert_array_equal(tiles.coordinates, expected_coordinates)
+
     assert tiles.tile_size == expected_tile_size
     assert tiles.is_copied is expected_copy
 

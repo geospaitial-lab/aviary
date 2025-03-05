@@ -700,7 +700,7 @@ data_test_grid_from_grids = [
 ]
 
 data_test_grid_from_grids_exceptions = [
-    # test case 1: grids contains no grid
+    # test case 1: grids contains no grids
     (
         [],
         re.escape('Invalid grids! The grids must contain at least one grid.'),
