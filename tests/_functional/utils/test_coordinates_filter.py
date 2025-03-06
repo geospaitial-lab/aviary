@@ -20,7 +20,7 @@ from aviary._functional.utils.coordinates_filter import (
 from aviary.core.enums import SetFilterMode
 from aviary.core.exceptions import AviaryUserError
 from aviary.core.type_aliases import CoordinatesSet
-from tests._functional.geodata.data.data_test_coordinates_filter import (
+from tests._functional.utils.data.data_test_coordinates_filter import (
     data_test__geospatial_filter_difference,
     data_test__geospatial_filter_intersection,
     data_test__set_filter_difference,
@@ -104,9 +104,9 @@ def test_mask_filter(
     np.testing.assert_array_equal(filtered_coordinates, expected)
 
 
-@patch('aviary._functional.geodata.coordinates_filter._set_filter_union')
-@patch('aviary._functional.geodata.coordinates_filter._set_filter_intersection')
-@patch('aviary._functional.geodata.coordinates_filter._set_filter_difference')
+@patch('aviary._functional.utils.coordinates_filter._set_filter_union')
+@patch('aviary._functional.utils.coordinates_filter._set_filter_intersection')
+@patch('aviary._functional.utils.coordinates_filter._set_filter_difference')
 def test_set_filter(
     mocked_set_filter_difference: MagicMock,
     mocked_set_filter_intersection: MagicMock,
