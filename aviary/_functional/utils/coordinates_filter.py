@@ -11,7 +11,6 @@ from aviary.core.enums import (
     SetFilterMode,
 )
 from aviary.core.exceptions import AviaryUserError
-from aviary.core.grid import Grid
 
 if TYPE_CHECKING:
     from aviary.core.type_aliases import (
@@ -79,6 +78,8 @@ def geospatial_filter(
     Raises:
         AviaryUserError: Invalid `mode`
     """
+    from aviary.core.grid import Grid
+
     grid = Grid(
         coordinates=coordinates,
         tile_size=tile_size,
