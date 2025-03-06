@@ -73,7 +73,7 @@ class CompositeFilter:
         self,
         coordinates: CoordinatesSet,
     ) -> CoordinatesSet:
-        """Filters the coordinates.
+        """Filters the coordinates with each coordinates filter.
 
         Parameters:
             coordinates: Coordinates (x_min, y_min) of each tile in meters
@@ -97,7 +97,7 @@ class DuplicatesFilter:
         self,
         coordinates: CoordinatesSet,
     ) -> CoordinatesSet:
-        """Filters the coordinates.
+        """Filters the coordinates by removing duplicate coordinates.
 
         Parameters:
             coordinates: Coordinates (x_min, y_min) of each tile in meters
@@ -140,7 +140,7 @@ class GeospatialFilter:
         self,
         coordinates: CoordinatesSet,
     ) -> CoordinatesSet:
-        """Filters the coordinates.
+        """Filters the coordinates based on the polygons in the geodataframe.
 
         Parameters:
             coordinates: Coordinates (x_min, y_min) of each tile in meters
@@ -176,7 +176,7 @@ class MaskFilter:
         self,
         coordinates: CoordinatesSet,
     ) -> CoordinatesSet:
-        """Filters the coordinates.
+        """Filters the coordinates based on the boolean mask.
 
         Parameters:
             coordinates: Coordinates (x_min, y_min) of each tile in meters
@@ -218,7 +218,7 @@ class SetFilter:
         self,
         coordinates: CoordinatesSet,
     ) -> CoordinatesSet:
-        """Filters the coordinates.
+        """Filters the coordinates based on the other coordinates.
 
         Parameters:
             coordinates: Coordinates (x_min, y_min) of each tile in meters
