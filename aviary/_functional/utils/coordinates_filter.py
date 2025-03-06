@@ -5,21 +5,17 @@ from typing import TYPE_CHECKING
 import geopandas as gpd
 import numpy as np
 from numpy import typing as npt
-from shapely.geometry import (
-    Polygon,
-    box,
-)
 
 from aviary.core.enums import (
     GeospatialFilterMode,
     SetFilterMode,
 )
 from aviary.core.exceptions import AviaryUserError
+from aviary.core.grid import Grid
 
 if TYPE_CHECKING:
     from aviary.core.type_aliases import (
         CoordinatesSet,
-        EPSGCode,
         TileSize,
     )
     from aviary.utils.coordinates_filter import CoordinatesFilter
@@ -32,11 +28,11 @@ def composite_filter(
     """Filters the coordinates with each coordinates filter.
 
     Parameters:
-        coordinates: coordinates (x_min, y_min) of each tile
-        coordinates_filters: coordinates filters
+        coordinates: Coordinates (x_min, y_min) of each tile in meters
+        coordinates_filters: Coordinates filters
 
     Returns:
-        filtered coordinates (x_min, y_min) of each tile
+        Coordinates (x_min, y_min) of each tile in meters
     """
     for coordinates_filter in coordinates_filters:
         coordinates = coordinates_filter(coordinates)
@@ -47,16 +43,20 @@ def composite_filter(
 def duplicates_filter(
     coordinates: CoordinatesSet,
 ) -> CoordinatesSet:
-    """Filters the coordinates by removing duplicates.
+    """Filters the coordinates by removing duplicate coordinates.
 
     Parameters:
-        coordinates: coordinates (x_min, y_min) of each tile
+        coordinates: Coordinates (x_min, y_min) of each tile in meters
 
     Returns:
-        filtered coordinates (x_min, y_min) of each tile
+        Coordinates (x_min, y_min) of each tile in meters
     """
-    _, index = np.unique(coordinates, axis=0, return_index=True)
-    return coordinates[np.sort(index)]
+    _, indices = np.unique(
+        coordinates,
+        axis=0,
+        return_index=True,
+    )
+    return coordinates[np.sort(indices)]
 
 
 def geospatial_filter(
@@ -68,24 +68,23 @@ def geospatial_filter(
     """Filters the coordinates based on the polygons in the geodataframe.
 
     Parameters:
-        coordinates: coordinates (x_min, y_min) of each tile
-        tile_size: tile size in meters
-        gdf: geodataframe
-        mode: geospatial filter mode (`DIFFERENCE` or `INTERSECTION`)
+        coordinates: Coordinates (x_min, y_min) of each tile in meters
+        tile_size: Tile size in meters
+        gdf: Geodataframe
+        mode: Geospatial filter mode (`DIFFERENCE` or `INTERSECTION`)
 
     Returns:
-        filtered coordinates (x_min, y_min) of each tile
+        Coordinates (x_min, y_min) of each tile in meters
 
     Raises:
-        AviaryUserError: Invalid geospatial filter mode
+        AviaryUserError: Invalid `mode`
     """
-    epsg_code = gdf.crs.to_epsg() if gdf.crs is not None else None
-
-    grid = _generate_grid(
+    grid = Grid(
         coordinates=coordinates,
         tile_size=tile_size,
-        epsg_code=epsg_code,
     )
+    epsg_code = gdf.crs.to_epsg() if gdf.crs is not None else None
+    grid = grid.to_gdf(epsg_code=epsg_code)
 
     if mode == GeospatialFilterMode.DIFFERENCE:
         return _geospatial_filter_difference(
@@ -105,53 +104,6 @@ def geospatial_filter(
     raise AviaryUserError(message)
 
 
-def _generate_grid(
-    coordinates: CoordinatesSet,
-    tile_size: TileSize,
-    epsg_code: EPSGCode | None,
-) -> gpd.GeoDataFrame:
-    """Generates a geodataframe of the grid.
-
-    Parameters:
-        coordinates: coordinates (x_min, y_min) of each tile
-        tile_size: tile size in meters
-        epsg_code: EPSG code
-
-    Returns:
-        grid
-    """
-    if epsg_code is not None:
-        epsg_code = f'EPSG:{epsg_code}'
-
-    tiles = _generate_tiles(
-        coordinates=coordinates,
-        tile_size=tile_size,
-    )
-    return gpd.GeoDataFrame(
-        geometry=tiles,
-        crs=epsg_code,
-    )
-
-
-def _generate_tiles(
-    coordinates: CoordinatesSet,
-    tile_size: TileSize,
-) -> list[Polygon]:
-    """Generates a list of tiles from the coordinates.
-
-    Parameters:
-        coordinates: coordinates (x_min, y_min) of each tile
-        tile_size: tile size in meters
-
-    Returns:
-        list of tiles
-    """
-    return [
-        box(x_min, y_min, x_min + tile_size, y_min + tile_size)
-        for x_min, y_min in coordinates
-    ]
-
-
 def _geospatial_filter_difference(
     coordinates: CoordinatesSet,
     grid: gpd.GeoDataFrame,
@@ -162,12 +114,12 @@ def _geospatial_filter_difference(
     The coordinates of tiles that are within the polygons are removed.
 
     Parameters:
-        coordinates: coordinates (x_min, y_min) of each tile
-        grid: grid
-        gdf: geodataframe
+        coordinates: Coordinates (x_min, y_min) of each tile in meters
+        grid: Grid
+        gdf: Geodataframe
 
     Returns:
-        filtered coordinates (x_min, y_min) of each tile
+        Coordinates (x_min, y_min) of each tile in meters
     """
     invalid_tiles = gpd.sjoin(
         left_df=grid,
@@ -188,12 +140,12 @@ def _geospatial_filter_intersection(
     The coordinates of tiles that don't intersect with the polygons are removed.
 
     Parameters:
-        coordinates: coordinates (x_min, y_min) of each tile
-        grid: grid
-        gdf: geodataframe
+        coordinates: Coordinates (x_min, y_min) of each tile in meters
+        grid: Grid
+        gdf: Geodataframe
 
     Returns:
-        filtered coordinates (x_min, y_min) of each tile
+        Coordinates (x_min, y_min) of each tile in meters
     """
     intersecting_tiles = gpd.sjoin(
         left_df=grid,
@@ -220,11 +172,11 @@ def mask_filter(
     """Filters the coordinates based on the boolean mask.
 
     Parameters:
-        coordinates: coordinates (x_min, y_min) of each tile
-        mask: boolean mask
+        coordinates: Coordinates (x_min, y_min) of each tile in meters
+        mask: Boolean mask
 
     Returns:
-        filtered coordinates (x_min, y_min) of each tile
+        Coordinates (x_min, y_min) of each tile in meters
     """
     return coordinates[mask]
 
@@ -237,15 +189,15 @@ def set_filter(
     """Filters the coordinates based on the other coordinates.
 
     Parameters:
-        coordinates: coordinates (x_min, y_min) of each tile
-        other: other coordinates (x_min, y_min) of each tile
-        mode: set filter mode (`DIFFERENCE`, `INTERSECTION` or `UNION`)
+        coordinates: Coordinates (x_min, y_min) of each tile in meters
+        other: Other coordinates (x_min, y_min) of each tile in meters
+        mode: Set filter mode (`DIFFERENCE`, `INTERSECTION`, or `UNION`)
 
     Returns:
-        filtered coordinates (x_min, y_min) of each tile
+        Coordinates (x_min, y_min) of each tile in meters
 
     Raises:
-        AviaryUserError: Invalid set filter mode
+        AviaryUserError: Invalid `mode`
     """
     if mode == SetFilterMode.DIFFERENCE:
         return _set_filter_difference(
@@ -278,11 +230,11 @@ def _set_filter_difference(
     The coordinates that are in the other coordinates are removed.
 
     Parameters:
-        coordinates: coordinates (x_min, y_min) of each tile
-        other: other coordinates (x_min, y_min) of each tile
+        coordinates: Coordinates (x_min, y_min) of each tile in meters
+        other: Other coordinates (x_min, y_min) of each tile in meters
 
     Returns:
-        filtered coordinates (x_min, y_min) of each tile
+        Coordinates (x_min, y_min) of each tile in meters
     """
     # noinspection PyUnresolvedReferences
     mask = ~(coordinates[:, np.newaxis] == other).all(axis=-1).any(axis=-1)
@@ -298,11 +250,11 @@ def _set_filter_intersection(
     The coordinates that are not in the other coordinates are removed.
 
     Parameters:
-        coordinates: coordinates (x_min, y_min) of each tile
-        other: other coordinates (x_min, y_min) of each tile
+        coordinates: Coordinates (x_min, y_min) of each tile in meters
+        other: Other coordinates (x_min, y_min) of each tile in meters
 
     Returns:
-        filtered coordinates (x_min, y_min) of each tile
+        Coordinates (x_min, y_min) of each tile in meters
     """
     # noinspection PyUnresolvedReferences
     mask = (coordinates[:, np.newaxis] == other).all(axis=-1).any(axis=-1)
@@ -318,11 +270,11 @@ def _set_filter_union(
     The coordinates are combined with the other coordinates and duplicates are removed.
 
     Parameters:
-        coordinates: coordinates (x_min, y_min) of each tile
-        other: other coordinates (x_min, y_min) of each tile
+        coordinates: Coordinates (x_min, y_min) of each tile in meters
+        other: Other coordinates (x_min, y_min) of each tile in meters
 
     Returns:
-        filtered coordinates (x_min, y_min) of each tile
+        Coordinates (x_min, y_min) of each tile in meters
     """
     coordinates = np.concatenate([coordinates, other], axis=0)
     return duplicates_filter(coordinates)
