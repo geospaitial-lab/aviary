@@ -5,13 +5,13 @@ import pickle
 import geopandas as gpd
 import geopandas.testing
 import pytest
-from shapely.geometry import box
 
 from aviary.core.bounding_box import BoundingBox
 from aviary.core.exceptions import AviaryUserError
 from aviary.core.type_aliases import (
     BufferSize,
     Coordinate,
+    EPSGCode,
 )
 from tests.core.data.data_test_bounding_box import (
     data_test_bounding_box_area,
@@ -28,6 +28,7 @@ from tests.core.data.data_test_bounding_box import (
     data_test_bounding_box_quantize_exceptions,
     data_test_bounding_box_quantize_inplace,
     data_test_bounding_box_quantize_inplace_return,
+    data_test_bounding_box_to_gdf,
 )
 
 
@@ -308,18 +309,12 @@ def test_bounding_box_quantize_defaults() -> None:
     assert inplace is expected_inplace
 
 
+@pytest.mark.parametrize(('epsg_code', 'expected'), data_test_bounding_box_to_gdf)
 def test_bounding_box_to_gdf(
+    epsg_code: EPSGCode | None,
+    expected: gpd.GeoDataFrame,
     bounding_box: BoundingBox,
 ) -> None:
-    epsg_code = 25832
-
     gdf = bounding_box.to_gdf(epsg_code=epsg_code)
-
-    expected_geometry = [box(-128, -64, 128, 192)]
-    expected_epsg_code = 'EPSG:25832'
-    expected = gpd.GeoDataFrame(
-        geometry=expected_geometry,
-        crs=expected_epsg_code,
-    )
 
     gpd.testing.assert_geodataframe_equal(gdf, expected)

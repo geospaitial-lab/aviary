@@ -7,7 +7,6 @@ import geopandas as gpd
 import geopandas.testing
 import numpy as np
 import pytest
-from shapely.geometry import box
 
 from aviary.core.bounding_box import BoundingBox
 from aviary.core.exceptions import AviaryUserError
@@ -15,6 +14,7 @@ from aviary.core.grid import Grid
 from aviary.core.type_aliases import (
     Coordinates,
     CoordinatesSet,
+    EPSGCode,
     TileSize,
 )
 from aviary.utils.coordinates_filter import CoordinatesFilter
@@ -52,6 +52,7 @@ from tests.core.data.data_test_grid import (
     data_test_grid_remove_inplace_return,
     data_test_grid_sub,
     data_test_grid_sub_exceptions,
+    data_test_grid_to_gdf,
 )
 
 
@@ -663,24 +664,13 @@ def test_grid_remove_defaults() -> None:
     assert inplace is expected_inplace
 
 
+@pytest.mark.parametrize(('epsg_code', 'expected'), data_test_grid_to_gdf)
 def test_grid_to_gdf(
+    epsg_code: EPSGCode | None,
+    expected: gpd.GeoDataFrame,
     grid: Grid,
 ) -> None:
-    epsg_code = 25832
-
     gdf = grid.to_gdf(epsg_code=epsg_code)
-
-    expected_geometry = [
-        box(-128, -128, 0, 0),
-        box(0, -128, 128, 0),
-        box(-128, 0, 0, 128),
-        box(0, 0, 128, 128),
-    ]
-    expected_epsg_code = 'EPSG:25832'
-    expected = gpd.GeoDataFrame(
-        geometry=expected_geometry,
-        crs=expected_epsg_code,
-    )
 
     gpd.testing.assert_geodataframe_equal(gdf, expected)
 

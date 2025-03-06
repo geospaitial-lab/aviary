@@ -841,3 +841,21 @@ data_test_bounding_box_quantize_exceptions = [
 
 data_test_bounding_box_quantize_inplace = copy.deepcopy(data_test_bounding_box_quantize)
 data_test_bounding_box_quantize_inplace_return = copy.deepcopy(data_test_bounding_box_quantize)
+
+data_test_bounding_box_to_gdf = [
+    # test case 1: EPSG code is None
+    (
+        None,
+        gpd.GeoDataFrame(
+            geometry=[box(-128, -64, 128, 192)],
+        ),
+    ),
+    # test case 2: EPSG code is not None
+    (
+        25832,
+        gpd.GeoDataFrame(
+            geometry=[box(-128, -64, 128, 192)],
+            crs='EPSG:25832',
+        ),
+    ),
+]
