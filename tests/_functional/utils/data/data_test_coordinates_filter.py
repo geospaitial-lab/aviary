@@ -1,6 +1,9 @@
 import geopandas as gpd
 import numpy as np
-from shapely.geometry import box
+from shapely.geometry import (
+    MultiPolygon,
+    box,
+)
 
 coordinates = np.array(
     [[-128, -128], [0, -128], [-128, 0], [0, 0]],
@@ -107,6 +110,40 @@ data_test__geospatial_filter_difference = [
         ),
         np.empty(shape=(0, 2), dtype=np.int32),
     ),
+    # test case 8: gdf contains polygons
+    (
+        coordinates,
+        grid,
+        gpd.GeoDataFrame(
+            geometry=[
+                box(-128, -128, 0, 0),
+                box(0, -128, 128, 0),
+            ],
+            crs='EPSG:25832',
+        ),
+        np.array(
+            [[-128, 0], [0, 0]],
+            dtype=np.int32,
+        ),
+    ),
+    # test case 9: gdf contains a multi polygon
+    (
+        coordinates,
+        grid,
+        gpd.GeoDataFrame(
+            geometry=[
+                MultiPolygon([
+                    box(-128, -128, 0, 0),
+                    box(0, -128, 128, 0),
+                ]),
+            ],
+            crs='EPSG:25832',
+        ),
+        np.array(
+            [[-128, 0], [0, 0]],
+            dtype=np.int32,
+        ),
+    ),
 ]
 
 data_test__geospatial_filter_intersection = [
@@ -186,9 +223,44 @@ data_test__geospatial_filter_intersection = [
         ),
         coordinates,
     ),
+    # test case 8: gdf contains polygons
+    (
+        coordinates,
+        grid,
+        gpd.GeoDataFrame(
+            geometry=[
+                box(-96, -96, -32, -32),
+                box(32, -96, 96, -32),
+            ],
+            crs='EPSG:25832',
+        ),
+        np.array(
+            [[-128, -128], [0, -128]],
+            dtype=np.int32,
+        ),
+    ),
+    # test case 9: gdf contains a multi polygon
+    (
+        coordinates,
+        grid,
+        gpd.GeoDataFrame(
+            geometry=[
+                MultiPolygon([
+                    box(-96, -96, -32, -32),
+                    box(32, -96, 96, -32),
+                ]),
+            ],
+            crs='EPSG:25832',
+        ),
+        np.array(
+            [[-128, -128], [0, -128]],
+            dtype=np.int32,
+        ),
+    ),
 ]
 
 data_test_mask_filter = [
+    # test case 1: Default
     (
         coordinates,
         np.array(
