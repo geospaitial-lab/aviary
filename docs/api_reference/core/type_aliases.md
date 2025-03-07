@@ -22,10 +22,6 @@
 
 ---
 
-::: aviary.ChannelNames
-
----
-
 ::: aviary.ChannelNameSet
 
 ---

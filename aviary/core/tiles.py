@@ -37,7 +37,6 @@ if TYPE_CHECKING:
         BufferSize,
         ChannelKeySet,
         ChannelNameKeySet,
-        ChannelNames,
         Coordinates,
         TileSize,
         TimeStep,
@@ -295,7 +294,7 @@ class Tiles(Iterable[Channel]):
     def from_composite_raster(
         cls,
         data: npt.NDArray,
-        channel_names: ChannelNames,
+        channel_names: list[ChannelName | str | None],
         coordinates: Coordinates,
         tile_size: TileSize,
         buffer_size: BufferSize = 0,
@@ -306,7 +305,7 @@ class Tiles(Iterable[Channel]):
 
         Parameters:
             data: Data
-            channel_names: Channel names
+            channel_names: Channel names (if None, the channel is ignored)
             coordinates: Coordinates (x_min, y_min) of the tile in meters
             tile_size: Tile size in meters
             buffer_size: Buffer size in meters
@@ -353,6 +352,9 @@ class Tiles(Iterable[Channel]):
         buffer_size = buffer_size / tile_size
 
         for i, channel_name in enumerate(channel_names):
+            if channel_name is None:
+                continue
+
             if channel_name in channels_dict:
                 continue
 

@@ -3,10 +3,7 @@ import re
 import numpy as np
 
 from aviary.core.bounding_box import BoundingBox
-from aviary.core.enums import (
-    ChannelName,
-    WMSVersion,
-)
+from aviary.core.enums import WMSVersion
 
 data_test__compute_tile_size_pixels = [
     # test case 1: buffer_size is 0
@@ -119,43 +116,6 @@ data_test__get_wms_params = [
             'bgcolor': '0x000000',
         },
     ),
-]
-
-data_test__parse_ignore_channel_names = [
-    (ChannelName.R, None, {(ChannelName.R, None)}),
-    (ChannelName.R, 0, {(ChannelName.R, 0)}),
-    ('r', None, {(ChannelName.R, None)}),
-    ('r', 0, {(ChannelName.R, 0)}),
-    ('custom', None, {('custom', None)}),
-    ('custom', 0, {('custom', 0)}),
-    (
-        {
-            ChannelName.R,
-            'g',
-            'custom',
-        },
-        None,
-        {
-            (ChannelName.R, None),
-            (ChannelName.G, None),
-            ('custom', None),
-        },
-    ),
-    (
-        {
-            ChannelName.R,
-            'g',
-            'custom',
-        },
-        0,
-        {
-            (ChannelName.R, 0),
-            (ChannelName.G, 0),
-            ('custom', 0),
-        },
-    ),
-    (set(), None, set()),
-    (set(), 0, set()),
 ]
 
 data_test__permute_data = [

@@ -83,7 +83,6 @@ def test_vrt_fetcher_init() -> None:
     ground_sampling_distance = .2
     interpolation_mode = InterpolationMode.BILINEAR
     buffer_size = 0
-    ignore_channel_names = None
     time_step = None
 
     vrt_fetcher = VRTFetcher(
@@ -93,7 +92,6 @@ def test_vrt_fetcher_init() -> None:
         ground_sampling_distance=ground_sampling_distance,
         interpolation_mode=interpolation_mode,
         buffer_size=buffer_size,
-        ignore_channel_names=ignore_channel_names,
         time_step=time_step,
     )
 
@@ -103,7 +101,6 @@ def test_vrt_fetcher_init() -> None:
     assert vrt_fetcher._ground_sampling_distance == ground_sampling_distance
     assert vrt_fetcher._interpolation_mode == interpolation_mode
     assert vrt_fetcher._buffer_size == buffer_size
-    assert vrt_fetcher._ignore_channel_names == ignore_channel_names
     assert vrt_fetcher._time_step == time_step
 
 
@@ -111,17 +108,14 @@ def test_vrt_fetcher_init_defaults() -> None:
     signature = inspect.signature(VRTFetcher)
     interpolation_mode = signature.parameters['interpolation_mode'].default
     buffer_size = signature.parameters['buffer_size'].default
-    ignore_channel_names = signature.parameters['ignore_channel_names'].default
     time_step = signature.parameters['time_step'].default
 
     expected_interpolation_mode = InterpolationMode.BILINEAR
     expected_buffer_size = 0
-    expected_ignore_channel_names = None
     expected_time_step = None
 
     assert interpolation_mode == expected_interpolation_mode
     assert buffer_size == expected_buffer_size
-    assert ignore_channel_names is expected_ignore_channel_names
     assert time_step is expected_time_step
 
 
@@ -138,7 +132,6 @@ def test_vrt_fetcher_from_config() -> None:
     ground_sampling_distance = .2
     interpolation_mode = InterpolationMode.BILINEAR
     buffer_size = 0
-    ignore_channel_names = None
     time_step = None
     vrt_fetcher_config = VRTFetcherConfig(
         path=path,
@@ -147,7 +140,6 @@ def test_vrt_fetcher_from_config() -> None:
         ground_sampling_distance=ground_sampling_distance,
         interpolation_mode=interpolation_mode,
         buffer_size=buffer_size,
-        ignore_channel_names=ignore_channel_names,
         time_step=time_step,
     )
 
@@ -159,7 +151,6 @@ def test_vrt_fetcher_from_config() -> None:
     assert vrt_fetcher._ground_sampling_distance == ground_sampling_distance
     assert vrt_fetcher._interpolation_mode == interpolation_mode
     assert vrt_fetcher._buffer_size == buffer_size
-    assert vrt_fetcher._ignore_channel_names == ignore_channel_names
     assert vrt_fetcher._time_step == time_step
 
 
@@ -184,7 +175,6 @@ def test_vrt_fetcher_call(
         ground_sampling_distance=vrt_fetcher._ground_sampling_distance,
         interpolation_mode=vrt_fetcher._interpolation_mode,
         buffer_size=vrt_fetcher._buffer_size,
-        ignore_channel_names=vrt_fetcher._ignore_channel_names,
         time_step=vrt_fetcher._time_step,
         fill_value=vrt_fetcher._FILL_VALUE,
     )
@@ -205,7 +195,6 @@ def test_wms_fetcher_init() -> None:
     ground_sampling_distance = .2
     style = None
     buffer_size = 0
-    ignore_channel_names = None
     time_step = None
 
     wms_fetcher = WMSFetcher(
@@ -219,7 +208,6 @@ def test_wms_fetcher_init() -> None:
         ground_sampling_distance=ground_sampling_distance,
         style=style,
         buffer_size=buffer_size,
-        ignore_channel_names=ignore_channel_names,
         time_step=time_step,
     )
 
@@ -233,7 +221,6 @@ def test_wms_fetcher_init() -> None:
     assert wms_fetcher._ground_sampling_distance == ground_sampling_distance
     assert wms_fetcher._style == style
     assert wms_fetcher._buffer_size == buffer_size
-    assert wms_fetcher._ignore_channel_names == ignore_channel_names
     assert wms_fetcher._time_step == time_step
 
 
@@ -241,17 +228,14 @@ def test_wms_fetcher_init_defaults() -> None:
     signature = inspect.signature(WMSFetcher)
     style = signature.parameters['style'].default
     buffer_size = signature.parameters['buffer_size'].default
-    ignore_channel_names = signature.parameters['ignore_channel_names'].default
     time_step = signature.parameters['time_step'].default
 
     expected_style = None
     expected_buffer_size = 0
-    expected_ignore_channel_names = None
     expected_time_step = None
 
     assert style is expected_style
     assert buffer_size == expected_buffer_size
-    assert ignore_channel_names is expected_ignore_channel_names
     assert time_step is expected_time_step
 
 
@@ -270,7 +254,6 @@ def test_wms_fetcher_from_config() -> None:
     ground_sampling_distance = .2
     style = None
     buffer_size = 0
-    ignore_channel_names = None
     time_step = None
     wms_fetcher_config = WMSFetcherConfig(
         url=url,
@@ -283,7 +266,6 @@ def test_wms_fetcher_from_config() -> None:
         ground_sampling_distance=ground_sampling_distance,
         style=style,
         buffer_size=buffer_size,
-        ignore_channel_names=ignore_channel_names,
         time_step=time_step,
     )
 
@@ -299,7 +281,6 @@ def test_wms_fetcher_from_config() -> None:
     assert wms_fetcher._ground_sampling_distance == ground_sampling_distance
     assert wms_fetcher._style == style
     assert wms_fetcher._buffer_size == buffer_size
-    assert wms_fetcher._ignore_channel_names == ignore_channel_names
     assert wms_fetcher._time_step == time_step
 
 
@@ -328,7 +309,6 @@ def test_wms_fetcher_call(
         ground_sampling_distance=wms_fetcher._ground_sampling_distance,
         style=wms_fetcher._style,
         buffer_size=wms_fetcher._buffer_size,
-        ignore_channel_names=wms_fetcher._ignore_channel_names,
         time_step=wms_fetcher._time_step,
         fill_value=wms_fetcher._FILL_VALUE,
     )

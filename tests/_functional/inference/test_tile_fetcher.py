@@ -6,29 +6,21 @@ import pytest
 from aviary._functional.inference.tile_fetcher import (
     _compute_tile_size_pixels,
     _get_wms_params,
-    _parse_ignore_channel_names,
     _permute_data,
 )
 from aviary.core.bounding_box import BoundingBox
-from aviary.core.enums import (
-    ChannelName,
-    WMSVersion,
-)
+from aviary.core.enums import WMSVersion
 from aviary.core.exceptions import AviaryUserError
 from aviary.core.type_aliases import (
     BufferSize,
-    ChannelKeySet,
-    ChannelNameSet,
     EPSGCode,
     GroundSamplingDistance,
     TileSize,
-    TimeStep,
 )
 from tests._functional.inference.data.data_test_tile_fetcher import (
     data_test__compute_tile_size_pixels,
     data_test__compute_tile_size_pixels_exceptions,
     data_test__get_wms_params,
-    data_test__parse_ignore_channel_names,
     data_test__permute_data,
 )
 
@@ -132,20 +124,6 @@ def test__get_wms_params(
     )
 
     assert params == expected
-
-
-@pytest.mark.parametrize(('ignore_channel_names', 'time_step', 'expected'), data_test__parse_ignore_channel_names)
-def test__parse_ignore_channel_names(
-    ignore_channel_names: ChannelName | str | ChannelNameSet,
-    time_step: TimeStep | None,
-    expected: ChannelKeySet,
-) -> None:
-    ignore_channel_names = _parse_ignore_channel_names(
-        ignore_channel_names=ignore_channel_names,
-        time_step=time_step,
-    )
-
-    assert ignore_channel_names == expected
 
 
 @pytest.mark.parametrize(('data', 'expected'), data_test__permute_data)
