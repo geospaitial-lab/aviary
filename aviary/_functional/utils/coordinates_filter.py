@@ -101,7 +101,7 @@ def geospatial_filter(
             gdf=gdf,
         )
 
-    message = 'Invalid geospatial filter mode!'
+    message = 'Invalid mode!'
     raise AviaryUserError(message)
 
 
@@ -218,7 +218,7 @@ def set_filter(
             other=other,
         )
 
-    message = 'Invalid set filter mode!'
+    message = 'Invalid mode!'
     raise AviaryUserError(message)
 
 

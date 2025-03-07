@@ -1,4 +1,4 @@
-from typing import cast
+import re
 from unittest.mock import MagicMock, patch
 
 import geopandas as gpd
@@ -41,20 +41,16 @@ def test_duplicates_filter(
     coordinates: CoordinatesSet,
     expected: CoordinatesSet,
 ) -> None:
-    filtered_coordinates = duplicates_filter(
+    coordinates_ = duplicates_filter(
         coordinates=coordinates,
     )
 
-    np.testing.assert_array_equal(filtered_coordinates, expected)
+    np.testing.assert_array_equal(coordinates_, expected)
+    assert id(coordinates_) != id(coordinates)
 
 
 @pytest.mark.skip(reason='Not implemented')
 def test_geospatial_filter() -> None:
-    pass
-
-
-@pytest.mark.skip(reason='Not implemented')
-def test__generate_grid() -> None:
     pass
 
 
@@ -65,13 +61,14 @@ def test__geospatial_filter_difference(
     gdf: gpd.GeoDataFrame,
     expected: CoordinatesSet,
 ) -> None:
-    filtered_coordinates = _geospatial_filter_difference(
+    coordinates_ = _geospatial_filter_difference(
         coordinates=coordinates,
         grid=grid,
         gdf=gdf,
     )
 
-    np.testing.assert_array_equal(filtered_coordinates, expected)
+    np.testing.assert_array_equal(coordinates_, expected)
+    assert id(coordinates_) != id(coordinates)
 
 
 @pytest.mark.parametrize(('coordinates', 'grid', 'gdf', 'expected'), data_test__geospatial_filter_intersection)
@@ -81,13 +78,14 @@ def test__geospatial_filter_intersection(
     gdf: gpd.GeoDataFrame,
     expected: CoordinatesSet,
 ) -> None:
-    filtered_coordinates = _geospatial_filter_intersection(
+    coordinates_ = _geospatial_filter_intersection(
         coordinates=coordinates,
         grid=grid,
         gdf=gdf,
     )
 
-    np.testing.assert_array_equal(filtered_coordinates, expected)
+    np.testing.assert_array_equal(coordinates_, expected)
+    assert id(coordinates_) != id(coordinates)
 
 
 @pytest.mark.parametrize(('coordinates', 'mask', 'expected'), data_test_mask_filter)
@@ -96,92 +94,96 @@ def test_mask_filter(
     mask: npt.NDArray[np.bool_],
     expected: CoordinatesSet,
 ) -> None:
-    filtered_coordinates = mask_filter(
+    coordinates_ = mask_filter(
         coordinates=coordinates,
         mask=mask,
     )
 
-    np.testing.assert_array_equal(filtered_coordinates, expected)
+    np.testing.assert_array_equal(coordinates_, expected)
+    assert id(coordinates_) != id(coordinates)
 
 
-@patch('aviary._functional.utils.coordinates_filter._set_filter_union')
-@patch('aviary._functional.utils.coordinates_filter._set_filter_intersection')
 @patch('aviary._functional.utils.coordinates_filter._set_filter_difference')
-def test_set_filter(
+def test_set_filter_difference(
     mocked_set_filter_difference: MagicMock,
-    mocked_set_filter_intersection: MagicMock,
-    mocked_set_filter_union: MagicMock,
 ) -> None:
     coordinates = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32)
-    other = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32)
-    expected = 'expected'
-
+    other = np.array([[-128, 0], [0, 0]], dtype=np.int32)
     mode = SetFilterMode.DIFFERENCE
+
+    expected = 'expected'
     mocked_set_filter_difference.return_value = expected
-    filtered_coordinates = set_filter(
+
+    coordinates_ = set_filter(
         coordinates=coordinates,
         other=other,
         mode=mode,
     )
 
+    assert coordinates_ == expected
     mocked_set_filter_difference.assert_called_once_with(
         coordinates=coordinates,
         other=other,
     )
-    mocked_set_filter_intersection.assert_not_called()
-    mocked_set_filter_union.assert_not_called()
-    assert filtered_coordinates == expected
 
-    mocked_set_filter_difference.reset_mock()
-    mocked_set_filter_intersection.reset_mock()
-    mocked_set_filter_union.reset_mock()
 
+@patch('aviary._functional.utils.coordinates_filter._set_filter_intersection')
+def test_set_filter_intersection(
+    mocked_set_filter_intersection: MagicMock,
+) -> None:
+    coordinates = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32)
+    other = np.array([[-128, 0], [0, 0]], dtype=np.int32)
     mode = SetFilterMode.INTERSECTION
+
+    expected = 'expected'
     mocked_set_filter_intersection.return_value = expected
-    filtered_coordinates = set_filter(
+
+    coordinates_ = set_filter(
         coordinates=coordinates,
         other=other,
         mode=mode,
     )
 
+    assert coordinates_ == expected
     mocked_set_filter_intersection.assert_called_once_with(
         coordinates=coordinates,
         other=other,
     )
-    mocked_set_filter_difference.assert_not_called()
-    mocked_set_filter_union.assert_not_called()
-    assert filtered_coordinates == expected
 
-    mocked_set_filter_difference.reset_mock()
-    mocked_set_filter_intersection.reset_mock()
-    mocked_set_filter_union.reset_mock()
 
+@patch('aviary._functional.utils.coordinates_filter._set_filter_union')
+def test_set_filter_union(
+    mocked_set_filter_union: MagicMock,
+) -> None:
+    coordinates = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32)
+    other = np.array([[-128, 0], [0, 0]], dtype=np.int32)
     mode = SetFilterMode.UNION
+
+    expected = 'expected'
     mocked_set_filter_union.return_value = expected
-    filtered_coordinates = set_filter(
+
+    coordinates_ = set_filter(
         coordinates=coordinates,
         other=other,
         mode=mode,
     )
 
+    assert coordinates_ == expected
     mocked_set_filter_union.assert_called_once_with(
         coordinates=coordinates,
         other=other,
     )
-    mocked_set_filter_difference.assert_not_called()
-    mocked_set_filter_intersection.assert_not_called()
-    assert filtered_coordinates == expected
 
-    mocked_set_filter_difference.reset_mock()
-    mocked_set_filter_intersection.reset_mock()
-    mocked_set_filter_union.reset_mock()
 
-    mode = 'invalid_mode'
-    mode = cast(SetFilterMode, mode)
-    message = 'Invalid set filter mode!'
+def test_set_filter_exceptions() -> None:
+    coordinates = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32)
+    other = np.array([[-128, 0], [0, 0]], dtype=np.int32)
+    mode = 'invalid'
+
+    message = re.escape('Invalid mode!')
 
     with pytest.raises(AviaryUserError, match=message):
-        set_filter(
+        _ = set_filter(
             coordinates=coordinates,
             other=other,
             mode=mode,
@@ -194,12 +196,13 @@ def test__set_filter_difference(
     other: CoordinatesSet,
     expected: CoordinatesSet,
 ) -> None:
-    filtered_coordinates = _set_filter_difference(
+    coordinates_ = _set_filter_difference(
         coordinates=coordinates,
         other=other,
     )
 
-    np.testing.assert_array_equal(filtered_coordinates, expected)
+    np.testing.assert_array_equal(coordinates_, expected)
+    assert id(coordinates_) != id(coordinates)
 
 
 @pytest.mark.parametrize(('coordinates', 'other', 'expected'), data_test__set_filter_intersection)
@@ -208,12 +211,13 @@ def test__set_filter_intersection(
     other: CoordinatesSet,
     expected: CoordinatesSet,
 ) -> None:
-    filtered_coordinates = _set_filter_intersection(
+    coordinates_ = _set_filter_intersection(
         coordinates=coordinates,
         other=other,
     )
 
-    np.testing.assert_array_equal(filtered_coordinates, expected)
+    np.testing.assert_array_equal(coordinates_, expected)
+    assert id(coordinates_) != id(coordinates)
 
 
 @pytest.mark.parametrize(('coordinates', 'other', 'expected'), data_test__set_filter_union)
@@ -222,9 +226,10 @@ def test__set_filter_union(
     other: CoordinatesSet,
     expected: CoordinatesSet,
 ) -> None:
-    filtered_coordinates = _set_filter_union(
+    coordinates_ = _set_filter_union(
         coordinates=coordinates,
         other=other,
     )
 
-    np.testing.assert_array_equal(filtered_coordinates, expected)
+    np.testing.assert_array_equal(coordinates_, expected)
+    assert id(coordinates_) != id(coordinates)
