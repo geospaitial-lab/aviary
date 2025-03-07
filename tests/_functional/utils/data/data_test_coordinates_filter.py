@@ -2,7 +2,10 @@ import geopandas as gpd
 import numpy as np
 from shapely.geometry import box
 
-coordinates = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32)
+coordinates = np.array(
+    [[-128, -128], [0, -128], [-128, 0], [0, 0]],
+    dtype=np.int32,
+)
 
 data_test_duplicates_filter = [
     # test case 1: coordinates contains no duplicates
@@ -12,7 +15,10 @@ data_test_duplicates_filter = [
     ),
     # test case 2: coordinates contains duplicates
     (
-        np.array([[-128, -128], [0, -128], [-128, 0], [0, 0], [-128, 0], [0, 0]], dtype=np.int32),
+        np.array(
+            [[-128, -128], [0, -128], [-128, 0], [0, 0], [-128, 0], [0, 0]],
+            dtype=np.int32,
+        ),
         coordinates,
     ),
 ]
@@ -76,7 +82,10 @@ data_test__geospatial_filter_difference = [
             geometry=[box(-128, -128, 0, 0)],
             crs='EPSG:25832',
         ),
-        np.array([[0, -128], [-128, 0], [0, 0]], dtype=np.int32),
+        np.array(
+            [[0, -128], [-128, 0], [0, 0]],
+            dtype=np.int32,
+        ),
     ),
     # test case 6: gdf contains a polygon that intersects multiple tiles
     (
@@ -139,7 +148,10 @@ data_test__geospatial_filter_intersection = [
             geometry=[box(-96, -96, -32, -32)],
             crs='EPSG:25832',
         ),
-        np.array([[-128, -128]], dtype=np.int32),
+        np.array(
+            [[-128, -128]],
+            dtype=np.int32,
+        ),
     ),
     # test case 5: gdf contains a polygon that overlaps a tile
     (
@@ -149,7 +161,10 @@ data_test__geospatial_filter_intersection = [
             geometry=[box(-128, -128, 0, 0)],
             crs='EPSG:25832',
         ),
-        np.array([[-128, -128]], dtype=np.int32),
+        np.array(
+            [[-128, -128]],
+            dtype=np.int32,
+        ),
     ),
     # test case 6: gdf contains a polygon that intersects multiple tiles
     (
@@ -176,8 +191,14 @@ data_test__geospatial_filter_intersection = [
 data_test_mask_filter = [
     (
         coordinates,
-        np.array([0, 1, 0, 1], dtype=np.bool_),
-        np.array([[0, -128], [0, 0]], dtype=np.int32),
+        np.array(
+            [0, 1, 0, 1],
+            dtype=np.bool_,
+        ),
+        np.array(
+            [[0, -128], [0, 0]],
+            dtype=np.int32,
+        ),
     ),
 ]
 
@@ -185,26 +206,41 @@ data_test__set_filter_difference = [
     # test case 1: other contains no coordinates
     (
         coordinates,
-        np.empty(shape=(0, 2), dtype=np.int32),
+        np.empty(
+            shape=(0, 2),
+            dtype=np.int32,
+        ),
         coordinates,
     ),
     # test case 2: other contains no coordinates of coordinates
     (
         coordinates,
-        np.array([[128, -128], [128, 0]], dtype=np.int32),
+        np.array(
+            [[128, -128], [128, 0]],
+            dtype=np.int32,
+        ),
         coordinates,
     ),
     # test case 3: other contains coordinates of coordinates
     (
         coordinates,
-        np.array([[-128, 0], [0, 0]], dtype=np.int32),
-        np.array([[-128, -128], [0, -128]], dtype=np.int32),
+        np.array(
+            [[-128, 0], [0, 0]],
+            dtype=np.int32,
+        ),
+        np.array(
+            [[-128, -128], [0, -128]],
+            dtype=np.int32,
+        ),
     ),
     # test case 4: other contains all coordinates of coordinates
     (
         coordinates,
         coordinates,
-        np.empty(shape=(0, 2), dtype=np.int32),
+        np.empty(
+            shape=(0, 2),
+            dtype=np.int32,
+        ),
     ),
 ]
 
@@ -212,20 +248,38 @@ data_test__set_filter_intersection = [
     # test case 1: other contains no coordinates
     (
         coordinates,
-        np.empty(shape=(0, 2), dtype=np.int32),
-        np.empty(shape=(0, 2), dtype=np.int32),
+        np.empty(
+            shape=(0, 2),
+            dtype=np.int32,
+        ),
+        np.empty(
+            shape=(0, 2),
+            dtype=np.int32,
+        ),
     ),
     # test case 2: other contains no coordinates of coordinates
     (
         coordinates,
-        np.array([[128, -128], [128, 0]], dtype=np.int32),
-        np.empty(shape=(0, 2), dtype=np.int32),
+        np.array(
+            [[128, -128], [128, 0]],
+            dtype=np.int32,
+        ),
+        np.empty(
+            shape=(0, 2),
+            dtype=np.int32,
+        ),
     ),
     # test case 3: other contains coordinates of coordinates
     (
         coordinates,
-        np.array([[-128, 0], [0, 0]], dtype=np.int32),
-        np.array([[-128, 0], [0, 0]], dtype=np.int32),
+        np.array(
+            [[-128, 0], [0, 0]],
+            dtype=np.int32,
+        ),
+        np.array(
+            [[-128, 0], [0, 0]],
+            dtype=np.int32,
+        ),
     ),
     # test case 4: other contains all coordinates of coordinates
     (
@@ -239,19 +293,31 @@ data_test__set_filter_union = [
     # test case 1: other contains no coordinates
     (
         coordinates,
-        np.empty(shape=(0, 2), dtype=np.int32),
+        np.empty(
+            shape=(0, 2),
+            dtype=np.int32,
+        ),
         coordinates,
     ),
     # test case 2: other contains no coordinates of coordinates
     (
         coordinates,
-        np.array([[128, -128], [128, 0]], dtype=np.int32),
-        np.array([[-128, -128], [0, -128], [-128, 0], [0, 0], [128, -128], [128, 0]], dtype=np.int32),
+        np.array(
+            [[128, -128], [128, 0]],
+            dtype=np.int32,
+        ),
+        np.array(
+            [[-128, -128], [0, -128], [-128, 0], [0, 0], [128, -128], [128, 0]],
+            dtype=np.int32,
+        ),
     ),
     # test case 3: other contains coordinates of coordinates
     (
         coordinates,
-        np.array([[-128, 0], [0, 0]], dtype=np.int32),
+        np.array(
+            [[-128, 0], [0, 0]],
+            dtype=np.int32,
+        ),
         coordinates,
     ),
     # test case 4: other contains all coordinates of coordinates
