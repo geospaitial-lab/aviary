@@ -7,7 +7,3 @@
 </div>
 
 ::: aviary.inference.TileSet
-    options:
-      filters:
-      - "!^_"
-      - "^__"

@@ -103,7 +103,6 @@ def vrt_fetcher() -> VRTFetcher:
     ground_sampling_distance = .2
     interpolation_mode = InterpolationMode.BILINEAR
     buffer_size = 0
-    ignore_channel_names = None
     time_step = None
     return VRTFetcher(
         path=path,
@@ -112,7 +111,6 @@ def vrt_fetcher() -> VRTFetcher:
         ground_sampling_distance=ground_sampling_distance,
         interpolation_mode=interpolation_mode,
         buffer_size=buffer_size,
-        ignore_channel_names=ignore_channel_names,
         time_step=time_step,
     )
 
@@ -133,7 +131,6 @@ def wms_fetcher() -> WMSFetcher:
     ground_sampling_distance = .2
     style = None
     buffer_size = 0
-    ignore_channel_names = None
     time_step = None
     return WMSFetcher(
         url=url,
@@ -146,6 +143,5 @@ def wms_fetcher() -> WMSFetcher:
         ground_sampling_distance=ground_sampling_distance,
         style=style,
         buffer_size=buffer_size,
-        ignore_channel_names=ignore_channel_names,
         time_step=time_step,
     )

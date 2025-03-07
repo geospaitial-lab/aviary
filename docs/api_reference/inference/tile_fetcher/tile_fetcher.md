@@ -7,10 +7,6 @@
 </div>
 
 ::: aviary.inference.TileFetcher
-    options:
-      filters:
-      - "!^_"
-      - "^__"
 
 ---
 

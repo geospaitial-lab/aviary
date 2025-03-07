@@ -17,7 +17,7 @@ import pydantic
 from shapely.geometry import box
 
 # noinspection PyProtectedMember
-from aviary._functional.geodata.coordinates_filter import (
+from aviary._functional.utils.coordinates_filter import (
     duplicates_filter,
     geospatial_filter,
     set_filter,
@@ -37,7 +37,7 @@ from aviary.core.type_aliases import (
 )
 
 if TYPE_CHECKING:
-    from aviary.geodata.coordinates_filter import CoordinatesFilter
+    from aviary.utils.coordinates_filter import CoordinatesFilter
 
 
 class Grid(Iterable[Coordinates]):
@@ -861,7 +861,7 @@ class Grid(Iterable[Coordinates]):
 
     def to_gdf(
         self,
-        epsg_code: EPSGCode,
+        epsg_code: EPSGCode | None,
     ) -> gpd.GeoDataFrame:
         """Converts the grid to a geodataframe.
 
@@ -875,7 +875,7 @@ class Grid(Iterable[Coordinates]):
             box(x_min, y_min, x_min + self._tile_size, y_min + self._tile_size)
             for x_min, y_min in self
         ]
-        epsg_code = f'EPSG:{epsg_code}'
+        epsg_code = f'EPSG:{epsg_code}' if epsg_code is not None else None
         return gpd.GeoDataFrame(
             geometry=geometry,
             crs=epsg_code,
@@ -904,6 +904,9 @@ class GridConfig(pydantic.BaseModel):
         - `bounding_box_coordinates` and `tile_size`
         - `gdf_path` and `tile_size`
         - `json_path`
+
+    Create the configuration from a config file:
+        - Use null instead of None
 
     Attributes:
         bounding_box_coordinates: Bounding box coordinates (x_min, y_min, x_max, y_max) in meters

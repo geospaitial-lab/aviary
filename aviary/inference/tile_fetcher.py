@@ -21,8 +21,6 @@ from aviary.core.enums import (
 )
 from aviary.core.type_aliases import (
     BufferSize,
-    ChannelNames,
-    ChannelNameSet,
     Coordinates,
     EPSGCode,
     GroundSamplingDistance,
@@ -165,23 +163,21 @@ class VRTFetcher:
     def __init__(
         self,
         path: Path,
-        channel_names: ChannelNames,
+        channel_names: list[ChannelName | str | None],
         tile_size: TileSize,
         ground_sampling_distance: GroundSamplingDistance,
         interpolation_mode: InterpolationMode = InterpolationMode.BILINEAR,
         buffer_size: BufferSize = 0,
-        ignore_channel_names: ChannelName | str | ChannelNameSet | None = None,
         time_step: TimeStep | None = None,
     ) -> None:
         """
         Parameters:
             path: Path to the virtual raster (.vrt file)
-            channel_names: Channel names
+            channel_names: Channel names (if None, the channel is ignored)
             tile_size: Tile size in meters
             ground_sampling_distance: Ground sampling distance in meters
             interpolation_mode: Interpolation mode (`BILINEAR` or `NEAREST`)
             buffer_size: Buffer size in meters
-            ignore_channel_names: Channel name or channel names to ignore
             time_step: Time step
         """
         self._path = path
@@ -190,7 +186,6 @@ class VRTFetcher:
         self._ground_sampling_distance = ground_sampling_distance
         self._interpolation_mode = interpolation_mode
         self._buffer_size = buffer_size
-        self._ignore_channel_names = ignore_channel_names
         self._time_step = time_step
 
     @classmethod
@@ -229,7 +224,6 @@ class VRTFetcher:
             ground_sampling_distance=self._ground_sampling_distance,
             interpolation_mode=self._interpolation_mode,
             buffer_size=self._buffer_size,
-            ignore_channel_names=self._ignore_channel_names,
             time_step=self._time_step,
             fill_value=self._FILL_VALUE,
         )
@@ -238,23 +232,25 @@ class VRTFetcher:
 class VRTFetcherConfig(pydantic.BaseModel):
     """Configuration for the `from_config` class method of `VRTFetcher`
 
+    Create the configuration from a config file:
+        - Use 'bilinear' or 'nearest' instead of `InterpolationMode.BILINEAR` or `InterpolationMode.NEAREST`
+        - Use null instead of None
+
     Attributes:
         path: Path to the virtual raster (.vrt file)
-        channel_names: Channel names
+        channel_names: Channel names (if None, the channel is ignored)
         tile_size: Tile size in meters
         ground_sampling_distance: Ground sampling distance in meters
-        interpolation_mode: Interpolation mode ('bilinear' or 'nearest')
+        interpolation_mode: Interpolation mode (`BILINEAR` or `NEAREST`)
         buffer_size: Buffer size in meters (specifies the area around the tile that is additionally fetched)
-        ignore_channel_names: Channel name or channel names to ignore
         time_step: Time step
     """
     path: Path
-    channel_names: ChannelNames
+    channel_names: list[ChannelName | str | None]
     tile_size: TileSize
     ground_sampling_distance: GroundSamplingDistance
     interpolation_mode: InterpolationMode = InterpolationMode.BILINEAR
     buffer_size: BufferSize = 0
-    ignore_channel_names: ChannelName | str | ChannelNameSet | None = None
     time_step: TimeStep | None = None
 
 
@@ -272,12 +268,11 @@ class WMSFetcher:
         layer: str,
         epsg_code: EPSGCode,
         response_format: str,
-        channel_names: ChannelNames,
+        channel_names: list[ChannelName | str | None],
         tile_size: TileSize,
         ground_sampling_distance: GroundSamplingDistance,
         style: str | None = None,
         buffer_size: BufferSize = 0,
-        ignore_channel_names: ChannelName | str | ChannelNameSet | None = None,
         time_step: TimeStep | None = None,
     ) -> None:
         """
@@ -287,12 +282,11 @@ class WMSFetcher:
             layer: Layer
             epsg_code: EPSG code
             response_format: Format of the response (MIME type, e.g., 'image/png')
-            channel_names: Channel names
+            channel_names: Channel names (if None, the channel is ignored)
             tile_size: Tile size in meters
             ground_sampling_distance: Ground sampling distance in meters
             style: Style
             buffer_size: Buffer size in meters
-            ignore_channel_names: Channel name or channel names to ignore
             time_step: Time step
         """
         self._url = url
@@ -305,7 +299,6 @@ class WMSFetcher:
         self._ground_sampling_distance = ground_sampling_distance
         self._style = style
         self._buffer_size = buffer_size
-        self._ignore_channel_names = ignore_channel_names
         self._time_step = time_step
 
     @classmethod
@@ -348,7 +341,6 @@ class WMSFetcher:
             ground_sampling_distance=self._ground_sampling_distance,
             style=self._style,
             buffer_size=self._buffer_size,
-            ignore_channel_names=self._ignore_channel_names,
             time_step=self._time_step,
             fill_value=self._FILL_VALUE,
         )
@@ -357,18 +349,21 @@ class WMSFetcher:
 class WMSFetcherConfig(pydantic.BaseModel):
     """Configuration for the `from_config` class method of `WMSFetcher`
 
+    Create the configuration from a config file:
+        - Use '1.1.1' or '1.3.0' instead of `WMSVersion.V1_1_1` or `WMSVersion.V1_3_0`
+        - Use null instead of None
+
     Attributes:
         url: URL of the web map service
-        version: Version of the web map service ('1.1.1' or '1.3.0')
+        version: Version of the web map service (`V1_1_1` or `V1_3_0`)
         layer: Layer
         epsg_code: EPSG code
         response_format: Format of the response (MIME type, e.g., 'image/png')
-        channel_names: Channel names
+        channel_names: Channel names (if None, the channel is ignored)
         tile_size: Tile size in meters
         ground_sampling_distance: Ground sampling distance in meters
         style: Style
         buffer_size: Buffer size in meters
-        ignore_channel_names: Channel name or channel names to ignore
         time_step: Time step
     """
     url: str
@@ -376,10 +371,9 @@ class WMSFetcherConfig(pydantic.BaseModel):
     layer: str
     epsg_code: EPSGCode
     response_format: str
-    channel_names: ChannelNames
+    channel_names: list[ChannelName | str | None]
     tile_size: TileSize
     ground_sampling_distance: GroundSamplingDistance
     style: str | None = None
     buffer_size: BufferSize = 0
-    ignore_channel_names: ChannelName | str | ChannelNameSet | None = None
     time_step: TimeStep | None = None

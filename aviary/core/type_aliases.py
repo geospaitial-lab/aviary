@@ -11,7 +11,6 @@ TimeStep: TypeAlias = int
 ChannelKey: TypeAlias = tuple[ChannelName | str, TimeStep | None]
 ChannelKeySet: TypeAlias = set[ChannelKey]
 ChannelNameKeySet: TypeAlias = set[ChannelName | str | ChannelKey]
-ChannelNames: TypeAlias = list[ChannelName | str]
 ChannelNameSet: TypeAlias = set[ChannelName | str]
 Coordinate: TypeAlias = int
 Coordinates: TypeAlias = tuple[Coordinate, Coordinate]

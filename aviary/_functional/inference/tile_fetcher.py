@@ -23,7 +23,6 @@ from aviary.core.enums import (
     ChannelName,
     InterpolationMode,
     WMSVersion,
-    _parse_channel_name,
 )
 from aviary.core.exceptions import AviaryUserError
 from aviary.core.tiles import Tile
@@ -31,9 +30,6 @@ from aviary.core.tiles import Tile
 if TYPE_CHECKING:
     from aviary.core.type_aliases import (
         BufferSize,
-        ChannelKeySet,
-        ChannelNames,
-        ChannelNameSet,
         Coordinates,
         EPSGCode,
         GroundSamplingDistance,
@@ -89,12 +85,11 @@ def composite_fetcher(
 def vrt_fetcher(
     coordinates: Coordinates,
     path: Path,
-    channel_names: ChannelNames,
+    channel_names: list[ChannelName | str | None],
     tile_size: TileSize,
     ground_sampling_distance: GroundSamplingDistance,
     interpolation_mode: InterpolationMode = InterpolationMode.BILINEAR,
     buffer_size: BufferSize = 0,
-    ignore_channel_names: ChannelName | str | ChannelNameSet | None = None,
     time_step: TimeStep | None = None,
     fill_value: int = 0,
 ) -> Tile:
@@ -103,12 +98,11 @@ def vrt_fetcher(
     Parameters:
         coordinates: Coordinates (x_min, y_min) of the tile in meters
         path: Path to the virtual raster (.vrt file)
-        channel_names: Channel names
+        channel_names: Channel names (if None, the channel is ignored)
         tile_size: Tile size in meters
         ground_sampling_distance: Ground sampling distance in meters
         interpolation_mode: Interpolation mode (`BILINEAR` or `NEAREST`)
         buffer_size: Buffer size in meters
-        ignore_channel_names: Channel name or channel names to ignore
         time_step: Time step
         fill_value: Fill value of no-data pixels
 
@@ -153,7 +147,7 @@ def vrt_fetcher(
     data = _permute_data(
         data=data,
     )
-    tile = Tile.from_composite_raster(
+    return Tile.from_composite_raster(
         data=data,
         channel_names=channel_names,
         coordinates=coordinates,
@@ -163,18 +157,6 @@ def vrt_fetcher(
         copy=False,
     )
 
-    if ignore_channel_names is not None:
-        channel_keys = _parse_ignore_channel_names(
-            ignore_channel_names=ignore_channel_names,
-            time_step=time_step,
-        )
-        tile.remove(
-            channel_keys=channel_keys,
-            inplace=True,
-        )
-
-    return tile
-
 
 def wms_fetcher(
     coordinates: Coordinates,
@@ -183,12 +165,11 @@ def wms_fetcher(
     layer: str,
     epsg_code: EPSGCode,
     response_format: str,
-    channel_names: ChannelNames,
+    channel_names: list[ChannelName | str | None],
     tile_size: TileSize,
     ground_sampling_distance: GroundSamplingDistance,
     style: str | None = None,
     buffer_size: BufferSize = 0,
-    ignore_channel_names: ChannelName | str | ChannelNameSet | None = None,
     time_step: TimeStep | None = None,
     fill_value: str = '0x000000',
 ) -> Tile:
@@ -201,12 +182,11 @@ def wms_fetcher(
         layer: Layer
         epsg_code: EPSG code
         response_format: Format of the response (MIME type, e.g., 'image/png')
-        channel_names: Channel names
+        channel_names: Channel names (if None, the channel is ignored)
         tile_size: Tile size in meters
         ground_sampling_distance: Ground sampling distance in meters
         style: Style
         buffer_size: Buffer size in meters
-        ignore_channel_names: Channel name or channel names to ignore
         time_step: Time step
         fill_value: Fill value of no-data pixels
 
@@ -250,7 +230,7 @@ def wms_fetcher(
     data = _permute_data(
         data=data,
     )
-    tile = Tile.from_composite_raster(
+    return Tile.from_composite_raster(
         data=data,
         channel_names=channel_names,
         coordinates=coordinates,
@@ -259,18 +239,6 @@ def wms_fetcher(
         time_step=time_step,
         copy=False,
     )
-
-    if ignore_channel_names is not None:
-        channel_keys = _parse_ignore_channel_names(
-            ignore_channel_names=ignore_channel_names,
-            time_step=time_step,
-        )
-        tile.remove(
-            channel_keys=channel_keys,
-            inplace=True,
-        )
-
-    return tile
 
 
 def _compute_tile_size_pixels(
@@ -358,33 +326,6 @@ def _get_wms_params(
         params['styles'] = style
 
     return params
-
-
-def _parse_ignore_channel_names(
-    ignore_channel_names: ChannelName | str | ChannelNameSet,
-    time_step: TimeStep | None,
-) -> ChannelKeySet:
-    """Parses `ignore_channel_names` to `ChannelKeySet`.
-
-    Parameters:
-        ignore_channel_names: Channel name or channel names to ignore
-        time_step: Time step
-
-    Returns:
-        Channel name and time step combinations to ignore
-    """
-    if isinstance(ignore_channel_names, (ChannelName | str)):
-        ignore_channel_names = {_parse_channel_name(channel_name=ignore_channel_names)}
-    else:
-        ignore_channel_names = {
-            _parse_channel_name(channel_name=ignore_channel_name)
-            for ignore_channel_name in ignore_channel_names
-        }
-
-    return {
-        (ignore_channel_name, time_step)
-        for ignore_channel_name in ignore_channel_names
-    }
 
 
 def _permute_data(

@@ -1,11 +1,11 @@
-from abc import ABC, abstractmethod
+from typing import Protocol
 
 import geopandas as gpd
 import numpy as np
 import numpy.typing as npt
 
 # noinspection PyProtectedMember
-from aviary._functional.geodata.coordinates_filter import (
+from aviary._functional.utils.coordinates_filter import (
     composite_filter,
     duplicates_filter,
     geospatial_filter,
@@ -22,22 +22,19 @@ from aviary.core.type_aliases import (
 )
 
 
-class CoordinatesFilter(ABC):
-    """Abstract class for coordinates filters
+class CoordinatesFilter(Protocol):
+    """Protocol for coordinates filters
 
     Coordinates filters are callables that filter coordinates.
-    The coordinates filter can be used to filter the coordinates of the bottom left corner of each tile.
-    E.g., to remove tiles that don't intersect with an area of interest or tiles that are already processed.
 
-    Currently implemented coordinates filters:
+    Implemented coordinates filters:
         - `CompositeFilter`: Composes multiple coordinates filters
-        - `DuplicatesFilter`: Removes duplicates
+        - `DuplicatesFilter`: Removes duplicate coordinates
         - `GeospatialFilter`: Filters based on geospatial data
         - `MaskFilter`: Filters based on a boolean mask
         - `SetFilter`: Filters based on other coordinates
     """
 
-    @abstractmethod
     def __call__(
         self,
         coordinates: CoordinatesSet,
@@ -45,15 +42,22 @@ class CoordinatesFilter(ABC):
         """Filters the coordinates.
 
         Parameters:
-            coordinates: coordinates (x_min, y_min) of each tile
+            coordinates: Coordinates (x_min, y_min) of each tile in meters
 
         Returns:
-            filtered coordinates (x_min, y_min) of each tile
+            Coordinates (x_min, y_min) of each tile in meters
         """
+        ...
 
 
-class CompositeFilter(CoordinatesFilter):
-    """Coordinates filter that composes multiple coordinates filters"""
+class CompositeFilter:
+    """Coordinates filter that composes multiple coordinates filters
+
+    Notes:
+        - The coordinates filters are composed vertically, i.e., in sequence
+
+    Implements the `CoordinatesFilter` protocol.
+    """
 
     def __init__(
         self,
@@ -61,9 +65,9 @@ class CompositeFilter(CoordinatesFilter):
     ) -> None:
         """
         Parameters:
-            coordinates_filters: coordinates filters
+            coordinates_filters: Coordinates filters
         """
-        self.coordinates_filters = coordinates_filters
+        self._coordinates_filters = coordinates_filters
 
     def __call__(
         self,
@@ -72,43 +76,48 @@ class CompositeFilter(CoordinatesFilter):
         """Filters the coordinates with each coordinates filter.
 
         Parameters:
-            coordinates: coordinates (x_min, y_min) of each tile
+            coordinates: Coordinates (x_min, y_min) of each tile in meters
 
         Returns:
-            filtered coordinates (x_min, y_min) of each tile
+            Coordinates (x_min, y_min) of each tile in meters
         """
         return composite_filter(
             coordinates=coordinates,
-            coordinates_filters=self.coordinates_filters,
+            coordinates_filters=self._coordinates_filters,
         )
 
 
-class DuplicatesFilter(CoordinatesFilter):
-    """Coordinates filter that removes duplicates"""
+class DuplicatesFilter:
+    """Coordinates filter that removes duplicate coordinates
+
+    Implements the `CoordinatesFilter` protocol.
+    """
 
     def __call__(
         self,
         coordinates: CoordinatesSet,
     ) -> CoordinatesSet:
-        """Filters the coordinates by removing duplicates.
+        """Filters the coordinates by removing duplicate coordinates.
 
         Parameters:
-            coordinates: coordinates (x_min, y_min) of each tile
+            coordinates: Coordinates (x_min, y_min) of each tile in meters
 
         Returns:
-            filtered coordinates (x_min, y_min) of each tile
+            Coordinates (x_min, y_min) of each tile in meters
         """
         return duplicates_filter(
             coordinates=coordinates,
         )
 
 
-class GeospatialFilter(CoordinatesFilter):
+class GeospatialFilter:
     """Coordinates filter that filters based on geospatial data
 
     Available modes:
         - `DIFFERENCE`: Removes coordinates of tiles that are within the polygons in the geodataframe
-        - `INTERSECTION`: Removes coordinates of tiles that don't intersect with the polygons in the geodataframe
+        - `INTERSECTION`: Removes coordinates of tiles that do not intersect with the polygons in the geodataframe
+
+    Implements the `CoordinatesFilter` protocol.
     """
 
     def __init__(
@@ -119,13 +128,13 @@ class GeospatialFilter(CoordinatesFilter):
     ) -> None:
         """
         Parameters:
-            tile_size: tile size in meters
-            gdf: geodataframe
-            mode: geospatial filter mode (`DIFFERENCE` or `INTERSECTION`)
+            tile_size: Tile size in meters
+            gdf: Geodataframe
+            mode: Geospatial filter mode (`DIFFERENCE` or `INTERSECTION`)
         """
-        self.tile_size = tile_size
-        self.gdf = gdf
-        self.mode = mode
+        self._tile_size = tile_size
+        self._gdf = gdf
+        self._mode = mode
 
     def __call__(
         self,
@@ -134,21 +143,24 @@ class GeospatialFilter(CoordinatesFilter):
         """Filters the coordinates based on the polygons in the geodataframe.
 
         Parameters:
-            coordinates: coordinates (x_min, y_min) of each tile
+            coordinates: Coordinates (x_min, y_min) of each tile in meters
 
         Returns:
-            filtered coordinates (x_min, y_min) of each tile
+            Coordinates (x_min, y_min) of each tile in meters
         """
         return geospatial_filter(
             coordinates=coordinates,
-            tile_size=self.tile_size,
-            gdf=self.gdf,
-            mode=self.mode,
+            tile_size=self._tile_size,
+            gdf=self._gdf,
+            mode=self._mode,
         )
 
 
-class MaskFilter(CoordinatesFilter):
-    """Coordinates filter that filters based on a boolean mask"""
+class MaskFilter:
+    """Coordinates filter that filters based on a boolean mask
+
+    Implements the `CoordinatesFilter` protocol.
+    """
 
     def __init__(
         self,
@@ -156,9 +168,9 @@ class MaskFilter(CoordinatesFilter):
     ) -> None:
         """
         Parameters:
-            mask: boolean mask
+            mask: Boolean mask
         """
-        self.mask = mask
+        self._mask = mask
 
     def __call__(
         self,
@@ -167,24 +179,26 @@ class MaskFilter(CoordinatesFilter):
         """Filters the coordinates based on the boolean mask.
 
         Parameters:
-            coordinates: coordinates (x_min, y_min) of each tile
+            coordinates: Coordinates (x_min, y_min) of each tile in meters
 
         Returns:
-            filtered coordinates (x_min, y_min) of each tile
+            Coordinates (x_min, y_min) of each tile in meters
         """
         return mask_filter(
             coordinates=coordinates,
-            mask=self.mask,
+            mask=self._mask,
         )
 
 
-class SetFilter(CoordinatesFilter):
+class SetFilter:
     """Coordinates filter that filters based on other coordinates
 
     Available modes:
         - `DIFFERENCE`: Removes coordinates that are in the other coordinates
         - `INTERSECTION`: Removes coordinates that are not in the other coordinates
-        - `UNION`: Combines the coordinates with the other coordinates and removes duplicates
+        - `UNION`: Combines the coordinates with the other coordinates and removes duplicate coordinates
+
+    Implements the `CoordinatesFilter` protocol.
     """
 
     def __init__(
@@ -194,11 +208,11 @@ class SetFilter(CoordinatesFilter):
     ) -> None:
         """
         Parameters:
-            other: other coordinates (x_min, y_min) of each tile
-            mode: set filter mode (`DIFFERENCE`, `INTERSECTION` or `UNION`)
+            other: Other coordinates (x_min, y_min) of each tile in meters
+            mode: Set filter mode (`DIFFERENCE`, `INTERSECTION`, or `UNION`)
         """
-        self.other = other
-        self.mode = mode
+        self._other = other
+        self._mode = mode
 
     def __call__(
         self,
@@ -207,13 +221,13 @@ class SetFilter(CoordinatesFilter):
         """Filters the coordinates based on the other coordinates.
 
         Parameters:
-            coordinates: coordinates (x_min, y_min) of each tile
+            coordinates: Coordinates (x_min, y_min) of each tile in meters
 
         Returns:
-            filtered coordinates (x_min, y_min) of each tile
+            Coordinates (x_min, y_min) of each tile in meters
         """
         return set_filter(
             coordinates=coordinates,
-            other=self.other,
-            mode=self.mode,
+            other=self._other,
+            mode=self._mode,
         )

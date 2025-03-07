@@ -1032,3 +1032,31 @@ data_test_grid_sub_exceptions = [
         re.escape('Invalid other! The tile sizes of the grids must be equal.'),
     ),
 ]
+
+data_test_grid_to_gdf = [
+    # test case 1: EPSG code is None
+    (
+        None,
+        gpd.GeoDataFrame(
+            geometry=[
+                box(-128, -128, 0, 0),
+                box(0, -128, 128, 0),
+                box(-128, 0, 0, 128),
+                box(0, 0, 128, 128),
+            ],
+        ),
+    ),
+    # test case 2: EPSG code is not None
+    (
+        25832,
+        gpd.GeoDataFrame(
+            geometry=[
+                box(-128, -128, 0, 0),
+                box(0, -128, 128, 0),
+                box(-128, 0, 0, 128),
+                box(0, 0, 128, 128),
+            ],
+            crs='EPSG:25832',
+        ),
+    ),
+]

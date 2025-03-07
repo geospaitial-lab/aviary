@@ -1,4 +1,5 @@
 from enum import Enum as BaseEnum
+from typing import overload
 
 import rasterio as rio
 
@@ -31,9 +32,30 @@ class ChannelName(Enum):
 _built_in_channel_names = frozenset(channel_name.value for channel_name in ChannelName)
 
 
+@overload
 def _parse_channel_name(
-    channel_name: ChannelName | str,
+    channel_name: ChannelName,
+) -> ChannelName:
+    ...
+
+
+@overload
+def _parse_channel_name(
+    channel_name: str,
 ) -> ChannelName | str:
+    ...
+
+
+@overload
+def _parse_channel_name(
+    channel_name: None,
+) -> None:
+    ...
+
+
+def _parse_channel_name(
+    channel_name: ChannelName | str | None,
+) -> ChannelName | str | None:
     """Parses `channel_name` to `ChannelName`.
 
     Parameters:
