@@ -54,7 +54,10 @@ def geospatial_filter() -> GeospatialFilter:
 
 @pytest.fixture(scope='session')
 def mask_filter() -> MaskFilter:
-    mask = np.array([0, 1, 0, 1], dtype=np.bool_)
+    mask = np.array(
+        [0, 1, 0, 1],
+        dtype=np.bool_,
+    )
     return MaskFilter(
         mask=mask,
     )
@@ -62,7 +65,10 @@ def mask_filter() -> MaskFilter:
 
 @pytest.fixture(scope='session')
 def set_filter() -> SetFilter:
-    other = np.array([[-128, 0], [0, 0]], dtype=np.int32)
+    other = np.array(
+        [[-128, 0], [0, 0]],
+        dtype=np.int32,
+    )
     mode = SetFilterMode.DIFFERENCE
     return SetFilter(
         other=other,

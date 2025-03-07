@@ -37,7 +37,10 @@ def test_composite_filter_call(
     mocked_composite_filter: MagicMock,
     composite_filter: CompositeFilter,
 ) -> None:
-    coordinates = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32)
+    coordinates = np.array(
+        [[-128, -128], [0, -128], [-128, 0], [0, 0]],
+        dtype=np.int32,
+    )
 
     expected = 'expected'
     mocked_composite_filter.return_value = expected
@@ -62,7 +65,10 @@ def test_duplicates_filter_call(
     mocked_duplicates_filter: MagicMock,
     duplicates_filter: DuplicatesFilter,
 ) -> None:
-    coordinates = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32)
+    coordinates = np.array(
+        [[-128, -128], [0, -128], [-128, 0], [0, 0]],
+        dtype=np.int32,
+    )
 
     expected = 'expected'
     mocked_duplicates_filter.return_value = expected
@@ -103,7 +109,10 @@ def test_geospatial_filter_call(
     mocked_geospatial_filter: MagicMock,
     geospatial_filter: GeospatialFilter,
 ) -> None:
-    coordinates = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32)
+    coordinates = np.array(
+        [[-128, -128], [0, -128], [-128, 0], [0, 0]],
+        dtype=np.int32,
+    )
 
     expected = 'expected'
     mocked_geospatial_filter.return_value = expected
@@ -122,7 +131,10 @@ def test_geospatial_filter_call(
 
 
 def test_mask_filter_init() -> None:
-    mask = np.array([0, 1, 0, 1], dtype=np.bool_)
+    mask = np.array(
+        [0, 1, 0, 1],
+        dtype=np.bool_,
+    )
 
     mask_filter = MaskFilter(
         mask=mask,
@@ -136,7 +148,10 @@ def test_mask_filter_call(
     mocked_mask_filter: MagicMock,
     mask_filter: MaskFilter,
 ) -> None:
-    coordinates = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32)
+    coordinates = np.array(
+        [[-128, -128], [0, -128], [-128, 0], [0, 0]],
+        dtype=np.int32,
+    )
 
     expected = 'expected'
     mocked_mask_filter.return_value = expected
@@ -153,7 +168,10 @@ def test_mask_filter_call(
 
 
 def test_set_filter_init() -> None:
-    other = np.array([[-128, 0], [0, 0]], dtype=np.int32)
+    other = np.array(
+        [[-128, 0], [0, 0]],
+        dtype=np.int32,
+    )
     mode = SetFilterMode.DIFFERENCE
 
     set_filter = SetFilter(
@@ -170,7 +188,10 @@ def test_set_filter_call(
     mocked_set_filter: MagicMock,
     set_filter: SetFilter,
 ) -> None:
-    coordinates = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32)
+    coordinates = np.array(
+        [[-128, -128], [0, -128], [-128, 0], [0, 0]],
+        dtype=np.int32,
+    )
 
     expected = 'expected'
     mocked_set_filter.return_value = expected

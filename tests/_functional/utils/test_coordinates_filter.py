@@ -107,8 +107,14 @@ def test_mask_filter(
 def test_set_filter_difference(
     mocked_set_filter_difference: MagicMock,
 ) -> None:
-    coordinates = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32)
-    other = np.array([[-128, 0], [0, 0]], dtype=np.int32)
+    coordinates = np.array(
+        [[-128, -128], [0, -128], [-128, 0], [0, 0]],
+        dtype=np.int32,
+    )
+    other = np.array(
+        [[-128, 0], [0, 0]],
+        dtype=np.int32,
+    )
     mode = SetFilterMode.DIFFERENCE
 
     expected = 'expected'
@@ -131,8 +137,14 @@ def test_set_filter_difference(
 def test_set_filter_intersection(
     mocked_set_filter_intersection: MagicMock,
 ) -> None:
-    coordinates = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32)
-    other = np.array([[-128, 0], [0, 0]], dtype=np.int32)
+    coordinates = np.array(
+        [[-128, -128], [0, -128], [-128, 0], [0, 0]],
+        dtype=np.int32,
+    )
+    other = np.array(
+        [[-128, 0], [0, 0]],
+        dtype=np.int32,
+    )
     mode = SetFilterMode.INTERSECTION
 
     expected = 'expected'
@@ -155,8 +167,14 @@ def test_set_filter_intersection(
 def test_set_filter_union(
     mocked_set_filter_union: MagicMock,
 ) -> None:
-    coordinates = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32)
-    other = np.array([[-128, 0], [0, 0]], dtype=np.int32)
+    coordinates = np.array(
+        [[-128, -128], [0, -128], [-128, 0], [0, 0]],
+        dtype=np.int32,
+    )
+    other = np.array(
+        [[-128, 0], [0, 0]],
+        dtype=np.int32,
+    )
     mode = SetFilterMode.UNION
 
     expected = 'expected'
@@ -176,8 +194,14 @@ def test_set_filter_union(
 
 
 def test_set_filter_exceptions() -> None:
-    coordinates = np.array([[-128, -128], [0, -128], [-128, 0], [0, 0]], dtype=np.int32)
-    other = np.array([[-128, 0], [0, 0]], dtype=np.int32)
+    coordinates = np.array(
+        [[-128, -128], [0, -128], [-128, 0], [0, 0]],
+        dtype=np.int32,
+    )
+    other = np.array(
+        [[-128, 0], [0, 0]],
+        dtype=np.int32,
+    )
     mode = 'invalid'
 
     message = re.escape('Invalid mode!')
