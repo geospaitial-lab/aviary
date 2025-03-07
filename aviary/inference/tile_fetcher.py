@@ -232,12 +232,16 @@ class VRTFetcher:
 class VRTFetcherConfig(pydantic.BaseModel):
     """Configuration for the `from_config` class method of `VRTFetcher`
 
+    Create the configuration from a config file:
+        - Use 'bilinear' or 'nearest' instead of `InterpolationMode.BILINEAR` or `InterpolationMode.NEAREST`
+        - Use null instead of None
+
     Attributes:
         path: Path to the virtual raster (.vrt file)
         channel_names: Channel names (if None, the channel is ignored)
         tile_size: Tile size in meters
         ground_sampling_distance: Ground sampling distance in meters
-        interpolation_mode: Interpolation mode ('bilinear' or 'nearest')
+        interpolation_mode: Interpolation mode (`BILINEAR` or `NEAREST`)
         buffer_size: Buffer size in meters (specifies the area around the tile that is additionally fetched)
         time_step: Time step
     """
@@ -345,9 +349,13 @@ class WMSFetcher:
 class WMSFetcherConfig(pydantic.BaseModel):
     """Configuration for the `from_config` class method of `WMSFetcher`
 
+    Create the configuration from a config file:
+        - Use '1.1.1' or '1.3.0' instead of `WMSVersion.V1_1_1` or `WMSVersion.V1_3_0`
+        - Use null instead of None
+
     Attributes:
         url: URL of the web map service
-        version: Version of the web map service ('1.1.1' or '1.3.0')
+        version: Version of the web map service (`V1_1_1` or `V1_3_0`)
         layer: Layer
         epsg_code: EPSG code
         response_format: Format of the response (MIME type, e.g., 'image/png')

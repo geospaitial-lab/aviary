@@ -905,6 +905,9 @@ class GridConfig(pydantic.BaseModel):
         - `gdf_path` and `tile_size`
         - `json_path`
 
+    Create the configuration from a config file:
+        - Use null instead of None
+
     Attributes:
         bounding_box_coordinates: Bounding box coordinates (x_min, y_min, x_max, y_max) in meters
         gdf_path: Path to the geodataframe (.gpkg file)
