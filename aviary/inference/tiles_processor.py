@@ -100,6 +100,30 @@ class CompositeProcessor:
         """
         self._tiles_processors = tiles_processors
 
+    @classmethod
+    def from_config(
+        cls,
+        config: CompositeProcessorConfig,
+    ) -> CompositeProcessor:
+        """Creates a composite processor from the configuration.
+
+        Parameters:
+            config: Configuration
+
+        Returns:
+            Composite processor
+        """
+        tiles_processors = []
+
+        for tiles_processor_config in config.tiles_processor_configs:
+            tiles_processor_class = globals()[tiles_processor_config.name]
+            tiles_processor = tiles_processor_class.from_config(config=tiles_processor_config.config)
+            tiles_processors.append(tiles_processor)
+
+        return cls(
+            tiles_processors=tiles_processors,
+        )
+
     def __call__(
         self,
         tiles: Tiles,
@@ -148,6 +172,22 @@ class CopyProcessor:
         """
         self._channel_key = channel_key
         self._new_channel_key = new_channel_key
+
+    @classmethod
+    def from_config(
+        cls,
+        config: CopyProcessorConfig,
+    ) -> CopyProcessor:
+        """Creates a copy processor from the configuration.
+
+        Parameters:
+            config: Configuration
+
+        Returns:
+            Copy processor
+        """
+        config = config.model_dump()
+        return cls(**config)
 
     def __call__(
         self,
@@ -208,6 +248,22 @@ class NormalizeProcessor:
         self._max_value = max_value
         self._new_channel_key = new_channel_key
 
+    @classmethod
+    def from_config(
+        cls,
+        config: NormalizeProcessorConfig,
+    ) -> NormalizeProcessor:
+        """Creates a normalize processor from the configuration.
+
+        Parameters:
+            config: Configuration
+
+        Returns:
+            Normalize processor
+        """
+        config = config.model_dump()
+        return cls(**config)
+
     def __call__(
         self,
         tiles: Tiles,
@@ -267,6 +323,22 @@ class RemoveBufferProcessor:
         """
         self._channel_keys = channel_keys
 
+    @classmethod
+    def from_config(
+        cls,
+        config: RemoveBufferProcessorConfig,
+    ) -> RemoveBufferProcessor:
+        """Creates a remove buffer processor from the configuration.
+
+        Parameters:
+            config: Configuration
+
+        Returns:
+            Remove buffer processor
+        """
+        config = config.model_dump()
+        return cls(**config)
+
     def __call__(
         self,
         tiles: Tiles,
@@ -322,6 +394,22 @@ class RemoveProcessor:
         """
         self._channel_keys = channel_keys
 
+    @classmethod
+    def from_config(
+        cls,
+        config: RemoveProcessorConfig,
+    ) -> RemoveProcessor:
+        """Creates a remove processor from the configuration.
+
+        Parameters:
+            config: Configuration
+
+        Returns:
+            Remove processor
+        """
+        config = config.model_dump()
+        return cls(**config)
+
     def __call__(
         self,
         tiles: Tiles,
@@ -376,6 +464,22 @@ class SelectProcessor:
                 or channel name and time step combinations
         """
         self._channel_keys = channel_keys
+
+    @classmethod
+    def from_config(
+        cls,
+        config: SelectProcessorConfig,
+    ) -> SelectProcessor:
+        """Creates a select processor from the configuration.
+
+        Parameters:
+            config: Configuration
+
+        Returns:
+            Select processor
+        """
+        config = config.model_dump()
+        return cls(**config)
 
     def __call__(
         self,
@@ -437,6 +541,22 @@ class StandardizeProcessor:
         self._mean_value = mean_value
         self._std_value = std_value
         self._new_channel_key = new_channel_key
+
+    @classmethod
+    def from_config(
+        cls,
+        config: StandardizeProcessorConfig,
+    ) -> StandardizeProcessor:
+        """Creates a standardize processor from the configuration.
+
+        Parameters:
+            config: Configuration
+
+        Returns:
+            Standardize processor
+        """
+        config = config.model_dump()
+        return cls(**config)
 
     def __call__(
         self,
@@ -502,6 +622,22 @@ class VectorizeProcessor:
         self._ignore_background_class = ignore_background_class
         self._new_channel_key = new_channel_key
         self._num_workers = num_workers
+
+    @classmethod
+    def from_config(
+        cls,
+        config: VectorizeProcessorConfig,
+    ) -> VectorizeProcessor:
+        """Creates a vectorize processor from the configuration.
+
+        Parameters:
+            config: Configuration
+
+        Returns:
+            Vectorize processor
+        """
+        config = config.model_dump()
+        return cls(**config)
 
     def __call__(
         self,

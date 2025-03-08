@@ -115,7 +115,7 @@ class CompositeFetcher:
 
         for tile_fetcher_config in config.tile_fetcher_configs:
             tile_fetcher_class = globals()[tile_fetcher_config.name]
-            tile_fetcher = tile_fetcher_class.from_config(tile_fetcher_config.config)
+            tile_fetcher = tile_fetcher_class.from_config(config=tile_fetcher_config.config)
             tile_fetchers.append(tile_fetcher)
 
         return cls(
