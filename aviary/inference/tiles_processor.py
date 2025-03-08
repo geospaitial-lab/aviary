@@ -216,7 +216,8 @@ class CopyProcessorConfig(pydantic.BaseModel):
 
     Attributes:
         channel_key: Channel name or channel name and time step combination
-        new_channel_key: New channel name or channel name and time step combination
+        new_channel_key: New channel name or channel name and time step combination -
+            defaults to None
     """
     channel_key: ChannelName | str | ChannelKey
     new_channel_key: ChannelName | str | ChannelKey | None = None
@@ -298,7 +299,8 @@ class NormalizeProcessorConfig(pydantic.BaseModel):
         channel_key: Channel name or channel name and time step combination
         min_value: Minimum value
         max_value: Maximum value
-        new_channel_key: New channel name or channel name and time step combination
+        new_channel_key: New channel name or channel name and time step combination -
+            defaults to None
     """
     channel_key: ChannelName | str | ChannelKey
     min_value: float
@@ -595,7 +597,8 @@ class StandardizeProcessorConfig(pydantic.BaseModel):
         channel_key: Channel name or channel name and time step combination
         mean_value: Mean value
         std_value: Standard deviation value
-        new_channel_key: New channel name or channel name and time step combination
+        new_channel_key: New channel name or channel name and time step combination -
+            defaults to None
     """
     channel_key: ChannelName | str | ChannelKey
     mean_value: float
@@ -677,9 +680,12 @@ class VectorizeProcessorConfig(pydantic.BaseModel):
 
     Attributes:
         channel_key: Channel name or channel name and time step combination
-        ignore_background_class: If True, the background class (value 0) is not vectorized
-        new_channel_key: New channel name or channel name and time step combination
-        num_workers: Number of workers
+        ignore_background_class: If True, the background class (value 0) is not vectorized -
+            defaults to True
+        new_channel_key: New channel name or channel name and time step combination -
+            defaults to None
+        num_workers: Number of workers -
+            defaults to 1
     """
     channel_key: ChannelName | str | ChannelKey
     ignore_background_class: bool = True
