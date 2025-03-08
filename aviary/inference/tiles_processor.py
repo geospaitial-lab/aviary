@@ -5,6 +5,8 @@ from typing import (
     Protocol,
 )
 
+import pydantic
+
 # noinspection PyProtectedMember
 from aviary._functional.inference.tiles_processor import (
     composite_processor,
@@ -16,16 +18,16 @@ from aviary._functional.inference.tiles_processor import (
     standardize_processor,
     vectorize_processor,
 )
+from aviary.core.enums import ChannelName
+from aviary.core.type_aliases import (
+    ChannelKey,
+    ChannelKeySet,
+    ChannelNameKeySet,
+    ChannelNameSet,
+)
 
 if TYPE_CHECKING:
-    from aviary.core.enums import ChannelName
     from aviary.core.tiles import Tiles
-    from aviary.core.type_aliases import (
-        ChannelKey,
-        ChannelKeySet,
-        ChannelNameKeySet,
-        ChannelNameSet,
-    )
 
 
 class TilesProcessor(Protocol):
@@ -57,6 +59,26 @@ class TilesProcessor(Protocol):
             Tiles
         """
         ...
+
+
+class TilesProcessorConfig(pydantic.BaseModel):
+    """Configuration for tiles processors
+
+    Attributes:
+        name: Name
+        config: Configuration
+    """
+    name: str
+    config: (
+        CompositeProcessorConfig |
+        CopyProcessorConfig |
+        NormalizeProcessorConfig |
+        RemoveBufferProcessorConfig |
+        RemoveProcessorConfig |
+        SelectProcessorConfig |
+        StandardizeProcessorConfig |
+        VectorizeProcessorConfig
+    )
 
 
 class CompositeProcessor:
@@ -94,6 +116,15 @@ class CompositeProcessor:
             tiles=tiles,
             tiles_processors=self._tiles_processors,
         )
+
+
+class CompositeProcessorConfig(pydantic.BaseModel):
+    """Configuration for the `from_config` class method of `CompositeProcessor`
+
+    Attributes:
+        tiles_processor_configs: Configurations of the tiles processors
+    """
+    tiles_processor_configs: list[TilesProcessorConfig]
 
 
 class CopyProcessor:
@@ -135,6 +166,17 @@ class CopyProcessor:
             channel_key=self._channel_key,
             new_channel_key=self._new_channel_key,
         )
+
+
+class CopyProcessorConfig(pydantic.BaseModel):
+    """Configuration for the `from_config` class method of `CopyProcessor`
+
+    Attributes:
+        channel_key: Channel name or channel name and time step combination
+        new_channel_key: New channel name or channel name and time step combination
+    """
+    channel_key: ChannelName | str | ChannelKey
+    new_channel_key: ChannelName | str | ChannelKey | None = None
 
 
 class NormalizeProcessor:
@@ -187,6 +229,21 @@ class NormalizeProcessor:
         )
 
 
+class NormalizeProcessorConfig(pydantic.BaseModel):
+    """Configuration for the `from_config` class method of `NormalizeProcessor`
+
+    Attributes:
+        channel_key: Channel name or channel name and time step combination
+        min_value: Minimum value
+        max_value: Maximum value
+        new_channel_key: New channel name or channel name and time step combination
+    """
+    channel_key: ChannelName | str | ChannelKey
+    min_value: float
+    max_value: float
+    new_channel_key: ChannelName | str | ChannelKey | None = None
+
+
 class RemoveBufferProcessor:
     """Tiles processor that removes the buffer of channels
 
@@ -226,6 +283,20 @@ class RemoveBufferProcessor:
             tiles=tiles,
             channel_keys=self._channel_keys,
         )
+
+
+class RemoveBufferProcessorConfig(pydantic.BaseModel):
+    """Configuration for the `from_config` class method of `RemoveBufferProcessor`
+
+    Attributes:
+        channel_keys: Channel name, channel name and time step combination, channel names,
+            or channel name and time step combinations
+    """
+    channel_keys: (
+        ChannelName | str |
+        ChannelKey |
+        ChannelNameSet | ChannelKeySet | ChannelNameKeySet
+    )
 
 
 class RemoveProcessor:
@@ -269,6 +340,20 @@ class RemoveProcessor:
         )
 
 
+class RemoveProcessorConfig(pydantic.BaseModel):
+    """Configuration for the `from_config` class method of `RemoveProcessor`
+
+    Attributes:
+        channel_keys: Channel name, channel name and time step combination, channel names,
+            or channel name and time step combinations
+    """
+    channel_keys: (
+        ChannelName | str |
+        ChannelKey |
+        ChannelNameSet | ChannelKeySet | ChannelNameKeySet
+    )
+
+
 class SelectProcessor:
     """Tiles processor that selects channels
 
@@ -308,6 +393,20 @@ class SelectProcessor:
             tiles=tiles,
             channel_keys=self._channel_keys,
         )
+
+
+class SelectProcessorConfig(pydantic.BaseModel):
+    """Configuration for the `from_config` class method of `SelectProcessor`
+
+    Attributes:
+        channel_keys: Channel name, channel name and time step combination, channel names,
+            or channel name and time step combinations
+    """
+    channel_keys: (
+        ChannelName | str |
+        ChannelKey |
+        ChannelNameSet | ChannelKeySet | ChannelNameKeySet
+    )
 
 
 class StandardizeProcessor:
@@ -360,6 +459,21 @@ class StandardizeProcessor:
         )
 
 
+class StandardizeProcessorConfig(pydantic.BaseModel):
+    """Configuration for the `from_config` class method of `StandardizeProcessor`
+
+    Attributes:
+        channel_key: Channel name or channel name and time step combination
+        mean_value: Mean value
+        std_value: Standard deviation value
+        new_channel_key: New channel name or channel name and time step combination
+    """
+    channel_key: ChannelName | str | ChannelKey
+    mean_value: float
+    std_value: float
+    new_channel_key: ChannelName | str | ChannelKey | None = None
+
+
 class VectorizeProcessor:
     """Tiles processor that vectorizes a channel
 
@@ -408,3 +522,18 @@ class VectorizeProcessor:
             new_channel_key=self._new_channel_key,
             num_workers=self._num_workers,
         )
+
+
+class VectorizeProcessorConfig(pydantic.BaseModel):
+    """Configuration for the `from_config` class method of `VectorizeProcessor`
+
+    Attributes:
+        channel_key: Channel name or channel name and time step combination
+        ignore_background_class: If True, the background class (value 0) is not vectorized
+        new_channel_key: New channel name or channel name and time step combination
+        num_workers: Number of workers
+    """
+    channel_key: ChannelName | str | ChannelKey
+    ignore_background_class: bool = True
+    new_channel_key: ChannelName | str | ChannelKey | None = None
+    num_workers: int = 1
