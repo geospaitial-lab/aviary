@@ -147,7 +147,8 @@ class CompositeFetcherConfig(pydantic.BaseModel):
 
     Attributes:
         tile_fetcher_configs: Configurations of the tile fetchers
-        num_workers: Number of workers
+        num_workers: Number of workers -
+            defaults to 1
     """
     tile_fetcher_configs: list[TileFetcherConfig]
     num_workers: int = 1
@@ -241,9 +242,12 @@ class VRTFetcherConfig(pydantic.BaseModel):
         channel_names: Channel names (if None, the channel is ignored)
         tile_size: Tile size in meters
         ground_sampling_distance: Ground sampling distance in meters
-        interpolation_mode: Interpolation mode (`BILINEAR` or `NEAREST`)
-        buffer_size: Buffer size in meters (specifies the area around the tile that is additionally fetched)
-        time_step: Time step
+        interpolation_mode: Interpolation mode (`BILINEAR` or `NEAREST`) -
+            defaults to `BILINEAR`
+        buffer_size: Buffer size in meters (specifies the area around the tile that is additionally fetched) -
+            defaults to 0
+        time_step: Time step -
+            defaults to None
     """
     path: Path
     channel_names: list[ChannelName | str | None]
@@ -362,9 +366,12 @@ class WMSFetcherConfig(pydantic.BaseModel):
         channel_names: Channel names (if None, the channel is ignored)
         tile_size: Tile size in meters
         ground_sampling_distance: Ground sampling distance in meters
-        style: Style
-        buffer_size: Buffer size in meters
-        time_step: Time step
+        style: Style -
+            defaults to None
+        buffer_size: Buffer size in meters -
+            defaults to 0
+        time_step: Time step -
+            defaults to None
     """
     url: str
     version: WMSVersion

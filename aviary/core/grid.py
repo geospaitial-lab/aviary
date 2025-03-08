@@ -909,14 +909,22 @@ class GridConfig(pydantic.BaseModel):
         - Use null instead of None
 
     Attributes:
-        bounding_box_coordinates: Bounding box coordinates (x_min, y_min, x_max, y_max) in meters
-        gdf_path: Path to the geodataframe (.gpkg file)
-        json_path: Path to the JSON file (.json file)
-        ignore_bounding_box_coordinates: Bounding box coordinates to ignore (x_min, y_min, x_max, y_max) in meters
-        ignore_gdf_path: Path to the geodataframe (.gpkg file) to ignore
-        ignore_json_path: Path to the JSON file (.json file) to ignore
-        tile_size: Tile size in meters
-        quantize: If True, the bounding box is quantized to `tile_size`
+        bounding_box_coordinates: Bounding box coordinates (x_min, y_min, x_max, y_max) in meters -
+            defaults to None
+        gdf_path: Path to the geodataframe (.gpkg file) -
+            defaults to None
+        json_path: Path to the JSON file (.json file) -
+            defaults to None
+        ignore_bounding_box_coordinates: Bounding box coordinates to ignore (x_min, y_min, x_max, y_max) in meters -
+            defaults to None
+        ignore_gdf_path: Path to the geodataframe (.gpkg file) to ignore -
+            defaults to None
+        ignore_json_path: Path to the JSON file (.json file) to ignore -
+            defaults to None
+        tile_size: Tile size in meters -
+            defaults to None
+        quantize: If True, the bounding box is quantized to `tile_size` -
+            defaults to True
     """
     bounding_box_coordinates: tuple[Coordinate, Coordinate, Coordinate, Coordinate] | None = None
     gdf_path: Path | None = None
