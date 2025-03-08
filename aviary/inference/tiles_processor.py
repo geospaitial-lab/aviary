@@ -211,6 +211,9 @@ class CopyProcessor:
 class CopyProcessorConfig(pydantic.BaseModel):
     """Configuration for the `from_config` class method of `CopyProcessor`
 
+    Create the configuration from a config file:
+        - Use null instead of None
+
     Attributes:
         channel_key: Channel name or channel name and time step combination
         new_channel_key: New channel name or channel name and time step combination
@@ -287,6 +290,9 @@ class NormalizeProcessor:
 
 class NormalizeProcessorConfig(pydantic.BaseModel):
     """Configuration for the `from_config` class method of `NormalizeProcessor`
+
+    Create the configuration from a config file:
+        - Use null instead of None
 
     Attributes:
         channel_key: Channel name or channel name and time step combination
@@ -582,6 +588,9 @@ class StandardizeProcessor:
 class StandardizeProcessorConfig(pydantic.BaseModel):
     """Configuration for the `from_config` class method of `StandardizeProcessor`
 
+    Create the configuration from a config file:
+        - Use null instead of None
+
     Attributes:
         channel_key: Channel name or channel name and time step combination
         mean_value: Mean value
@@ -662,6 +671,9 @@ class VectorizeProcessor:
 
 class VectorizeProcessorConfig(pydantic.BaseModel):
     """Configuration for the `from_config` class method of `VectorizeProcessor`
+
+    Create the configuration from a config file:
+        - Use null instead of None
 
     Attributes:
         channel_key: Channel name or channel name and time step combination
