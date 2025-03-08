@@ -1,14 +1,3 @@
-from .exporter import (
-    Exporter,
-    SegmentationExporter,
-    SegmentationExporterConfig,
-)
-from .model import (
-    Model,
-    ONNXSegmentationModel,
-    SegmentationModel,
-    SegmentationModelConfig,
-)
 from .tile_fetcher import (
     CompositeFetcher,
     CompositeFetcherConfig,
@@ -21,23 +10,36 @@ from .tile_fetcher import (
 )
 from .tile_loader import TileLoader
 from .tile_set import TileSet
+from .tiles_processor import (
+    CompositeProcessor,
+    CopyProcessor,
+    NormalizeProcessor,
+    RemoveBufferProcessor,
+    RemoveProcessor,
+    SelectProcessor,
+    StandardizeProcessor,
+    TilesProcessor,
+    VectorizeProcessor,
+)
 
 __all__ = [
     'CompositeFetcher',
     'CompositeFetcherConfig',
-    'Exporter',
-    'Model',
-    'ONNXSegmentationModel',
-    'SegmentationExporter',
-    'SegmentationExporterConfig',
-    'SegmentationModel',
-    'SegmentationModelConfig',
+    'CompositeProcessor',
+    'CopyProcessor',
+    'NormalizeProcessor',
+    'RemoveBufferProcessor',
+    'RemoveProcessor',
+    'SelectProcessor',
+    'StandardizeProcessor',
     'TileFetcher',
     'TileFetcherConfig',
     'TileLoader',
     'TileSet',
+    'TilesProcessor',
     'VRTFetcher',
     'VRTFetcherConfig',
+    'VectorizeProcessor',
     'WMSFetcher',
     'WMSFetcherConfig',
 ]
