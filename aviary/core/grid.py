@@ -419,7 +419,7 @@ class Grid(Iterable[Coordinates]):
             message = (
                 'Invalid config! '
                 'The configuration must have exactly one of the following field combinations: '
-                'bounding_box_coordinates, tile_size | gdf_path, tile_size | json_path'
+                'bounding_box_coordinates, tile_size | gpkg_path, tile_size | json_path'
             )
             raise AviaryUserError(message)
 
@@ -902,7 +902,7 @@ class GridConfig(pydantic.BaseModel):
 
     The configuration must have exactly one of the following field combinations:
         - `bounding_box_coordinates` and `tile_size`
-        - `gdf_path` and `tile_size`
+        - `gpkg_path` and `tile_size`
         - `json_path`
 
     Create the configuration from a config file:
@@ -911,13 +911,13 @@ class GridConfig(pydantic.BaseModel):
     Attributes:
         bounding_box_coordinates: Bounding box coordinates (x_min, y_min, x_max, y_max) in meters -
             defaults to None
-        gdf_path: Path to the geodataframe (.gpkg file) -
+        gpkg_path: Path to the geopackage (.gpkg file) -
             defaults to None
         json_path: Path to the JSON file (.json file) -
             defaults to None
         ignore_bounding_box_coordinates: Bounding box coordinates to ignore (x_min, y_min, x_max, y_max) in meters -
             defaults to None
-        ignore_gdf_path: Path to the geodataframe (.gpkg file) to ignore -
+        ignore_gpkg_path: Path to the geopackage (.gpkg file) to ignore -
             defaults to None
         ignore_json_path: Path to the JSON file (.json file) to ignore -
             defaults to None
@@ -927,10 +927,10 @@ class GridConfig(pydantic.BaseModel):
             defaults to True
     """
     bounding_box_coordinates: tuple[Coordinate, Coordinate, Coordinate, Coordinate] | None = None
-    gdf_path: Path | None = None
+    gpkg_path: Path | None = None
     json_path: Path | None = None
     ignore_bounding_box_coordinates: tuple[Coordinate, Coordinate, Coordinate, Coordinate] | None = None
-    ignore_gdf_path: Path | None = None
+    ignore_gpkg_path: Path | None = None
     ignore_json_path: Path | None = None
     tile_size: TileSize | None = None
     quantize: bool = True
@@ -958,10 +958,10 @@ class GridConfig(pydantic.BaseModel):
         Returns:
             Geodataframe
         """
-        if self.gdf_path is None:
+        if self.gpkg_path is None:
             return None
 
-        return gpd.read_file(self.gdf_path)
+        return gpd.read_file(self.gpkg_path)
 
     @property
     def json_string(self) -> str | None:
@@ -998,10 +998,10 @@ class GridConfig(pydantic.BaseModel):
         Returns:
             Geodataframe
         """
-        if self.ignore_gdf_path is None:
+        if self.ignore_gpkg_path is None:
             return None
 
-        return gpd.read_file(self.ignore_gdf_path)
+        return gpd.read_file(self.ignore_gpkg_path)
 
     @property
     def ignore_json_string(self) -> str | None:
@@ -1028,7 +1028,7 @@ class GridConfig(pydantic.BaseModel):
             message = (
                 'Invalid config! '
                 'The configuration must have exactly one of the following field combinations: '
-                'bounding_box_coordinates, tile_size | gdf_path, tile_size | json_path'
+                'bounding_box_coordinates, tile_size | gpkg_path, tile_size | json_path'
             )
             raise ValueError(message)
 
