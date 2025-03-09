@@ -8,12 +8,6 @@ from aviary.core.enums import (
     InterpolationMode,
     WMSVersion,
 )
-from aviary.inference.aviary import (
-    Aviary,
-    Channels,
-    ModelCard,
-    Type,
-)
 from aviary.inference.exporter import SegmentationExporter
 from aviary.inference.tile_fetcher import (
     CompositeFetcher,
@@ -21,16 +15,6 @@ from aviary.inference.tile_fetcher import (
     VRTFetcher,
     WMSFetcher,
 )
-
-
-@pytest.fixture(scope='session')
-def aviary(
-    model_card: ModelCard,
-) -> Aviary:
-    model_cards = [model_card] * 3
-    return Aviary(
-        model_cards=model_cards,
-    )
 
 
 @pytest.fixture(scope='session')
@@ -44,30 +28,6 @@ def composite_fetcher() -> CompositeFetcher:
     return CompositeFetcher(
         tile_fetchers=tile_fetchers,
         num_workers=num_workers,
-    )
-
-
-@pytest.fixture(scope='session')
-def model_card() -> ModelCard:
-    name = 'name'
-    repo = 'repo'
-    path = 'path'
-    type_ = Type.SEGMENTATION
-    required_channels = [Channels.RGB, Channels.NIR]
-    num_channels = 4
-    ground_sampling_distance = .2
-    num_classes = 3
-    description = 'description'
-    return ModelCard(
-        name=name,
-        repo=repo,
-        path=path,
-        type=type_,
-        required_channels=required_channels,
-        num_channels=num_channels,
-        ground_sampling_distance=ground_sampling_distance,
-        num_classes=num_classes,
-        description=description,
     )
 
 
