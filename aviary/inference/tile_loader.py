@@ -36,7 +36,7 @@ class TileLoader(Iterable[Tiles]):
         self,
         tile_set: TileSet,
         batch_size: int = 1,
-        num_workers: int = 4,
+        num_workers: int = 1,
         num_prefetched_tiles: int = 1,
     ) -> None:
         """
@@ -70,18 +70,24 @@ class TileLoader(Iterable[Tiles]):
             end_index = min(index + self._batch_size, len(self._tile_set))
             indices = range(index, end_index)
 
-            with ThreadPoolExecutor(max_workers=self._num_workers) as executor:
-                tasks = [
-                    executor.submit(
-                        self._tile_set.__getitem__,
-                        index=index,
-                    )
+            if self._num_workers == 1:
+                tiles = [
+                    self._tile_set[index]
                     for index in indices
                 ]
-                tiles = [
-                    futures.result()
-                    for futures in as_completed(tasks)
-                ]
+            else:
+                with ThreadPoolExecutor(max_workers=self._num_workers) as executor:
+                    tasks = [
+                        executor.submit(
+                            self._tile_set.__getitem__,
+                            index=index,
+                        )
+                        for index in indices
+                    ]
+                    tiles = [
+                        futures.result()
+                        for futures in as_completed(tasks)
+                    ]
 
             tiles = Tiles.from_tiles(
                 tiles=tiles,
