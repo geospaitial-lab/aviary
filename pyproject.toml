@@ -70,9 +70,7 @@ exclude_also = [
 
 [tool.pytest.ini_options]
 norecursedirs = [
-    "tests/_functional/data",
     "tests/_functional/geodata",
-    "tests/data",
     "tests/geodata",
     "tests/pipeline",
 ]

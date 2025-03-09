@@ -860,26 +860,26 @@ class VectorChannel(Channel, Iterable[gpd.GeoDataFrame]):
     @staticmethod
     def _scale_data_item(
         data_item: gpd.GeoDataFrame,
-        source_bounding_box: tuple[float, float, float, float],
-        target_bounding_box: tuple[float, float, float, float],
+        bounding_box: tuple[float, float, float, float],
+        new_bounding_box: tuple[float, float, float, float],
     ) -> gpd.GeoDataFrame:
         """Scales the data item to the spatial extent [0, 1] in x and y direction.
 
         Parameters:
             data_item: Data item
-            source_bounding_box: Source bounding box
-            target_bounding_box: Target bounding box
+            bounding_box: Bounding box
+            new_bounding_box: New bounding box
 
         Returns:
             Data item
         """
-        source_size = source_bounding_box[2] - source_bounding_box[0]
-        target_size = target_bounding_box[2] - target_bounding_box[0]
+        source_size = bounding_box[2] - bounding_box[0]
+        target_size = new_bounding_box[2] - new_bounding_box[0]
 
         scale = target_size / source_size
 
-        translate_x = target_bounding_box[0] - source_bounding_box[0] * scale
-        translate_y = target_bounding_box[1] - source_bounding_box[1] * scale
+        translate_x = new_bounding_box[0] - bounding_box[0] * scale
+        translate_y = new_bounding_box[1] - bounding_box[1] * scale
 
         transform = [scale, 0., 0., scale, translate_x, translate_y]
         data_item.geometry = data_item.geometry.affine_transform(transform)
@@ -1062,17 +1062,17 @@ class VectorChannel(Channel, Iterable[gpd.GeoDataFrame]):
         if data_item.empty:
             return data_item
 
-        source_bounding_box = (
+        bounding_box = (
             float(coordinates[0] - buffer_size),
             float(coordinates[1] - buffer_size),
             float(coordinates[0] + tile_size + buffer_size),
             float(coordinates[1] + tile_size + buffer_size),
         )
-        target_bounding_box = (0., 0., 1., 1.)
+        new_bounding_box = (0., 0., 1., 1.)
         return cls._scale_data_item(
             data_item=data_item,
-            source_bounding_box=source_bounding_box,
-            target_bounding_box=target_bounding_box,
+            bounding_box=bounding_box,
+            new_bounding_box=new_bounding_box,
         )
 
     def __repr__(self) -> str:
@@ -1267,8 +1267,8 @@ class VectorChannel(Channel, Iterable[gpd.GeoDataFrame]):
         if data_item.empty:
             return data_item.copy()
 
-        source_bounding_box = self._unbuffered_bounding_box
-        target_bounding_box = (0., 0., 1., 1.)
+        bounding_box = self._unbuffered_bounding_box
+        new_bounding_box = (0., 0., 1., 1.)
 
         data_item = data_item.clip(
             mask=self._unbuffered_bounding_box,
@@ -1277,6 +1277,6 @@ class VectorChannel(Channel, Iterable[gpd.GeoDataFrame]):
         data_item = data_item.reset_index(drop=True)
         return self._scale_data_item(
             data_item=data_item,
-            source_bounding_box=source_bounding_box,
-            target_bounding_box=target_bounding_box,
+            bounding_box=bounding_box,
+            new_bounding_box=new_bounding_box,
         )
