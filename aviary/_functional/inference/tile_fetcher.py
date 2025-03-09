@@ -73,7 +73,8 @@ def composite_fetcher(
             for tile_fetcher in tile_fetchers
         ]
         tiles = [
-            futures.result() for futures in as_completed(tasks)
+            futures.result()
+            for futures in as_completed(tasks)
         ]
 
     return Tile.from_tiles(
