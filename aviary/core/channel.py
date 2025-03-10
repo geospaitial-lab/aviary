@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from abc import (
     ABC,
     abstractmethod,
@@ -48,6 +49,7 @@ class Channel(ABC, Iterable[object]):
         - `RasterChannel`: Contains batched raster data
         - `VectorChannel`: Contains batched vector data
     """
+    _VALID_NAME_PATTERN = r'^[A-Za-z_]+$'
     _data: list[object]
 
     def __init__(
@@ -82,6 +84,7 @@ class Channel(ABC, Iterable[object]):
         self._parse_data()
         self._validate_data()
         self._name = _parse_channel_name(channel_name=self._name)
+        self._validate_name()
         self._validate_buffer_size()
 
     def _parse_data(self) -> None:
@@ -100,6 +103,22 @@ class Channel(ABC, Iterable[object]):
     def _mark_as_copied(self) -> None:
         """Sets `_copy` to True if the data is copied before the initialization."""
         self._copy = True
+
+    def _validate_name(self) -> None:
+        """Validates `name`.
+
+        Raises:
+            AviaryUserError: Invalid `name` (the name does not contain only characters and underscores)
+        """
+        if not isinstance(self._name, str):
+            return
+
+        if not re.match(self._VALID_NAME_PATTERN, self._name):
+            message = (
+                'Invalid name! '
+                'The name must contain only characters and underscores.'
+            )
+            raise AviaryUserError(message)
 
     def _validate_buffer_size(self) -> None:
         """Validates `buffer_size`.
