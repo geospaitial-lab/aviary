@@ -19,7 +19,7 @@ from aviary._functional.utils.coordinates_filter import duplicates_filter
 from aviary.core.channel import (
     Channel,
     RasterChannel,
-    _parse_channel_name,
+    _coerce_channel_name,
 )
 from aviary.core.exceptions import AviaryUserError
 from aviary.core.grid import Grid
@@ -345,7 +345,7 @@ class Tiles(Iterable[Channel]):
             raise AviaryUserError(message)
 
         channel_names = [
-            _parse_channel_name(channel_name=channel_name)
+            _coerce_channel_name(channel_name=channel_name)
             for channel_name in channel_names
         ]
         channels_dict = {}

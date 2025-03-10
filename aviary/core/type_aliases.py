@@ -3,7 +3,7 @@ from typing import TypeAlias
 import numpy as np
 import numpy.typing as npt
 
-from aviary.core.channel import _parse_channel_name
+from aviary.core.channel import _coerce_channel_name
 from aviary.core.enums import ChannelName
 
 BufferSize: TypeAlias = int
@@ -62,7 +62,7 @@ def _parse_channel_key(
         channel_name = channel_key
         time_step = None
 
-    channel_name = _parse_channel_name(channel_name=channel_name)
+    channel_name = _coerce_channel_name(channel_name=channel_name)
     return channel_name, time_step
 
 

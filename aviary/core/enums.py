@@ -33,30 +33,30 @@ _built_in_channel_names = frozenset(channel_name.value for channel_name in Chann
 
 
 @overload
-def _parse_channel_name(
+def _coerce_channel_name(
     channel_name: ChannelName,
 ) -> ChannelName:
     ...
 
 
 @overload
-def _parse_channel_name(
+def _coerce_channel_name(
     channel_name: str,
 ) -> ChannelName | str:
     ...
 
 
 @overload
-def _parse_channel_name(
+def _coerce_channel_name(
     channel_name: None,
 ) -> None:
     ...
 
 
-def _parse_channel_name(
+def _coerce_channel_name(
     channel_name: ChannelName | str | None,
 ) -> ChannelName | str | None:
-    """Parses `channel_name` to `ChannelName`.
+    """Coerces `channel_name` to `ChannelName`.
 
     Parameters:
         channel_name: Channel name
