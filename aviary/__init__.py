@@ -6,7 +6,6 @@ from .core.channel import (
 )
 from .core.enums import (
     ChannelName,
-    Device,
     GeospatialFilterMode,
     InterpolationMode,
     SetFilterMode,
@@ -54,7 +53,6 @@ __all__ = [
     'Coordinate',
     'Coordinates',
     'CoordinatesSet',
-    'Device',
     'EPSGCode',
     'FractionalBufferSize',
     'GeospatialFilterMode',

@@ -10,10 +10,6 @@
 
 ---
 
-::: aviary.Device
-
----
-
 ::: aviary.GeospatialFilterMode
 
 ---
