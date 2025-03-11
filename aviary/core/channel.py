@@ -82,7 +82,7 @@ class Channel(ABC, Iterable[object]):
 
     def _validate(self) -> None:
         """Validates the channel."""
-        self._parse_data()
+        self._coerce_data()
         self._validate_data()
         self._name = _coerce_channel_name(channel_name=self._name)
         _validate_channel_name(
@@ -92,8 +92,8 @@ class Channel(ABC, Iterable[object]):
         )
         self._validate_buffer_size()
 
-    def _parse_data(self) -> None:
-        """Parses `data`."""
+    def _coerce_data(self) -> None:
+        """Coerces `data`."""
         if not isinstance(self._data, list):
             self._data = [self._data]
 

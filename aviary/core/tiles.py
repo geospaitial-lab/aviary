@@ -27,8 +27,8 @@ from aviary.core.type_aliases import (
     ChannelKey,
     ChannelNameSet,
     CoordinatesSet,
-    _parse_channel_key,
-    _parse_channel_keys,
+    _coerce_channel_key,
+    _coerce_channel_keys,
 )
 
 if TYPE_CHECKING:
@@ -83,7 +83,7 @@ class Tiles(Iterable[Channel]):
     def _validate(self) -> None:
         """Validates the tiles."""
         self._validate_channels()
-        self._parse_coordinates()
+        self._coerce_coordinates()
         self._validate_coordinates()
         self._validate_tile_size()
 
@@ -129,8 +129,8 @@ class Tiles(Iterable[Channel]):
         """Sets `_copy` to True if the channels are copied before the initialization."""
         self._copy = True
 
-    def _parse_coordinates(self) -> None:
-        """Parses `coordinates`."""
+    def _coerce_coordinates(self) -> None:
+        """Coerces `coordinates`."""
         if not isinstance(self._coordinates, np.ndarray):
             self._coordinates = np.array([self._coordinates], dtype=np.int32)
 
@@ -552,7 +552,7 @@ class Tiles(Iterable[Channel]):
         Returns:
             True if the channel is in the tiles, False otherwise
         """
-        channel_key = _parse_channel_key(channel_key=channel_key)
+        channel_key = _coerce_channel_key(channel_key=channel_key)
         return channel_key in self.channel_keys
 
     def __getattr__(
@@ -590,7 +590,7 @@ class Tiles(Iterable[Channel]):
         Returns:
             Channel
         """
-        channel_key = _parse_channel_key(channel_key=channel_key)
+        channel_key = _coerce_channel_key(channel_key=channel_key)
         return self._channels_dict[channel_key]
 
     def __iter__(self) -> Iterator[Channel]:
@@ -732,7 +732,7 @@ class Tiles(Iterable[Channel]):
         Returns:
             Tiles
         """
-        channel_keys = _parse_channel_keys(channel_keys=channel_keys)
+        channel_keys = _coerce_channel_keys(channel_keys=channel_keys)
 
         if inplace:
             self._channels = [channel for channel in self if channel.key not in channel_keys]
@@ -768,7 +768,7 @@ class Tiles(Iterable[Channel]):
         Returns:
             Tiles
         """
-        ignore_channel_keys = _parse_channel_keys(channel_keys=ignore_channel_keys)
+        ignore_channel_keys = _coerce_channel_keys(channel_keys=ignore_channel_keys)
 
         if inplace:
             for channel in self:
