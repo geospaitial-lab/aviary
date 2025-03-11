@@ -19,6 +19,7 @@ from aviary.core.type_aliases import (
     TileSize,
 )
 from tests.core.data.data_test_tiles import (
+    data_test_tiles_bool,
     data_test_tiles_contains,
     data_test_tiles_eq,
     data_test_tiles_getattr,
@@ -228,14 +229,6 @@ def test_tiles_grid(
     assert tiles.grid == expected
 
 
-def test_tiles_num_channels(
-    tiles: Tiles,
-) -> None:
-    expected = 4
-
-    assert tiles.num_channels == expected
-
-
 @pytest.mark.parametrize(('other', 'expected'), data_test_tiles_eq)
 def test_tiles_eq(
     other: object,
@@ -253,6 +246,14 @@ def test_tiles_len(
     expected = 4
 
     assert len(tiles) == expected
+
+
+@pytest.mark.parametrize(('tiles', 'expected'), data_test_tiles_bool)
+def test_tiles_bool(
+    tiles: Tiles,
+    expected: bool,
+) -> None:
+    assert bool(tiles) is expected
 
 
 @pytest.mark.parametrize(('channel_key', 'expected'), data_test_tiles_contains)
