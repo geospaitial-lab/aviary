@@ -69,16 +69,6 @@ def _coerce_channel_name(
     return channel_name
 
 
-class Device(Enum):
-    """
-    Attributes:
-        CPU: CPU device
-        CUDA: CUDA device
-    """
-    CPU = 'cpu'
-    CUDA = 'cuda'
-
-
 class GeospatialFilterMode(Enum):
     """
     Attributes:
