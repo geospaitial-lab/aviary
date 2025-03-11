@@ -335,7 +335,7 @@ data_test_raster_channel_init = [
         None,
         False,
     ),
-    # test case 3: name is str, but can be parsed to ChannelName
+    # test case 3: name is str, but can be coerced to ChannelName
     (
         get_raster_channel_data(),
         'r',
@@ -942,7 +942,7 @@ data_test_vector_channel_init = [
         None,
         False,
     ),
-    # test case 4: name is str, but can be parsed to ChannelName
+    # test case 4: name is str, but can be coerced to ChannelName
     (
         get_vector_channel_data(),
         'r',
