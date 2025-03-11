@@ -371,9 +371,13 @@ class RemoveBufferProcessor:
 class RemoveBufferProcessorConfig(pydantic.BaseModel):
     """Configuration for the `from_config` class method of `RemoveBufferProcessor`
 
+    Create the configuration from a config file:
+        - Use '...' instead of Ellipsis
+
     Attributes:
         channel_keys: Channel name, channel name and time step combination, channel names,
-            channel name and time step combinations, or all channels (Ellipsis)
+            channel name and time step combinations, or all channels (Ellipsis) -
+            defaults to Ellipsis
     """
     model_config = pydantic.ConfigDict(
         arbitrary_types_allowed=True,
@@ -450,9 +454,13 @@ class RemoveProcessor:
 class RemoveProcessorConfig(pydantic.BaseModel):
     """Configuration for the `from_config` class method of `RemoveProcessor`
 
+    Create the configuration from a config file:
+        - Use '...' instead of Ellipsis
+
     Attributes:
         channel_keys: Channel name, channel name and time step combination, channel names,
-            channel name and time step combinations, or all channels (Ellipsis)
+            channel name and time step combinations, or all channels (Ellipsis) -
+            defaults to Ellipsis
     """
     model_config = pydantic.ConfigDict(
         arbitrary_types_allowed=True,
@@ -529,9 +537,13 @@ class SelectProcessor:
 class SelectProcessorConfig(pydantic.BaseModel):
     """Configuration for the `from_config` class method of `SelectProcessor`
 
+    Create the configuration from a config file:
+        - Use '...' instead of Ellipsis
+
     Attributes:
         channel_keys: Channel name, channel name and time step combination, channel names,
-            channel name and time step combinations, or all channels (Ellipsis)
+            channel name and time step combinations, or all channels (Ellipsis) -
+            defaults to Ellipsis
     """
     model_config = pydantic.ConfigDict(
         arbitrary_types_allowed=True,
