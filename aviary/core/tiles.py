@@ -750,17 +750,11 @@ class Tiles(Iterable[Channel]):
         if channel_keys is Ellipsis:
             channel_keys = self.channel_keys
 
-        if inplace:
-            self._channels = [channel for channel in self if channel.key not in channel_keys]
-            self._validate()
-            self._channels_dict = self._compute_channels_dict()
-            return self
-
-        tiles = self.copy()
-        tiles._channels = [channel for channel in tiles if channel.key not in channel_keys]  # noqa: SLF001
-        tiles._validate()  # noqa: SLF001
-        tiles._channels_dict = tiles._compute_channels_dict()  # noqa: SLF001
-        return tiles
+        channel_keys = self.channel_keys - channel_keys
+        return self.select(
+            channel_keys=channel_keys,
+            inplace=inplace,
+        )
 
     def remove_buffer(
         self,
@@ -806,6 +800,48 @@ class Tiles(Iterable[Channel]):
 
         tiles._validate()  # noqa: SLF001
         return tiles
+
+    def select(
+        self,
+        channel_keys:
+            ChannelName | str |
+            ChannelKey |
+            ChannelNameSet | ChannelKeySet | ChannelNameKeySet |
+            EllipsisType |
+            None = Ellipsis,
+        inplace: bool = False,
+    ) -> Tiles:
+        """Selects the channels.
+
+        Notes:
+            - Selecting a channel by its name assumes the time step is None
+
+        Parameters:
+            channel_keys: Channel name, channel name and time step combination, channel names,
+                channel name and time step combinations, or all channels (Ellipsis)
+            inplace: If True, the channels are selected inplace
+
+        Returns:
+            Tiles
+        """
+        channel_keys = _coerce_channel_keys(channel_keys=channel_keys)
+
+        if channel_keys is Ellipsis:
+            channel_keys = self.channel_keys
+
+        if inplace:
+            self._channels = [channel for channel in self if channel.key in channel_keys]
+            self._validate()
+            self._channels_dict = self._compute_channels_dict()
+            return self
+
+        channels = [channel for channel in self if channel.key in channel_keys]
+        return Tiles(
+            channels=channels,
+            coordinates=self._coordinates,
+            tile_size=self._tile_size,
+            copy=True,
+        )
 
 
 Tile: TypeAlias = Tiles
