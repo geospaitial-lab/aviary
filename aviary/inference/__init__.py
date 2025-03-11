@@ -12,7 +12,9 @@ from .tile_loader import TileLoader
 from .tile_set import TileSet
 from .tiles_exporter import (
     GridExporter,
+    GridExporterConfig,
     VectorExporter,
+    VectorExporterConfig,
 )
 from .tiles_processor import (
     CompositeProcessor,
@@ -43,6 +45,7 @@ __all__ = [
     'CopyProcessor',
     'CopyProcessorConfig',
     'GridExporter',
+    'GridExporterConfig',
     'NormalizeProcessor',
     'NormalizeProcessorConfig',
     'RemoveBufferProcessor',
@@ -62,6 +65,7 @@ __all__ = [
     'VRTFetcher',
     'VRTFetcherConfig',
     'VectorExporter',
+    'VectorExporterConfig',
     'VectorizeProcessor',
     'VectorizeProcessorConfig',
     'WMSFetcher',
