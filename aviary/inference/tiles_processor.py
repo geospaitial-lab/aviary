@@ -45,6 +45,10 @@ class TilesProcessor(Protocol):
         - `SelectProcessor`: Selects channels
         - `StandardizeProcessor`: Standardizes a channel
         - `VectorizeProcessor`: Vectorizes a channel
+
+    Implemented exporters:
+        - `GridExporter`: Exports the grid of the tiles
+        - `VectorExporter`: Exports a vector channel
     """
 
     def __call__(

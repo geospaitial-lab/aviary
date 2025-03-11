@@ -39,6 +39,10 @@ nav:
           - VRTFetcher: api_reference/inference/tile_fetcher/vrt_fetcher.md
           - WMSFetcher: api_reference/inference/tile_fetcher/wms_fetcher.md
       - TileLoader: api_reference/inference/tile_loader.md
+      - TileSet: api_reference/inference/tile_set.md
+      - TilesExporter:
+          - GridExporter: api_reference/inference/tiles_exporter/grid_exporter.md
+          - VectorExporter: api_reference/inference/tiles_exporter/vector_exporter.md
       - TilesProcessor:
           - TilesProcessor: api_reference/inference/tiles_processor/tiles_processor.md
           - CompositeProcessor: api_reference/inference/tiles_processor/composite_processor.md
@@ -49,7 +53,6 @@ nav:
           - SelectProcessor: api_reference/inference/tiles_processor/select_processor.md
           - StandardizeProcessor: api_reference/inference/tiles_processor/standardize_processor.md
           - VectorizeProcessor: api_reference/inference/tiles_processor/vectorize_processor.md
-      - TileSet: api_reference/inference/tile_set.md
     - aviary.pipeline:
       - PostprocessingPipeline: api_reference/pipeline/postprocessing_pipeline.md
       - SegmentationPipeline: api_reference/pipeline/segmentation_pipeline.md
