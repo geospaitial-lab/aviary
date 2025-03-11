@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from types import EllipsisType
 from typing import (
     TYPE_CHECKING,
     Protocol,
@@ -322,12 +323,14 @@ class RemoveBufferProcessor:
         channel_keys:
             ChannelName | str |
             ChannelKey |
-            ChannelNameSet | ChannelKeySet | ChannelNameKeySet,
+            ChannelNameSet | ChannelKeySet | ChannelNameKeySet |
+            EllipsisType |
+            None = Ellipsis,
     ) -> None:
         """
         Parameters:
             channel_keys: Channel name, channel name and time step combination, channel names,
-                or channel name and time step combinations
+                channel name and time step combinations, or all channels (Ellipsis)
         """
         self._channel_keys = channel_keys
 
@@ -370,13 +373,19 @@ class RemoveBufferProcessorConfig(pydantic.BaseModel):
 
     Attributes:
         channel_keys: Channel name, channel name and time step combination, channel names,
-            or channel name and time step combinations
+            channel name and time step combinations, or all channels (Ellipsis)
     """
+    model_config = pydantic.ConfigDict(
+        arbitrary_types_allowed=True,
+    )
+
     channel_keys: (
         ChannelName | str |
         ChannelKey |
-        ChannelNameSet | ChannelKeySet | ChannelNameKeySet
-    )
+        ChannelNameSet | ChannelKeySet | ChannelNameKeySet |
+        EllipsisType |
+        None
+    ) = Ellipsis
 
 
 class RemoveProcessor:
@@ -393,12 +402,14 @@ class RemoveProcessor:
         channel_keys:
             ChannelName | str |
             ChannelKey |
-            ChannelNameSet | ChannelKeySet | ChannelNameKeySet,
+            ChannelNameSet | ChannelKeySet | ChannelNameKeySet |
+            EllipsisType |
+            None = Ellipsis,
     ) -> None:
         """
         Parameters:
             channel_keys: Channel name, channel name and time step combination, channel names,
-                or channel name and time step combinations
+                channel name and time step combinations, or all channels (Ellipsis)
         """
         self._channel_keys = channel_keys
 
@@ -441,13 +452,19 @@ class RemoveProcessorConfig(pydantic.BaseModel):
 
     Attributes:
         channel_keys: Channel name, channel name and time step combination, channel names,
-            or channel name and time step combinations
+            channel name and time step combinations, or all channels (Ellipsis)
     """
+    model_config = pydantic.ConfigDict(
+        arbitrary_types_allowed=True,
+    )
+
     channel_keys: (
         ChannelName | str |
         ChannelKey |
-        ChannelNameSet | ChannelKeySet | ChannelNameKeySet
-    )
+        ChannelNameSet | ChannelKeySet | ChannelNameKeySet |
+        EllipsisType |
+        None
+    ) = Ellipsis
 
 
 class SelectProcessor:
@@ -464,12 +481,14 @@ class SelectProcessor:
         channel_keys:
             ChannelName | str |
             ChannelKey |
-            ChannelNameSet | ChannelKeySet | ChannelNameKeySet,
+            ChannelNameSet | ChannelKeySet | ChannelNameKeySet |
+            EllipsisType |
+            None = Ellipsis,
     ) -> None:
         """
         Parameters:
             channel_keys: Channel name, channel name and time step combination, channel names,
-                or channel name and time step combinations
+                channel name and time step combinations, or all channels (Ellipsis)
         """
         self._channel_keys = channel_keys
 
@@ -512,13 +531,19 @@ class SelectProcessorConfig(pydantic.BaseModel):
 
     Attributes:
         channel_keys: Channel name, channel name and time step combination, channel names,
-            or channel name and time step combinations
+            channel name and time step combinations, or all channels (Ellipsis)
     """
+    model_config = pydantic.ConfigDict(
+        arbitrary_types_allowed=True,
+    )
+
     channel_keys: (
         ChannelName | str |
         ChannelKey |
-        ChannelNameSet | ChannelKeySet | ChannelNameKeySet
-    )
+        ChannelNameSet | ChannelKeySet | ChannelNameKeySet |
+        EllipsisType |
+        None
+    ) = Ellipsis
 
 
 class StandardizeProcessor:
