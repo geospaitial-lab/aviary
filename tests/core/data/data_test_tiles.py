@@ -14,6 +14,24 @@ from tests.core.conftest import (
     get_tiles_coordinates,
 )
 
+data_test_tiles_bool = [
+    # test case 1: channels contains no channels
+    (
+        Tiles(
+            channels=[],
+            coordinates=get_tiles_coordinates(),
+            tile_size=128,
+            copy=False,
+        ),
+        False,
+    ),
+    # test case 2: channels contains channels
+    (
+        get_tiles(),
+        True,
+    ),
+]
+
 data_test_tiles_contains = [
     (ChannelName.R, True),
     ('r', True),
@@ -123,18 +141,22 @@ data_test_tiles_init = [
         128,
         False,
     ),
-    # test case 2: batch_size is 1
-]
-
-data_test_tiles_init_exceptions = [
-    # test case 1: channels contains no channels
+    # test case 2: channels contains no channels
     (
         [],
         get_tiles_coordinates(),
         128,
-        re.escape('Invalid channels! The channels must contain at least one channel.'),
+        False,
+        [],
+        get_tiles_coordinates(),
+        128,
+        False,
     ),
-    # test case 2: channels contains duplicate channel name and time step combinations
+    # test case 3: batch_size is 1
+]
+
+data_test_tiles_init_exceptions = [
+    # test case 1: channels contains duplicate channel name and time step combinations
     (
         [
             *get_tiles_channels(),
@@ -144,8 +166,8 @@ data_test_tiles_init_exceptions = [
         128,
         re.escape('Invalid channels! The channels must contain unique channel name and time step combinations.'),
     ),
-    # test case 3: batch_size is not equal
-    # test case 4: coordinates has one dimension
+    # test case 2: batch_size is not equal
+    # test case 3: coordinates has one dimension
     (
         get_tiles_channels(),
         np.arange(
@@ -155,7 +177,7 @@ data_test_tiles_init_exceptions = [
         128,
         re.escape('Invalid coordinates! The coordinates must be in shape (n, 2) and data type int32.'),
     ),
-    # test case 5: coordinates has three dimensions
+    # test case 4: coordinates has three dimensions
     (
         get_tiles_channels(),
         np.arange(
@@ -165,7 +187,7 @@ data_test_tiles_init_exceptions = [
         128,
         re.escape('Invalid coordinates! The coordinates must be in shape (n, 2) and data type int32.'),
     ),
-    # test case 6: coordinates has not two values in the second dimension
+    # test case 5: coordinates has not two values in the second dimension
     (
         get_tiles_channels(),
         np.arange(
@@ -175,7 +197,7 @@ data_test_tiles_init_exceptions = [
         128,
         re.escape('Invalid coordinates! The coordinates must be in shape (n, 2) and data type int32.'),
     ),
-    # test case 7: coordinates is not of data type int32
+    # test case 6: coordinates is not of data type int32
     (
         get_tiles_channels(),
         np.arange(
@@ -185,7 +207,7 @@ data_test_tiles_init_exceptions = [
         128,
         re.escape('Invalid coordinates! The coordinates must be in shape (n, 2) and data type int32.'),
     ),
-    # test case 8: coordinates contains duplicate coordinates
+    # test case 7: coordinates contains duplicate coordinates
     (
         get_tiles_channels(),
         np.array(
@@ -195,7 +217,7 @@ data_test_tiles_init_exceptions = [
         128,
         re.escape('Invalid coordinates! The coordinates must contain unique coordinates.'),
     ),
-    # test case 9: len(coordinates) is not equal to batch_size
+    # test case 8: len(coordinates) is not equal to batch_size
     (
         get_tiles_channels(),
         np.array(
@@ -205,14 +227,14 @@ data_test_tiles_init_exceptions = [
         128,
         re.escape('Invalid coordinates! The number of coordinates must be equal to the batch size of the channels.'),
     ),
-    # test case 10: tile_size is negative
+    # test case 9: tile_size is negative
     (
         get_tiles_channels(),
         get_tiles_coordinates(),
         -128,
         re.escape('Invalid tile_size! The tile size must be positive.'),
     ),
-    # test case 11: tile_size is 0
+    # test case 10: tile_size is 0
     (
         get_tiles_channels(),
         get_tiles_coordinates(),
