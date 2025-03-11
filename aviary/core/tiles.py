@@ -140,6 +140,7 @@ class Tiles(Iterable[Channel]):
             AviaryUserError: Invalid `coordinates` (the coordinates contain duplicate coordinates)
             AviaryUserError: Invalid `coordinates` (the number of coordinates is not equal to the batch size
                 of the channels)
+            AviaryUserError: Invalid `coordinates` (the coordinates contain no coordinates)
         """
         if self._coordinates.ndim != 2:  # noqa: PLR2004
             message = (
@@ -178,8 +179,13 @@ class Tiles(Iterable[Channel]):
                     'The number of coordinates must be equal to the batch size of the channels.'
                 )
                 raise AviaryUserError(message)
-        else:
-            pass
+        else:  # noqa: PLR5501
+            if len(self._coordinates) == 0:
+                message = (
+                    'Invalid coordinates! '
+                    'The coordinates must contain at least one coordinates.'
+                )
+                raise AviaryUserError(message)
 
         self._coordinates = self._coordinates.copy()
 
