@@ -22,6 +22,9 @@ if TYPE_CHECKING:
 class GridExporter:
     """Tiles processor that exports the grid of the tiles
 
+    The grid is exported to a JSON file. The JSON string contains a list of coordinates (x_min, y_min)
+    of each tile and the tile size.
+
     Implements the `TilesProcessor` protocol.
     """
 
