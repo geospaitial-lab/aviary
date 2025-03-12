@@ -15,3 +15,7 @@
 ---
 
 ::: aviary.inference.TilesProcessorFactory
+
+---
+
+::: aviary.inference.register_tiles_processor
