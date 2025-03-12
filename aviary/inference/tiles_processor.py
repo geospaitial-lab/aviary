@@ -5,6 +5,9 @@ from typing import (
     Protocol,
 )
 
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
 import pydantic
 
 # noinspection PyProtectedMember
@@ -133,7 +136,25 @@ class TilesProcessorFactory:
             tiles_processor_class: Tiles processor class
             config_class: Configuration class
         """
-        _registry[tiles_processor_class.__class__.__name__] = (tiles_processor_class, config_class)
+        _registry[tiles_processor_class.__name__] = (tiles_processor_class, config_class)
+
+
+def register_tiles_processor(config_class: type[pydantic.BaseModel]) -> Callable:
+    """Registers a tiles processor.
+
+    Parameters:
+        config_class: Configuration class
+
+    Returns:
+        Decorator
+    """
+    def decorator(cls: type[TilesProcessor]) -> type[TilesProcessor]:
+        TilesProcessorFactory.register(
+            tiles_processor_class=cls,
+            config_class=config_class,
+        )
+        return cls
+    return decorator
 
 
 class CompositeProcessor:

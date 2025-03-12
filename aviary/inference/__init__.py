@@ -36,6 +36,7 @@ from .tiles_processor import (
     TilesProcessorFactory,
     VectorizeProcessor,
     VectorizeProcessorConfig,
+    register_tiles_processor,
 )
 
 __all__ = [
@@ -72,4 +73,5 @@ __all__ = [
     'VectorizeProcessorConfig',
     'WMSFetcher',
     'WMSFetcherConfig',
+    'register_tiles_processor',
 ]
