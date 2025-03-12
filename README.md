@@ -22,6 +22,12 @@
 
 </div>
 
+<div align="center">
+
+[![Chat][Chat Badge]][Chat]
+
+</div>
+
   [CI Badge]: https://img.shields.io/github/actions/workflow/status/geospaitial-lab/aviary/ci.yaml?branch=main&color=black&label=CI&logo=GitHub
   [CI]: https://www.github.com/geospaitial-lab/aviary/actions/workflows/ci.yaml
   [Coverage Badge]: https://img.shields.io/codecov/c/github/geospaitial-lab/aviary/main?color=black&label=Coverage&logo=codecov&logoColor=white
@@ -31,6 +37,8 @@
   [PyPI version Badge]: https://img.shields.io/pypi/v/geospaitial-lab-aviary?color=black&label=PyPI
   [Python version Badge]: https://img.shields.io/pypi/pyversions/geospaitial-lab-aviary?color=black&label=Python
   [PyPI]: https://www.pypi.org/project/geospaitial-lab-aviary
+  [Chat Badge]: https://img.shields.io/matrix/geospaitial-lab-aviary%3Amatrix.org?color=black&label=Chat&logo=matrix
+  [Chat]: https://matrix.to/#/#geospaitial-lab-aviary:matrix.org
 
 aviary provides composable components for building inference and postprocessing pipelines
 for remote sensing data.
