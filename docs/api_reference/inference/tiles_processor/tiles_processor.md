@@ -11,3 +11,7 @@
 ---
 
 ::: aviary.inference.TilesProcessorConfig
+
+---
+
+::: aviary.inference.TilesProcessorFactory
