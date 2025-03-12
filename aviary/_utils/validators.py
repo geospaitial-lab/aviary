@@ -6,7 +6,7 @@ from aviary.core.exceptions import AviaryUserError
 _valid_channel_name_pattern = re.compile(r'^[A-Za-z_]+$')
 
 
-def _validate_channel_name(
+def validate_channel_name(
     channel_name: ChannelName | str | None,
     param_name: str = 'channel_name',
     description: str = 'channel name',

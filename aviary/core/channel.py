@@ -21,7 +21,7 @@ import numpy.typing as npt
 from aviary._functional.utils.coordinates_filter import duplicates_filter
 
 # noinspection PyProtectedMember
-from aviary._utils.validators import _validate_channel_name
+from aviary._utils.validators import validate_channel_name
 from aviary.core.enums import (
     ChannelName,
     _coerce_channel_name,
@@ -85,7 +85,7 @@ class Channel(ABC, Iterable[object]):
         self._coerce_data()
         self._validate_data()
         self._name = _coerce_channel_name(channel_name=self._name)
-        _validate_channel_name(
+        validate_channel_name(
             channel_name=self._name,
             param_name='name',
             description='name',
