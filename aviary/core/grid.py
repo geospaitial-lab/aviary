@@ -1033,3 +1033,21 @@ class GridConfig(pydantic.BaseModel):
             raise ValueError(message)
 
         return self
+
+
+class GridFactory:
+    """Factory for grids"""
+
+    @staticmethod
+    def create(
+        config: GridConfig,
+    ) -> Grid:
+        """Creates a grid from the configuration.
+
+        Parameters:
+            config: Configuration
+
+        Returns:
+            Grid
+        """
+        return Grid.from_config(config=config)
