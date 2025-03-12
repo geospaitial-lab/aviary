@@ -3,10 +3,12 @@ from .tile_fetcher import (
     CompositeFetcherConfig,
     TileFetcher,
     TileFetcherConfig,
+    TileFetcherFactory,
     VRTFetcher,
     VRTFetcherConfig,
     WMSFetcher,
     WMSFetcherConfig,
+    register_tile_fetcher,
 )
 from .tile_loader import TileLoader
 from .tile_set import TileSet
@@ -60,6 +62,7 @@ __all__ = [
     'StandardizeProcessorConfig',
     'TileFetcher',
     'TileFetcherConfig',
+    'TileFetcherFactory',
     'TileLoader',
     'TileSet',
     'TilesProcessor',
@@ -73,5 +76,6 @@ __all__ = [
     'VectorizeProcessorConfig',
     'WMSFetcher',
     'WMSFetcherConfig',
+    'register_tile_fetcher',
     'register_tiles_processor',
 ]

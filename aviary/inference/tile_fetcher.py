@@ -6,6 +6,9 @@ from typing import (
     Protocol,
 )
 
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
 import pydantic
 
 # noinspection PyProtectedMember
@@ -19,6 +22,7 @@ from aviary.core.enums import (
     InterpolationMode,
     WMSVersion,
 )
+from aviary.core.exceptions import AviaryUserError
 from aviary.core.type_aliases import (
     BufferSize,
     Coordinates,
@@ -70,8 +74,76 @@ class TileFetcherConfig(pydantic.BaseModel):
     config: (
         CompositeFetcherConfig |
         VRTFetcherConfig |
-        WMSFetcherConfig
+        WMSFetcherConfig |
+        pydantic.BaseModel
     )
+
+
+_registry: dict[str, tuple[type[TileFetcher], type[pydantic.BaseModel]]] = {}
+
+
+class TileFetcherFactory:
+    """Factory for tile fetchers"""
+
+    @staticmethod
+    def create(
+        config: TileFetcherConfig,
+    ) -> TileFetcher:
+        """Creates a tile fetcher from the configuration.
+
+        Parameters:
+            config: Configuration
+
+        Returns:
+            Tile fetcher
+        """
+        try:
+            tile_fetcher_class = globals()[config.name]
+            return tile_fetcher_class.from_config(config=config.config)
+        except KeyError:
+            registry_entry = _registry.get(config.name)
+
+            if registry_entry is None:
+                message = (
+                    'Invalid config! '
+                    f'The tile fetcher {config.name} is not registered.'
+                )
+                raise AviaryUserError(message) from None
+
+            tile_fetcher_class, _ = registry_entry
+            # noinspection PyUnresolvedReferences
+            return tile_fetcher_class.from_config(config=config.config)
+
+    @staticmethod
+    def register(
+        tile_fetcher_class: type[TileFetcher],
+        config_class: type[pydantic.BaseModel],
+    ) -> None:
+        """Registers a tile fetcher.
+
+        Parameters:
+            tile_fetcher_class: Tile fetcher class
+            config_class: Configuration class
+        """
+        _registry[tile_fetcher_class.__name__] = (tile_fetcher_class, config_class)
+
+
+def register_tile_fetcher(config_class: type[pydantic.BaseModel]) -> Callable:
+    """Registers a tile fetcher.
+
+    Parameters:
+        config_class: Configuration class
+
+    Returns:
+        Decorator
+    """
+    def decorator(cls: type[TileFetcher]) -> type[TileFetcher]:
+        TileFetcherFactory.register(
+            tile_fetcher_class=cls,
+            config_class=config_class,
+        )
+        return cls
+    return decorator
 
 
 class CompositeFetcher:
@@ -111,13 +183,10 @@ class CompositeFetcher:
         Returns:
             Composite fetcher
         """
-        tile_fetchers = []
-
-        for tile_fetcher_config in config.tile_fetcher_configs:
-            tile_fetcher_class = globals()[tile_fetcher_config.name]
-            tile_fetcher = tile_fetcher_class.from_config(config=tile_fetcher_config.config)
-            tile_fetchers.append(tile_fetcher)
-
+        tile_fetchers = [
+            TileFetcherFactory.create(config=tile_fetcher_config)
+            for tile_fetcher_config in config.tile_fetcher_configs
+        ]
         return cls(
             tile_fetchers=tile_fetchers,
             num_workers=config.num_workers,
