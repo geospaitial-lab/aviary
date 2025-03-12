@@ -19,6 +19,7 @@ from aviary._functional.inference.tiles_processor import (
     vectorize_processor,
 )
 from aviary.core.enums import ChannelName
+from aviary.core.exceptions import AviaryUserError
 from aviary.core.type_aliases import (
     ChannelKey,
     ChannelKeySet,
@@ -81,8 +82,58 @@ class TilesProcessorConfig(pydantic.BaseModel):
         RemoveProcessorConfig |
         SelectProcessorConfig |
         StandardizeProcessorConfig |
-        VectorizeProcessorConfig
+        VectorizeProcessorConfig |
+        pydantic.BaseModel
     )
+
+
+_registry: dict[str, tuple[type[TilesProcessor], type[pydantic.BaseModel]]] = {}
+
+
+class TilesProcessorFactory:
+    """Factory for tiles processors"""
+
+    @staticmethod
+    def create(
+        config: TilesProcessorConfig,
+    ) -> TilesProcessor:
+        """Creates a tiles processor from the configuration.
+
+        Parameters:
+            config: Configuration
+
+        Returns:
+            Tiles processor
+        """
+        try:
+            tiles_processor_class = globals()[config.name]
+            return tiles_processor_class.from_config(config=config.config)
+        except KeyError:
+            registry_entry = _registry.get(config.name)
+
+            if registry_entry is None:
+                message = (
+                    'Invalid config! '
+                    f'The tiles processor {config.name} is not registered.'
+                )
+                raise AviaryUserError(message) from None
+
+            tiles_processor_class, _ = registry_entry
+            # noinspection PyUnresolvedReferences
+            return tiles_processor_class.from_config(config=config.config)
+
+    @staticmethod
+    def register(
+        tiles_processor_class: type[TilesProcessor],
+        config_class: type[pydantic.BaseModel],
+    ) -> None:
+        """Registers a tiles processor.
+
+        Parameters:
+            tiles_processor_class: Tiles processor class
+            config_class: Configuration class
+        """
+        _registry[tiles_processor_class.__class__.__name__] = (tiles_processor_class, config_class)
 
 
 class CompositeProcessor:
@@ -117,13 +168,10 @@ class CompositeProcessor:
         Returns:
             Composite processor
         """
-        tiles_processors = []
-
-        for tiles_processor_config in config.tiles_processor_configs:
-            tiles_processor_class = globals()[tiles_processor_config.name]
-            tiles_processor = tiles_processor_class.from_config(config=tiles_processor_config.config)
-            tiles_processors.append(tiles_processor)
-
+        tiles_processors = [
+            TilesProcessorFactory.create(config=tiles_processor_config)
+            for tiles_processor_config in config.tiles_processor_configs
+        ]
         return cls(
             tiles_processors=tiles_processors,
         )

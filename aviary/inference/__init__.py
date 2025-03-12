@@ -33,6 +33,7 @@ from .tiles_processor import (
     StandardizeProcessorConfig,
     TilesProcessor,
     TilesProcessorConfig,
+    TilesProcessorFactory,
     VectorizeProcessor,
     VectorizeProcessorConfig,
 )
@@ -62,6 +63,7 @@ __all__ = [
     'TileSet',
     'TilesProcessor',
     'TilesProcessorConfig',
+    'TilesProcessorFactory',
     'VRTFetcher',
     'VRTFetcherConfig',
     'VectorExporter',
