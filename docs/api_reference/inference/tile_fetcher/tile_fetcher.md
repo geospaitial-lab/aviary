@@ -11,3 +11,11 @@
 ---
 
 ::: aviary.inference.TileFetcherConfig
+
+---
+
+::: aviary.inference.TileFetcherFactory
+
+---
+
+::: aviary.inference.register_tile_fetcher
