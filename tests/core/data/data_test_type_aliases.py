@@ -62,7 +62,8 @@ data_test__coerce_channel_keys = [
         },
     ),
     (set(), set()),
-    (Ellipsis, Ellipsis),
+    (False, set()),
+    (True, True),
     (None, set()),
 ]
 

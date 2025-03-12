@@ -1,8 +1,4 @@
-from types import EllipsisType
-from typing import (
-    TypeAlias,
-    overload,
-)
+from typing import TypeAlias
 
 import numpy as np
 import numpy.typing as npt
@@ -46,45 +42,27 @@ def _coerce_channel_key(
     return channel_name, time_step
 
 
-@overload
 def _coerce_channel_keys(
     channel_keys:
         ChannelName | str |
         ChannelKey |
         ChannelNameSet | ChannelKeySet | ChannelNameKeySet |
+        bool |
         None,
-) -> ChannelKeySet:
-    ...
-
-
-@overload
-def _coerce_channel_keys(
-    channel_keys: EllipsisType,
-) -> EllipsisType:
-    ...
-
-
-def _coerce_channel_keys(
-    channel_keys:
-        ChannelName | str |
-        ChannelKey |
-        ChannelNameSet | ChannelKeySet | ChannelNameKeySet |
-        EllipsisType |
-        None,
-) -> ChannelKeySet | EllipsisType:
+) -> ChannelKeySet | bool:
     """Coerces `channel_keys` to `ChannelKeySet`.
 
     Parameters:
         channel_keys: Channel name, channel name and time step combination, channel names,
-            channel name and time step combinations, or all channels (Ellipsis)
+            channel name and time step combinations, no channels (False or None), or all channels (True)
 
     Returns:
-        Channel name and time step combinations or all channels (Ellipsis)
+        Channel name and time step combinations or all channels (True)
     """
-    if channel_keys is Ellipsis:
-        return Ellipsis
+    if channel_keys is True:
+        return True
 
-    if channel_keys is None:
+    if channel_keys is False or channel_keys is None:
         return set()
 
     if isinstance(channel_keys, (ChannelName | str)) or _is_channel_key(channel_keys):

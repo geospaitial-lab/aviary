@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from types import EllipsisType
 from typing import (
     TYPE_CHECKING,
     Protocol,
@@ -328,13 +327,13 @@ class RemoveBufferProcessor:
             ChannelName | str |
             ChannelKey |
             ChannelNameSet | ChannelKeySet | ChannelNameKeySet |
-            EllipsisType |
-            None = Ellipsis,
+            bool |
+            None = True,
     ) -> None:
         """
         Parameters:
             channel_keys: Channel name, channel name and time step combination, channel names,
-                channel name and time step combinations, or all channels (Ellipsis)
+                channel name and time step combinations, no channels (False or None), or all channels (True)
         """
         self._channel_keys = channel_keys
 
@@ -376,24 +375,20 @@ class RemoveBufferProcessorConfig(pydantic.BaseModel):
     """Configuration for the `from_config` class method of `RemoveBufferProcessor`
 
     Create the configuration from a config file:
-        - Use '...' instead of Ellipsis
+        - Use null instead of None
 
     Attributes:
         channel_keys: Channel name, channel name and time step combination, channel names,
-            channel name and time step combinations, or all channels (Ellipsis) -
-            defaults to Ellipsis
+            channel name and time step combinations, no channels (False or None), or all channels (True) -
+            defaults to True
     """
-    model_config = pydantic.ConfigDict(
-        arbitrary_types_allowed=True,
-    )
-
     channel_keys: (
         ChannelName | str |
         ChannelKey |
         ChannelNameSet | ChannelKeySet | ChannelNameKeySet |
-        EllipsisType |
+        bool |
         None
-    ) = Ellipsis
+    ) = True
 
 
 class RemoveProcessor:
@@ -411,13 +406,13 @@ class RemoveProcessor:
             ChannelName | str |
             ChannelKey |
             ChannelNameSet | ChannelKeySet | ChannelNameKeySet |
-            EllipsisType |
-            None = Ellipsis,
+            bool |
+            None = True,
     ) -> None:
         """
         Parameters:
             channel_keys: Channel name, channel name and time step combination, channel names,
-                channel name and time step combinations, or all channels (Ellipsis)
+                channel name and time step combinations, no channels (False or None), or all channels (True)
         """
         self._channel_keys = channel_keys
 
@@ -459,24 +454,20 @@ class RemoveProcessorConfig(pydantic.BaseModel):
     """Configuration for the `from_config` class method of `RemoveProcessor`
 
     Create the configuration from a config file:
-        - Use '...' instead of Ellipsis
+        - Use null instead of None
 
     Attributes:
         channel_keys: Channel name, channel name and time step combination, channel names,
-            channel name and time step combinations, or all channels (Ellipsis) -
-            defaults to Ellipsis
+            channel name and time step combinations, no channels (False or None), or all channels (True) -
+            defaults to True
     """
-    model_config = pydantic.ConfigDict(
-        arbitrary_types_allowed=True,
-    )
-
     channel_keys: (
         ChannelName | str |
         ChannelKey |
         ChannelNameSet | ChannelKeySet | ChannelNameKeySet |
-        EllipsisType |
+        bool |
         None
-    ) = Ellipsis
+    ) = True
 
 
 class SelectProcessor:
@@ -494,13 +485,13 @@ class SelectProcessor:
             ChannelName | str |
             ChannelKey |
             ChannelNameSet | ChannelKeySet | ChannelNameKeySet |
-            EllipsisType |
-            None = Ellipsis,
+            bool |
+            None = True,
     ) -> None:
         """
         Parameters:
             channel_keys: Channel name, channel name and time step combination, channel names,
-                channel name and time step combinations, or all channels (Ellipsis)
+                channel name and time step combinations, no channels (False or None), or all channels (True)
         """
         self._channel_keys = channel_keys
 
@@ -542,24 +533,20 @@ class SelectProcessorConfig(pydantic.BaseModel):
     """Configuration for the `from_config` class method of `SelectProcessor`
 
     Create the configuration from a config file:
-        - Use '...' instead of Ellipsis
+        - Use null instead of None
 
     Attributes:
         channel_keys: Channel name, channel name and time step combination, channel names,
-            channel name and time step combinations, or all channels (Ellipsis) -
-            defaults to Ellipsis
+            channel name and time step combinations, no channels (False or None), or all channels (True) -
+            defaults to True
     """
-    model_config = pydantic.ConfigDict(
-        arbitrary_types_allowed=True,
-    )
-
     channel_keys: (
         ChannelName | str |
         ChannelKey |
         ChannelNameSet | ChannelKeySet | ChannelNameKeySet |
-        EllipsisType |
+        bool |
         None
-    ) = Ellipsis
+    ) = True
 
 
 class StandardizeProcessor:
