@@ -9,9 +9,6 @@ from typing import (
     TypeAlias,
 )
 
-if TYPE_CHECKING:
-    from types import EllipsisType
-
 import numpy as np
 
 if TYPE_CHECKING:
@@ -728,8 +725,8 @@ class Tiles(Iterable[Channel]):
             ChannelName | str |
             ChannelKey |
             ChannelNameSet | ChannelKeySet | ChannelNameKeySet |
-            EllipsisType |
-            None = Ellipsis,
+            bool |
+            None = True,
         inplace: bool = False,
     ) -> Tiles:
         """Removes the channels.
@@ -739,7 +736,7 @@ class Tiles(Iterable[Channel]):
 
         Parameters:
             channel_keys: Channel name, channel name and time step combination, channel names,
-                channel name and time step combinations, or all channels (Ellipsis)
+                channel name and time step combinations, no channels (False or None), or all channels (True)
             inplace: If True, the channels are removed inplace
 
         Returns:
@@ -747,7 +744,7 @@ class Tiles(Iterable[Channel]):
         """
         channel_keys = _coerce_channel_keys(channel_keys=channel_keys)
 
-        if channel_keys is Ellipsis:
+        if channel_keys is True:
             channel_keys = self.channel_keys
 
         channel_keys = self.channel_keys - channel_keys
@@ -762,8 +759,8 @@ class Tiles(Iterable[Channel]):
             ChannelName | str |
             ChannelKey |
             ChannelNameSet | ChannelKeySet | ChannelNameKeySet |
-            EllipsisType |
-            None = Ellipsis,
+            bool |
+            None = True,
         inplace: bool = False,
     ) -> Tiles:
         """Removes the buffer.
@@ -773,7 +770,7 @@ class Tiles(Iterable[Channel]):
 
         Parameters:
             channel_keys: Channel name, channel name and time step combination, channel names,
-                channel name and time step combinations, or all channels (Ellipsis)
+                channel name and time step combinations, no channels (False or None), or all channels (True)
             inplace: If True, the buffer is removed inplace
 
         Returns:
@@ -781,7 +778,7 @@ class Tiles(Iterable[Channel]):
         """
         channel_keys = _coerce_channel_keys(channel_keys=channel_keys)
 
-        if channel_keys is Ellipsis:
+        if channel_keys is True:
             channel_keys = self.channel_keys
 
         if inplace:
@@ -807,8 +804,8 @@ class Tiles(Iterable[Channel]):
             ChannelName | str |
             ChannelKey |
             ChannelNameSet | ChannelKeySet | ChannelNameKeySet |
-            EllipsisType |
-            None = Ellipsis,
+            bool |
+            None = True,
         inplace: bool = False,
     ) -> Tiles:
         """Selects the channels.
@@ -818,7 +815,7 @@ class Tiles(Iterable[Channel]):
 
         Parameters:
             channel_keys: Channel name, channel name and time step combination, channel names,
-                channel name and time step combinations, or all channels (Ellipsis)
+                channel name and time step combinations, no channels (False or None), or all channels (True)
             inplace: If True, the channels are selected inplace
 
         Returns:
@@ -826,7 +823,7 @@ class Tiles(Iterable[Channel]):
         """
         channel_keys = _coerce_channel_keys(channel_keys=channel_keys)
 
-        if channel_keys is Ellipsis:
+        if channel_keys is True:
             channel_keys = self.channel_keys
 
         if inplace:
