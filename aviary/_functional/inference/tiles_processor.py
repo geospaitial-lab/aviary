@@ -1,12 +1,17 @@
-from aviary.core.enums import ChannelName
-from aviary.core.tiles import Tiles
-from aviary.core.type_aliases import (
-    ChannelKey,
-    ChannelKeySet,
-    ChannelNameKeySet,
-    ChannelNameSet,
-)
-from aviary.inference.tiles_processor import TilesProcessor
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from aviary.core.enums import ChannelName
+    from aviary.core.tiles import Tiles
+    from aviary.core.type_aliases import (
+        ChannelKey,
+        ChannelKeySet,
+        ChannelNameKeySet,
+        ChannelNameSet,
+    )
+    from aviary.inference.tiles_processor import TilesProcessor
 
 
 def copy_processor(

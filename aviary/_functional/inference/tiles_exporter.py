@@ -1,19 +1,23 @@
-from pathlib import Path
+from __future__ import annotations
+
 from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 import geopandas as gpd
 import pandas as pd
 
-from aviary.core.enums import ChannelName
 from aviary.core.grid import Grid
-from aviary.core.tiles import Tiles
-from aviary.core.type_aliases import (
-    ChannelKey,
-    EPSGCode,
-)
 
 if TYPE_CHECKING:
     from aviary.core.channel import VectorChannel
+    from aviary.core.enums import ChannelName
+    from aviary.core.tiles import Tiles
+    from aviary.core.type_aliases import (
+        ChannelKey,
+        EPSGCode,
+    )
 
 
 def grid_exporter(
