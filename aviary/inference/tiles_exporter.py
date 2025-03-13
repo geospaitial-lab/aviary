@@ -13,6 +13,7 @@ from aviary._functional.inference.tiles_exporter import (
 from aviary.core.enums import ChannelName
 from aviary.core.type_aliases import (
     ChannelKey,
+    EPSGCode,
 )
 
 if TYPE_CHECKING:
@@ -102,6 +103,7 @@ class VectorExporter:
     def __init__(
         self,
         channel_key: ChannelName | str | ChannelKey,
+        epsg_code: EPSGCode | None,
         dir_path: Path,
         gpkg_name: str,
         remove_channel: bool = True,
@@ -109,11 +111,13 @@ class VectorExporter:
         """
         Parameters:
             channel_key: Channel name or channel name and time step combination
+            epsg_code: EPSG code
             dir_path: Path to the directory
             gpkg_name: Name of the geopackage (.gpkg file)
             remove_channel: If True, the channel is removed
         """
         self._channel_key = channel_key
+        self._epsg_code = epsg_code
         self._dir_path = dir_path
         self._gpkg_name = gpkg_name
         self._remove_channel = remove_channel
@@ -149,6 +153,7 @@ class VectorExporter:
         return vector_exporter(
             tiles=tiles,
             channel_key=self._channel_key,
+            epsg_code=self._epsg_code,
             dir_path=self._dir_path,
             gpkg_name=self._gpkg_name,
             remove_channel=self._remove_channel,
@@ -160,12 +165,14 @@ class VectorExporterConfig(pydantic.BaseModel):
 
     Attributes:
         channel_key: Channel name or channel name and time step combination
+        epsg_code: EPSG code
         dir_path: Path to the directory
         gpkg_name: Name of the geopackage (.gpkg file)
         remove_channel: If True, the channel is removed -
             defaults to True
     """
     channel_key: ChannelName | str | ChannelKey
+    epsg_code: EPSGCode | None
     dir_path: Path
     gpkg_name: str
     remove_channel: bool = True
