@@ -6,8 +6,8 @@
 
 </div>
 
-::: aviary.inference.CompositeProcessor
+::: aviary.inference.SequentialCompositeProcessor
 
 ---
 
-::: aviary.inference.CompositeProcessorConfig
+::: aviary.inference.SequentialCompositeProcessorConfig

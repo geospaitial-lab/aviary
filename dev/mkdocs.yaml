@@ -45,12 +45,13 @@ nav:
           - VectorExporter: api_reference/inference/tiles_exporter/vector_exporter.md
       - TilesProcessor:
           - TilesProcessor: api_reference/inference/tiles_processor/tiles_processor.md
-          - CompositeProcessor: api_reference/inference/tiles_processor/composite_processor.md
           - CopyProcessor: api_reference/inference/tiles_processor/copy_processor.md
           - NormalizeProcessor: api_reference/inference/tiles_processor/normalize_processor.md
+          - ParallelCompositeProcessor: api_reference/inference/tiles_processor/parallel_composite_processor.md
           - RemoveBufferProcessor: api_reference/inference/tiles_processor/remove_buffer_processor.md
           - RemoveProcessor: api_reference/inference/tiles_processor/remove_processor.md
           - SelectProcessor: api_reference/inference/tiles_processor/select_processor.md
+          - SequentialCompositeProcessor: api_reference/inference/tiles_processor/sequential_composite_processor.md
           - StandardizeProcessor: api_reference/inference/tiles_processor/standardize_processor.md
           - VectorizeProcessor: api_reference/inference/tiles_processor/vectorize_processor.md
     - aviary.pipeline:

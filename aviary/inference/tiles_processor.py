@@ -12,12 +12,13 @@ import pydantic
 
 # noinspection PyProtectedMember
 from aviary._functional.inference.tiles_processor import (
-    composite_processor,
     copy_processor,
     normalize_processor,
+    parallel_composite_processor,
     remove_buffer_processor,
     remove_processor,
     select_processor,
+    sequential_composite_processor,
     standardize_processor,
     vectorize_processor,
 )
@@ -40,12 +41,13 @@ class TilesProcessor(Protocol):
     Tiles processors are callables that process tiles.
 
     Implemented tiles processors:
-        - `CompositeProcessor`: Composes multiple tiles processors
         - `CopyProcessor`: Copies a channel
         - `NormalizeProcessor`: Normalizes a channel
+        - `ParallelCompositeProcessor`: Composes multiple tiles processors in parallel
         - `RemoveBufferProcessor`: Removes the buffer of channels
         - `RemoveProcessor`: Removes channels
         - `SelectProcessor`: Selects channels
+        - `SequentialCompositeProcessor`: Composes multiple tiles processors in sequence
         - `StandardizeProcessor`: Standardizes a channel
         - `VectorizeProcessor`: Vectorizes a channel
 
@@ -78,12 +80,13 @@ class TilesProcessorConfig(pydantic.BaseModel):
     """
     name: str
     config: (
-        CompositeProcessorConfig |
         CopyProcessorConfig |
         NormalizeProcessorConfig |
+        ParallelCompositeProcessorConfig |
         RemoveBufferProcessorConfig |
         RemoveProcessorConfig |
         SelectProcessorConfig |
+        SequentialCompositeProcessorConfig |
         StandardizeProcessorConfig |
         VectorizeProcessorConfig |
         pydantic.BaseModel
@@ -155,73 +158,6 @@ def register_tiles_processor(config_class: type[pydantic.BaseModel]) -> Callable
         )
         return cls
     return decorator
-
-
-class CompositeProcessor:
-    """Tiles processor that composes multiple tiles processors
-
-    Notes:
-        - The tiles processors are composed vertically, i.e., in sequence
-
-    Implements the `TilesProcessor` protocol.
-    """
-
-    def __init__(
-        self,
-        tiles_processors: list[TilesProcessor],
-    ) -> None:
-        """
-        Parameters:
-            tiles_processors: Tiles processors
-        """
-        self._tiles_processors = tiles_processors
-
-    @classmethod
-    def from_config(
-        cls,
-        config: CompositeProcessorConfig,
-    ) -> CompositeProcessor:
-        """Creates a composite processor from the configuration.
-
-        Parameters:
-            config: Configuration
-
-        Returns:
-            Composite processor
-        """
-        tiles_processors = [
-            TilesProcessorFactory.create(config=tiles_processor_config)
-            for tiles_processor_config in config.tiles_processor_configs
-        ]
-        return cls(
-            tiles_processors=tiles_processors,
-        )
-
-    def __call__(
-        self,
-        tiles: Tiles,
-    ) -> Tiles:
-        """Processes the tiles with each tiles processor.
-
-        Parameters:
-            tiles: Tiles
-
-        Returns:
-            Tiles
-        """
-        return composite_processor(
-            tiles=tiles,
-            tiles_processors=self._tiles_processors,
-        )
-
-
-class CompositeProcessorConfig(pydantic.BaseModel):
-    """Configuration for the `from_config` class method of `CompositeProcessor`
-
-    Attributes:
-        tiles_processor_configs: Configurations of the tiles processors
-    """
-    tiles_processor_configs: list[TilesProcessorConfig]
 
 
 class CopyProcessor:
@@ -379,6 +315,73 @@ class NormalizeProcessorConfig(pydantic.BaseModel):
     min_value: float
     max_value: float
     new_channel_key: ChannelName | str | ChannelKey | None = None
+
+
+class ParallelCompositeProcessor:
+    """Tiles processor that composes multiple tiles processors in parallel
+
+    Notes:
+        - The tiles processors are composed horizontally, i.e., in parallel
+
+    Implements the `TilesProcessor` protocol.
+    """
+
+    def __init__(
+        self,
+        tiles_processors: list[TilesProcessor],
+    ) -> None:
+        """
+        Parameters:
+            tiles_processors: Tiles processors
+        """
+        self._tiles_processors = tiles_processors
+
+    @classmethod
+    def from_config(
+        cls,
+        config: ParallelCompositeProcessorConfig,
+    ) -> ParallelCompositeProcessor:
+        """Creates a parallel composite processor from the configuration.
+
+        Parameters:
+            config: Configuration
+
+        Returns:
+            Parallel composite processor
+        """
+        tiles_processors = [
+            TilesProcessorFactory.create(config=tiles_processor_config)
+            for tiles_processor_config in config.tiles_processor_configs
+        ]
+        return cls(
+            tiles_processors=tiles_processors,
+        )
+
+    def __call__(
+        self,
+        tiles: Tiles,
+    ) -> Tiles:
+        """Processes the tiles with each tiles processor.
+
+        Parameters:
+            tiles: Tiles
+
+        Returns:
+            Tiles
+        """
+        return parallel_composite_processor(
+            tiles=tiles,
+            tiles_processors=self._tiles_processors,
+        )
+
+
+class ParallelCompositeProcessorConfig(pydantic.BaseModel):
+    """Configuration for the `from_config` class method of `ParallelCompositeProcessor`
+
+    Attributes:
+        tiles_processor_configs: Configurations of the tiles processors
+    """
+    tiles_processor_configs: list[TilesProcessorConfig]
 
 
 class RemoveBufferProcessor:
@@ -616,6 +619,73 @@ class SelectProcessorConfig(pydantic.BaseModel):
         bool |
         None
     ) = True
+
+
+class SequentialCompositeProcessor:
+    """Tiles processor that composes multiple tiles processors in sequence
+
+    Notes:
+        - The tiles processors are composed vertically, i.e., in sequence
+
+    Implements the `TilesProcessor` protocol.
+    """
+
+    def __init__(
+        self,
+        tiles_processors: list[TilesProcessor],
+    ) -> None:
+        """
+        Parameters:
+            tiles_processors: Tiles processors
+        """
+        self._tiles_processors = tiles_processors
+
+    @classmethod
+    def from_config(
+        cls,
+        config: SequentialCompositeProcessorConfig,
+    ) -> SequentialCompositeProcessor:
+        """Creates a sequential composite processor from the configuration.
+
+        Parameters:
+            config: Configuration
+
+        Returns:
+            Sequential composite processor
+        """
+        tiles_processors = [
+            TilesProcessorFactory.create(config=tiles_processor_config)
+            for tiles_processor_config in config.tiles_processor_configs
+        ]
+        return cls(
+            tiles_processors=tiles_processors,
+        )
+
+    def __call__(
+        self,
+        tiles: Tiles,
+    ) -> Tiles:
+        """Processes the tiles with each tiles processor.
+
+        Parameters:
+            tiles: Tiles
+
+        Returns:
+            Tiles
+        """
+        return sequential_composite_processor(
+            tiles=tiles,
+            tiles_processors=self._tiles_processors,
+        )
+
+
+class SequentialCompositeProcessorConfig(pydantic.BaseModel):
+    """Configuration for the `from_config` class method of `SequentialCompositeProcessor`
+
+    Attributes:
+        tiles_processor_configs: Configurations of the tiles processors
+    """
+    tiles_processor_configs: list[TilesProcessorConfig]
 
 
 class StandardizeProcessor:
