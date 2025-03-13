@@ -752,7 +752,7 @@ class VectorChannel(Channel, Iterable[gpd.GeoDataFrame]):
     """Channel that contains batched vector data
 
     Notes:
-        - The data items are assumed to be scaled to the spatial extent [0, 1] in x and y direction
+        - The data items are assumed to be normalized to the spatial extent [0, 1] in x and y direction
             without a coordinate reference system
         - The `data` property returns a reference to the data
         - The dunder methods `__getitem__` and `__iter__` return or yield a reference to a data item
@@ -813,7 +813,7 @@ class VectorChannel(Channel, Iterable[gpd.GeoDataFrame]):
 
         Raises:
             AviaryUserError: Invalid `data` (the data item has a coordinate reference system)
-            AviaryUserError: Invalid `data` (the data item is not scaled to the spatial extent [0, 1]
+            AviaryUserError: Invalid `data` (the data item is not normalized to the spatial extent [0, 1]
                 in x and y direction)
         """
         if data_item.crs is not None:
@@ -837,7 +837,7 @@ class VectorChannel(Channel, Iterable[gpd.GeoDataFrame]):
         if any(conditions):
             message = (
                 'Invalid data! '
-                'The data item must be scaled to the spatial extent [0, 1] in x and y direction.'
+                'The data item must be normalized to the spatial extent [0, 1] in x and y direction.'
             )
             raise AviaryUserError(message)
 
@@ -922,7 +922,7 @@ class VectorChannel(Channel, Iterable[gpd.GeoDataFrame]):
         )
 
     @classmethod
-    def from_unscaled_data(  # noqa: C901
+    def from_unnormalized_data(  # noqa: C901
         cls,
         data: gpd.GeoDataFrame | list[gpd.GeoDataFrame],
         name: ChannelName | str,
@@ -932,7 +932,7 @@ class VectorChannel(Channel, Iterable[gpd.GeoDataFrame]):
         time_step: TimeStep | None = None,
         copy: bool = False,
     ) -> VectorChannel:
-        """Creates a vector channel from unscaled data.
+        """Creates a vector channel from unnormalized data.
 
         Parameters:
             data: Data
@@ -1021,7 +1021,7 @@ class VectorChannel(Channel, Iterable[gpd.GeoDataFrame]):
             for x_min, y_min in coordinates
         ]
         data = [
-            cls._from_unscaled_data_item(
+            cls._from_unnormalized_data_item(
                 data_item=data_item,
                 coordinates=coordinates_item,
                 tile_size=tile_size,
@@ -1044,14 +1044,14 @@ class VectorChannel(Channel, Iterable[gpd.GeoDataFrame]):
         return vector_channel
 
     @classmethod
-    def _from_unscaled_data_item(
+    def _from_unnormalized_data_item(
         cls,
         data_item: gpd.GeoDataFrame,
         coordinates: Coordinates,
         tile_size: TileSize,
         buffer_size: BufferSize = 0,
     ) -> gpd.GeoDataFrame:
-        """Creates a data item from unscaled data.
+        """Creates a data item from an unnormalized data item.
 
         Parameters:
             data_item: Data item
@@ -1283,6 +1283,119 @@ class VectorChannel(Channel, Iterable[gpd.GeoDataFrame]):
             keep_geom_type=True,
         )
         data_item = data_item.reset_index(drop=True)
+        return self._scale_data_item(
+            data_item=data_item,
+            bounding_box=bounding_box,
+            new_bounding_box=new_bounding_box,
+        )
+
+    def to_denormalized_data(
+        self,
+        coordinates: CoordinatesSet,
+        tile_size: TileSize,
+    ) -> list[gpd.GeoDataFrame]:
+        """Converts the data to denormalized data.
+
+        Parameters:
+            coordinates: Coordinates (x_min, y_min) of each tile in meters
+            tile_size: Tile size in meters
+
+        Returns:
+            Data
+
+        Raises:
+            AviaryUserError: Invalid `coordinates` (the coordinates are not in shape (n, 2) and data type int32)
+            AviaryUserError: Invalid `coordinates` (the coordinates contain duplicate coordinates)
+            AviaryUserError: Invalid `coordinates` (the number of coordinates is not equal to the number of data items)
+            AviaryUserError: Invalid `tile_size` (the tile size is negative or zero)
+        """
+        if coordinates.ndim != 2:  # noqa: PLR2004
+            message = (
+                'Invalid coordinates! '
+                'The coordinates must be in shape (n, 2) and data type int32.'
+            )
+            raise AviaryUserError(message)
+
+        conditions = [
+            coordinates.shape[1] != 2,  # noqa: PLR2004
+            coordinates.dtype != np.int32,
+        ]
+
+        if any(conditions):
+            message = (
+                'Invalid coordinates! '
+                'The coordinates must be in shape (n, 2) and data type int32.'
+            )
+            raise AviaryUserError(message)
+
+        unique_coordinates = duplicates_filter(coordinates=coordinates)
+
+        if len(coordinates) != len(unique_coordinates):
+            message = (
+                'Invalid coordinates! '
+                'The coordinates must contain unique coordinates.'
+            )
+            raise AviaryUserError(message)
+
+        if len(coordinates) != len(self):
+            message = (
+                'Invalid coordinates! '
+                'The number of coordinates must be equal to the number of data items.'
+            )
+            raise AviaryUserError(message)
+
+        if tile_size <= 0:
+            message = (
+                'Invalid tile_size! '
+                'The tile size must be positive.'
+            )
+            raise AviaryUserError(message)
+
+        data = [data_item.copy() for data_item in self]
+
+        coordinates = [
+            (int(x_min), int(y_min))
+            for x_min, y_min in coordinates
+        ]
+        buffer_size = self._buffer_size * tile_size
+        return [
+            self._to_denormalized_data_item(
+                data_item=data_item,
+                coordinates=coordinates_item,
+                tile_size=tile_size,
+                buffer_size=buffer_size,
+            )
+            for data_item, coordinates_item in zip(data, coordinates, strict=True)
+        ]
+
+    def _to_denormalized_data_item(
+        self,
+        data_item: gpd.GeoDataFrame,
+        coordinates: Coordinates,
+        tile_size: TileSize,
+        buffer_size: BufferSize = 0,
+    ) -> gpd.GeoDataFrame:
+        """Converts the data item to a denormalized data item.
+
+        Parameters:
+            data_item: Data item
+            coordinates: Coordinates (x_min, y_min) of the tile in meters
+            tile_size: Tile size in meters
+            buffer_size: Buffer size in meters
+
+        Returns:
+            Data item
+        """
+        if data_item.empty:
+            return data_item
+
+        bounding_box = (0., 0., 1., 1.)
+        new_bounding_box = (
+            float(coordinates[0] - buffer_size),
+            float(coordinates[1] - buffer_size),
+            float(coordinates[0] + tile_size + buffer_size),
+            float(coordinates[1] + tile_size + buffer_size),
+        )
         return self._scale_data_item(
             data_item=data_item,
             bounding_box=bounding_box,
