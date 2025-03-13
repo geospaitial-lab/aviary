@@ -759,7 +759,7 @@ data_test_vector_channel_from_channels_exceptions = [
     ),
 ]
 
-data_test_vector_channel_from_unscaled_data_exceptions = [
+data_test_vector_channel_from_unnormalized_data_exceptions = [
     # test case 1: data contains no data items
     (
         [],
@@ -986,14 +986,14 @@ data_test_vector_channel_init_exceptions = [
         0.,
         re.escape('Invalid data! The data item must not have a coordinate reference system.'),
     ),
-    # test case 3: data contains data items that are not scaled to the spatial extent [0, 1] in x and y direction
+    # test case 3: data contains data items that are not normalized to the spatial extent [0, 1] in x and y direction
     (
         [
             gpd.GeoDataFrame(geometry=[box(-.1, -.1, 1.1, 1.1)]),
             gpd.GeoDataFrame(geometry=[box(-.1, -.1, 1.1, 1.1)]),
         ],
         0.,
-        re.escape('Invalid data! The data item must be scaled to the spatial extent [0, 1] in x and y direction.'),
+        re.escape('Invalid data! The data item must be normalized to the spatial extent [0, 1] in x and y direction.'),
     ),
     # test case 4: buffer_size is negative
     (
