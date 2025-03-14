@@ -321,6 +321,8 @@ class ParallelCompositeProcessor:
     """Tiles processor that composes multiple tiles processors in parallel
 
     Notes:
+        - The tiles processors are not called concurrently, but each one gets a copy of the tiles,
+            processes them, and then the results are combined
         - The tiles processors are composed horizontally, i.e., in parallel
 
     Implements the `TilesProcessor` protocol.
@@ -788,19 +790,19 @@ class VectorizeProcessor:
         channel_key: ChannelName | str | ChannelKey,
         ignore_background_class: bool = True,
         new_channel_key: ChannelName | str | ChannelKey | None = None,
-        num_workers: int = 1,
+        max_num_threads: int | None = None,
     ) -> None:
         """
         Parameters:
             channel_key: Channel name or channel name and time step combination
             ignore_background_class: If True, the background class (value 0) is not vectorized
             new_channel_key: New channel name or channel name and time step combination
-            num_workers: Number of workers
+            max_num_threads: Maximum number of threads
         """
         self._channel_key = channel_key
         self._ignore_background_class = ignore_background_class
         self._new_channel_key = new_channel_key
-        self._num_workers = num_workers
+        self._max_num_threads = max_num_threads
 
     @classmethod
     def from_config(
@@ -835,7 +837,7 @@ class VectorizeProcessor:
             channel_key=self._channel_key,
             ignore_background_class=self._ignore_background_class,
             new_channel_key=self._new_channel_key,
-            num_workers=self._num_workers,
+            max_num_threads=self._max_num_threads,
         )
 
 
@@ -851,10 +853,10 @@ class VectorizeProcessorConfig(pydantic.BaseModel):
             defaults to True
         new_channel_key: New channel name or channel name and time step combination -
             defaults to None
-        num_workers: Number of workers -
-            defaults to 1
+        max_num_threads: Maximum number of threads -
+            defaults to None
     """
     channel_key: ChannelName | str | ChannelKey
     ignore_background_class: bool = True
     new_channel_key: ChannelName | str | ChannelKey | None = None
-    num_workers: int = 1
+    max_num_threads: int | None = None

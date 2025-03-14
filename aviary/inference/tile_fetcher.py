@@ -150,9 +150,10 @@ class CompositeFetcher:
     """Tile fetcher that composes multiple tile fetchers
 
     Notes:
-        - The tile fetchers are called concurrently depending on the number of workers
-        - If the number of workers is 1, the tile fetchers are composed vertically, i.e., in sequence
-        - If the number of workers is greater than 1, the tile fetchers are composed horizontally, i.e., in parallel
+        - The tile fetchers are called concurrently depending on the maximum number of threads
+        - If the maximum number of threads is 1, the tile fetchers are composed vertically, i.e., in sequence
+        - If the maximum number of threads is greater than 1, the tile fetchers are composed horizontally, i.e.,
+            in parallel
 
     Implements the `TileFetcher` protocol.
     """
@@ -160,15 +161,15 @@ class CompositeFetcher:
     def __init__(
         self,
         tile_fetchers: list[TileFetcher],
-        num_workers: int = 1,
+        max_num_threads: int | None = None,
     ) -> None:
         """
         Parameters:
             tile_fetchers: Tile fetchers
-            num_workers: Number of workers
+            max_num_threads: Maximum number of threads
         """
         self._tile_fetchers = tile_fetchers
-        self._num_workers = num_workers
+        self._max_num_threads = max_num_threads
 
     @classmethod
     def from_config(
@@ -189,7 +190,7 @@ class CompositeFetcher:
         ]
         return cls(
             tile_fetchers=tile_fetchers,
-            num_workers=config.num_workers,
+            max_num_threads=config.max_num_threads,
         )
 
     def __call__(
@@ -207,20 +208,23 @@ class CompositeFetcher:
         return composite_fetcher(
             coordinates=coordinates,
             tile_fetchers=self._tile_fetchers,
-            num_workers=self._num_workers,
+            max_num_threads=self._max_num_threads,
         )
 
 
 class CompositeFetcherConfig(pydantic.BaseModel):
     """Configuration for the `from_config` class method of `CompositeFetcher`
 
+    Create the configuration from a config file:
+        - Use null instead of None
+
     Attributes:
         tile_fetcher_configs: Configurations of the tile fetchers
-        num_workers: Number of workers -
-            defaults to 1
+        max_num_threads: Maximum number of threads -
+            defaults to None
     """
     tile_fetcher_configs: list[TileFetcherConfig]
-    num_workers: int = 1
+    max_num_threads: int | None = None
 
 
 class VRTFetcher:

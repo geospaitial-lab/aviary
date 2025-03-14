@@ -23,10 +23,10 @@ def composite_fetcher() -> CompositeFetcher:
         MagicMock(spec=TileFetcher),
         MagicMock(spec=TileFetcher),
     ]
-    num_workers = 1
+    max_num_threads = None
     return CompositeFetcher(
         tile_fetchers=tile_fetchers,
-        num_workers=num_workers,
+        max_num_threads=max_num_threads,
     )
 
 
