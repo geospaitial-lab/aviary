@@ -42,19 +42,19 @@ if TYPE_CHECKING:
 def composite_fetcher(
     coordinates: Coordinates,
     tile_fetchers: list[TileFetcher],
-    num_workers: int = 1,
+    max_num_threads: int | None = None,
 ) -> Tile:
     """Fetches a tile from the sources.
 
     Parameters:
         coordinates: Coordinates (x_min, y_min) of the tile in meters
         tile_fetchers: Tile fetchers
-        num_workers: Number of workers
+        max_num_threads: Maximum number of threads
 
     Returns:
         Tile
     """
-    if num_workers == 1:
+    if max_num_threads == 1:
         tiles = [
             tile_fetcher(coordinates=coordinates)
             for tile_fetcher in tile_fetchers
@@ -64,7 +64,7 @@ def composite_fetcher(
             copy=False,
         )
 
-    with ThreadPoolExecutor(max_workers=num_workers) as executor:
+    with ThreadPoolExecutor(max_workers=max_num_threads) as executor:
         tasks = [
             executor.submit(
                 tile_fetcher,

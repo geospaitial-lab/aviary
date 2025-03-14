@@ -171,7 +171,7 @@ def vectorize_processor(
     channel_key: ChannelName | str | ChannelKey,
     ignore_background_class: bool = True,
     new_channel_key: ChannelName | str | ChannelKey | None = None,
-    num_workers: int = 1,
+    max_num_threads: int | None = None,
 ) -> Tiles:
     """Vectorizes the channel.
 
@@ -180,7 +180,7 @@ def vectorize_processor(
         channel_key: Channel name or channel name and time step combination
         ignore_background_class: If True, the background class (value 0) is not vectorized
         new_channel_key: New channel name or channel name and time step combination
-        num_workers: Number of workers
+        max_num_threads: Maximum number of threads
 
     Returns:
         Tiles
