@@ -55,8 +55,7 @@ nav:
           - StandardizeProcessor: api_reference/inference/tiles_processor/standardize_processor.md
           - VectorizeProcessor: api_reference/inference/tiles_processor/vectorize_processor.md
     - aviary.pipeline:
-      - PostprocessingPipeline: api_reference/pipeline/postprocessing_pipeline.md
-      - SegmentationPipeline: api_reference/pipeline/segmentation_pipeline.md
+      - InferencePipeline: api_reference/pipeline/inference_pipeline.md
     - aviary.utils:
         - CoordinatesFilter:
             - CoordinatesFilter: api_reference/utils/coordinates_filter/coordinates_filter.md
@@ -80,8 +79,8 @@ theme:
   logo_dark_mode: assets/aviary_logo_white.svg
   favicon: assets/aviary_logo_white.svg
   font:
-    text: Noto Sans
-    code: Noto Sans Mono
+    text: Space Grotesk
+    code: Space Mono
   icon:
     repo: simple/github
   features:
@@ -100,14 +99,14 @@ theme:
       primary: white
       accent: custom
       toggle:
-        icon: material/lightbulb
+        icon: material/toggle-switch
         name: Switch to dark mode
     - media: '(prefers-color-scheme: dark)'
       scheme: slate
       primary: black
       accent: custom
       toggle:
-        icon: material/lightbulb-outline
+        icon: material/toggle-switch-off-outline
         name: Switch to light mode
 
 plugins:
