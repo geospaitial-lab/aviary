@@ -16,7 +16,7 @@ from aviary.inference.tile_set import TileSet
 class TileLoader(Iterable[Tiles]):
     """A tile loader is an iterable that yields tiles from the tile set.
 
-    Examples:
+    Example:
         Assume the tile set is already created.
 
         You can create a tile loader and iterate over the tiles.

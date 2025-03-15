@@ -300,7 +300,7 @@ class Grid(Iterable[Coordinates]):
         Notes:
             - The JSON string contains a list of coordinates (x_min, y_min) of each tile and the tile size
 
-        Examples:
+        Example:
             Assume the JSON string is '{"coordinates":
             [[363084, 5715326], [363212, 5715326], [363084, 5715454], [363212, 5715454]],
             "tile_size": 128}'.

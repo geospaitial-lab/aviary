@@ -11,7 +11,7 @@ from aviary.inference.tile_fetcher import TileFetcher
 class TileSet(Iterable[Tile]):
     """A tile set is an iterable that yields a tile for each coordinates in the grid by calling the tile fetcher.
 
-    Examples:
+    Example:
         Assume the grid and the tile fetcher are already created.
 
         You can create a tile set and iterate over the tiles.
