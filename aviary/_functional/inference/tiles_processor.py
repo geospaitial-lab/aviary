@@ -86,6 +86,10 @@ def remove_buffer_processor(
     Returns:
         Tiles
     """
+    return tiles.remove_buffer(
+        channel_keys=channel_keys,
+        inplace=True,
+    )
 
 
 def remove_processor(
@@ -107,6 +111,10 @@ def remove_processor(
     Returns:
         Tiles
     """
+    return tiles.remove(
+        channel_keys=channel_keys,
+        inplace=True,
+    )
 
 
 def select_processor(
@@ -128,6 +136,10 @@ def select_processor(
     Returns:
         Tiles
     """
+    return tiles.select(
+        channel_keys=channel_keys,
+        inplace=True,
+    )
 
 
 def sequential_composite_processor(
@@ -143,6 +155,10 @@ def sequential_composite_processor(
     Returns:
         Tiles
     """
+    for tiles_processor in tiles_processors:
+        tiles = tiles_processor(tiles=tiles)
+
+    return tiles
 
 
 def standardize_processor(
