@@ -34,8 +34,8 @@
   [Coverage]: https://app.codecov.io/gh/geospaitial-lab/aviary
   [Docs Badge]: https://img.shields.io/github/actions/workflow/status/geospaitial-lab/aviary/docs.yaml?branch=main&color=black&label=Docs&logo=materialformkdocs&logoColor=white
   [Docs]: https://geospaitial-lab.github.io/aviary
-  [PyPI version Badge]: https://img.shields.io/pypi/v/geospaitial-lab-aviary?color=black&label=PyPI
-  [Python version Badge]: https://img.shields.io/pypi/pyversions/geospaitial-lab-aviary?color=black&label=Python
+  [PyPI version Badge]: https://img.shields.io/pypi/v/geospaitial-lab-aviary?color=black&label=PyPI&logo=PyPI&logoColor=white
+  [Python version Badge]: https://img.shields.io/pypi/pyversions/geospaitial-lab-aviary?color=black&label=Python&logo=Python&logoColor=white
   [PyPI]: https://www.pypi.org/project/geospaitial-lab-aviary
   [Chat Badge]: https://img.shields.io/matrix/geospaitial-lab-aviary%3Amatrix.org?color=black&label=Chat&logo=matrix
   [Chat]: https://matrix.to/#/#geospaitial-lab-aviary:matrix.org
