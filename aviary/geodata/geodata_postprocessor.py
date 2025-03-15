@@ -201,7 +201,7 @@ class GeodataPostprocessorConfig(pydantic.BaseModel):
 class FieldNamePostprocessor(GeodataPostprocessor):
     """Geodata postprocessor that renames the fields
 
-    Examples:
+    Example:
         Assume the geodataframe has the field 'class'.
 
         You can rename the field 'class' to 'type'.
@@ -443,7 +443,7 @@ class SimplifyPostprocessorConfig(pydantic.BaseModel):
 class ValuePostprocessor(GeodataPostprocessor):
     """Geodata postprocessor that maps the values of a field
 
-    Examples:
+    Example:
         Assume the geodataframe has the values 0, 1 and 2 in the field 'class'.
 
         You can map the values 0, 1 and 2 to 'class_1', 'class_2' and 'class_3'.
