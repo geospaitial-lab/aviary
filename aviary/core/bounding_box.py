@@ -221,6 +221,68 @@ class BoundingBox(Iterable[Coordinate]):
         for coordinate in self._COORDINATES:
             yield getattr(self, coordinate)
 
+    def __and__(
+        self,
+        other: BoundingBox,
+    ) -> BoundingBox:
+        """Intersects the bounding boxes.
+
+        Parameters:
+            other: Other bounding box
+
+        Returns:
+            Bounding box
+
+        Raises:
+            AviaryUserError: Invalid `other` (the bounding boxes do not intersect)
+        """
+        x_min = max(self._x_min, other.x_min)
+        y_min = max(self._y_min, other.y_min)
+        x_max = min(self._x_max, other.x_max)
+        y_max = min(self._y_max, other.y_max)
+
+        conditions = [
+            x_min >= x_max,
+            y_min >= y_max,
+        ]
+
+        if any(conditions):
+            message = (
+                'Invalid other! '
+                'The bounding boxes must intersect.'
+            )
+            raise AviaryUserError(message)
+
+        return BoundingBox(
+            x_min=x_min,
+            y_min=y_min,
+            x_max=x_max,
+            y_max=y_max,
+        )
+
+    def __or__(
+        self,
+        other: BoundingBox,
+    ) -> BoundingBox:
+        """Unions the bounding boxes.
+
+        Parameters:
+            other: Other bounding box
+
+        Returns:
+            Bounding box
+        """
+        x_min = min(self._x_min, other.x_min)
+        y_min = min(self._y_min, other.y_min)
+        x_max = max(self._x_max, other.x_max)
+        y_max = max(self._y_max, other.y_max)
+        return BoundingBox(
+            x_min=x_min,
+            y_min=y_min,
+            x_max=x_max,
+            y_max=y_max,
+        )
+
     def buffer(
         self,
         buffer_size: BufferSize,
