@@ -21,15 +21,17 @@ class TileLoader(Iterable[Tiles]):
 
         You can create a tile loader and iterate over the tiles.
 
-        >>> tile_loader = TileLoader(
-        ...     tile_set=tile_set,
-        ...     batch_size=1,
-        ...     max_num_threads=None,
-        ...     num_prefetched_tiles=1,
-        ... )
-        ...
-        >>> for tiles in tile_loader:
-        ...     ...
+        ``` python
+        tile_loader = TileLoader(
+            tile_set=tile_set,
+            batch_size=1,
+            max_num_threads=None,
+            num_prefetched_tiles=1,
+        )
+
+        for tiles in tile_loader:
+            ...
+        ```
     """
 
     def __init__(

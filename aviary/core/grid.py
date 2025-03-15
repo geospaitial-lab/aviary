@@ -307,16 +307,18 @@ class Grid(Iterable[Coordinates]):
 
             You can create a grid from the JSON string.
 
-            >>> grid = Grid.from_json(
-            ...     json_string=(
-            ...         '{"coordinates": '
-            ...         '[[363084, 5715326], '
-            ...         '[363212, 5715326], '
-            ...         '[363084, 5715454], '
-            ...         '[363212, 5715454]], '
-            ...         '"tile_size": 128}'
-            ...     ),
-            ... )
+            ``` python
+            grid = Grid.from_json(
+                json_string=(
+                    '{"coordinates": '
+                    '[[363084, 5715326], '
+                    '[363212, 5715326], '
+                    '[363084, 5715454], '
+                    '[363212, 5715454]], '
+                    '"tile_size": 128}'
+                ),
+            )
+            ```
 
         Parameters:
             json_string: JSON string
