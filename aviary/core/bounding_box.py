@@ -238,19 +238,25 @@ class BoundingBox(Iterable[Coordinate]):
 
             You can expand the area of interest by buffering the bounding box.
 
-            >>> bounding_box = BoundingBox(
-            ...     x_min=363084,
-            ...     y_min=5715326,
-            ...     x_max=363340,
-            ...     y_max=5715582,
-            ... )
-            >>> bounding_box.buffer(buffer_size=64)
+            ``` python
+            bounding_box = BoundingBox(
+                x_min=363084,
+                y_min=5715326,
+                x_max=363340,
+                y_max=5715582,
+            )
+            bounding_box = bounding_box.buffer(buffer_size=64)
+            print(bounding_box)
+            ```
+
+            ``` title="Output"
             BoundingBox(
                 x_min=363020,
                 y_min=5715262,
                 x_max=363404,
                 y_max=5715646,
             )
+            ```
 
         Parameters:
             buffer_size: Buffer size in meters
@@ -307,19 +313,25 @@ class BoundingBox(Iterable[Coordinate]):
 
             You can align the area of interest to a grid by quantizing the bounding box.
 
-            >>> bounding_box = BoundingBox(
-            ...     x_min=363084,
-            ...     y_min=5715326,
-            ...     x_max=363340,
-            ...     y_max=5715582,
-            ... )
-            >>> bounding_box.quantize(value=128)
+            ``` python
+            bounding_box = BoundingBox(
+                x_min=363084,
+                y_min=5715326,
+                x_max=363340,
+                y_max=5715582,
+            )
+            bounding_box = bounding_box.quantize(value=128)
+            print(bounding_box)
+            ```
+
+            ``` title="Output"
             BoundingBox(
                 x_min=363008,
                 y_min=5715200,
                 x_max=363392,
                 y_max=5715584,
             )
+            ```
 
         Parameters:
             value: Value to quantize the coordinates to in meters

@@ -16,13 +16,15 @@ class TileSet(Iterable[Tile]):
 
         You can create a tile set and iterate over the tiles.
 
-        >>> tile_set = TileSet(
-        ...     grid=grid,
-        ...     tile_fetcher=tile_fetcher,
-        ... )
-        ...
-        >>> for tile in tile_set:
-        ...     ...
+        ``` python
+        tile_set = TileSet(
+            grid=grid,
+            tile_fetcher=tile_fetcher,
+        )
+
+        for tile in tile_set:
+            ...
+        ```
     """
 
     def __init__(
