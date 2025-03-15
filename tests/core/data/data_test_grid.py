@@ -917,6 +917,45 @@ data_test_grid_init_exceptions = [
     ),
 ]
 
+data_test_grid_or = [
+    # test case 1: other contains no coordinates
+    (
+        Grid(
+            coordinates=None,
+            tile_size=128,
+        ),
+        get_grid(),
+    ),
+    # test case 2: other contains coordinates
+    (
+        Grid(
+            coordinates=np.array(
+                [[-128, 0], [0, 0], [128, -128], [128, 0]],
+                dtype=np.int32,
+            ),
+            tile_size=128,
+        ),
+        Grid(
+            coordinates=np.array(
+                [[-128, -128], [0, -128], [-128, 0], [0, 0], [128, -128], [128, 0]],
+                dtype=np.int32,
+            ),
+            tile_size=128,
+        ),
+    ),
+]
+
+data_test_grid_or_exceptions = [
+    # test case 1: tile_size is not equal
+    (
+        Grid(
+            coordinates=None,
+            tile_size=64,
+        ),
+        re.escape('Invalid other! The tile sizes of the grids must be equal.'),
+    ),
+]
+
 data_test_grid_remove = [
     # test case 1: Default
     (
