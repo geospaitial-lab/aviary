@@ -178,10 +178,10 @@ class VectorExporterConfig(pydantic.BaseModel):
         You can create a configuration from a config file.
 
         ``` yaml title="config.yaml"
-        channel_key: 'my_vector_channel'
+        channel_key: 'my_channel'
         epsg_code: 25832
         dir_path: 'path/to/my/directory'
-        gpkg_name: 'my_vector_channel.gpkg'
+        gpkg_name: 'my_channel.gpkg'
         remove_channel: true
         ```
 
