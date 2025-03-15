@@ -910,6 +910,24 @@ class GridConfig(pydantic.BaseModel):
     Create the configuration from a config file:
         - Use null instead of None
 
+    Example:
+        You can create a configuration from a config file.
+
+        ``` yaml title="config.yaml"
+        bounding_box_coordinates:
+          - 363084
+          - 5715326
+          - 363340
+          - 5715582
+        gpkg_path: null
+        json_path: null
+        ignore_bounding_box_coordinates: null
+        ignore_gpkg_path: null
+        ignore_json_path: null
+        tile_size: 128
+        quantize: true
+        ```
+
     Attributes:
         bounding_box_coordinates: Bounding box coordinates (x_min, y_min, x_max, y_max) in meters -
             defaults to None
