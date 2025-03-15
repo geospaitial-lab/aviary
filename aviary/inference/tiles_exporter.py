@@ -173,6 +173,7 @@ class VectorExporterConfig(pydantic.BaseModel):
 
     Create the configuration from a config file:
         - Use null instead of None
+        - Use false or true instead of False or True
 
     Example:
         You can create a configuration from a config file.
