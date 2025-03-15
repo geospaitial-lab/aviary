@@ -138,7 +138,7 @@ def _geospatial_filter_intersection(
 ) -> CoordinatesSet:
     """Filters the coordinates based on the polygons in the geodataframe.
 
-    The coordinates of tiles that don't intersect with the polygons are removed.
+    The coordinates of tiles that do not intersect with the polygons are removed.
 
     Parameters:
         coordinates: Coordinates (x_min, y_min) of each tile in meters
