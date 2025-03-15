@@ -80,6 +80,14 @@ class GridExporter:
 class GridExporterConfig(pydantic.BaseModel):
     """Configuration for the `from_config` class method of `GridExporter`
 
+    Example:
+        You can create a configuration from a config file.
+
+        ``` yaml title="config.yaml"
+        dir_path: 'path/to/my/directory'
+        json_name: 'processed_grid.json'
+        ```
+
     Attributes:
         dir_path: Path to the directory
         json_name: Name of the JSON file (.json file)
@@ -162,6 +170,20 @@ class VectorExporter:
 
 class VectorExporterConfig(pydantic.BaseModel):
     """Configuration for the `from_config` class method of `VectorExporter`
+
+    Create the configuration from a config file:
+        - Use null instead of None
+
+    Example:
+        You can create a configuration from a config file.
+
+        ``` yaml title="config.yaml"
+        channel_key: 'my_vector_channel'
+        epsg_code: 25832
+        dir_path: 'path/to/my/directory'
+        gpkg_name: 'my_vector_channel.gpkg'
+        remove_channel: true
+        ```
 
     Attributes:
         channel_key: Channel name or channel name and time step combination
