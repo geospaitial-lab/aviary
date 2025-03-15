@@ -2,9 +2,10 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from aviary.core.tiles import Tiles
+
 if TYPE_CHECKING:
     from aviary.core.enums import ChannelName
-    from aviary.core.tiles import Tiles
     from aviary.core.type_aliases import (
         ChannelKey,
         ChannelKeySet,
@@ -65,6 +66,14 @@ def parallel_composite_processor(
     Returns:
         Tiles
     """
+    tiles = [
+        tiles_processor(tiles=tiles.copy())
+        for tiles_processor in tiles_processors
+    ]
+    return Tiles.from_tiles(
+        tiles=tiles,
+        copy=False,
+    )
 
 
 def remove_buffer_processor(
