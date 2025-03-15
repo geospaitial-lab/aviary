@@ -592,10 +592,6 @@ class Grid(Iterable[Coordinates]):
     ) -> Grid:
         """Adds the grids.
 
-        Notes:
-            - This method is equivalent to applying the set filter with the `UNION` set filter mode
-              to the coordinates
-
         Parameters:
             other: Other grid
 
@@ -627,10 +623,6 @@ class Grid(Iterable[Coordinates]):
         other: Grid,
     ) -> Grid:
         """Subtracts the grids.
-
-        Notes:
-            - This method is equivalent to applying the set filter with the `DIFFERENCE` set filter mode
-              to the coordinates
 
         Parameters:
             other: Other grid
@@ -664,10 +656,6 @@ class Grid(Iterable[Coordinates]):
     ) -> Grid:
         """Intersects the grids.
 
-        Notes:
-            - This method is equivalent to applying the set filter with the `INTERSECTION` set filter mode
-              to the coordinates
-
         Parameters:
             other: Other grid
 
@@ -688,6 +676,38 @@ class Grid(Iterable[Coordinates]):
             coordinates=self._coordinates,
             other=other.coordinates,
             mode=SetFilterMode.INTERSECTION,
+        )
+        return Grid(
+            coordinates=coordinates,
+            tile_size=self._tile_size,
+        )
+
+    def __or__(
+        self,
+        other: Grid,
+    ) -> Grid:
+        """Unions the grids.
+
+        Parameters:
+            other: Other grid
+
+        Returns:
+            Grid
+
+        Raises:
+            AviaryUserError: Invalid `other` (the tile sizes of the grids are not equal)
+        """
+        if self._tile_size != other.tile_size:
+            message = (
+                'Invalid other! '
+                'The tile sizes of the grids must be equal.'
+            )
+            raise AviaryUserError(message)
+
+        coordinates = set_filter(
+            coordinates=self._coordinates,
+            other=other.coordinates,
+            mode=SetFilterMode.UNION,
         )
         return Grid(
             coordinates=coordinates,
