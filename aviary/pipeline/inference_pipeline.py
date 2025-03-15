@@ -151,7 +151,7 @@ class InferencePipelineConfig(pydantic.BaseModel):
           num_prefetched_tiles: 1
         tiles_processor:
           ...
-        plugin_dir_path: null
+        plugins_dir_path: null
         ```
 
     Attributes:
