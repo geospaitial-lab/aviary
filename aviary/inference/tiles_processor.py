@@ -348,8 +348,8 @@ class ParallelCompositeProcessor:
     """Tiles processor that composes multiple tiles processors in parallel
 
     Notes:
-        - The tiles processors are not called concurrently, but each one gets a copy of the tiles,
-            processes them, and then the results are combined
+        - The tiles processors are not called concurrently, but each one gets a copy of the tiles
+            and the resulting tiles are combined
         - The tiles processors are composed horizontally, i.e., in parallel
 
     Implements the `TilesProcessor` protocol.
