@@ -66,6 +66,15 @@ class TileFetcher(Protocol):
 class TileFetcherConfig(pydantic.BaseModel):
     """Configuration for tile fetchers
 
+    Example:
+        You can create a configuration from a config file.
+
+        ``` yaml title="config.yaml"
+        name: 'MyTileFetcher'
+        config:
+          ...
+        ```
+
     Attributes:
         name: Name
         config: Configuration
@@ -218,6 +227,16 @@ class CompositeFetcherConfig(pydantic.BaseModel):
     Create the configuration from a config file:
         - Use null instead of None
 
+    Example:
+        You can create a configuration from a config file.
+
+        ``` yaml title="config.yaml"
+        tile_fetcher_configs:
+          - ...
+          ...
+        max_num_threads: null
+        ```
+
     Attributes:
         tile_fetcher_configs: Configurations of the tile fetchers
         max_num_threads: Maximum number of threads -
@@ -309,6 +328,22 @@ class VRTFetcherConfig(pydantic.BaseModel):
     Create the configuration from a config file:
         - Use 'bilinear' or 'nearest' instead of `InterpolationMode.BILINEAR` or `InterpolationMode.NEAREST`
         - Use null instead of None
+
+    Example:
+        You can create a configuration from a config file.
+
+        ``` yaml title="config.yaml"
+        path: 'path/to/my_vrt.vrt'
+        channel_names:
+          - 'r'
+          - 'g'
+          - 'b'
+        tile_size: 128
+        ground_sampling_distance: .2
+        interpolation_mode: 'bilinear'
+        buffer_size: 0
+        time_step: null
+        ```
 
     Attributes:
         path: Path to the virtual raster (.vrt file)
@@ -429,6 +464,26 @@ class WMSFetcherConfig(pydantic.BaseModel):
     Create the configuration from a config file:
         - Use '1.1.1' or '1.3.0' instead of `WMSVersion.V1_1_1` or `WMSVersion.V1_3_0`
         - Use null instead of None
+
+    Example:
+        You can create a configuration from a config file.
+
+        ``` yaml title="config.yaml"
+        url: 'https://www.my-wms.com'
+        version: '1.3.0'
+        layer: 'my_layer'
+        epsg_code: 25832
+        response_format: 'image/png'
+        channel_names:
+          - 'r'
+          - 'g'
+          - 'b'
+        tile_size: 128
+        ground_sampling_distance: .2
+        style: null
+        buffer_size: 0
+        time_step: null
+        ```
 
     Attributes:
         url: URL of the web map service
