@@ -40,9 +40,22 @@ nav:
           - WMSFetcher: api_reference/inference/tile_fetcher/wms_fetcher.md
       - TileLoader: api_reference/inference/tile_loader.md
       - TileSet: api_reference/inference/tile_set.md
+      - TilesExporter:
+          - GridExporter: api_reference/inference/tiles_exporter/grid_exporter.md
+          - VectorExporter: api_reference/inference/tiles_exporter/vector_exporter.md
+      - TilesProcessor:
+          - TilesProcessor: api_reference/inference/tiles_processor/tiles_processor.md
+          - CopyProcessor: api_reference/inference/tiles_processor/copy_processor.md
+          - NormalizeProcessor: api_reference/inference/tiles_processor/normalize_processor.md
+          - ParallelCompositeProcessor: api_reference/inference/tiles_processor/parallel_composite_processor.md
+          - RemoveBufferProcessor: api_reference/inference/tiles_processor/remove_buffer_processor.md
+          - RemoveProcessor: api_reference/inference/tiles_processor/remove_processor.md
+          - SelectProcessor: api_reference/inference/tiles_processor/select_processor.md
+          - SequentialCompositeProcessor: api_reference/inference/tiles_processor/sequential_composite_processor.md
+          - StandardizeProcessor: api_reference/inference/tiles_processor/standardize_processor.md
+          - VectorizeProcessor: api_reference/inference/tiles_processor/vectorize_processor.md
     - aviary.pipeline:
-      - PostprocessingPipeline: api_reference/pipeline/postprocessing_pipeline.md
-      - SegmentationPipeline: api_reference/pipeline/segmentation_pipeline.md
+      - InferencePipeline: api_reference/pipeline/inference_pipeline.md
     - aviary.utils:
         - CoordinatesFilter:
             - CoordinatesFilter: api_reference/utils/coordinates_filter/coordinates_filter.md
@@ -66,8 +79,8 @@ theme:
   logo_dark_mode: assets/aviary_logo_white.svg
   favicon: assets/aviary_logo_white.svg
   font:
-    text: Noto Sans
-    code: Noto Sans Mono
+    text: Space Grotesk
+    code: Space Mono
   icon:
     repo: simple/github
   features:

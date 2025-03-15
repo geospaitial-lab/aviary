@@ -201,18 +201,19 @@ class GeodataPostprocessorConfig(pydantic.BaseModel):
 class FieldNamePostprocessor(GeodataPostprocessor):
     """Geodata postprocessor that renames the fields
 
-    Examples:
+    Example:
         Assume the geodataframe has the field 'class'.
 
         You can rename the field 'class' to 'type'.
 
-        >>> field_name_postprocessor = FieldNamePostprocessor(
-        ...     mapping={
-        ...         'class': 'type',
-        ...     },
-        ... )
-        ...
-        >>> gdf = field_name_postprocessor(gdf)
+        ``` python
+        field_name_postprocessor = FieldNamePostprocessor(
+            mapping={
+                'class': 'type',
+            },
+        )
+        gdf = field_name_postprocessor(gdf=gdf)
+        ```
     """
 
     def __init__(
@@ -443,21 +444,22 @@ class SimplifyPostprocessorConfig(pydantic.BaseModel):
 class ValuePostprocessor(GeodataPostprocessor):
     """Geodata postprocessor that maps the values of a field
 
-    Examples:
+    Example:
         Assume the geodataframe has the values 0, 1 and 2 in the field 'class'.
 
         You can map the values 0, 1 and 2 to 'class_1', 'class_2' and 'class_3'.
 
-        >>> value_postprocessor = ValuePostprocessor(
-        ...     mapping={
-        ...         0: 'class_1',
-        ...         1: 'class_2',
-        ...         2: 'class_3',
-        ...     },
-        ...     field_name='class',
-        ... )
-        ...
-        >>> gdf = value_postprocessor(gdf)
+        ``` python
+        value_postprocessor = ValuePostprocessor(
+            mapping={
+                0: 'class_1',
+                1: 'class_2',
+                2: 'class_3',
+            },
+            field_name='class',
+        )
+        gdf = value_postprocessor(gdf=gdf)
+        ```
     """
 
     def __init__(

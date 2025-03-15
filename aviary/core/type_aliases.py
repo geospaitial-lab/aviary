@@ -3,7 +3,7 @@ from typing import TypeAlias
 import numpy as np
 import numpy.typing as npt
 
-from aviary.core.channel import _parse_channel_name
+from aviary.core.channel import _coerce_channel_name
 from aviary.core.enums import ChannelName
 
 BufferSize: TypeAlias = int
@@ -19,6 +19,59 @@ EPSGCode: TypeAlias = int
 FractionalBufferSize: TypeAlias = float
 GroundSamplingDistance: TypeAlias = float
 TileSize: TypeAlias = int
+
+
+def _coerce_channel_key(
+    channel_key: ChannelName | str | ChannelKey,
+) -> ChannelKey:
+    """Coerces `channel_key` to `ChannelKey`.
+
+    Parameters:
+        channel_key: Channel name or channel name and time step combination
+
+    Returns:
+        Channel name and time step combination
+    """
+    if _is_channel_key(channel_key):
+        channel_name, time_step = channel_key
+    else:
+        channel_name = channel_key
+        time_step = None
+
+    channel_name = _coerce_channel_name(channel_name=channel_name)
+    return channel_name, time_step
+
+
+def _coerce_channel_keys(
+    channel_keys:
+        ChannelName | str |
+        ChannelKey |
+        ChannelNameSet | ChannelKeySet | ChannelNameKeySet |
+        bool |
+        None,
+) -> ChannelKeySet | bool:
+    """Coerces `channel_keys` to `ChannelKeySet`.
+
+    Parameters:
+        channel_keys: Channel name, channel name and time step combination, channel names,
+            channel name and time step combinations, no channels (False or None), or all channels (True)
+
+    Returns:
+        Channel name and time step combinations or all channels (True)
+    """
+    if channel_keys is True:
+        return True
+
+    if channel_keys is False or channel_keys is None:
+        return set()
+
+    if isinstance(channel_keys, (ChannelName | str)) or _is_channel_key(channel_keys):
+        return {_coerce_channel_key(channel_key=channel_keys)}
+
+    return {
+        _coerce_channel_key(channel_key=channel_key)
+        for channel_key in channel_keys
+    }
 
 
 def _is_channel_key(
@@ -43,52 +96,3 @@ def _is_channel_key(
         isinstance(value[1], (TimeStep | None)),
     ]
     return all(conditions)
-
-
-def _parse_channel_key(
-    channel_key: ChannelName | str | ChannelKey,
-) -> ChannelKey:
-    """Parses `channel_key` to `ChannelKey`.
-
-    Parameters:
-        channel_key: Channel name or channel name and time step combination
-
-    Returns:
-        Channel name and time step combination
-    """
-    if _is_channel_key(channel_key):
-        channel_name, time_step = channel_key
-    else:
-        channel_name = channel_key
-        time_step = None
-
-    channel_name = _parse_channel_name(channel_name=channel_name)
-    return channel_name, time_step
-
-
-def _parse_channel_keys(
-    channel_keys:
-        ChannelName | str |
-        ChannelKey |
-        ChannelNameSet | ChannelKeySet | ChannelNameKeySet |
-        None,
-) -> ChannelKeySet:
-    """Parses `channel_keys` to `ChannelKeySet`.
-
-    Parameters:
-        channel_keys: Channel name, channel name and time step combination, channel names,
-            or channel name and time step combinations
-
-    Returns:
-        Channel name and time step combinations
-    """
-    if channel_keys is None:
-        return set()
-
-    if isinstance(channel_keys, (ChannelName | str)) or _is_channel_key(channel_keys):
-        return {_parse_channel_key(channel_key=channel_keys)}
-
-    return {
-        _parse_channel_key(channel_key=channel_key)
-        for channel_key in channel_keys
-    }

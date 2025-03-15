@@ -6,6 +6,9 @@ from typing import (
     Protocol,
 )
 
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
 import pydantic
 
 # noinspection PyProtectedMember
@@ -19,6 +22,7 @@ from aviary.core.enums import (
     InterpolationMode,
     WMSVersion,
 )
+from aviary.core.exceptions import AviaryUserError
 from aviary.core.type_aliases import (
     BufferSize,
     Coordinates,
@@ -62,6 +66,15 @@ class TileFetcher(Protocol):
 class TileFetcherConfig(pydantic.BaseModel):
     """Configuration for tile fetchers
 
+    Example:
+        You can create a configuration from a config file.
+
+        ``` yaml title="config.yaml"
+        name: 'MyTileFetcher'
+        config:
+          ...
+        ```
+
     Attributes:
         name: Name
         config: Configuration
@@ -70,17 +83,86 @@ class TileFetcherConfig(pydantic.BaseModel):
     config: (
         CompositeFetcherConfig |
         VRTFetcherConfig |
-        WMSFetcherConfig
+        WMSFetcherConfig |
+        pydantic.BaseModel
     )
+
+
+_registry: dict[str, tuple[type[TileFetcher], type[pydantic.BaseModel]]] = {}
+
+
+class TileFetcherFactory:
+    """Factory for tile fetchers"""
+
+    @staticmethod
+    def create(
+        config: TileFetcherConfig,
+    ) -> TileFetcher:
+        """Creates a tile fetcher from the configuration.
+
+        Parameters:
+            config: Configuration
+
+        Returns:
+            Tile fetcher
+        """
+        try:
+            tile_fetcher_class = globals()[config.name]
+            return tile_fetcher_class.from_config(config=config.config)
+        except KeyError:
+            registry_entry = _registry.get(config.name)
+
+            if registry_entry is None:
+                message = (
+                    'Invalid config! '
+                    f'The tile fetcher {config.name} is not registered.'
+                )
+                raise AviaryUserError(message) from None
+
+            tile_fetcher_class, _ = registry_entry
+            # noinspection PyUnresolvedReferences
+            return tile_fetcher_class.from_config(config=config.config)
+
+    @staticmethod
+    def register(
+        tile_fetcher_class: type[TileFetcher],
+        config_class: type[pydantic.BaseModel],
+    ) -> None:
+        """Registers a tile fetcher.
+
+        Parameters:
+            tile_fetcher_class: Tile fetcher class
+            config_class: Configuration class
+        """
+        _registry[tile_fetcher_class.__name__] = (tile_fetcher_class, config_class)
+
+
+def register_tile_fetcher(config_class: type[pydantic.BaseModel]) -> Callable:
+    """Registers a tile fetcher.
+
+    Parameters:
+        config_class: Configuration class
+
+    Returns:
+        Decorator
+    """
+    def decorator(cls: type[TileFetcher]) -> type[TileFetcher]:
+        TileFetcherFactory.register(
+            tile_fetcher_class=cls,
+            config_class=config_class,
+        )
+        return cls
+    return decorator
 
 
 class CompositeFetcher:
     """Tile fetcher that composes multiple tile fetchers
 
     Notes:
-        - The tile fetchers are called concurrently depending on the number of workers
-        - If the number of workers is 1, the tile fetchers are composed vertically, i.e., in sequence
-        - If the number of workers is greater than 1, the tile fetchers are composed horizontally, i.e., in parallel
+        - The tile fetchers are called concurrently depending on the maximum number of threads
+        - If the maximum number of threads is 1, the tile fetchers are composed vertically, i.e., in sequence
+        - If the maximum number of threads is greater than 1, the tile fetchers are composed horizontally, i.e.,
+            in parallel
 
     Implements the `TileFetcher` protocol.
     """
@@ -88,15 +170,15 @@ class CompositeFetcher:
     def __init__(
         self,
         tile_fetchers: list[TileFetcher],
-        num_workers: int = 1,
+        max_num_threads: int | None = None,
     ) -> None:
         """
         Parameters:
             tile_fetchers: Tile fetchers
-            num_workers: Number of workers
+            max_num_threads: Maximum number of threads
         """
         self._tile_fetchers = tile_fetchers
-        self._num_workers = num_workers
+        self._max_num_threads = max_num_threads
 
     @classmethod
     def from_config(
@@ -111,16 +193,13 @@ class CompositeFetcher:
         Returns:
             Composite fetcher
         """
-        tile_fetchers = []
-
-        for tile_fetcher_config in config.tile_fetcher_configs:
-            tile_fetcher_class = globals()[tile_fetcher_config.name]
-            tile_fetcher = tile_fetcher_class.from_config(tile_fetcher_config.config)
-            tile_fetchers.append(tile_fetcher)
-
+        tile_fetchers = [
+            TileFetcherFactory.create(config=tile_fetcher_config)
+            for tile_fetcher_config in config.tile_fetcher_configs
+        ]
         return cls(
             tile_fetchers=tile_fetchers,
-            num_workers=config.num_workers,
+            max_num_threads=config.max_num_threads,
         )
 
     def __call__(
@@ -138,19 +217,33 @@ class CompositeFetcher:
         return composite_fetcher(
             coordinates=coordinates,
             tile_fetchers=self._tile_fetchers,
-            num_workers=self._num_workers,
+            max_num_threads=self._max_num_threads,
         )
 
 
 class CompositeFetcherConfig(pydantic.BaseModel):
     """Configuration for the `from_config` class method of `CompositeFetcher`
 
+    Create the configuration from a config file:
+        - Use null instead of None
+
+    Example:
+        You can create a configuration from a config file.
+
+        ``` yaml title="config.yaml"
+        tile_fetcher_configs:
+          - ...
+          ...
+        max_num_threads: null
+        ```
+
     Attributes:
         tile_fetcher_configs: Configurations of the tile fetchers
-        num_workers: Number of workers
+        max_num_threads: Maximum number of threads -
+            defaults to None
     """
     tile_fetcher_configs: list[TileFetcherConfig]
-    num_workers: int = 1
+    max_num_threads: int | None = None
 
 
 class VRTFetcher:
@@ -236,14 +329,33 @@ class VRTFetcherConfig(pydantic.BaseModel):
         - Use 'bilinear' or 'nearest' instead of `InterpolationMode.BILINEAR` or `InterpolationMode.NEAREST`
         - Use null instead of None
 
+    Example:
+        You can create a configuration from a config file.
+
+        ``` yaml title="config.yaml"
+        path: 'path/to/my_vrt.vrt'
+        channel_names:
+          - 'r'
+          - 'g'
+          - 'b'
+        tile_size: 128
+        ground_sampling_distance: .2
+        interpolation_mode: 'bilinear'
+        buffer_size: 0
+        time_step: null
+        ```
+
     Attributes:
         path: Path to the virtual raster (.vrt file)
         channel_names: Channel names (if None, the channel is ignored)
         tile_size: Tile size in meters
         ground_sampling_distance: Ground sampling distance in meters
-        interpolation_mode: Interpolation mode (`BILINEAR` or `NEAREST`)
-        buffer_size: Buffer size in meters (specifies the area around the tile that is additionally fetched)
-        time_step: Time step
+        interpolation_mode: Interpolation mode (`BILINEAR` or `NEAREST`) -
+            defaults to `BILINEAR`
+        buffer_size: Buffer size in meters (specifies the area around the tile that is additionally fetched) -
+            defaults to 0
+        time_step: Time step -
+            defaults to None
     """
     path: Path
     channel_names: list[ChannelName | str | None]
@@ -353,6 +465,26 @@ class WMSFetcherConfig(pydantic.BaseModel):
         - Use '1.1.1' or '1.3.0' instead of `WMSVersion.V1_1_1` or `WMSVersion.V1_3_0`
         - Use null instead of None
 
+    Example:
+        You can create a configuration from a config file.
+
+        ``` yaml title="config.yaml"
+        url: 'https://www.my-wms.com'
+        version: '1.3.0'
+        layer: 'my_layer'
+        epsg_code: 25832
+        response_format: 'image/png'
+        channel_names:
+          - 'r'
+          - 'g'
+          - 'b'
+        tile_size: 128
+        ground_sampling_distance: .2
+        style: null
+        buffer_size: 0
+        time_step: null
+        ```
+
     Attributes:
         url: URL of the web map service
         version: Version of the web map service (`V1_1_1` or `V1_3_0`)
@@ -362,9 +494,12 @@ class WMSFetcherConfig(pydantic.BaseModel):
         channel_names: Channel names (if None, the channel is ignored)
         tile_size: Tile size in meters
         ground_sampling_distance: Ground sampling distance in meters
-        style: Style
-        buffer_size: Buffer size in meters
-        time_step: Time step
+        style: Style -
+            defaults to None
+        buffer_size: Buffer size in meters -
+            defaults to 0
+        time_step: Time step -
+            defaults to None
     """
     url: str
     version: WMSVersion

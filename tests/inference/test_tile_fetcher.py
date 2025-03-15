@@ -25,24 +25,24 @@ def test_composite_fetcher_init() -> None:
         MagicMock(spec=TileFetcher),
         MagicMock(spec=TileFetcher),
     ]
-    num_workers = 1
+    max_num_threads = None
 
     composite_fetcher = CompositeFetcher(
         tile_fetchers=tile_fetchers,
-        num_workers=num_workers,
+        max_num_threads=max_num_threads,
     )
 
     assert composite_fetcher._tile_fetchers == tile_fetchers
-    assert composite_fetcher._num_workers == num_workers
+    assert composite_fetcher._max_num_threads == max_num_threads
 
 
 def test_composite_fetcher_init_defaults() -> None:
     signature = inspect.signature(CompositeFetcher)
-    num_workers = signature.parameters['num_workers'].default
+    max_num_threads = signature.parameters['max_num_threads'].default
 
-    expected_num_workers = 1
+    expected_max_num_threads = None
 
-    assert num_workers == expected_num_workers
+    assert max_num_threads == expected_max_num_threads
 
 
 @pytest.mark.skip(reason='Not implemented')
@@ -66,7 +66,7 @@ def test_composite_fetcher_call(
     mocked_composite_fetcher.assert_called_once_with(
         coordinates=coordinates,
         tile_fetchers=composite_fetcher._tile_fetchers,
-        num_workers=composite_fetcher._num_workers,
+        max_num_threads=composite_fetcher._max_num_threads,
     )
 
 

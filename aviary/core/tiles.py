@@ -19,7 +19,7 @@ from aviary._functional.utils.coordinates_filter import duplicates_filter
 from aviary.core.channel import (
     Channel,
     RasterChannel,
-    _parse_channel_name,
+    _coerce_channel_name,
 )
 from aviary.core.exceptions import AviaryUserError
 from aviary.core.grid import Grid
@@ -27,8 +27,8 @@ from aviary.core.type_aliases import (
     ChannelKey,
     ChannelNameSet,
     CoordinatesSet,
-    _parse_channel_key,
-    _parse_channel_keys,
+    _coerce_channel_key,
+    _coerce_channel_keys,
 )
 
 if TYPE_CHECKING:
@@ -83,7 +83,7 @@ class Tiles(Iterable[Channel]):
     def _validate(self) -> None:
         """Validates the tiles."""
         self._validate_channels()
-        self._parse_coordinates()
+        self._coerce_coordinates()
         self._validate_coordinates()
         self._validate_tile_size()
 
@@ -91,16 +91,11 @@ class Tiles(Iterable[Channel]):
         """Validates `channels`.
 
         Raises:
-            AviaryUserError: Invalid `channels` (the channels contain no channels)
             AviaryUserError: Invalid `channels` (the channels contain duplicate channel name and time step combinations)
             AviaryUserError: Invalid `channels` (the batch sizes of the channels are not equal)
         """
-        if not self._channels:
-            message = (
-                'Invalid channels! '
-                'The channels must contain at least one channel.'
-            )
-            raise AviaryUserError(message)
+        if not self:
+            return
 
         channel_keys = [channel.key for channel in self]
         unique_channel_keys = set(channel_keys)
@@ -129,8 +124,8 @@ class Tiles(Iterable[Channel]):
         """Sets `_copy` to True if the channels are copied before the initialization."""
         self._copy = True
 
-    def _parse_coordinates(self) -> None:
-        """Parses `coordinates`."""
+    def _coerce_coordinates(self) -> None:
+        """Coerces `coordinates`."""
         if not isinstance(self._coordinates, np.ndarray):
             self._coordinates = np.array([self._coordinates], dtype=np.int32)
 
@@ -142,6 +137,7 @@ class Tiles(Iterable[Channel]):
             AviaryUserError: Invalid `coordinates` (the coordinates contain duplicate coordinates)
             AviaryUserError: Invalid `coordinates` (the number of coordinates is not equal to the batch size
                 of the channels)
+            AviaryUserError: Invalid `coordinates` (the coordinates contain no coordinates)
         """
         if self._coordinates.ndim != 2:  # noqa: PLR2004
             message = (
@@ -171,14 +167,22 @@ class Tiles(Iterable[Channel]):
             )
             raise AviaryUserError(message)
 
-        first_channel = self._channels[0]
+        if self:
+            first_channel = self._channels[0]
 
-        if len(self._coordinates) != first_channel.batch_size:
-            message = (
-                'Invalid coordinates! '
-                'The number of coordinates must be equal to the batch size of the channels.'
-            )
-            raise AviaryUserError(message)
+            if len(self._coordinates) != first_channel.batch_size:
+                message = (
+                    'Invalid coordinates! '
+                    'The number of coordinates must be equal to the batch size of the channels.'
+                )
+                raise AviaryUserError(message)
+        else:  # noqa: PLR5501
+            if len(self._coordinates) == 0:
+                message = (
+                    'Invalid coordinates! '
+                    'The coordinates must contain at least one coordinates.'
+                )
+                raise AviaryUserError(message)
 
         self._coordinates = self._coordinates.copy()
 
@@ -201,7 +205,7 @@ class Tiles(Iterable[Channel]):
         Returns:
             Channels dictionary
         """
-        return {channel.key: channel for channel in self._channels}
+        return {channel.key: channel for channel in self}
 
     @property
     def channels(self) -> list[Channel]:
@@ -282,14 +286,6 @@ class Tiles(Iterable[Channel]):
             tile_size=self._tile_size,
         )
 
-    @property
-    def num_channels(self) -> int:
-        """
-        Returns:
-            Number of channels
-        """
-        return len(self)
-
     @classmethod
     def from_composite_raster(
         cls,
@@ -345,7 +341,7 @@ class Tiles(Iterable[Channel]):
             raise AviaryUserError(message)
 
         channel_names = [
-            _parse_channel_name(channel_name=channel_name)
+            _coerce_channel_name(channel_name=channel_name)
             for channel_name in channel_names
         ]
         channels_dict = {}
@@ -473,11 +469,15 @@ class Tiles(Iterable[Channel]):
         Returns:
             String representation
         """
-        channels_repr = '\n'.join(
-            f'        {channel.key}: {type(channel).__name__},'
-            for channel in self
-        )
-        channels_repr = '\n' + channels_repr
+        if self:
+            channels_repr = '\n'.join(
+                f'        {channel.key}: {type(channel).__name__},'
+                for channel in self
+            )
+            channels_repr = '\n' + channels_repr
+        else:
+            channels_repr = ','
+
         coordinates_repr = len(self._coordinates)
         return (
             'Tiles(\n'
@@ -537,6 +537,14 @@ class Tiles(Iterable[Channel]):
         """
         return len(self._channels)
 
+    def __bool__(self) -> bool:
+        """Checks if the tiles contain channels.
+
+        Returns:
+            True if the tiles contain channels, False otherwise
+        """
+        return bool(len(self))
+
     def __contains__(
         self,
         channel_key: ChannelName | str | ChannelKey,
@@ -552,7 +560,7 @@ class Tiles(Iterable[Channel]):
         Returns:
             True if the channel is in the tiles, False otherwise
         """
-        channel_key = _parse_channel_key(channel_key=channel_key)
+        channel_key = _coerce_channel_key(channel_key=channel_key)
         return channel_key in self.channel_keys
 
     def __getattr__(
@@ -590,7 +598,7 @@ class Tiles(Iterable[Channel]):
         Returns:
             Channel
         """
-        channel_key = _parse_channel_key(channel_key=channel_key)
+        channel_key = _coerce_channel_key(channel_key=channel_key)
         return self._channels_dict[channel_key]
 
     def __iter__(self) -> Iterator[Channel]:
@@ -716,7 +724,9 @@ class Tiles(Iterable[Channel]):
         channel_keys:
             ChannelName | str |
             ChannelKey |
-            ChannelNameSet | ChannelKeySet | ChannelNameKeySet,
+            ChannelNameSet | ChannelKeySet | ChannelNameKeySet |
+            bool |
+            None = True,
         inplace: bool = False,
     ) -> Tiles:
         """Removes the channels.
@@ -726,53 +736,54 @@ class Tiles(Iterable[Channel]):
 
         Parameters:
             channel_keys: Channel name, channel name and time step combination, channel names,
-                or channel name and time step combinations
+                channel name and time step combinations, no channels (False or None), or all channels (True)
             inplace: If True, the channels are removed inplace
 
         Returns:
             Tiles
         """
-        channel_keys = _parse_channel_keys(channel_keys=channel_keys)
+        channel_keys = _coerce_channel_keys(channel_keys=channel_keys)
 
-        if inplace:
-            self._channels = [channel for channel in self if channel.key not in channel_keys]
-            self._validate()
-            self._channels_dict = self._compute_channels_dict()
-            return self
+        if channel_keys is True:
+            channel_keys = self.channel_keys
 
-        tiles = self.copy()
-        tiles._channels = [channel for channel in tiles if channel.key not in channel_keys]  # noqa: SLF001
-        tiles._validate()  # noqa: SLF001
-        tiles._channels_dict = tiles._compute_channels_dict()  # noqa: SLF001
-        return tiles
+        channel_keys = self.channel_keys - channel_keys
+        return self.select(
+            channel_keys=channel_keys,
+            inplace=inplace,
+        )
 
     def remove_buffer(
         self,
-        ignore_channel_keys:
+        channel_keys:
             ChannelName | str |
             ChannelKey |
             ChannelNameSet | ChannelKeySet | ChannelNameKeySet |
-            None = None,
+            bool |
+            None = True,
         inplace: bool = False,
     ) -> Tiles:
         """Removes the buffer.
 
         Notes:
-            - Ignoring a channel by its name assumes the time step is None
+            - Removing the buffer of a channel by its name assumes the time step is None
 
         Parameters:
-            ignore_channel_keys: Channel name, channel name and time step combination, channel names,
-                or channel name and time step combinations to ignore
+            channel_keys: Channel name, channel name and time step combination, channel names,
+                channel name and time step combinations, no channels (False or None), or all channels (True)
             inplace: If True, the buffer is removed inplace
 
         Returns:
             Tiles
         """
-        ignore_channel_keys = _parse_channel_keys(channel_keys=ignore_channel_keys)
+        channel_keys = _coerce_channel_keys(channel_keys=channel_keys)
+
+        if channel_keys is True:
+            channel_keys = self.channel_keys
 
         if inplace:
             for channel in self:
-                if channel.key not in ignore_channel_keys:
+                if channel.key in channel_keys:
                     channel.remove_buffer(inplace=True)
 
             self._validate()
@@ -781,11 +792,53 @@ class Tiles(Iterable[Channel]):
         tiles = self.copy()
 
         for channel in tiles:
-            if channel.key not in ignore_channel_keys:
+            if channel.key in channel_keys:
                 channel.remove_buffer(inplace=True)
 
         tiles._validate()  # noqa: SLF001
         return tiles
+
+    def select(
+        self,
+        channel_keys:
+            ChannelName | str |
+            ChannelKey |
+            ChannelNameSet | ChannelKeySet | ChannelNameKeySet |
+            bool |
+            None = True,
+        inplace: bool = False,
+    ) -> Tiles:
+        """Selects the channels.
+
+        Notes:
+            - Selecting a channel by its name assumes the time step is None
+
+        Parameters:
+            channel_keys: Channel name, channel name and time step combination, channel names,
+                channel name and time step combinations, no channels (False or None), or all channels (True)
+            inplace: If True, the channels are selected inplace
+
+        Returns:
+            Tiles
+        """
+        channel_keys = _coerce_channel_keys(channel_keys=channel_keys)
+
+        if channel_keys is True:
+            channel_keys = self.channel_keys
+
+        if inplace:
+            self._channels = [channel for channel in self if channel.key in channel_keys]
+            self._validate()
+            self._channels_dict = self._compute_channels_dict()
+            return self
+
+        channels = [channel for channel in self if channel.key in channel_keys]
+        return Tiles(
+            channels=channels,
+            coordinates=self._coordinates,
+            tile_size=self._tile_size,
+            copy=True,
+        )
 
 
 Tile: TypeAlias = Tiles

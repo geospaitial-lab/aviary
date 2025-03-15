@@ -46,6 +46,8 @@ from tests.core.data.data_test_grid import (
     data_test_grid_getitem_slice,
     data_test_grid_init,
     data_test_grid_init_exceptions,
+    data_test_grid_or,
+    data_test_grid_or_exceptions,
     data_test_grid_remove,
     data_test_grid_remove_exceptions,
     data_test_grid_remove_inplace,
@@ -413,6 +415,27 @@ def test_grid_and_exceptions(
 ) -> None:
     with pytest.raises(AviaryUserError, match=message):
         _ = grid & other
+
+
+@pytest.mark.parametrize(('other', 'expected'), data_test_grid_or)
+def test_grid_or(
+    other: Grid,
+    expected: Grid,
+    grid: Grid,
+) -> None:
+    grid = grid | other
+
+    assert grid == expected
+
+
+@pytest.mark.parametrize(('other', 'message'), data_test_grid_or_exceptions)
+def test_grid_or_exceptions(
+    other: Grid,
+    message: str,
+    grid: Grid,
+) -> None:
+    with pytest.raises(AviaryUserError, match=message):
+        _ = grid | other
 
 
 @pytest.mark.parametrize(('grid', 'coordinates', 'expected'), data_test_grid_append)
