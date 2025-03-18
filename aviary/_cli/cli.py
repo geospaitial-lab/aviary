@@ -4,18 +4,21 @@ import typer
 import yaml
 
 from aviary import __version__
-from aviary.pipeline.postprocessing_pipeline import (
-    PostprocessingPipeline,
-    PostprocessingPipelineConfig,
-)
-from aviary.pipeline.segmentation_pipeline import (
-    SegmentationPipeline,
-    SegmentationPipelineConfig,
-)
+
+# noinspection PyProtectedMember
+from aviary._utils.plugins import register_plugins
+
+# noinspection PyProtectedMember
+from aviary.inference.tile_fetcher import _registry as tile_fetcher_registry
+
+# noinspection PyProtectedMember
+from aviary.inference.tiles_processor import _registry as tiles_processor_registry
+from aviary.pipeline.inference_pipeline import InferencePipelineFactory
 
 app = typer.Typer(
     no_args_is_help=True,
     add_completion=False,
+    help='aviary',
 )
 
 
@@ -41,37 +44,54 @@ def main(
 
 
 @app.command()
-def segmentation_pipeline(
-    config_path: str,
-) -> None:
-    """Run the segmentation pipeline.
-
-    Parameters:
-        config_path: path to the configuration file
-    """
-    with Path(config_path).open() as file:
-        config = yaml.safe_load(file)
-
-    segmentation_pipeline_config = SegmentationPipelineConfig(**config)
-    segmentation_pipeline = SegmentationPipeline.from_config(segmentation_pipeline_config)
-    segmentation_pipeline()
+def docs() -> None:
+    """Open the documentation in a web browser."""
+    url = 'https://geospaitial-lab.github.io/aviary'
+    typer.launch(url)
 
 
 @app.command()
-def postprocessing_pipeline(
+def inference_pipeline(
     config_path: str,
 ) -> None:
-    """Run the postprocessing pipeline.
+    """Run the inference pipeline.
 
     Parameters:
-        config_path: path to the configuration file
+        config_path: Path to the configuration file
     """
-    with Path(config_path).open() as file:
+    config_path = Path(config_path)
+
+    with config_path.open() as file:
         config = yaml.safe_load(file)
 
-    postprocessing_pipeline_config = PostprocessingPipelineConfig(**config)
-    postprocessing_pipeline = PostprocessingPipeline.from_config(postprocessing_pipeline_config)
-    postprocessing_pipeline()
+    inference_pipeline = InferencePipelineFactory.create(config=config)
+    inference_pipeline()
+
+
+@app.command()
+def plugins(
+    plugins_dir_path: str = 'plugins',
+) -> None:
+    """List the registered plugins.
+
+    Parameters:
+        plugins_dir_path: Path to the plugins directory
+    """
+    plugins_dir_path = Path(plugins_dir_path)
+
+    register_plugins(plugins_dir_path=plugins_dir_path)
+
+    tile_fetcher_names = list(tile_fetcher_registry.keys())
+    tiles_processor_names = list(tiles_processor_registry.keys())
+    plugin_names = (
+        tile_fetcher_names +
+        tiles_processor_names
+    )
+
+    print('Registered plugins:')
+
+    for plugin_name in plugin_names:
+        print(plugin_name)
 
 
 if __name__ == '__main__':
