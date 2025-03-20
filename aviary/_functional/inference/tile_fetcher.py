@@ -36,7 +36,7 @@ if TYPE_CHECKING:
         TileSize,
         TimeStep,
     )
-    from aviary.inference.tile_fetcher import TileFetcher
+    from aviary.tile.tile_fetcher import TileFetcher
 
 
 def composite_fetcher(

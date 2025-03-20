@@ -12,7 +12,7 @@ if TYPE_CHECKING:
         ChannelNameKeySet,
         ChannelNameSet,
     )
-    from aviary.inference.tiles_processor import TilesProcessor
+    from aviary.tile.tiles_processor import TilesProcessor
 
 
 def copy_processor(
