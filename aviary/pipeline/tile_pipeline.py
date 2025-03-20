@@ -12,22 +12,22 @@ from aviary.core.grid import (
     GridConfig,
     GridFactory,
 )
-from aviary.inference.tile_fetcher import (
+from aviary.tile.tile_fetcher import (
     TileFetcher,
     TileFetcherConfig,
     TileFetcherFactory,
 )
-from aviary.inference.tile_loader import TileLoader
-from aviary.inference.tile_set import TileSet
-from aviary.inference.tiles_processor import (
+from aviary.tile.tile_loader import TileLoader
+from aviary.tile.tile_set import TileSet
+from aviary.tile.tiles_processor import (
     TilesProcessor,
     TilesProcessorConfig,
     TilesProcessorFactory,
 )
 
 
-class InferencePipeline:
-    """Pre-built inference pipeline"""
+class TilePipeline:
+    """Pre-built tile pipeline"""
 
     def __init__(
         self,
@@ -63,15 +63,15 @@ class InferencePipeline:
     @classmethod
     def from_config(
         cls,
-        config: InferencePipelineConfig,
-    ) -> InferencePipeline:
-        """Creates an inference pipeline from the configuration.
+        config: TilePipelineConfig,
+    ) -> TilePipeline:
+        """Creates a tile pipeline from the configuration.
 
         Parameters:
             config: Configuration
 
         Returns:
-            Inference pipeline
+            Tile pipeline
         """
         grid = GridFactory.create(config=config.grid_config)
         tile_fetcher = TileFetcherFactory.create(config=config.tile_fetcher_config)
@@ -87,7 +87,7 @@ class InferencePipeline:
         )
 
     def __call__(self) -> None:
-        """Runs the inference pipeline."""
+        """Runs the tile pipeline."""
         tile_set = TileSet(
             grid=self._grid,
             tile_fetcher=self._tile_fetcher,
@@ -104,7 +104,7 @@ class InferencePipeline:
 
 
 class TileLoaderConfig(pydantic.BaseModel):
-    """Configuration for the tile loader in the inference pipeline
+    """Configuration for the tile loader in the tile pipeline
 
     Create the configuration from a config file:
         - Use null instead of None
@@ -131,8 +131,8 @@ class TileLoaderConfig(pydantic.BaseModel):
     num_prefetched_tiles: int = 1
 
 
-class InferencePipelineConfig(pydantic.BaseModel):
-    """Configuration for the `from_config` class method of `InferencePipeline`
+class TilePipelineConfig(pydantic.BaseModel):
+    """Configuration for the `from_config` class method of `TilePipeline`
 
     Create the configuration from a config file:
         - Use null instead of None
@@ -173,19 +173,19 @@ class InferencePipelineConfig(pydantic.BaseModel):
     plugins_dir_path: Path | None = None
 
 
-class InferencePipelineFactory:
-    """Factory for inference pipelines"""
+class TilePipelineFactory:
+    """Factory for tile pipelines"""
 
     @staticmethod
     def create(
-        config: InferencePipelineConfig,
-    ) -> InferencePipeline:
-        """Creates an inference pipeline from the configuration.
+        config: TilePipelineConfig,
+    ) -> TilePipeline:
+        """Creates a tile pipeline from the configuration.
 
         Parameters:
             config: Configuration
 
         Returns:
-            Inference pipeline
+            Tile pipeline
         """
-        return InferencePipeline.from_config(config=config)
+        return TilePipeline.from_config(config=config)

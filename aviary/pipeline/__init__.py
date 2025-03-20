@@ -1,13 +1,13 @@
-from .inference_pipeline import (
-    InferencePipeline,
-    InferencePipelineConfig,
-    InferencePipelineFactory,
+from .tile_pipeline import (
     TileLoaderConfig,
+    TilePipeline,
+    TilePipelineConfig,
+    TilePipelineFactory,
 )
 
 __all__ = [
-    'InferencePipeline',
-    'InferencePipelineConfig',
-    'InferencePipelineFactory',
     'TileLoaderConfig',
+    'TilePipeline',
+    'TilePipelineConfig',
+    'TilePipelineFactory',
 ]
