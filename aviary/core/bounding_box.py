@@ -362,18 +362,18 @@ class BoundingBox(Iterable[Coordinate]):
             y_max=y_max,
         )
 
-    def quantize(
+    def snap(
         self,
         value: int,
         inplace: bool = False,
     ) -> BoundingBox:
-        """Quantizes the bounding box.
+        """Snaps the bounding box.
 
         Example:
             Assume the area of interest is specified by `x_min`=363084, `y_min`=5715326, `x_max`=363340, and
             `y_max`=5715582.
 
-            You can align the area of interest to a grid by quantizing the bounding box.
+            You can align the area of interest to a grid by snapping the bounding box.
 
             ``` python
             bounding_box = BoundingBox(
@@ -382,7 +382,7 @@ class BoundingBox(Iterable[Coordinate]):
                 x_max=363340,
                 y_max=5715582,
             )
-            bounding_box = bounding_box.quantize(value=128)
+            bounding_box = bounding_box.snap(value=128)
             print(bounding_box)
             ```
 
@@ -396,8 +396,8 @@ class BoundingBox(Iterable[Coordinate]):
             ```
 
         Parameters:
-            value: Value to quantize the coordinates to in meters
-            inplace: If True, the bounding box is quantized inplace
+            value: Value to snap the coordinates to in meters
+            inplace: If True, the bounding box is snapped inplace
 
         Returns:
             Bounding box

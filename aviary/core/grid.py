@@ -84,7 +84,7 @@ class Grid(Iterable[Coordinates]):
 
         Raises:
             AviaryUserError: Invalid `coordinates` (the coordinates are not in shape (n, 2) and data type int32)
-            AviaryUserError: Invalid `coordinates` (the coordinates are not quantized regularly)
+            AviaryUserError: Invalid `coordinates` (the coordinates are not evenly distributed)
         """
         if self._coordinates.ndim != 2:  # noqa: PLR2004
             message = (
@@ -119,7 +119,7 @@ class Grid(Iterable[Coordinates]):
         if any(conditions):
             message = (
                 'Invalid coordinates! '
-                'The coordinates must be quantized regularly.'
+                'The coordinates must be evenly distributed.'
             )
             raise AviaryUserError(message)
 
@@ -168,14 +168,14 @@ class Grid(Iterable[Coordinates]):
         cls,
         bounding_box: BoundingBox,
         tile_size: TileSize,
-        quantize: bool = True,
+        snap: bool = True,
     ) -> Grid:
         """Creates a grid from a bounding box.
 
         Parameters:
             bounding_box: Bounding box
             tile_size: Tile size in meters
-            quantize: If True, the bounding box is quantized to `tile_size`
+            snap: If True, the bounding box is snapped to `tile_size`
 
         Returns:
             Grid
@@ -193,7 +193,7 @@ class Grid(Iterable[Coordinates]):
         coordinates = cls._compute_coordinates(
             bounding_box=bounding_box,
             tile_size=tile_size,
-            quantize=quantize,
+            snap=snap,
         )
         return cls(
             coordinates=coordinates,
@@ -205,14 +205,14 @@ class Grid(Iterable[Coordinates]):
         cls,
         gdf: gpd.GeoDataFrame,
         tile_size: TileSize,
-        quantize: bool = True,
+        snap: bool = True,
     ) -> Grid:
         """Creates a grid from a geodataframe.
 
         Parameters:
             gdf: Geodataframe
             tile_size: Tile size in meters
-            quantize: If True, the bounding box is quantized to `tile_size`
+            snap: If True, the bounding box is snapped to `tile_size`
 
         Returns:
             Grid
@@ -247,7 +247,7 @@ class Grid(Iterable[Coordinates]):
         coordinates = cls._compute_coordinates(
             bounding_box=bounding_box,
             tile_size=tile_size,
-            quantize=quantize,
+            snap=snap,
         )
         coordinates = geospatial_filter(
             coordinates=coordinates,
@@ -264,20 +264,20 @@ class Grid(Iterable[Coordinates]):
     def _compute_coordinates(
         bounding_box: BoundingBox,
         tile_size: TileSize,
-        quantize: bool = True,
+        snap: bool = True,
     ) -> CoordinatesSet:
         """Computes the coordinates of the bottom left corner of each tile.
 
         Parameters:
             bounding_box: Bounding box
             tile_size: Tile size in meters
-            quantize: If True, the bounding box is quantized to `tile_size`
+            snap: If True, the bounding box is snapped to `tile_size`
 
         Returns:
             Coordinates (x_min, y_min) of each tile in meters
         """
-        if quantize:
-            bounding_box = bounding_box.quantize(
+        if snap:
+            bounding_box = bounding_box.snap(
                 value=tile_size,
                 inplace=False,
             )
@@ -405,13 +405,13 @@ class Grid(Iterable[Coordinates]):
             grid = cls.from_bounding_box(
                 bounding_box=config.bounding_box,
                 tile_size=config.tile_size,
-                quantize=config.quantize,
+                snap=config.snap,
             )
         elif config.gdf is not None:
             grid = cls.from_gdf(
                 gdf=config.gdf,
                 tile_size=config.tile_size,
-                quantize=config.quantize,
+                snap=config.snap,
             )
         elif config.json_string is not None:
             grid = cls.from_json(
@@ -429,7 +429,7 @@ class Grid(Iterable[Coordinates]):
             ignore_grid = cls.from_bounding_box(
                 bounding_box=config.ignore_bounding_box,
                 tile_size=config.tile_size,
-                quantize=config.quantize,
+                snap=config.snap,
             )
             grid -= ignore_grid
 
@@ -437,7 +437,7 @@ class Grid(Iterable[Coordinates]):
             ignore_grid = cls.from_gdf(
                 gdf=config.ignore_gdf,
                 tile_size=config.tile_size,
-                quantize=config.quantize,
+                snap=config.snap,
             )
             grid -= ignore_grid
 
@@ -946,7 +946,7 @@ class GridConfig(pydantic.BaseModel):
         ignore_gpkg_path: null
         ignore_json_path: null
         tile_size: 128
-        quantize: true
+        snap: true
         ```
 
     Attributes:
@@ -964,7 +964,7 @@ class GridConfig(pydantic.BaseModel):
             defaults to None
         tile_size: Tile size in meters -
             defaults to None
-        quantize: If True, the bounding box is quantized to `tile_size` -
+        snap: If True, the bounding box is snapped to `tile_size` -
             defaults to True
     """
     bounding_box_coordinates: tuple[Coordinate, Coordinate, Coordinate, Coordinate] | None = None
@@ -974,7 +974,7 @@ class GridConfig(pydantic.BaseModel):
     ignore_gpkg_path: Path | None = None
     ignore_json_path: Path | None = None
     tile_size: TileSize | None = None
-    quantize: bool = True
+    snap: bool = True
 
     @property
     def bounding_box(self) -> BoundingBox | None:
