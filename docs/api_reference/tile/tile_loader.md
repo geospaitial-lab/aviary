@@ -2,11 +2,11 @@
 
 [:simple-github: View source on GitHub][GitHub]
 
-  [GitHub]: https://github.com/geospaitial-lab/aviary/blob/main/aviary/inference/tile_loader.py
+  [GitHub]: https://github.com/geospaitial-lab/aviary/blob/main/aviary/tile/tile_loader.py
 
 </div>
 
-::: aviary.inference.TileLoader
+::: aviary.tile.TileLoader
     options:
       filters:
       - "!^_"
