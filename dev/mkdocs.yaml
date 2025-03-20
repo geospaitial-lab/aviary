@@ -32,30 +32,30 @@ nav:
       - Grid: api_reference/core/grid.md
       - Tiles: api_reference/core/tiles.md
       - Type Aliases: api_reference/core/type_aliases.md
-    - aviary.inference:
+    - aviary.tile:
       - TileFetcher:
-          - TileFetcher: api_reference/inference/tile_fetcher/tile_fetcher.md
-          - CompositeFetcher: api_reference/inference/tile_fetcher/composite_fetcher.md
-          - VRTFetcher: api_reference/inference/tile_fetcher/vrt_fetcher.md
-          - WMSFetcher: api_reference/inference/tile_fetcher/wms_fetcher.md
-      - TileLoader: api_reference/inference/tile_loader.md
-      - TileSet: api_reference/inference/tile_set.md
+          - TileFetcher: api_reference/tile/tile_fetcher/tile_fetcher.md
+          - CompositeFetcher: api_reference/tile/tile_fetcher/composite_fetcher.md
+          - VRTFetcher: api_reference/tile/tile_fetcher/vrt_fetcher.md
+          - WMSFetcher: api_reference/tile/tile_fetcher/wms_fetcher.md
+      - TileLoader: api_reference/tile/tile_loader.md
+      - TileSet: api_reference/tile/tile_set.md
       - TilesExporter:
-          - GridExporter: api_reference/inference/tiles_exporter/grid_exporter.md
-          - VectorExporter: api_reference/inference/tiles_exporter/vector_exporter.md
+          - GridExporter: api_reference/tile/tiles_exporter/grid_exporter.md
+          - VectorExporter: api_reference/tile/tiles_exporter/vector_exporter.md
       - TilesProcessor:
-          - TilesProcessor: api_reference/inference/tiles_processor/tiles_processor.md
-          - CopyProcessor: api_reference/inference/tiles_processor/copy_processor.md
-          - NormalizeProcessor: api_reference/inference/tiles_processor/normalize_processor.md
-          - ParallelCompositeProcessor: api_reference/inference/tiles_processor/parallel_composite_processor.md
-          - RemoveBufferProcessor: api_reference/inference/tiles_processor/remove_buffer_processor.md
-          - RemoveProcessor: api_reference/inference/tiles_processor/remove_processor.md
-          - SelectProcessor: api_reference/inference/tiles_processor/select_processor.md
-          - SequentialCompositeProcessor: api_reference/inference/tiles_processor/sequential_composite_processor.md
-          - StandardizeProcessor: api_reference/inference/tiles_processor/standardize_processor.md
-          - VectorizeProcessor: api_reference/inference/tiles_processor/vectorize_processor.md
+          - TilesProcessor: api_reference/tile/tiles_processor/tiles_processor.md
+          - CopyProcessor: api_reference/tile/tiles_processor/copy_processor.md
+          - NormalizeProcessor: api_reference/tile/tiles_processor/normalize_processor.md
+          - ParallelCompositeProcessor: api_reference/tile/tiles_processor/parallel_composite_processor.md
+          - RemoveBufferProcessor: api_reference/tile/tiles_processor/remove_buffer_processor.md
+          - RemoveProcessor: api_reference/tile/tiles_processor/remove_processor.md
+          - SelectProcessor: api_reference/tile/tiles_processor/select_processor.md
+          - SequentialCompositeProcessor: api_reference/tile/tiles_processor/sequential_composite_processor.md
+          - StandardizeProcessor: api_reference/tile/tiles_processor/standardize_processor.md
+          - VectorizeProcessor: api_reference/tile/tiles_processor/vectorize_processor.md
     - aviary.pipeline:
-      - InferencePipeline: api_reference/pipeline/inference_pipeline.md
+      - TilePipeline: api_reference/pipeline/tile_pipeline.md
     - aviary.utils:
         - CoordinatesFilter:
             - CoordinatesFilter: api_reference/utils/coordinates_filter/coordinates_filter.md
