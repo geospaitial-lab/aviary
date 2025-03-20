@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 import pydantic
 
 # noinspection PyProtectedMember
-from aviary._functional.inference.tiles_processor import (
+from aviary._functional.tile.tiles_processor import (
     copy_processor,
     normalize_processor,
     parallel_composite_processor,

@@ -5,7 +5,7 @@ from collections.abc import (
 
 from aviary.core.grid import Grid
 from aviary.core.tiles import Tile
-from aviary.inference.tile_fetcher import TileFetcher
+from aviary.tile.tile_fetcher import TileFetcher
 
 
 class TileSet(Iterable[Tile]):

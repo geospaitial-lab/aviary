@@ -10,7 +10,7 @@ from queue import Queue
 from threading import Thread
 
 from aviary.core.tiles import Tiles
-from aviary.inference.tile_set import TileSet
+from aviary.tile.tile_set import TileSet
 
 
 class TileLoader(Iterable[Tiles]):
