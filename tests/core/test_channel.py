@@ -192,15 +192,7 @@ def test_raster_channel_setters(
 
     with pytest.raises(AttributeError):
         # noinspection PyPropertyAccess
-        raster_channel.name = None
-
-    with pytest.raises(AttributeError):
-        # noinspection PyPropertyAccess
         raster_channel.buffer_size = None
-
-    with pytest.raises(AttributeError):
-        # noinspection PyPropertyAccess
-        raster_channel.time_step = None
 
 
 def test_raster_channel_serializability(
@@ -612,15 +604,7 @@ def test_vector_channel_setters(
 
     with pytest.raises(AttributeError):
         # noinspection PyPropertyAccess
-        vector_channel.name = None
-
-    with pytest.raises(AttributeError):
-        # noinspection PyPropertyAccess
         vector_channel.buffer_size = None
-
-    with pytest.raises(AttributeError):
-        # noinspection PyPropertyAccess
-        vector_channel.time_step = None
 
 
 def test_vector_channel_serializability(

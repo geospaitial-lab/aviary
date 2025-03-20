@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import weakref
 from abc import (
     ABC,
     abstractmethod,
@@ -29,6 +30,7 @@ from aviary.core.enums import (
 from aviary.core.exceptions import AviaryUserError
 
 if TYPE_CHECKING:
+    from aviary.core.tiles import Tiles
     from aviary.core.type_aliases import (
         BufferSize,
         ChannelKey,
@@ -80,6 +82,8 @@ class Channel(ABC, Iterable[object]):
         if self._copy:
             self._copy_data()
 
+        self._observer_tiles = None
+
     def _validate(self) -> None:
         """Validates the channel."""
         self._coerce_data()
@@ -122,6 +126,21 @@ class Channel(ABC, Iterable[object]):
             )
             raise AviaryUserError(message)
 
+    def _register_observer_tiles(
+        self,
+        observer_tiles: Tiles,
+    ) -> None:
+        """Registers the observer tiles.
+
+        Parameters:
+            observer_tiles: Observer tiles
+        """
+        self._observer_tiles = weakref.ref(observer_tiles)
+
+    def _unregister_observer_tiles(self) -> None:
+        """Unregisters the observer tiles."""
+        self._observer_tiles = None
+
     @property
     @abstractmethod
     def data(self) -> object:
@@ -137,6 +156,33 @@ class Channel(ABC, Iterable[object]):
             Name
         """
         return self._name
+
+    @name.setter
+    def name(
+        self,
+        name: ChannelName | str,
+    ) -> None:
+        """
+        Parameters:
+            name: Name
+        """
+        self._name = _coerce_channel_name(channel_name=name)
+        validate_channel_name(
+            channel_name=self._name,
+            param_name='name',
+            description='name',
+        )
+
+        if self._observer_tiles is None:
+            return
+
+        observer_tiles = self._observer_tiles()
+
+        if observer_tiles is None:
+            return
+
+        # noinspection PyProtectedMember
+        observer_tiles._validate()  # noqa: SLF001
 
     @property
     def buffer_size(self) -> FractionalBufferSize:
@@ -154,6 +200,28 @@ class Channel(ABC, Iterable[object]):
         """
         return self._time_step
 
+    @time_step.setter
+    def time_step(
+        self,
+        time_step: TimeStep | None,
+    ) -> None:
+        """
+        Parameters:
+            time_step: Time step
+        """
+        self._time_step = time_step
+
+        if self._observer_tiles is None:
+            return
+
+        observer_tiles = self._observer_tiles()
+
+        if observer_tiles is None:
+            return
+
+        # noinspection PyProtectedMember
+        observer_tiles._validate()  # noqa: SLF001
+
     @property
     def is_copied(self) -> bool:
         """
@@ -169,6 +237,17 @@ class Channel(ABC, Iterable[object]):
             Batch size
         """
         return len(self)
+
+    @property
+    def is_in_tiles(self) -> bool:
+        """
+        Returns:
+            True if the channel is inside tiles, False otherwise
+        """
+        if self._observer_tiles is None:
+            return False
+
+        return self._observer_tiles() is not None
 
     @property
     def key(self) -> ChannelKey:
@@ -254,6 +333,27 @@ class Channel(ABC, Iterable[object]):
         Returns:
             String representation
         """
+
+    def __getstate__(self) -> dict:
+        """Gets the state for pickling.
+
+        Returns:
+            State
+        """
+        state = self.__dict__.copy()
+        state['_observer_tiles'] = None
+        return state
+
+    def __setstate__(
+        self,
+        state: dict,
+    ) -> None:
+        """Sets the state for unpickling.
+
+        Parameters:
+            state: State
+        """
+        self.__dict__ = state
 
     @abstractmethod
     def __eq__(
@@ -573,6 +673,25 @@ class RasterChannel(Channel, Iterable[npt.NDArray]):
             ')'
         )
 
+    def __getstate__(self) -> dict:
+        """Gets the state for pickling.
+
+        Returns:
+            State
+        """
+        return super().__getstate__()
+
+    def __setstate__(
+        self,
+        state: dict,
+    ) -> None:
+        """Sets the state for unpickling.
+
+        Parameters:
+            state: State
+        """
+        super().__setstate__(state=state)
+
     def __eq__(
         self,
         other: object,
@@ -699,13 +818,7 @@ class RasterChannel(Channel, Iterable[npt.NDArray]):
             if inplace:
                 return self
 
-            return RasterChannel(
-                data=self._data,
-                name=self._name,
-                buffer_size=self._buffer_size,
-                time_step=self._time_step,
-                copy=True,
-            )
+            return self.copy()
 
         if inplace:
             self._data = [
@@ -1100,6 +1213,25 @@ class VectorChannel(Channel, Iterable[gpd.GeoDataFrame]):
             ')'
         )
 
+    def __getstate__(self) -> dict:
+        """Gets the state for pickling.
+
+        Returns:
+            State
+        """
+        return super().__getstate__()
+
+    def __setstate__(
+        self,
+        state: dict,
+    ) -> None:
+        """Sets the state for unpickling.
+
+        Parameters:
+            state: State
+        """
+        super().__setstate__(state=state)
+
     def __eq__(
         self,
         other: object,
@@ -1226,13 +1358,7 @@ class VectorChannel(Channel, Iterable[gpd.GeoDataFrame]):
             if inplace:
                 return self
 
-            return VectorChannel(
-                data=self._data,
-                name=self._name,
-                buffer_size=self._buffer_size,
-                time_step=self._time_step,
-                copy=True,
-            )
+            return self.copy()
 
         if inplace:
             self._data = [

@@ -78,7 +78,9 @@ class Tiles(Iterable[Channel]):
         if self._copy:
             self._copy_channels()
 
-        self._channels_dict = self._compute_channels_dict()
+        for channel in self:
+            # noinspection PyProtectedMember
+            channel._register_observer_tiles(observer_tiles=self)  # noqa: SLF001
 
     def _validate(self) -> None:
         """Validates the tiles."""
@@ -198,14 +200,6 @@ class Tiles(Iterable[Channel]):
                 'The tile size must be positive.'
             )
             raise AviaryUserError(message)
-
-    def _compute_channels_dict(self) -> dict[ChannelKey, Channel]:
-        """Computes the channels dictionary.
-
-        Returns:
-            Channels dictionary
-        """
-        return {channel.key: channel for channel in self}
 
     @property
     def channels(self) -> list[Channel]:
@@ -507,6 +501,10 @@ class Tiles(Iterable[Channel]):
         """
         self.__dict__ = state
 
+        for channel in self:
+            # noinspection PyProtectedMember
+            channel._register_observer_tiles(observer_tiles=self)  # noqa: SLF001
+
     def __eq__(
         self,
         other: object,
@@ -599,7 +597,8 @@ class Tiles(Iterable[Channel]):
             Channel
         """
         channel_key = _coerce_channel_key(channel_key=channel_key)
-        return self._channels_dict[channel_key]
+        channels_dict = {channel.key: channel for channel in self}
+        return channels_dict[channel_key]
 
     def __iter__(self) -> Iterator[Channel]:
         """Iterates over the channels.
@@ -695,7 +694,11 @@ class Tiles(Iterable[Channel]):
         if inplace:
             self._channels.extend(channels)
             self._validate()
-            self._channels_dict = self._compute_channels_dict()
+
+            for channel in channels:
+                # noinspection PyProtectedMember
+                channel._register_observer_tiles(observer_tiles=self)  # noqa: SLF001
+
             return self
 
         channels = self._channels + channels
@@ -827,9 +830,15 @@ class Tiles(Iterable[Channel]):
             channel_keys = self.channel_keys
 
         if inplace:
+            removed_channel_keys = self.channel_keys - channel_keys
+            removed_channels = [channel for channel in self if channel.key in removed_channel_keys]
             self._channels = [channel for channel in self if channel.key in channel_keys]
             self._validate()
-            self._channels_dict = self._compute_channels_dict()
+
+            for channel in removed_channels:
+                # noinspection PyProtectedMember
+                channel._unregister_observer_tiles()  # noqa: SLF001
+
             return self
 
         channels = [channel for channel in self if channel.key in channel_keys]
