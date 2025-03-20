@@ -7,13 +7,13 @@ from aviary import __version__
 
 # noinspection PyProtectedMember
 from aviary._utils.plugins import register_plugins
+from aviary.pipeline.tile_pipeline import TilePipelineFactory
 
 # noinspection PyProtectedMember
-from aviary.inference.tile_fetcher import _registry as tile_fetcher_registry
+from aviary.tile.tile_fetcher import _registry as tile_fetcher_registry
 
 # noinspection PyProtectedMember
-from aviary.inference.tiles_processor import _registry as tiles_processor_registry
-from aviary.pipeline.inference_pipeline import InferencePipelineFactory
+from aviary.tile.tiles_processor import _registry as tiles_processor_registry
 
 app = typer.Typer(
     no_args_is_help=True,
@@ -51,10 +51,10 @@ def docs() -> None:
 
 
 @app.command()
-def inference_pipeline(
+def tile_pipeline(
     config_path: str,
 ) -> None:
-    """Run the inference pipeline.
+    """Run the tile pipeline.
 
     Parameters:
         config_path: Path to the configuration file
@@ -64,8 +64,8 @@ def inference_pipeline(
     with config_path.open() as file:
         config = yaml.safe_load(file)
 
-    inference_pipeline = InferencePipelineFactory.create(config=config)
-    inference_pipeline()
+    tile_pipeline = TilePipelineFactory.create(config=config)
+    tile_pipeline()
 
 
 @app.command()
