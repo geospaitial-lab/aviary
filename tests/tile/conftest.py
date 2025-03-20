@@ -8,7 +8,7 @@ from aviary.core.enums import (
     InterpolationMode,
     WMSVersion,
 )
-from aviary.inference.tile_fetcher import (
+from aviary.tile.tile_fetcher import (
     CompositeFetcher,
     TileFetcher,
     VRTFetcher,

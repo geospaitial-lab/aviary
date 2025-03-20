@@ -9,7 +9,7 @@ from aviary.core.enums import (
     InterpolationMode,
     WMSVersion,
 )
-from aviary.inference.tile_fetcher import (
+from aviary.tile.tile_fetcher import (
     CompositeFetcher,
     TileFetcher,
     VRTFetcher,
@@ -50,7 +50,7 @@ def test_composite_fetcher_from_config() -> None:
     pass
 
 
-@patch('aviary.inference.tile_fetcher.composite_fetcher')
+@patch('aviary.tile.tile_fetcher.composite_fetcher')
 def test_composite_fetcher_call(
     mocked_composite_fetcher: MagicMock,
     composite_fetcher: CompositeFetcher,
@@ -154,7 +154,7 @@ def test_vrt_fetcher_from_config() -> None:
     assert vrt_fetcher._time_step == time_step
 
 
-@patch('aviary.inference.tile_fetcher.vrt_fetcher')
+@patch('aviary.tile.tile_fetcher.vrt_fetcher')
 def test_vrt_fetcher_call(
     mocked_vrt_fetcher: MagicMock,
     vrt_fetcher: VRTFetcher,
@@ -284,7 +284,7 @@ def test_wms_fetcher_from_config() -> None:
     assert wms_fetcher._time_step == time_step
 
 
-@patch('aviary.inference.tile_fetcher.wms_fetcher')
+@patch('aviary.tile.tile_fetcher.wms_fetcher')
 def test_wms_fetcher_call(
     mocked_wms_fetcher: MagicMock,
     wms_fetcher: WMSFetcher,

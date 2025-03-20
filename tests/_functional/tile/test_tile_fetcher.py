@@ -3,7 +3,7 @@ import numpy.typing as npt
 import pytest
 
 # noinspection PyProtectedMember
-from aviary._functional.inference.tile_fetcher import (
+from aviary._functional.tile.tile_fetcher import (
     _compute_tile_size_pixels,
     _get_wms_params,
     _permute_data,
@@ -17,7 +17,7 @@ from aviary.core.type_aliases import (
     GroundSamplingDistance,
     TileSize,
 )
-from tests._functional.inference.data.data_test_tile_fetcher import (
+from tests._functional.tile.data.data_test_tile_fetcher import (
     data_test__compute_tile_size_pixels,
     data_test__compute_tile_size_pixels_exceptions,
     data_test__get_wms_params,
