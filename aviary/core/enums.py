@@ -64,8 +64,12 @@ def _coerce_channel_name(
     Returns:
         Channel name
     """
+    if channel_name is None:
+        return None
+
     if isinstance(channel_name, str) and channel_name in _built_in_channel_names:
         return ChannelName(channel_name)
+
     return channel_name
 
 

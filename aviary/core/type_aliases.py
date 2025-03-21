@@ -1,4 +1,7 @@
-from typing import TypeAlias
+from typing import (
+    TypeAlias,
+    overload,
+)
 
 import numpy as np
 import numpy.typing as npt
@@ -21,9 +24,23 @@ GroundSamplingDistance: TypeAlias = float
 TileSize: TypeAlias = int
 
 
+@overload
 def _coerce_channel_key(
     channel_key: ChannelName | str | ChannelKey,
 ) -> ChannelKey:
+    ...
+
+
+@overload
+def _coerce_channel_key(
+    channel_key: None,
+) -> None:
+    ...
+
+
+def _coerce_channel_key(
+    channel_key: ChannelName | str | ChannelKey | None,
+) -> ChannelKey | None:
     """Coerces `channel_key` to `ChannelKey`.
 
     Parameters:
@@ -32,6 +49,9 @@ def _coerce_channel_key(
     Returns:
         Channel name and time step combination
     """
+    if channel_key is None:
+        return None
+
     if _is_channel_key(channel_key):
         channel_name, time_step = channel_key
     else:

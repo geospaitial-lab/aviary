@@ -19,7 +19,6 @@ from aviary._functional.utils.coordinates_filter import duplicates_filter
 from aviary.core.channel import (
     Channel,
     RasterChannel,
-    _coerce_channel_name,
 )
 from aviary.core.exceptions import AviaryUserError
 from aviary.core.grid import Grid
@@ -39,7 +38,6 @@ if TYPE_CHECKING:
         ChannelNameKeySet,
         Coordinates,
         TileSize,
-        TimeStep,
     )
 
 
@@ -290,22 +288,28 @@ class Tiles(Iterable[Channel]):
     def from_composite_raster(
         cls,
         data: npt.NDArray,
-        channel_names: list[ChannelName | str | None],
+        channel_keys:
+            ChannelName | str |
+            ChannelKey |
+            list[ChannelName | str | ChannelKey | None] |
+            None,
         coordinates: Coordinates,
         tile_size: TileSize,
         buffer_size: BufferSize = 0,
-        time_step: TimeStep | None = None,
         copy: bool = False,
     ) -> Tiles:
         """Creates tiles from composite raster data.
 
+        Notes:
+            - Accessing a channel by its name assumes the time step is None
+
         Parameters:
             data: Data
-            channel_names: Channel names (if None, the channel is ignored)
+            channel_keys: Channel name, channel name and time step combination, channel names,
+                or channel name and time step combinations (if None, the channel is ignored)
             coordinates: Coordinates (x_min, y_min) of the tile in meters
             tile_size: Tile size in meters
             buffer_size: Buffer size in meters
-            time_step: Time step
             copy: If True, the channels are copied during initialization
 
         Returns:
@@ -313,7 +317,7 @@ class Tiles(Iterable[Channel]):
 
         Raises:
             AviaryUserError: Invalid `data` (the data is not in shape (n, n, c))
-            AviaryUserError: Invalid `channel_names` (the number of channel names is not equal to
+            AviaryUserError: Invalid `channel_keys` (the number of channel keys is not equal to
                 the number of channels)
         """
         if data.ndim == 2:  # noqa: PLR2004
@@ -333,30 +337,35 @@ class Tiles(Iterable[Channel]):
             )
             raise AviaryUserError(message)
 
-        if len(channel_names) != data.shape[-1]:
+        if not isinstance(channel_keys, list):
+            channel_keys = [channel_keys]
+
+        channel_keys = [
+            _coerce_channel_key(channel_key=channel_key)
+            for channel_key in channel_keys
+        ]
+
+        if len(channel_keys) != data.shape[-1]:
             message = (
-                'Invalid channel_names! '
-                'The number of channel names must be equal to the number of channels.'
+                'Invalid channel_keys! '
+                'The number of channel key must be equal to the number of channels.'
             )
             raise AviaryUserError(message)
 
-        channel_names = [
-            _coerce_channel_name(channel_name=channel_name)
-            for channel_name in channel_names
-        ]
         channels_dict = {}
         buffer_size = buffer_size / tile_size
 
-        for i, channel_name in enumerate(channel_names):
-            if channel_name is None:
+        for i, channel_key in enumerate(channel_keys):
+            if channel_key is None:
                 continue
 
-            if channel_name in channels_dict:
+            if channel_key in channels_dict:
                 continue
 
-            channels_dict[channel_name] = RasterChannel(
+            name, time_step = channel_key
+            channels_dict[channel_key] = RasterChannel(
                 data=data[..., i],
-                name=channel_name,
+                name=name,
                 buffer_size=buffer_size,
                 time_step=time_step,
                 copy=False,
