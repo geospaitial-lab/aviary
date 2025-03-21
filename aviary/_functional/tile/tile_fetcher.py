@@ -30,11 +30,11 @@ from aviary.core.tiles import Tile
 if TYPE_CHECKING:
     from aviary.core.type_aliases import (
         BufferSize,
+        ChannelKey,
         Coordinates,
         EPSGCode,
         GroundSamplingDistance,
         TileSize,
-        TimeStep,
     )
     from aviary.tile.tile_fetcher import TileFetcher
 
@@ -86,12 +86,15 @@ def composite_fetcher(
 def vrt_fetcher(
     coordinates: Coordinates,
     path: Path,
-    channel_names: list[ChannelName | str | None],
+    channel_keys:
+        ChannelName | str |
+        ChannelKey |
+        list[ChannelName | str | ChannelKey | None] |
+        None,
     tile_size: TileSize,
     ground_sampling_distance: GroundSamplingDistance,
     interpolation_mode: InterpolationMode = InterpolationMode.BILINEAR,
     buffer_size: BufferSize = 0,
-    time_step: TimeStep | None = None,
     fill_value: int = 0,
 ) -> Tile:
     """Fetches a tile from the virtual raster.
@@ -99,12 +102,12 @@ def vrt_fetcher(
     Parameters:
         coordinates: Coordinates (x_min, y_min) of the tile in meters
         path: Path to the virtual raster (.vrt file)
-        channel_names: Channel names (if None, the channel is ignored)
+        channel_keys: Channel name, channel name and time step combination, channel names,
+            or channel name and time step combinations (if None, the channel is ignored)
         tile_size: Tile size in meters
         ground_sampling_distance: Ground sampling distance in meters
         interpolation_mode: Interpolation mode (`BILINEAR` or `NEAREST`)
         buffer_size: Buffer size in meters
-        time_step: Time step
         fill_value: Fill value of no-data pixels
 
     Returns:
@@ -150,11 +153,10 @@ def vrt_fetcher(
     )
     return Tile.from_composite_raster(
         data=data,
-        channel_names=channel_names,
+        channel_keys=channel_keys,
         coordinates=coordinates,
         tile_size=tile_size,
         buffer_size=buffer_size,
-        time_step=time_step,
         copy=False,
     )
 
@@ -166,12 +168,15 @@ def wms_fetcher(
     layer: str,
     epsg_code: EPSGCode,
     response_format: str,
-    channel_names: list[ChannelName | str | None],
+    channel_keys:
+        ChannelName | str |
+        ChannelKey |
+        list[ChannelName | str | ChannelKey | None] |
+        None,
     tile_size: TileSize,
     ground_sampling_distance: GroundSamplingDistance,
     style: str | None = None,
     buffer_size: BufferSize = 0,
-    time_step: TimeStep | None = None,
     fill_value: str = '0x000000',
 ) -> Tile:
     """Fetches a tile from the web map service.
@@ -183,12 +188,12 @@ def wms_fetcher(
         layer: Layer
         epsg_code: EPSG code
         response_format: Format of the response (MIME type, e.g., 'image/png')
-        channel_names: Channel names (if None, the channel is ignored)
+        channel_keys: Channel name, channel name and time step combination, channel names,
+            or channel name and time step combinations (if None, the channel is ignored)
         tile_size: Tile size in meters
         ground_sampling_distance: Ground sampling distance in meters
         style: Style
         buffer_size: Buffer size in meters
-        time_step: Time step
         fill_value: Fill value of no-data pixels
 
     Returns:
@@ -233,11 +238,10 @@ def wms_fetcher(
     )
     return Tile.from_composite_raster(
         data=data,
-        channel_names=channel_names,
+        channel_keys=channel_keys,
         coordinates=coordinates,
         tile_size=tile_size,
         buffer_size=buffer_size,
-        time_step=time_step,
         copy=False,
     )
 

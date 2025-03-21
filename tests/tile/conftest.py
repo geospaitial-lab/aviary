@@ -33,7 +33,7 @@ def composite_fetcher() -> CompositeFetcher:
 @pytest.fixture(scope='session')
 def vrt_fetcher() -> VRTFetcher:
     path = Path('test/test.vrt')
-    channel_names = [
+    channel_keys = [
         ChannelName.R,
         ChannelName.G,
         ChannelName.B,
@@ -44,15 +44,13 @@ def vrt_fetcher() -> VRTFetcher:
     ground_sampling_distance = .2
     interpolation_mode = InterpolationMode.BILINEAR
     buffer_size = 0
-    time_step = None
     return VRTFetcher(
         path=path,
-        channel_names=channel_names,
+        channel_keys=channel_keys,
         tile_size=tile_size,
         ground_sampling_distance=ground_sampling_distance,
         interpolation_mode=interpolation_mode,
         buffer_size=buffer_size,
-        time_step=time_step,
     )
 
 
@@ -63,7 +61,7 @@ def wms_fetcher() -> WMSFetcher:
     layer = 'test_layer'
     epsg_code = 25832
     response_format = 'image/png'
-    channel_names = [
+    channel_keys = [
         ChannelName.R,
         ChannelName.G,
         ChannelName.B,
@@ -72,17 +70,15 @@ def wms_fetcher() -> WMSFetcher:
     ground_sampling_distance = .2
     style = None
     buffer_size = 0
-    time_step = None
     return WMSFetcher(
         url=url,
         version=version,
         layer=layer,
         epsg_code=epsg_code,
         response_format=response_format,
-        channel_names=channel_names,
+        channel_keys=channel_keys,
         tile_size=tile_size,
         ground_sampling_distance=ground_sampling_distance,
         style=style,
         buffer_size=buffer_size,
-        time_step=time_step,
     )
