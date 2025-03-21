@@ -1,10 +1,7 @@
 from __future__ import annotations
 
 import warnings
-from concurrent.futures import (
-    ThreadPoolExecutor,
-    as_completed,
-)
+from concurrent.futures import ThreadPoolExecutor
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -65,17 +62,7 @@ def composite_fetcher(
         )
 
     with ThreadPoolExecutor(max_workers=max_num_threads) as executor:
-        tasks = [
-            executor.submit(
-                tile_fetcher,
-                coordinates=coordinates,
-            )
-            for tile_fetcher in tile_fetchers
-        ]
-        tiles = [
-            futures.result()
-            for futures in as_completed(tasks)
-        ]
+        tiles = list(executor.map(lambda tile_fetcher: tile_fetcher(coordinates=coordinates), tile_fetchers))
 
     return Tile.from_tiles(
         tiles=tiles,

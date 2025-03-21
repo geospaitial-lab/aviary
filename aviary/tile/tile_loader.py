@@ -2,10 +2,7 @@ from collections.abc import (
     Iterable,
     Iterator,
 )
-from concurrent.futures import (
-    ThreadPoolExecutor,
-    as_completed,
-)
+from concurrent.futures import ThreadPoolExecutor
 from queue import Queue
 from threading import Thread
 
@@ -99,17 +96,7 @@ class TileLoader(Iterable[Tiles]):
             ]
         else:
             with ThreadPoolExecutor(max_workers=self._max_num_threads) as executor:
-                tasks = [
-                    executor.submit(
-                        self._tile_set.__getitem__,
-                        index=index,
-                    )
-                    for index in indices
-                ]
-                tiles = [
-                    futures.result()
-                    for futures in as_completed(tasks)
-                ]
+                tiles = list(executor.map(self._tile_set.__getitem__, indices))
 
         return Tiles.from_tiles(
             tiles=tiles,
