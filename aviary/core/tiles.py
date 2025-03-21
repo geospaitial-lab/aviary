@@ -69,6 +69,7 @@ class Tiles(Iterable[Channel]):
             copy: If True, the channels are copied during initialization
         """
         self._channels = channels
+        self._channels_dict = None
         self._coordinates = coordinates
         self._tile_size = tile_size
         self._copy = copy
@@ -88,6 +89,7 @@ class Tiles(Iterable[Channel]):
         self._coerce_coordinates()
         self._validate_coordinates()
         self._validate_tile_size()
+        self._invalidate_cache()
 
     def _validate_channels(self) -> None:
         """Validates `channels`.
@@ -200,6 +202,10 @@ class Tiles(Iterable[Channel]):
                 'The tile size must be positive.'
             )
             raise AviaryUserError(message)
+
+    def _invalidate_cache(self) -> None:
+        """Invalidates the cache."""
+        self._channels_dict = None
 
     @property
     def channels(self) -> list[Channel]:
@@ -597,8 +603,11 @@ class Tiles(Iterable[Channel]):
             Channel
         """
         channel_key = _coerce_channel_key(channel_key=channel_key)
-        channels_dict = {channel.key: channel for channel in self}
-        return channels_dict[channel_key]
+
+        if self._channels_dict is None:
+            self._channels_dict = {channel.key: channel for channel in self}
+
+        return self._channels_dict[channel_key]
 
     def __iter__(self) -> Iterator[Channel]:
         """Iterates over the channels.
