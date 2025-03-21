@@ -36,7 +36,7 @@ class TilePipeline:
         tiles_processor: TilesProcessor,
         tile_loader_batch_size: int = 1,
         tile_loader_max_num_threads: int | None = None,
-        tile_loader_num_prefetched_tiles: int = 1,
+        tile_loader_num_prefetched_tiles: int = 0,
         plugins_dir_path: Path | None = None,
     ) -> None:
         """
@@ -115,7 +115,7 @@ class TileLoaderConfig(pydantic.BaseModel):
         ``` yaml title="config.yaml"
         batch_size: 1
         max_num_threads: null
-        num_prefetched_tiles: 1
+        num_prefetched_tiles: 0
         ```
 
     Attributes:
@@ -124,11 +124,11 @@ class TileLoaderConfig(pydantic.BaseModel):
         max_num_threads: Maximum number of threads -
             defaults to None
         num_prefetched_tiles: Number of prefetched tiles -
-            defaults to 1
+            defaults to 0
     """
     batch_size: int = 1
     max_num_threads: int | None = None
-    num_prefetched_tiles: int = 1
+    num_prefetched_tiles: int = 0
 
 
 class TilePipelineConfig(pydantic.BaseModel):
@@ -148,7 +148,7 @@ class TilePipelineConfig(pydantic.BaseModel):
         tile_loader:
           batch_size: 1
           max_num_threads: null
-          num_prefetched_tiles: 1
+          num_prefetched_tiles: 0
         tiles_processor:
           ...
         plugins_dir_path: null

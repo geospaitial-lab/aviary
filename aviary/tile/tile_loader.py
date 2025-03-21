@@ -26,7 +26,7 @@ class TileLoader(Iterable[Tiles]):
             tile_set=tile_set,
             batch_size=1,
             max_num_threads=None,
-            num_prefetched_tiles=1,
+            num_prefetched_tiles=0,
         )
 
         for tiles in tile_loader:
@@ -39,7 +39,7 @@ class TileLoader(Iterable[Tiles]):
         tile_set: TileSet,
         batch_size: int = 1,
         max_num_threads: int | None = None,
-        num_prefetched_tiles: int = 1,
+        num_prefetched_tiles: int = 0,
     ) -> None:
         """
         Parameters:
@@ -54,49 +54,67 @@ class TileLoader(Iterable[Tiles]):
         self._num_prefetched_tiles = num_prefetched_tiles
 
         self._index = 0
-        self._prefetch_queue = Queue(self._num_prefetched_tiles)
-        self._prefetch_thread = Thread(
-            target=self._prefetch_tiles,
-            daemon=True,
-        )
-        self._prefetch_thread.start()
+
+        if self._num_prefetched_tiles > 0:
+            self._prefetch_queue = Queue(self._num_prefetched_tiles)
+            self._prefetch_thread = Thread(
+                target=self._prefetch_tiles,
+                daemon=True,
+            )
+            self._prefetch_thread.start()
+        else:
+            self._prefetch_queue = None
 
     def _prefetch_tiles(self) -> None:
-        """Prefetches tiles and puts them into the queue."""
+        """Prefetches the tiles and puts them into the queue."""
         index = 0
 
         while index < len(self._tile_set):
             if self._prefetch_queue.full():
                 continue
 
-            end_index = min(index + self._batch_size, len(self._tile_set))
-            indices = range(index, end_index)
-
-            if self._max_num_threads == 1:
-                tiles = [
-                    self._tile_set[index]
-                    for index in indices
-                ]
-            else:
-                with ThreadPoolExecutor(max_workers=self._max_num_threads) as executor:
-                    tasks = [
-                        executor.submit(
-                            self._tile_set.__getitem__,
-                            index=index,
-                        )
-                        for index in indices
-                    ]
-                    tiles = [
-                        futures.result()
-                        for futures in as_completed(tasks)
-                    ]
-
-            tiles = Tiles.from_tiles(
-                tiles=tiles,
-                copy=False,
-            )
+            tiles = self._fetch_tiles(index=index)
             self._prefetch_queue.put(tiles)
             index += self._batch_size
+
+    def _fetch_tiles(
+        self,
+        index: int,
+    ) -> Tiles:
+        """Fetches the tiles.
+
+        Parameters:
+            index: Index
+
+        Returns:
+            Tiles
+        """
+        end_index = min(index + self._batch_size, len(self._tile_set))
+        indices = range(index, end_index)
+
+        if self._max_num_threads == 1:
+            tiles = [
+                self._tile_set[index]
+                for index in indices
+            ]
+        else:
+            with ThreadPoolExecutor(max_workers=self._max_num_threads) as executor:
+                tasks = [
+                    executor.submit(
+                        self._tile_set.__getitem__,
+                        index=index,
+                    )
+                    for index in indices
+                ]
+                tiles = [
+                    futures.result()
+                    for futures in as_completed(tasks)
+                ]
+
+        return Tiles.from_tiles(
+            tiles=tiles,
+            copy=False,
+        )
 
     def __len__(self) -> int:
         """Computes the number of tiles.
@@ -124,6 +142,10 @@ class TileLoader(Iterable[Tiles]):
         if self._index >= len(self._tile_set):
             raise StopIteration
 
-        tiles = self._prefetch_queue.get()
+        if self._prefetch_queue is not None:  # noqa: SIM108
+            tiles = self._prefetch_queue.get()
+        else:
+            tiles = self._fetch_tiles(index=self._index)
+
         self._index += self._batch_size
         return tiles
