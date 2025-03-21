@@ -21,8 +21,8 @@ from tests.core.data.data_test_type_aliases import (
 
 @pytest.mark.parametrize(('channel_key', 'expected'), data_test__coerce_channel_key)
 def test__coerce_channel_key(
-    channel_key: ChannelName | str | ChannelKey,
-    expected: ChannelKey,
+    channel_key: ChannelName | str | ChannelKey | None,
+    expected: ChannelKey | None,
 ) -> None:
     channel_key = _coerce_channel_key(channel_key=channel_key)
 
@@ -35,8 +35,9 @@ def test__coerce_channel_keys(
         ChannelName | str |
         ChannelKey |
         ChannelNameSet | ChannelKeySet | ChannelNameKeySet |
+        bool |
         None,
-    expected: ChannelKeySet,
+    expected: ChannelKeySet | bool,
 ) -> None:
     channel_keys = _coerce_channel_keys(channel_keys=channel_keys)
 

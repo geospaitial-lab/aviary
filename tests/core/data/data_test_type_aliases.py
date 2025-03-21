@@ -1,12 +1,16 @@
 from aviary.core.enums import ChannelName
 
 data_test__coerce_channel_key = [
+    (ChannelName.R, (ChannelName.R, None)),
+    ('r', (ChannelName.R, None)),
+    ('custom', ('custom', None)),
     ((ChannelName.R, None), (ChannelName.R, None)),
     ((ChannelName.R, 0), (ChannelName.R, 0)),
     (('r', None), (ChannelName.R, None)),
     (('r', 0), (ChannelName.R, 0)),
     (('custom', None), ('custom', None)),
     (('custom', 0), ('custom', 0)),
+    (None, None),
 ]
 
 data_test__coerce_channel_keys = [
