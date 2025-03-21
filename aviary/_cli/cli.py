@@ -1,7 +1,14 @@
 from pathlib import Path
 
-import typer
-import yaml
+try:
+    import typer
+    import yaml
+except ImportError as error:
+    message = (
+        'Missing dependency! '
+        'To use the CLI, you need to install pyyaml and typer.'
+    )
+    raise ImportError(message) from error
 
 from aviary import __version__
 
