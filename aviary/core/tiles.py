@@ -858,5 +858,48 @@ class Tiles(Iterable[Channel]):
             copy=True,
         )
 
+    def to_composite_raster(
+        self,
+        channel_keys:
+            ChannelName | str |
+            ChannelKey |
+            list[ChannelName | str | ChannelKey],
+    ) -> npt.NDArray:
+        """Converts the tiles to composite raster data.
+
+        Notes:
+            - Accessing a channel by its name assumes the time step is None
+
+        Parameters:
+            channel_keys: Channel name, channel name and time step combination, channel names,
+                or channel name and time step combinations
+
+        Returns:
+            Composite raster data
+
+        Raises:
+            AviaryUserError: Invalid `channel_keys` (the channel keys do not refer to raster channels)
+        """
+        if not isinstance(channel_keys, list):
+            channel_keys = [channel_keys]
+
+        channel_keys = [
+            _coerce_channel_key(channel_key=channel_key)
+            for channel_key in channel_keys
+        ]
+
+        channels = [self[channel_key] for channel_key in channel_keys]
+
+        for channel in channels:
+            if not isinstance(channel, RasterChannel):
+                message = (
+                    'Invalid channel_keys! '
+                    'The channel keys must refer to raster channels.'
+                )
+                raise AviaryUserError(message)
+
+        data = [channel.data for channel in channels]
+        return np.stack(data, axis=-1)
+
 
 Tile: TypeAlias = Tiles
