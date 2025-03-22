@@ -214,15 +214,11 @@ class Tiles(Iterable[Channel]):
         return self._channels
 
     @property
-    def coordinates(self) -> Coordinates | CoordinatesSet:
+    def coordinates(self) -> CoordinatesSet:
         """
         Returns:
-            Coordinates (x_min, y_min) of the tile or of each tile in meters
+            Coordinates (x_min, y_min) of each tile in meters
         """
-        if self.batch_size == 1:
-            x_min, y_min = self._coordinates[0]
-            return int(x_min), int(y_min)
-
         return self._coordinates.copy()
 
     @property
