@@ -20,11 +20,15 @@ or:
 uv pip install -r dev/requirements.txt
 ```
 
+---
+
 Run the tests:
 
 ```
 pytest
 ```
+
+---
 
 Run the tests with coverage:
 
