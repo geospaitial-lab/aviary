@@ -6,8 +6,9 @@ COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
 COPY . .
 
 RUN uv venv venv && \
-    . venv/bin/activate && \
+    source venv/bin/activate && \
     uv pip install --upgrade pip setuptools wheel && \
+    uv pip install huggingface_hub onnxruntime && \
     uv build --wheel --no-cache .
 
 FROM python:3.12-slim as runner
@@ -32,7 +33,7 @@ COPY --from=builder /aviary/venv /aviary/venv
 COPY --from=builder /aviary/dist /aviary/dist
 
 RUN uv venv venv && \
-    . venv/bin/activate && \
+    source venv/bin/activate && \
     uv pip install --no-cache dist/* && \
     rm -rf dist && \
     adduser --disabled-password --gecos "" aviary_user
