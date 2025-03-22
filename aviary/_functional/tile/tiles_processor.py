@@ -4,6 +4,9 @@ from typing import TYPE_CHECKING
 
 from aviary.core.tiles import Tiles
 
+# noinspection PyProtectedMember
+from aviary.core.type_aliases import _coerce_channel_key
+
 if TYPE_CHECKING:
     from aviary.core.enums import ChannelName
     from aviary.core.type_aliases import (
@@ -30,6 +33,21 @@ def copy_processor(
     Returns:
         Tiles
     """
+    new_channel_key = _coerce_channel_key(channel_key=new_channel_key)
+
+    if new_channel_key is None:
+        return tiles
+
+    channel = tiles[channel_key]
+    new_channel = channel.copy()
+
+    new_channel_name, new_time_step = new_channel_key
+    new_channel.name = new_channel_name
+    new_channel.time_step = new_time_step
+    return tiles.append(
+        channels=new_channel,
+        inplace=True,
+    )
 
 
 def normalize_processor(
