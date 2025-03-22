@@ -75,8 +75,8 @@ theme:
   logo_dark_mode: assets/aviary_logo_white.svg
   favicon: assets/aviary_logo_white.svg
   font:
-    text: Space Grotesk
-    code: Space Mono
+    text: Noto Sans
+    code: Noto Sans Mono
   icon:
     repo: simple/github
   features:
@@ -168,10 +168,8 @@ extra:
       - manage
   generator: false
   social:
-    - icon: simple/github
-      link: https://www.github.com/geospaitial-lab
-    - icon: simple/huggingface
-      link: https://www.huggingface.co/geospaitial-lab
+    - icon: simple/matrix
+      link: https://matrix.to/#/#geospaitial-lab-aviary:matrix.org
 
 extra_css:
   - stylesheets/color.css
