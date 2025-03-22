@@ -40,8 +40,6 @@ dependencies = [
     "requests>=2.32.0",
     "rich>=13.9.0",
     "shapely>=2.0.4",
-    "simplification>=0.7.10",
-    "topojson>=1.9",
 ]
 
 [project.optional-dependencies]
