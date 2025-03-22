@@ -429,7 +429,7 @@ data_test_grid_eq = [
 ]
 
 data_test_grid_from_bounding_box = [
-    # test case 1: quantize is False
+    # test case 1: snap is False
     (
         get_bounding_box(),
         128,
@@ -442,7 +442,7 @@ data_test_grid_from_bounding_box = [
             tile_size=128,
         ),
     ),
-    # test case 2: quantize is True
+    # test case 2: snap is True
     (
         get_bounding_box(),
         128,
@@ -471,7 +471,7 @@ data_test_grid_from_bounding_box_exceptions = [
 ]
 
 data_test_grid_from_gdf = [
-    # test case 1: gdf contains a box and quantize is False
+    # test case 1: gdf contains a box and snap is False
     (
         gpd.GeoDataFrame(
             geometry=[box(-128, -64, 128, 192)],
@@ -486,7 +486,7 @@ data_test_grid_from_gdf = [
             tile_size=128,
         ),
     ),
-    # test case 2: gdf contains a box and quantize is True
+    # test case 2: gdf contains a box and snap is True
     (
         gpd.GeoDataFrame(
             geometry=[box(-128, -64, 128, 192)],
@@ -501,7 +501,7 @@ data_test_grid_from_gdf = [
             tile_size=128,
         ),
     ),
-    # test case 3: gdf contains boxes and quantize is False
+    # test case 3: gdf contains boxes and snap is False
     (
         gpd.GeoDataFrame(
             geometry=[
@@ -519,7 +519,7 @@ data_test_grid_from_gdf = [
             tile_size=128,
         ),
     ),
-    # test case 4: gdf contains boxes and quantize is True
+    # test case 4: gdf contains boxes and snap is True
     (
         gpd.GeoDataFrame(
             geometry=[
@@ -537,7 +537,7 @@ data_test_grid_from_gdf = [
             tile_size=128,
         ),
     ),
-    # test case 5: gdf contains a polygon and quantize is False
+    # test case 5: gdf contains a polygon and snap is False
     (
         gpd.GeoDataFrame(
             geometry=[Polygon([[-128, 64], [0, -64], [128, 64], [0, 192]])],
@@ -552,7 +552,7 @@ data_test_grid_from_gdf = [
             tile_size=128,
         ),
     ),
-    # test case 6: gdf contains a polygon and quantize is True
+    # test case 6: gdf contains a polygon and snap is True
     (
         gpd.GeoDataFrame(
             geometry=[Polygon([[-128, 64], [0, -64], [128, 64], [0, 192]])],
@@ -567,7 +567,7 @@ data_test_grid_from_gdf = [
             tile_size=128,
         ),
     ),
-    # test case 7: gdf contains a multi polygon and quantize is False
+    # test case 7: gdf contains a multi polygon and snap is False
     (
         gpd.GeoDataFrame(
             geometry=[
@@ -587,7 +587,7 @@ data_test_grid_from_gdf = [
             tile_size=128,
         ),
     ),
-    # test case 8: gdf contains a multi polygon and quantize is True
+    # test case 8: gdf contains a multi polygon and snap is True
     (
         gpd.GeoDataFrame(
             geometry=[
@@ -876,32 +876,32 @@ data_test_grid_init_exceptions = [
         128,
         re.escape('Invalid coordinates! The coordinates must be in shape (n, 2) and data type int32.'),
     ),
-    # test case 5: coordinates is not quantized regularly
+    # test case 5: coordinates is not evenly distributed
     (
         np.array(
             [[-128, -128], [0, -128], [-128, 0], [0, 0], [64, -128]],
             dtype=np.int32,
         ),
         128,
-        re.escape('Invalid coordinates! The coordinates must be quantized regularly.'),
+        re.escape('Invalid coordinates! The coordinates must be evenly distributed.'),
     ),
-    # test case 6: coordinates is not quantized regularly
+    # test case 6: coordinates is not evenly distributed
     (
         np.array(
             [[-128, -128], [0, -128], [-128, 0], [0, 0], [128, -64]],
             dtype=np.int32,
         ),
         128,
-        re.escape('Invalid coordinates! The coordinates must be quantized regularly.'),
+        re.escape('Invalid coordinates! The coordinates must be evenly distributed.'),
     ),
-    # test case 7: coordinates is not quantized regularly
+    # test case 7: coordinates is not evenly distributed
     (
         np.array(
             [[-128, -128], [0, -128], [-128, 0], [0, 0], [64, -64]],
             dtype=np.int32,
         ),
         128,
-        re.escape('Invalid coordinates! The coordinates must be quantized regularly.'),
+        re.escape('Invalid coordinates! The coordinates must be evenly distributed.'),
     ),
     # test case 8: tile_size is negative
     (
@@ -914,6 +914,45 @@ data_test_grid_init_exceptions = [
         get_grid_coordinates(),
         0,
         re.escape('Invalid tile_size! The tile size must be positive.'),
+    ),
+]
+
+data_test_grid_or = [
+    # test case 1: other contains no coordinates
+    (
+        Grid(
+            coordinates=None,
+            tile_size=128,
+        ),
+        get_grid(),
+    ),
+    # test case 2: other contains coordinates
+    (
+        Grid(
+            coordinates=np.array(
+                [[-128, 0], [0, 0], [128, -128], [128, 0]],
+                dtype=np.int32,
+            ),
+            tile_size=128,
+        ),
+        Grid(
+            coordinates=np.array(
+                [[-128, -128], [0, -128], [-128, 0], [0, 0], [128, -128], [128, 0]],
+                dtype=np.int32,
+            ),
+            tile_size=128,
+        ),
+    ),
+]
+
+data_test_grid_or_exceptions = [
+    # test case 1: tile_size is not equal
+    (
+        Grid(
+            coordinates=None,
+            tile_size=64,
+        ),
+        re.escape('Invalid other! The tile sizes of the grids must be equal.'),
     ),
 ]
 

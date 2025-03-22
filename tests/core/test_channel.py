@@ -45,7 +45,7 @@ from tests.core.data.data_test_channel import (
     data_test_vector_channel_eq,
     data_test_vector_channel_from_channels,
     data_test_vector_channel_from_channels_exceptions,
-    data_test_vector_channel_from_unscaled_data_exceptions,
+    data_test_vector_channel_from_unnormalized_data_exceptions,
     data_test_vector_channel_getitem,
     data_test_vector_channel_getitem_slice,
     data_test_vector_channel_init,
@@ -192,15 +192,7 @@ def test_raster_channel_setters(
 
     with pytest.raises(AttributeError):
         # noinspection PyPropertyAccess
-        raster_channel.name = None
-
-    with pytest.raises(AttributeError):
-        # noinspection PyPropertyAccess
         raster_channel.buffer_size = None
-
-    with pytest.raises(AttributeError):
-        # noinspection PyPropertyAccess
-        raster_channel.time_step = None
 
 
 def test_raster_channel_serializability(
@@ -612,15 +604,7 @@ def test_vector_channel_setters(
 
     with pytest.raises(AttributeError):
         # noinspection PyPropertyAccess
-        vector_channel.name = None
-
-    with pytest.raises(AttributeError):
-        # noinspection PyPropertyAccess
         vector_channel.buffer_size = None
-
-    with pytest.raises(AttributeError):
-        # noinspection PyPropertyAccess
-        vector_channel.time_step = None
 
 
 def test_vector_channel_serializability(
@@ -688,7 +672,7 @@ def test_vector_channel_from_channels_defaults() -> None:
 
 
 @pytest.mark.skip(reason='Not implemented')
-def test_vector_channel_from_unscaled_data() -> None:
+def test_vector_channel_from_unnormalized_data() -> None:
     pass
 
 
@@ -700,9 +684,9 @@ def test_vector_channel_from_unscaled_data() -> None:
         'buffer_size',
         'message',
     ),
-    data_test_vector_channel_from_unscaled_data_exceptions,
+    data_test_vector_channel_from_unnormalized_data_exceptions,
 )
-def test_vector_channel_from_unscaled_data_exceptions(
+def test_vector_channel_from_unnormalized_data_exceptions(
     data: list[gpd.GeoDataFrame],
     coordinates: CoordinatesSet,
     tile_size: TileSize,
@@ -714,7 +698,7 @@ def test_vector_channel_from_unscaled_data_exceptions(
     copy = False
 
     with pytest.raises(AviaryUserError, match=message):
-        _ = VectorChannel.from_unscaled_data(
+        _ = VectorChannel.from_unnormalized_data(
             data=data,
             name=name,
             coordinates=coordinates,
@@ -725,8 +709,8 @@ def test_vector_channel_from_unscaled_data_exceptions(
         )
 
 
-def test_vector_channel_from_unscaled_data_defaults() -> None:
-    signature = inspect.signature(VectorChannel.from_unscaled_data)
+def test_vector_channel_from_unnormalized_data_defaults() -> None:
+    signature = inspect.signature(VectorChannel.from_unnormalized_data)
     buffer_size = signature.parameters['buffer_size'].default
     time_step = signature.parameters['time_step'].default
     copy = signature.parameters['copy'].default

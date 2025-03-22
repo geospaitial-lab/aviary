@@ -30,8 +30,22 @@ classifiers = [
     "Topic :: Scientific/Engineering :: GIS",
 ]
 dynamic = [
-    "dependencies",
     "version",
+]
+dependencies = [
+    "geopandas>=1.0.0",
+    "numpy>=2.0.0",
+    "pydantic>=2.9.0",
+    "rasterio>=1.4.0",
+    "requests>=2.32.0",
+    "rich>=13.9.0",
+    "shapely>=2.0.4",
+]
+
+[project.optional-dependencies]
+cli = [
+    "pyyaml>=6.0.1",
+    "typer>=0.12.0",
 ]
 
 [project.urls]
@@ -42,7 +56,6 @@ Documentation = "https://geospaitial-lab.github.io/aviary"
 aviary = "aviary._cli.cli:app"
 
 [tool.setuptools.dynamic]
-dependencies = {file = "requirements.txt"}
 version = {attr = "aviary.__version__"}
 
 [tool.setuptools.packages]
@@ -69,13 +82,6 @@ exclude_also = [
 ]
 
 [tool.pytest.ini_options]
-norecursedirs = [
-    "tests/_functional/data",
-    "tests/_functional/geodata",
-    "tests/data",
-    "tests/geodata",
-    "tests/pipeline",
-]
 pythonpath = ["."]
 
 [tool.ruff]
@@ -111,6 +117,9 @@ runtime-evaluated-base-classes = [
 ]
 "aviary/core/exceptions.py" = [
     "D101",
+]
+"aviary/core/type_aliases.py" = [
+    "Q001",
 ]
 "dev/scripts/*" = [
     "T201",

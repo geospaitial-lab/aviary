@@ -68,11 +68,11 @@ class Grid(Iterable[Coordinates]):
     def _validate(self) -> None:
         """Validates the grid."""
         self._validate_tile_size()  # valid tile_size is necessary for _validate_coordinates
-        self._parse_coordinates()
+        self._coerce_coordinates()
         self._validate_coordinates()
 
-    def _parse_coordinates(self) -> None:
-        """Parses `coordinates`."""
+    def _coerce_coordinates(self) -> None:
+        """Coerces `coordinates`."""
         if self._coordinates is None:
             self._coordinates = np.empty(
                 shape=(0, 2),
@@ -84,7 +84,7 @@ class Grid(Iterable[Coordinates]):
 
         Raises:
             AviaryUserError: Invalid `coordinates` (the coordinates are not in shape (n, 2) and data type int32)
-            AviaryUserError: Invalid `coordinates` (the coordinates are not quantized regularly)
+            AviaryUserError: Invalid `coordinates` (the coordinates are not evenly distributed)
         """
         if self._coordinates.ndim != 2:  # noqa: PLR2004
             message = (
@@ -119,7 +119,7 @@ class Grid(Iterable[Coordinates]):
         if any(conditions):
             message = (
                 'Invalid coordinates! '
-                'The coordinates must be quantized regularly.'
+                'The coordinates must be evenly distributed.'
             )
             raise AviaryUserError(message)
 
@@ -168,14 +168,14 @@ class Grid(Iterable[Coordinates]):
         cls,
         bounding_box: BoundingBox,
         tile_size: TileSize,
-        quantize: bool = True,
+        snap: bool = True,
     ) -> Grid:
         """Creates a grid from a bounding box.
 
         Parameters:
             bounding_box: Bounding box
             tile_size: Tile size in meters
-            quantize: If True, the bounding box is quantized to `tile_size`
+            snap: If True, the bounding box is snapped to `tile_size`
 
         Returns:
             Grid
@@ -193,7 +193,7 @@ class Grid(Iterable[Coordinates]):
         coordinates = cls._compute_coordinates(
             bounding_box=bounding_box,
             tile_size=tile_size,
-            quantize=quantize,
+            snap=snap,
         )
         return cls(
             coordinates=coordinates,
@@ -205,14 +205,14 @@ class Grid(Iterable[Coordinates]):
         cls,
         gdf: gpd.GeoDataFrame,
         tile_size: TileSize,
-        quantize: bool = True,
+        snap: bool = True,
     ) -> Grid:
         """Creates a grid from a geodataframe.
 
         Parameters:
             gdf: Geodataframe
             tile_size: Tile size in meters
-            quantize: If True, the bounding box is quantized to `tile_size`
+            snap: If True, the bounding box is snapped to `tile_size`
 
         Returns:
             Grid
@@ -247,7 +247,7 @@ class Grid(Iterable[Coordinates]):
         coordinates = cls._compute_coordinates(
             bounding_box=bounding_box,
             tile_size=tile_size,
-            quantize=quantize,
+            snap=snap,
         )
         coordinates = geospatial_filter(
             coordinates=coordinates,
@@ -264,20 +264,20 @@ class Grid(Iterable[Coordinates]):
     def _compute_coordinates(
         bounding_box: BoundingBox,
         tile_size: TileSize,
-        quantize: bool = True,
+        snap: bool = True,
     ) -> CoordinatesSet:
         """Computes the coordinates of the bottom left corner of each tile.
 
         Parameters:
             bounding_box: Bounding box
             tile_size: Tile size in meters
-            quantize: If True, the bounding box is quantized to `tile_size`
+            snap: If True, the bounding box is snapped to `tile_size`
 
         Returns:
             Coordinates (x_min, y_min) of each tile in meters
         """
-        if quantize:
-            bounding_box = bounding_box.quantize(
+        if snap:
+            bounding_box = bounding_box.snap(
                 value=tile_size,
                 inplace=False,
             )
@@ -300,23 +300,25 @@ class Grid(Iterable[Coordinates]):
         Notes:
             - The JSON string contains a list of coordinates (x_min, y_min) of each tile and the tile size
 
-        Examples:
+        Example:
             Assume the JSON string is '{"coordinates":
             [[363084, 5715326], [363212, 5715326], [363084, 5715454], [363212, 5715454]],
             "tile_size": 128}'.
 
             You can create a grid from the JSON string.
 
-            >>> grid = Grid.from_json(
-            ...     json_string=(
-            ...         '{"coordinates": '
-            ...         '[[363084, 5715326], '
-            ...         '[363212, 5715326], '
-            ...         '[363084, 5715454], '
-            ...         '[363212, 5715454]], '
-            ...         '"tile_size": 128}'
-            ...     ),
-            ... )
+            ``` python
+            grid = Grid.from_json(
+                json_string=(
+                    '{"coordinates": '
+                    '[[363084, 5715326], '
+                    '[363212, 5715326], '
+                    '[363084, 5715454], '
+                    '[363212, 5715454]], '
+                    '"tile_size": 128}'
+                ),
+            )
+            ```
 
         Parameters:
             json_string: JSON string
@@ -403,13 +405,13 @@ class Grid(Iterable[Coordinates]):
             grid = cls.from_bounding_box(
                 bounding_box=config.bounding_box,
                 tile_size=config.tile_size,
-                quantize=config.quantize,
+                snap=config.snap,
             )
         elif config.gdf is not None:
             grid = cls.from_gdf(
                 gdf=config.gdf,
                 tile_size=config.tile_size,
-                quantize=config.quantize,
+                snap=config.snap,
             )
         elif config.json_string is not None:
             grid = cls.from_json(
@@ -419,7 +421,7 @@ class Grid(Iterable[Coordinates]):
             message = (
                 'Invalid config! '
                 'The configuration must have exactly one of the following field combinations: '
-                'bounding_box_coordinates, tile_size | gdf_path, tile_size | json_path'
+                'bounding_box_coordinates, tile_size | gpkg_path, tile_size | json_path'
             )
             raise AviaryUserError(message)
 
@@ -427,7 +429,7 @@ class Grid(Iterable[Coordinates]):
             ignore_grid = cls.from_bounding_box(
                 bounding_box=config.ignore_bounding_box,
                 tile_size=config.tile_size,
-                quantize=config.quantize,
+                snap=config.snap,
             )
             grid -= ignore_grid
 
@@ -435,7 +437,7 @@ class Grid(Iterable[Coordinates]):
             ignore_grid = cls.from_gdf(
                 gdf=config.ignore_gdf,
                 tile_size=config.tile_size,
-                quantize=config.quantize,
+                snap=config.snap,
             )
             grid -= ignore_grid
 
@@ -563,7 +565,7 @@ class Grid(Iterable[Coordinates]):
             index: Index or slice of the coordinates
 
         Returns:
-            Coordinates in meters or grid
+            Coordinates (x_min, y_min) of the tile in meters or grid
         """
         if isinstance(index, slice):
             coordinates = self._coordinates[index]
@@ -579,7 +581,7 @@ class Grid(Iterable[Coordinates]):
         """Iterates over the coordinates.
 
         Yields:
-            Coordinates in meters
+            Coordinates (x_min, y_min) of the tile in meters
         """
         for x_min, y_min in self._coordinates:
             yield int(x_min), int(y_min)
@@ -589,10 +591,6 @@ class Grid(Iterable[Coordinates]):
         other: Grid,
     ) -> Grid:
         """Adds the grids.
-
-        Notes:
-            - This method is equivalent to applying the set filter with the `UNION` set filter mode
-              to the coordinates
 
         Parameters:
             other: Other grid
@@ -626,10 +624,6 @@ class Grid(Iterable[Coordinates]):
     ) -> Grid:
         """Subtracts the grids.
 
-        Notes:
-            - This method is equivalent to applying the set filter with the `DIFFERENCE` set filter mode
-              to the coordinates
-
         Parameters:
             other: Other grid
 
@@ -662,10 +656,6 @@ class Grid(Iterable[Coordinates]):
     ) -> Grid:
         """Intersects the grids.
 
-        Notes:
-            - This method is equivalent to applying the set filter with the `INTERSECTION` set filter mode
-              to the coordinates
-
         Parameters:
             other: Other grid
 
@@ -686,6 +676,38 @@ class Grid(Iterable[Coordinates]):
             coordinates=self._coordinates,
             other=other.coordinates,
             mode=SetFilterMode.INTERSECTION,
+        )
+        return Grid(
+            coordinates=coordinates,
+            tile_size=self._tile_size,
+        )
+
+    def __or__(
+        self,
+        other: Grid,
+    ) -> Grid:
+        """Unions the grids.
+
+        Parameters:
+            other: Other grid
+
+        Returns:
+            Grid
+
+        Raises:
+            AviaryUserError: Invalid `other` (the tile sizes of the grids are not equal)
+        """
+        if self._tile_size != other.tile_size:
+            message = (
+                'Invalid other! '
+                'The tile sizes of the grids must be equal.'
+            )
+            raise AviaryUserError(message)
+
+        coordinates = set_filter(
+            coordinates=self._coordinates,
+            other=other.coordinates,
+            mode=SetFilterMode.UNION,
         )
         return Grid(
             coordinates=coordinates,
@@ -902,30 +924,57 @@ class GridConfig(pydantic.BaseModel):
 
     The configuration must have exactly one of the following field combinations:
         - `bounding_box_coordinates` and `tile_size`
-        - `gdf_path` and `tile_size`
+        - `gpkg_path` and `tile_size`
         - `json_path`
 
     Create the configuration from a config file:
         - Use null instead of None
+        - Use false or true instead of False or True
+
+    Example:
+        You can create a configuration from a config file.
+
+        ``` yaml title="config.yaml"
+        bounding_box_coordinates:
+          - 363084
+          - 5715326
+          - 363340
+          - 5715582
+        gpkg_path: null
+        json_path: null
+        ignore_bounding_box_coordinates: null
+        ignore_gpkg_path: null
+        ignore_json_path: null
+        tile_size: 128
+        snap: true
+        ```
 
     Attributes:
-        bounding_box_coordinates: Bounding box coordinates (x_min, y_min, x_max, y_max) in meters
-        gdf_path: Path to the geodataframe (.gpkg file)
-        json_path: Path to the JSON file (.json file)
-        ignore_bounding_box_coordinates: Bounding box coordinates to ignore (x_min, y_min, x_max, y_max) in meters
-        ignore_gdf_path: Path to the geodataframe (.gpkg file) to ignore
-        ignore_json_path: Path to the JSON file (.json file) to ignore
-        tile_size: Tile size in meters
-        quantize: If True, the bounding box is quantized to `tile_size`
+        bounding_box_coordinates: Bounding box coordinates (x_min, y_min, x_max, y_max) in meters -
+            defaults to None
+        gpkg_path: Path to the geopackage (.gpkg file) -
+            defaults to None
+        json_path: Path to the JSON file (.json file) -
+            defaults to None
+        ignore_bounding_box_coordinates: Bounding box coordinates to ignore (x_min, y_min, x_max, y_max) in meters -
+            defaults to None
+        ignore_gpkg_path: Path to the geopackage (.gpkg file) to ignore -
+            defaults to None
+        ignore_json_path: Path to the JSON file (.json file) to ignore -
+            defaults to None
+        tile_size: Tile size in meters -
+            defaults to None
+        snap: If True, the bounding box is snapped to `tile_size` -
+            defaults to True
     """
     bounding_box_coordinates: tuple[Coordinate, Coordinate, Coordinate, Coordinate] | None = None
-    gdf_path: Path | None = None
+    gpkg_path: Path | None = None
     json_path: Path | None = None
     ignore_bounding_box_coordinates: tuple[Coordinate, Coordinate, Coordinate, Coordinate] | None = None
-    ignore_gdf_path: Path | None = None
+    ignore_gpkg_path: Path | None = None
     ignore_json_path: Path | None = None
     tile_size: TileSize | None = None
-    quantize: bool = True
+    snap: bool = True
 
     @property
     def bounding_box(self) -> BoundingBox | None:
@@ -950,10 +999,10 @@ class GridConfig(pydantic.BaseModel):
         Returns:
             Geodataframe
         """
-        if self.gdf_path is None:
+        if self.gpkg_path is None:
             return None
 
-        return gpd.read_file(self.gdf_path)
+        return gpd.read_file(self.gpkg_path)
 
     @property
     def json_string(self) -> str | None:
@@ -990,10 +1039,10 @@ class GridConfig(pydantic.BaseModel):
         Returns:
             Geodataframe
         """
-        if self.ignore_gdf_path is None:
+        if self.ignore_gpkg_path is None:
             return None
 
-        return gpd.read_file(self.ignore_gdf_path)
+        return gpd.read_file(self.ignore_gpkg_path)
 
     @property
     def ignore_json_string(self) -> str | None:
@@ -1020,8 +1069,26 @@ class GridConfig(pydantic.BaseModel):
             message = (
                 'Invalid config! '
                 'The configuration must have exactly one of the following field combinations: '
-                'bounding_box_coordinates, tile_size | gdf_path, tile_size | json_path'
+                'bounding_box_coordinates, tile_size | gpkg_path, tile_size | json_path'
             )
             raise ValueError(message)
 
         return self
+
+
+class GridFactory:
+    """Factory for grids"""
+
+    @staticmethod
+    def create(
+        config: GridConfig,
+    ) -> Grid:
+        """Creates a grid from the configuration.
+
+        Parameters:
+            config: Configuration
+
+        Returns:
+            Grid
+        """
+        return Grid.from_config(config=config)

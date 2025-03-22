@@ -24,10 +24,10 @@ from tests.core.data.data_test_bounding_box import (
     data_test_bounding_box_from_gdf_exceptions,
     data_test_bounding_box_getitem,
     data_test_bounding_box_init_exceptions,
-    data_test_bounding_box_quantize,
-    data_test_bounding_box_quantize_exceptions,
-    data_test_bounding_box_quantize_inplace,
-    data_test_bounding_box_quantize_inplace_return,
+    data_test_bounding_box_snap,
+    data_test_bounding_box_snap_exceptions,
+    data_test_bounding_box_snap_inplace,
+    data_test_bounding_box_snap_inplace_return,
     data_test_bounding_box_to_gdf,
 )
 
@@ -239,15 +239,15 @@ def test_bounding_box_buffer_defaults() -> None:
     assert inplace is expected_inplace
 
 
-@pytest.mark.parametrize(('bounding_box', 'value', 'expected'), data_test_bounding_box_quantize)
-def test_bounding_box_quantize(
+@pytest.mark.parametrize(('bounding_box', 'value', 'expected'), data_test_bounding_box_snap)
+def test_bounding_box_snap(
     bounding_box: BoundingBox,
     value: int,
     expected: BoundingBox,
 ) -> None:
     copied_bounding_box = copy.deepcopy(bounding_box)
 
-    bounding_box_ = bounding_box.quantize(
+    bounding_box_ = bounding_box.snap(
         value=value,
         inplace=False,
     )
@@ -257,13 +257,13 @@ def test_bounding_box_quantize(
     assert id(bounding_box_) != id(bounding_box)
 
 
-@pytest.mark.parametrize(('bounding_box', 'value', 'expected'), data_test_bounding_box_quantize_inplace)
-def test_bounding_box_quantize_inplace(
+@pytest.mark.parametrize(('bounding_box', 'value', 'expected'), data_test_bounding_box_snap_inplace)
+def test_bounding_box_snap_inplace(
     bounding_box: BoundingBox,
     value: int,
     expected: BoundingBox,
 ) -> None:
-    bounding_box.quantize(
+    bounding_box.snap(
         value=value,
         inplace=True,
     )
@@ -271,13 +271,13 @@ def test_bounding_box_quantize_inplace(
     assert bounding_box == expected
 
 
-@pytest.mark.parametrize(('bounding_box', 'value', 'expected'), data_test_bounding_box_quantize_inplace_return)
-def test_bounding_box_quantize_inplace_return(
+@pytest.mark.parametrize(('bounding_box', 'value', 'expected'), data_test_bounding_box_snap_inplace_return)
+def test_bounding_box_snap_inplace_return(
     bounding_box: BoundingBox,
     value: int,
     expected: BoundingBox,
 ) -> None:
-    bounding_box_ = bounding_box.quantize(
+    bounding_box_ = bounding_box.snap(
         value=value,
         inplace=True,
     )
@@ -287,21 +287,21 @@ def test_bounding_box_quantize_inplace_return(
     assert id(bounding_box_) == id(bounding_box)
 
 
-@pytest.mark.parametrize(('value', 'message'), data_test_bounding_box_quantize_exceptions)
-def test_bounding_box_quantize_exceptions(
+@pytest.mark.parametrize(('value', 'message'), data_test_bounding_box_snap_exceptions)
+def test_bounding_box_snap_exceptions(
     value: int,
     message: str,
     bounding_box: BoundingBox,
 ) -> None:
     with pytest.raises(AviaryUserError, match=message):
-        _ = bounding_box.quantize(
+        _ = bounding_box.snap(
             value=value,
             inplace=False,
         )
 
 
-def test_bounding_box_quantize_defaults() -> None:
-    signature = inspect.signature(BoundingBox.quantize)
+def test_bounding_box_snap_defaults() -> None:
+    signature = inspect.signature(BoundingBox.snap)
     inplace = signature.parameters['inplace'].default
 
     expected_inplace = False

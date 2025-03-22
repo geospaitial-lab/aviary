@@ -508,7 +508,7 @@ data_test_bounding_box_init_exceptions = [
     ),
 ]
 
-data_test_bounding_box_quantize = [
+data_test_bounding_box_snap = [
     # test case 1: bounding_box is in all quadrants and divisible by value
     (
         BoundingBox(
@@ -826,7 +826,7 @@ data_test_bounding_box_quantize = [
     ),
 ]
 
-data_test_bounding_box_quantize_exceptions = [
+data_test_bounding_box_snap_exceptions = [
     # test case 1: value is negative
     (
         -128,
@@ -839,8 +839,8 @@ data_test_bounding_box_quantize_exceptions = [
     ),
 ]
 
-data_test_bounding_box_quantize_inplace = copy.deepcopy(data_test_bounding_box_quantize)
-data_test_bounding_box_quantize_inplace_return = copy.deepcopy(data_test_bounding_box_quantize)
+data_test_bounding_box_snap_inplace = copy.deepcopy(data_test_bounding_box_snap)
+data_test_bounding_box_snap_inplace_return = copy.deepcopy(data_test_bounding_box_snap)
 
 data_test_bounding_box_to_gdf = [
     # test case 1: EPSG code is None

@@ -2,18 +2,18 @@
   .md-sidebar--secondary { visibility: hidden }
 </style>
 
-aviary's Python API is structured into the following namespaces:
+aviary’s Python API is structured into the following namespaces:
 
 <div class="grid cards" markdown>
 
 -   [**`aviary`**][**aviary**]<br />
     Core types
 
--   [**`aviary.inference`**][**aviary.inference**]<br />
-    Components for inference
-
 -   [**`aviary.pipeline`**][**aviary.pipeline**]<br />
     Pre-built pipelines
+
+-   [**`aviary.tile`**][**aviary.tile**]<br />
+    Components for tile-based processing
 
 -   [**`aviary.utils`**][**aviary.utils**]<br />
     Utilities
@@ -21,6 +21,6 @@ aviary's Python API is structured into the following namespaces:
 </div>
 
   [**aviary**]: core/bounding_box.md
-  [**aviary.inference**]: inference/tile_fetcher/tile_fetcher.md
-  [**aviary.pipeline**]: pipeline/postprocessing_pipeline.md
+  [**aviary.pipeline**]: pipeline/tile_pipeline.md
+  [**aviary.tile**]: tile/tile_fetcher/tile_fetcher.md
   [**aviary.utils**]: utils/coordinates_filter/coordinates_filter.md

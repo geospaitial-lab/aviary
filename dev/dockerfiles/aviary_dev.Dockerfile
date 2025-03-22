@@ -17,8 +17,9 @@ COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
 COPY . .
 
 RUN uv venv venv && \
-    . venv/bin/activate && \
+    source venv/bin/activate && \
     uv pip install --upgrade pip setuptools wheel && \
+    uv pip install huggingface_hub onnxruntime && \
     uv pip install . && \
     adduser --disabled-password --gecos "" aviary_user
 
