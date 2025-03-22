@@ -118,6 +118,9 @@ runtime-evaluated-base-classes = [
 "aviary/core/exceptions.py" = [
     "D101",
 ]
+"aviary/core/type_aliases.py" = [
+    "Q001",
+]
 "dev/scripts/*" = [
     "T201",
 ]

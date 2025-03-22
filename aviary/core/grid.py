@@ -565,7 +565,7 @@ class Grid(Iterable[Coordinates]):
             index: Index or slice of the coordinates
 
         Returns:
-            Coordinates in meters or grid
+            Coordinates (x_min, y_min) of the tile in meters or grid
         """
         if isinstance(index, slice):
             coordinates = self._coordinates[index]
@@ -581,7 +581,7 @@ class Grid(Iterable[Coordinates]):
         """Iterates over the coordinates.
 
         Yields:
-            Coordinates in meters
+            Coordinates (x_min, y_min) of the tile in meters
         """
         for x_min, y_min in self._coordinates:
             yield int(x_min), int(y_min)
