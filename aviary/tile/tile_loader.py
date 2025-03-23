@@ -47,7 +47,7 @@ class TileLoader(Iterable[Tiles]):
         """
         self._tile_set = tile_set
         self._batch_size = batch_size
-        self._max_num_threads = max_num_threads
+        self._max_num_threads = max_num_threads if self._batch_size > 1 else 1
         self._num_prefetched_tiles = num_prefetched_tiles
 
         self._index = 0
