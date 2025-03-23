@@ -1,6 +1,10 @@
 from __future__ import annotations
 
+from concurrent.futures import ThreadPoolExecutor
 from typing import TYPE_CHECKING
+
+import numpy as np
+import numpy.typing as npt
 
 from aviary.core.tiles import Tiles
 
@@ -16,6 +20,58 @@ if TYPE_CHECKING:
         ChannelNameSet,
     )
     from aviary.tile.tiles_processor import TilesProcessor
+
+
+def _process_data(
+    tiles: Tiles,
+    channel_key: ChannelName | str | ChannelKey,
+    process_data_item: callable,
+    new_channel_key: ChannelName | str | ChannelKey | None = None,
+    max_num_threads: int | None = None,
+) -> Tiles:
+    """Processes the data of the channel.
+
+    Parameters:
+        tiles: Tiles
+        channel_key: Channel name or channel name and time step combination
+        process_data_item: Function to process each data item
+        new_channel_key: New channel name or channel name and time step combination
+        max_num_threads: Maximum number of threads
+
+    Returns:
+        Tiles
+    """
+    new_channel_key = _coerce_channel_key(channel_key=new_channel_key)
+
+    channel = tiles[channel_key]
+
+    if new_channel_key is not None:
+        channel = channel.copy()
+
+    data = channel.data
+
+    if len(channel) == 1:
+        max_num_threads = 1
+
+    if max_num_threads == 1:
+        data = [
+            process_data_item(data_item=data_item)
+            for data_item in data
+        ]
+    else:
+        with ThreadPoolExecutor(max_workers=max_num_threads) as executor:
+            data = list(executor.map(process_data_item, data))
+
+    channel._data = data  # noqa: SLF001
+
+    if new_channel_key is not None:
+        channel.name, channel.time_step = new_channel_key
+        return tiles.append(
+            channels=channel,
+            inplace=True,
+        )
+
+    return tiles
 
 
 def copy_processor(
@@ -39,13 +95,13 @@ def copy_processor(
         return tiles
 
     channel = tiles[channel_key]
-    new_channel = channel.copy()
+    channel = channel.copy()
 
     new_channel_name, new_time_step = new_channel_key
-    new_channel.name = new_channel_name
-    new_channel.time_step = new_time_step
+    channel.name = new_channel_name
+    channel.time_step = new_time_step
     return tiles.append(
-        channels=new_channel,
+        channels=channel,
         inplace=True,
     )
 
@@ -56,6 +112,7 @@ def normalize_processor(
     min_value: float,
     max_value: float,
     new_channel_key: ChannelName | str | ChannelKey | None = None,
+    max_num_threads: int | None = None,
 ) -> Tiles:
     """Normalizes the channel.
 
@@ -65,10 +122,45 @@ def normalize_processor(
         min_value: Minimum value
         max_value: Maximum value
         new_channel_key: New channel name or channel name and time step combination
+        max_num_threads: Maximum number of threads
 
     Returns:
         Tiles
     """
+    return _process_data(
+        tiles=tiles,
+        channel_key=channel_key,
+        process_data_item=lambda data_item: _normalize_data_item(
+            data_item=data_item,
+            min_value=min_value,
+            max_value=max_value,
+        ),
+        new_channel_key=new_channel_key,
+        max_num_threads=max_num_threads,
+    )
+
+
+def _normalize_data_item(
+    data_item: npt.NDArray,
+    min_value: float,
+    max_value: float,
+) -> npt.NDArray:
+    """Normalizes the data item.
+
+    Parameters:
+        data_item: Data item
+        min_value: Minimum value
+        max_value: Maximum value
+
+    Returns:
+        Data item
+    """
+    data_item = (data_item - min_value) / (max_value - min_value)
+
+    if data_item.dtype != np.float32:
+        data_item = data_item.astype(np.float32)
+
+    return data_item
 
 
 def parallel_composite_processor(
@@ -194,6 +286,7 @@ def standardize_processor(
     mean_value: float,
     std_value: float,
     new_channel_key: ChannelName | str | ChannelKey | None = None,
+    max_num_threads: int | None = None,
 ) -> Tiles:
     """Standardizes the channel.
 
@@ -203,10 +296,45 @@ def standardize_processor(
         mean_value: Mean value
         std_value: Standard deviation value
         new_channel_key: New channel name or channel name and time step combination
+        max_num_threads: Maximum number of threads
 
     Returns:
         Tiles
     """
+    return _process_data(
+        tiles=tiles,
+        channel_key=channel_key,
+        process_data_item=lambda data_item: _standardize_data_item(
+            data_item=data_item,
+            mean_value=mean_value,
+            std_value=std_value,
+        ),
+        new_channel_key=new_channel_key,
+        max_num_threads=max_num_threads,
+    )
+
+
+def _standardize_data_item(
+    data_item: npt.NDArray,
+    mean_value: float,
+    std_value: float,
+) -> npt.NDArray:
+    """Standardizes the data item.
+
+    Parameters:
+        data_item: Data item
+        mean_value: Mean value
+        std_value: Standard deviation value
+
+    Returns:
+        Data item
+    """
+    data_item = (data_item - mean_value) / std_value
+
+    if data_item.dtype != np.float32:
+        data_item.astype(np.float32)
+
+    return data_item
 
 
 def vectorize_processor(
