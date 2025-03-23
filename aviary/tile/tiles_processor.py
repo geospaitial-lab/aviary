@@ -75,7 +75,7 @@ class TilesProcessorConfig(pydantic.BaseModel):
     """Configuration for tiles processors
 
     Example:
-        You can create a configuration from a config file.
+        You can create the configuration from a config file.
 
         ``` yaml title="config.yaml"
         name: 'MyTilesProcessor'
@@ -233,7 +233,7 @@ class CopyProcessorConfig(pydantic.BaseModel):
         - Use null instead of None
 
     Example:
-        You can create a configuration from a config file.
+        You can create the configuration from a config file.
 
         ``` yaml title="config.yaml"
         channel_key: 'my_channel'
@@ -322,7 +322,7 @@ class NormalizeProcessorConfig(pydantic.BaseModel):
         - Use null instead of None
 
     Example:
-        You can create a configuration from a config file.
+        You can create the configuration from a config file.
 
         ``` yaml title="config.yaml"
         channel_key: 'my_channel'
@@ -408,7 +408,7 @@ class ParallelCompositeProcessorConfig(pydantic.BaseModel):
     """Configuration for the `from_config` class method of `ParallelCompositeProcessor`
 
     Example:
-        You can create a configuration from a config file.
+        You can create the configuration from a config file.
 
         ``` yaml title="config.yaml"
         tiles_processor_configs:
@@ -489,7 +489,7 @@ class RemoveBufferProcessorConfig(pydantic.BaseModel):
         - Use false or true instead of False or True
 
     Example:
-        You can create a configuration from a config file.
+        You can create the configuration from a config file.
 
         ``` yaml title="config.yaml"
         channel_keys: true
@@ -576,7 +576,7 @@ class RemoveProcessorConfig(pydantic.BaseModel):
         - Use false or true instead of False or True
 
     Example:
-        You can create a configuration from a config file.
+        You can create the configuration from a config file.
 
         ``` yaml title="config.yaml"
         channel_keys: true
@@ -663,7 +663,7 @@ class SelectProcessorConfig(pydantic.BaseModel):
         - Use false or true instead of False or True
 
     Example:
-        You can create a configuration from a config file.
+        You can create the configuration from a config file.
 
         ``` yaml title="config.yaml"
         channel_keys: true
@@ -745,7 +745,7 @@ class SequentialCompositeProcessorConfig(pydantic.BaseModel):
     """Configuration for the `from_config` class method of `SequentialCompositeProcessor`
 
     Example:
-        You can create a configuration from a config file.
+        You can create the configuration from a config file.
 
         ``` yaml title="config.yaml"
         tiles_processor_configs:
@@ -832,7 +832,7 @@ class StandardizeProcessorConfig(pydantic.BaseModel):
         - Use null instead of None
 
     Example:
-        You can create a configuration from a config file.
+        You can create the configuration from a config file.
 
         ``` yaml title="config.yaml"
         channel_key: 'my_channel'
@@ -928,7 +928,7 @@ class VectorizeProcessorConfig(pydantic.BaseModel):
         - Use false or true instead of False or True
 
     Example:
-        You can create a configuration from a config file.
+        You can create the configuration from a config file.
 
         ``` yaml title="config.yaml"
         channel_key: 'my_channel'

@@ -67,7 +67,7 @@ class TileFetcherConfig(pydantic.BaseModel):
     """Configuration for tile fetchers
 
     Example:
-        You can create a configuration from a config file.
+        You can create the configuration from a config file.
 
         ``` yaml title="config.yaml"
         name: 'MyTileFetcher'
@@ -228,7 +228,7 @@ class CompositeFetcherConfig(pydantic.BaseModel):
         - Use null instead of None
 
     Example:
-        You can create a configuration from a config file.
+        You can create the configuration from a config file.
 
         ``` yaml title="config.yaml"
         tile_fetcher_configs:
@@ -331,7 +331,7 @@ class VRTFetcherConfig(pydantic.BaseModel):
         - Use null instead of None
 
     Example:
-        You can create a configuration from a config file.
+        You can create the configuration from a config file.
 
         ``` yaml title="config.yaml"
         path: 'path/to/my_vrt.vrt'
@@ -470,7 +470,7 @@ class WMSFetcherConfig(pydantic.BaseModel):
         - Use null instead of None
 
     Example:
-        You can create a configuration from a config file.
+        You can create the configuration from a config file.
 
         ``` yaml title="config.yaml"
         url: 'https://www.my-wms.com'

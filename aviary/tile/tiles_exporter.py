@@ -81,7 +81,7 @@ class GridExporterConfig(pydantic.BaseModel):
     """Configuration for the `from_config` class method of `GridExporter`
 
     Example:
-        You can create a configuration from a config file.
+        You can create the configuration from a config file.
 
         ``` yaml title="config.yaml"
         dir_path: 'path/to/my/directory'
@@ -176,7 +176,7 @@ class VectorExporterConfig(pydantic.BaseModel):
         - Use false or true instead of False or True
 
     Example:
-        You can create a configuration from a config file.
+        You can create the configuration from a config file.
 
         ``` yaml title="config.yaml"
         channel_key: 'my_channel'
