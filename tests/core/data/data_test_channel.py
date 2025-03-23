@@ -980,8 +980,8 @@ data_test_vector_channel_init_exceptions = [
     # test case 2: data contains data items that have a coordinate reference system
     (
         [
-            get_vector_channel_data_item().set_crs('EPSG:25832'),
-            get_vector_channel_data_item().set_crs('EPSG:25832'),
+            get_vector_channel_data_item().set_crs(crs='EPSG:25832'),
+            get_vector_channel_data_item().set_crs(crs='EPSG:25832'),
         ],
         0.,
         re.escape('Invalid data! The data item must not have a coordinate reference system.'),
