@@ -143,7 +143,7 @@ class Channel(ABC, Iterable[object]):
 
     @property
     @abstractmethod
-    def data(self) -> object:
+    def data(self) -> list[object]:
         """
         Returns:
             Data
@@ -629,7 +629,7 @@ class RasterChannel(Channel, Iterable[npt.NDArray]):
         return int(buffer_size_pixels)
 
     @property
-    def data(self) -> npt.NDArray:
+    def data(self) -> list[npt.NDArray]:
         """
         Returns:
             Data
@@ -1007,7 +1007,7 @@ class VectorChannel(Channel, Iterable[gpd.GeoDataFrame]):
         return data_item
 
     @property
-    def data(self) -> gpd.GeoDataFrame:
+    def data(self) -> list[gpd.GeoDataFrame]:
         """
         Returns:
             Data
