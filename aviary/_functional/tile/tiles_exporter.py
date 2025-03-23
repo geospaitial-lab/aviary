@@ -86,11 +86,17 @@ def vector_exporter(
         coordinates=coordinates,
         tile_size=tile_size,
     )
-    data = pd.concat(data, ignore_index=True)
+
+    data = pd.concat(
+        data,
+        ignore_index=True,
+        copy=False,
+    )
     epsg_code = f'EPSG:{epsg_code}' if epsg_code is not None else None
-    gdf = gpd.GeoDataFrame(
-        data=data,
+    gdf = gpd.GeoDataFrame(data=data)
+    gdf = gdf.set_crs(
         crs=epsg_code,
+        inplace=True,
     )
 
     gpkg_path = dir_path / gpkg_name
