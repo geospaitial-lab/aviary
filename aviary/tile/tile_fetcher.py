@@ -178,7 +178,7 @@ class CompositeFetcher:
             max_num_threads: Maximum number of threads
         """
         self._tile_fetchers = tile_fetchers
-        self._max_num_threads = max_num_threads if len(self._tile_fetchers) > 1 else 1
+        self._max_num_threads = max_num_threads
 
     @classmethod
     def from_config(

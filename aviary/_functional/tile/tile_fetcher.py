@@ -51,6 +51,9 @@ def composite_fetcher(
     Returns:
         Tile
     """
+    if len(tile_fetchers) == 1:
+        max_num_threads = 1
+
     if max_num_threads == 1:
         tiles = [
             tile_fetcher(coordinates=coordinates)
