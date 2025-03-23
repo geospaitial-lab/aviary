@@ -3,9 +3,13 @@ from __future__ import annotations
 from concurrent.futures import ThreadPoolExecutor
 from typing import TYPE_CHECKING
 
+import geopandas as gpd
 import numpy as np
 import numpy.typing as npt
+import rasterio as rio
+import rasterio.features
 
+from aviary.core.channel import VectorChannel
 from aviary.core.tiles import Tiles
 
 # noinspection PyProtectedMember
@@ -356,3 +360,94 @@ def vectorize_processor(
     Returns:
         Tiles
     """
+    tiles = _process_data(
+        tiles=tiles,
+        channel_key=channel_key,
+        process_data_item=lambda data_item: _vectorize_data_item(
+            data_item=data_item,
+            ignore_background_class=ignore_background_class,
+        ),
+        new_channel_key=new_channel_key,
+        max_num_threads=max_num_threads,
+    )
+
+    if new_channel_key is not None:  # noqa: SIM108
+        channel = tiles[new_channel_key]
+    else:
+        channel = tiles[channel_key]
+
+    channel = VectorChannel(
+        data=channel.data,
+        name=channel.name,
+        buffer_size=channel.buffer_size,
+        time_step=channel.time_step,
+        copy=False,
+    )
+
+    if new_channel_key is not None:
+        tiles = tiles.remove(
+            channel_keys=new_channel_key,
+            inplace=True,
+        )
+        tiles = tiles.append(
+            channels=channel,
+            inplace=True,
+        )
+    else:
+        tiles = tiles.remove(
+            channel_keys=channel_key,
+            inplace=True,
+        )
+        tiles = tiles.append(
+            channels=channel,
+            inplace=True,
+        )
+
+    return tiles
+
+
+def _vectorize_data_item(
+    data_item: npt.NDArray,
+    ignore_background_class: bool = True,
+) -> npt.NDArray:
+    """Vectorizes the data item.
+
+    Parameters:
+        data_item: Data item
+        ignore_background_class: If True, the background class (value 0) is not vectorized
+
+    Returns:
+        Data item
+    """
+    x_min = 0.
+    y_min = 0.
+    x_max = 1.
+    y_max = 1.
+    tile_size = data_item.shape[0]
+
+    transform = rio.transform.from_bounds(
+        west=x_min,
+        south=y_min,
+        east=x_max,
+        north=y_max,
+        width=tile_size,
+        height=tile_size,
+    )
+
+    features = [
+        {
+            'properties': {'class': int(value)},
+            'geometry': polygon,
+        }
+        for polygon, value
+        in rio.features.shapes(
+            source=data_item,
+            transform=transform,
+        )
+        if not ignore_background_class or int(value) != 0
+    ]
+
+    if not features:
+        return gpd.GeoDataFrame(data=[])
+
+    return gpd.GeoDataFrame.from_features(features=features)
