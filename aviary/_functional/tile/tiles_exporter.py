@@ -57,6 +57,8 @@ def grid_exporter(
     with json_path.open('w') as file:
         file.write(json_string)
 
+    return tiles
+
 
 def vector_exporter(
     tiles: Tiles,
