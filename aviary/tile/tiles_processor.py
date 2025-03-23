@@ -265,6 +265,7 @@ class NormalizeProcessor:
         min_value: float,
         max_value: float,
         new_channel_key: ChannelName | str | ChannelKey | None = None,
+        max_num_threads: int | None = None,
     ) -> None:
         """
         Parameters:
@@ -272,11 +273,13 @@ class NormalizeProcessor:
             min_value: Minimum value
             max_value: Maximum value
             new_channel_key: New channel name or channel name and time step combination
+            max_num_threads: Maximum number of threads
         """
         self._channel_key = channel_key
         self._min_value = min_value
         self._max_value = max_value
         self._new_channel_key = new_channel_key
+        self._max_num_threads = max_num_threads
 
     @classmethod
     def from_config(
@@ -312,6 +315,7 @@ class NormalizeProcessor:
             min_value=self._min_value,
             max_value=self._max_value,
             new_channel_key=self._new_channel_key,
+            max_num_threads=self._max_num_threads,
         )
 
 
@@ -329,6 +333,7 @@ class NormalizeProcessorConfig(pydantic.BaseModel):
         min_value: 0.
         max_value: 255.
         new_channel_key: null
+        max_num_threads: null
         ```
 
     Attributes:
@@ -337,11 +342,14 @@ class NormalizeProcessorConfig(pydantic.BaseModel):
         max_value: Maximum value
         new_channel_key: New channel name or channel name and time step combination -
             defaults to None
+        max_num_threads: Maximum number of threads -
+            defaults to None
     """
     channel_key: ChannelName | str | ChannelKey
     min_value: float
     max_value: float
     new_channel_key: ChannelName | str | ChannelKey | None = None
+    max_num_threads: int | None = None
 
 
 class ParallelCompositeProcessor:
@@ -775,6 +783,7 @@ class StandardizeProcessor:
         mean_value: float,
         std_value: float,
         new_channel_key: ChannelName | str | ChannelKey | None = None,
+        max_num_threads: int | None = None,
     ) -> None:
         """
         Parameters:
@@ -782,11 +791,13 @@ class StandardizeProcessor:
             mean_value: Mean value
             std_value: Standard deviation value
             new_channel_key: New channel name or channel name and time step combination
+            max_num_threads: Maximum number of threads
         """
         self._channel_key = channel_key
         self._mean_value = mean_value
         self._std_value = std_value
         self._new_channel_key = new_channel_key
+        self._max_num_threads = max_num_threads
 
     @classmethod
     def from_config(
@@ -822,6 +833,7 @@ class StandardizeProcessor:
             mean_value=self._mean_value,
             std_value=self._std_value,
             new_channel_key=self._new_channel_key,
+            max_num_threads=self._max_num_threads,
         )
 
 
@@ -839,6 +851,7 @@ class StandardizeProcessorConfig(pydantic.BaseModel):
         mean_value: .5
         std_value: .25
         new_channel_key: null
+        max_num_threads: null
         ```
 
     Attributes:
@@ -847,11 +860,14 @@ class StandardizeProcessorConfig(pydantic.BaseModel):
         std_value: Standard deviation value
         new_channel_key: New channel name or channel name and time step combination -
             defaults to None
+        max_num_threads: Maximum number of threads -
+            defaults to None
     """
     channel_key: ChannelName | str | ChannelKey
     mean_value: float
     std_value: float
     new_channel_key: ChannelName | str | ChannelKey | None = None
+    max_num_threads: int | None = None
 
 
 class VectorizeProcessor:
