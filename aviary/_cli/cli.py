@@ -74,6 +74,12 @@ def tile_pipeline(
     with config_path.open() as file:
         config = yaml.safe_load(file)
 
+    plugins_dir_path = config.get('plugins_dir_path')
+
+    if plugins_dir_path is not None:
+        plugins_dir_path = Path(plugins_dir_path)
+        register_plugins(plugins_dir_path=plugins_dir_path)
+
     tile_pipeline_config = TilePipelineConfig(**config)
     tile_pipeline = TilePipelineFactory.create(config=tile_pipeline_config)
     tile_pipeline()
@@ -81,7 +87,7 @@ def tile_pipeline(
 
 @app.command()
 def plugins(
-    plugins_dir_path: str = 'plugins',
+    plugins_dir_path: str,
 ) -> None:
     """List the registered plugins.
 

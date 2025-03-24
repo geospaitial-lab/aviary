@@ -4,7 +4,7 @@ from pathlib import Path
 
 
 def register_plugins(
-    plugins_dir_path: Path = Path('plugins'),
+    plugins_dir_path: Path,
 ) -> None:
     """Registers plugins.
 
