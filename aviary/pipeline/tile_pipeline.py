@@ -141,15 +141,15 @@ class TilePipelineConfig(pydantic.BaseModel):
         You can create a configuration from a config file.
 
         ``` yaml title="config.yaml"
-        grid:
+        grid_config:
           ...
-        tile_fetcher:
+        tile_fetcher_config:
           ...
-        tile_loader:
+        tile_loader_config:
           batch_size: 1
           max_num_threads: null
           num_prefetched_tiles: 0
-        tiles_processor:
+        tiles_processor_config:
           ...
         plugins_dir_path: null
         ```
