@@ -96,18 +96,20 @@ def vector_exporter(
     )
     epsg_code = f'EPSG:{epsg_code}' if epsg_code is not None else None
     gdf = gpd.GeoDataFrame(data=data)
-    gdf = gdf.set_crs(
-        crs=epsg_code,
-        inplace=True,
-    )
 
-    gpkg_path = dir_path / gpkg_name
+    if not gdf.empty:
+        gdf = gdf.set_crs(
+            crs=epsg_code,
+            inplace=True,
+        )
 
-    gdf.to_file(
-        gpkg_path,
-        driver='GPKG',
-        mode='a',
-    )
+        gpkg_path = dir_path / gpkg_name
+
+        gdf.to_file(
+            gpkg_path,
+            driver='GPKG',
+            mode='a',
+        )
 
     if remove_channel:
         tiles = tiles.remove(
