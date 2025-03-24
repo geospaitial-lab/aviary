@@ -929,15 +929,15 @@ class VectorChannel(Channel, Iterable[gpd.GeoDataFrame]):
             AviaryUserError: Invalid `data` (the data item is not normalized to the spatial extent [0, 1]
                 in x and y direction)
         """
+        if data_item.empty:
+            return
+
         if data_item.crs is not None:
             message = (
                 'Invalid data! '
                 'The data item must not have a coordinate reference system.'
             )
             raise AviaryUserError(message)
-
-        if data_item.empty:
-            return
 
         x_min, y_min, x_max, y_max = data_item.total_bounds
         conditions = [
