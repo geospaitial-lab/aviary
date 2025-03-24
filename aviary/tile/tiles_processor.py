@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import (
     TYPE_CHECKING,
+    Any,
     Protocol,
 )
 
@@ -9,6 +10,9 @@ if TYPE_CHECKING:
     from collections.abc import Callable
 
 import pydantic
+
+if TYPE_CHECKING:
+    from pydantic_core.core_schema import ValidationInfo
 
 # noinspection PyProtectedMember
 from aviary._functional.tile.tiles_processor import (
@@ -30,9 +34,28 @@ from aviary.core.type_aliases import (
     ChannelNameKeySet,
     ChannelNameSet,
 )
+from aviary.tile.model import (
+    Adois,
+    AdoisConfig,
+)
+from aviary.tile.tiles_exporter import (
+    GridExporter,
+    GridExporterConfig,
+    VectorExporter,
+    VectorExporterConfig,
+)
 
 if TYPE_CHECKING:
     from aviary.core.tiles import Tiles
+
+__all__ = [
+    'Adois',
+    'AdoisConfig',
+    'GridExporter',
+    'GridExporterConfig',
+    'VectorExporter',
+    'VectorExporterConfig',
+]
 
 
 class TilesProcessor(Protocol):
@@ -74,6 +97,9 @@ class TilesProcessor(Protocol):
 class TilesProcessorConfig(pydantic.BaseModel):
     """Configuration for tiles processors
 
+    Create the configuration from a config file:
+        - Use null instead of None
+
     Example:
         You can create the configuration from a config file.
 
@@ -85,21 +111,52 @@ class TilesProcessorConfig(pydantic.BaseModel):
 
     Attributes:
         name: Name
-        config: Configuration
+        config: Configuration -
+            defaults to None
     """
     name: str
-    config: (
-        CopyProcessorConfig |
-        NormalizeProcessorConfig |
-        ParallelCompositeProcessorConfig |
-        RemoveBufferProcessorConfig |
-        RemoveProcessorConfig |
-        SelectProcessorConfig |
-        SequentialCompositeProcessorConfig |
-        StandardizeProcessorConfig |
-        VectorizeProcessorConfig |
-        pydantic.BaseModel
-    )
+    config: pydantic.BaseModel | None = None
+
+    # noinspection PyNestedDecorators
+    @pydantic.field_validator('config', mode='before')
+    @classmethod
+    def _validate_config(
+        cls,
+        value: Any,  # noqa: ANN401
+        info: ValidationInfo,
+    ) -> pydantic.BaseModel:
+        name = info.data.get('name')
+
+        if name is None:
+            message = (
+                'Invalid config! '
+                'The name is required.'
+            )
+            raise ValueError(message)
+
+        tiles_processor_class = globals().get(name)
+
+        if tiles_processor_class is not None:
+            config_class = globals().get(f'{name}Config')
+        else:
+            registry_entry = _registry.get(name)
+
+            if registry_entry is None:
+                message = (
+                    'Invalid config! '
+                    f'The tiles processor {name} is not registered.'
+                )
+                raise ValueError(message)
+
+            _, config_class = registry_entry
+
+        if value is None:
+            return config_class()
+
+        if isinstance(value, config_class):
+            return value
+
+        return config_class(**value)
 
 
 _registry: dict[str, tuple[type[TilesProcessor], type[pydantic.BaseModel]]] = {}

@@ -163,13 +163,10 @@ class TilePipelineConfig(pydantic.BaseModel):
         plugins_dir_path: Path to the plugins directory -
             defaults to None
     """
-    grid_config: GridConfig = pydantic.Field(validation_alias='grid')
-    tile_fetcher_config: TileFetcherConfig = pydantic.Field(validation_alias='tile_fetcher')
-    tile_loader_config: TileLoaderConfig = pydantic.Field(
-        default=TileLoaderConfig(),
-        validation_alias='tile_loader',
-    )
-    tiles_processor_config: TilesProcessorConfig = pydantic.Field(validation_alias='tiles_processor')
+    grid_config: GridConfig
+    tile_fetcher_config: TileFetcherConfig
+    tile_loader_config: TileLoaderConfig = pydantic.Field(default=TileLoaderConfig())
+    tiles_processor_config: TilesProcessorConfig
     plugins_dir_path: Path | None = None
 
 

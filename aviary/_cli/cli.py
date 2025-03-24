@@ -14,7 +14,10 @@ from aviary import __version__
 
 # noinspection PyProtectedMember
 from aviary._utils.plugins import register_plugins
-from aviary.pipeline.tile_pipeline import TilePipelineFactory
+from aviary.pipeline.tile_pipeline import (
+    TilePipelineConfig,
+    TilePipelineFactory,
+)
 
 # noinspection PyProtectedMember
 from aviary.tile.tile_fetcher import _registry as tile_fetcher_registry
@@ -71,7 +74,8 @@ def tile_pipeline(
     with config_path.open() as file:
         config = yaml.safe_load(file)
 
-    tile_pipeline = TilePipelineFactory.create(config=config)
+    tile_pipeline_config = TilePipelineConfig(**config)
+    tile_pipeline = TilePipelineFactory.create(config=tile_pipeline_config)
     tile_pipeline()
 
 
