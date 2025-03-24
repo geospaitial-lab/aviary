@@ -335,7 +335,7 @@ data_test_raster_channel_init = [
         None,
         False,
     ),
-    # test case 3: name is str, but can be parsed to ChannelName
+    # test case 3: name is str, but can be coerced to ChannelName
     (
         get_raster_channel_data(),
         'r',
@@ -759,7 +759,7 @@ data_test_vector_channel_from_channels_exceptions = [
     ),
 ]
 
-data_test_vector_channel_from_unscaled_data_exceptions = [
+data_test_vector_channel_from_unnormalized_data_exceptions = [
     # test case 1: data contains no data items
     (
         [],
@@ -942,7 +942,7 @@ data_test_vector_channel_init = [
         None,
         False,
     ),
-    # test case 4: name is str, but can be parsed to ChannelName
+    # test case 4: name is str, but can be coerced to ChannelName
     (
         get_vector_channel_data(),
         'r',
@@ -980,20 +980,20 @@ data_test_vector_channel_init_exceptions = [
     # test case 2: data contains data items that have a coordinate reference system
     (
         [
-            get_vector_channel_data_item().set_crs('EPSG:25832'),
-            get_vector_channel_data_item().set_crs('EPSG:25832'),
+            get_vector_channel_data_item().set_crs(crs='EPSG:25832'),
+            get_vector_channel_data_item().set_crs(crs='EPSG:25832'),
         ],
         0.,
         re.escape('Invalid data! The data item must not have a coordinate reference system.'),
     ),
-    # test case 3: data contains data items that are not scaled to the spatial extent [0, 1] in x and y direction
+    # test case 3: data contains data items that are not normalized to the spatial extent [0, 1] in x and y direction
     (
         [
             gpd.GeoDataFrame(geometry=[box(-.1, -.1, 1.1, 1.1)]),
             gpd.GeoDataFrame(geometry=[box(-.1, -.1, 1.1, 1.1)]),
         ],
         0.,
-        re.escape('Invalid data! The data item must be scaled to the spatial extent [0, 1] in x and y direction.'),
+        re.escape('Invalid data! The data item must be normalized to the spatial extent [0, 1] in x and y direction.'),
     ),
     # test case 4: buffer_size is negative
     (

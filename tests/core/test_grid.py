@@ -46,6 +46,8 @@ from tests.core.data.data_test_grid import (
     data_test_grid_getitem_slice,
     data_test_grid_init,
     data_test_grid_init_exceptions,
+    data_test_grid_or,
+    data_test_grid_or_exceptions,
     data_test_grid_remove,
     data_test_grid_remove_exceptions,
     data_test_grid_remove_inplace,
@@ -140,7 +142,7 @@ def test_grid_area(
     (
         'bounding_box',
         'tile_size',
-        'quantize',
+        'snap',
         'expected',
     ),
     data_test_grid_from_bounding_box,
@@ -148,13 +150,13 @@ def test_grid_area(
 def test_grid_from_bounding_box(
     bounding_box: BoundingBox,
     tile_size: TileSize,
-    quantize: bool,
+    snap: bool,
     expected: Grid,
 ) -> None:
     grid = Grid.from_bounding_box(
         bounding_box=bounding_box,
         tile_size=tile_size,
-        quantize=quantize,
+        snap=snap,
     )
 
     assert grid == expected
@@ -166,36 +168,36 @@ def test_grid_from_bounding_box_exceptions(
     message: str,
     bounding_box: BoundingBox,
 ) -> None:
-    quantize = True
+    snap = True
 
     with pytest.raises(AviaryUserError, match=message):
         _ = Grid.from_bounding_box(
             bounding_box=bounding_box,
             tile_size=tile_size,
-            quantize=quantize,
+            snap=snap,
         )
 
 
 def test_grid_from_bounding_box_defaults() -> None:
     signature = inspect.signature(Grid.from_bounding_box)
-    quantize = signature.parameters['quantize'].default
+    snap = signature.parameters['snap'].default
 
-    expected_quantize = True
+    expected_snap = True
 
-    assert quantize is expected_quantize
+    assert snap is expected_snap
 
 
-@pytest.mark.parametrize(('gdf', 'tile_size', 'quantize', 'expected'), data_test_grid_from_gdf)
+@pytest.mark.parametrize(('gdf', 'tile_size', 'snap', 'expected'), data_test_grid_from_gdf)
 def test_grid_from_gdf(
     gdf: gpd.GeoDataFrame,
     tile_size: TileSize,
-    quantize: bool,
+    snap: bool,
     expected: Grid,
 ) -> None:
     grid = Grid.from_gdf(
         gdf=gdf,
         tile_size=tile_size,
-        quantize=quantize,
+        snap=snap,
     )
 
     assert grid == expected
@@ -207,23 +209,23 @@ def test_grid_from_gdf_exceptions(
     tile_size: TileSize,
     message: str,
 ) -> None:
-    quantize = True
+    snap = True
 
     with pytest.raises(AviaryUserError, match=message):
         _ = Grid.from_gdf(
             gdf=gdf,
             tile_size=tile_size,
-            quantize=quantize,
+            snap=snap,
         )
 
 
 def test_grid_from_gdf_defaults() -> None:
     signature = inspect.signature(Grid.from_gdf)
-    quantize = signature.parameters['quantize'].default
+    snap = signature.parameters['snap'].default
 
-    expected_quantize = True
+    expected_snap = True
 
-    assert quantize is expected_quantize
+    assert snap is expected_snap
 
 
 @pytest.mark.parametrize(('json_string', 'expected'), data_test_grid_from_json)
@@ -413,6 +415,27 @@ def test_grid_and_exceptions(
 ) -> None:
     with pytest.raises(AviaryUserError, match=message):
         _ = grid & other
+
+
+@pytest.mark.parametrize(('other', 'expected'), data_test_grid_or)
+def test_grid_or(
+    other: Grid,
+    expected: Grid,
+    grid: Grid,
+) -> None:
+    grid = grid | other
+
+    assert grid == expected
+
+
+@pytest.mark.parametrize(('other', 'message'), data_test_grid_or_exceptions)
+def test_grid_or_exceptions(
+    other: Grid,
+    message: str,
+    grid: Grid,
+) -> None:
+    with pytest.raises(AviaryUserError, match=message):
+        _ = grid | other
 
 
 @pytest.mark.parametrize(('grid', 'coordinates', 'expected'), data_test_grid_append)

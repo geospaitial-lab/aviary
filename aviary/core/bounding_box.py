@@ -221,6 +221,68 @@ class BoundingBox(Iterable[Coordinate]):
         for coordinate in self._COORDINATES:
             yield getattr(self, coordinate)
 
+    def __and__(
+        self,
+        other: BoundingBox,
+    ) -> BoundingBox:
+        """Intersects the bounding boxes.
+
+        Parameters:
+            other: Other bounding box
+
+        Returns:
+            Bounding box
+
+        Raises:
+            AviaryUserError: Invalid `other` (the bounding boxes do not intersect)
+        """
+        x_min = max(self._x_min, other.x_min)
+        y_min = max(self._y_min, other.y_min)
+        x_max = min(self._x_max, other.x_max)
+        y_max = min(self._y_max, other.y_max)
+
+        conditions = [
+            x_min >= x_max,
+            y_min >= y_max,
+        ]
+
+        if any(conditions):
+            message = (
+                'Invalid other! '
+                'The bounding boxes must intersect.'
+            )
+            raise AviaryUserError(message)
+
+        return BoundingBox(
+            x_min=x_min,
+            y_min=y_min,
+            x_max=x_max,
+            y_max=y_max,
+        )
+
+    def __or__(
+        self,
+        other: BoundingBox,
+    ) -> BoundingBox:
+        """Unions the bounding boxes.
+
+        Parameters:
+            other: Other bounding box
+
+        Returns:
+            Bounding box
+        """
+        x_min = min(self._x_min, other.x_min)
+        y_min = min(self._y_min, other.y_min)
+        x_max = max(self._x_max, other.x_max)
+        y_max = max(self._y_max, other.y_max)
+        return BoundingBox(
+            x_min=x_min,
+            y_min=y_min,
+            x_max=x_max,
+            y_max=y_max,
+        )
+
     def buffer(
         self,
         buffer_size: BufferSize,
@@ -232,25 +294,31 @@ class BoundingBox(Iterable[Coordinate]):
             - A positive buffer size expands the bounding box
             - A negative buffer size shrinks the bounding box
 
-        Examples:
+        Example:
             Assume the area of interest is specified by `x_min`=363084, `y_min`=5715326, `x_max`=363340, and
             `y_max`=5715582.
 
             You can expand the area of interest by buffering the bounding box.
 
-            >>> bounding_box = BoundingBox(
-            ...     x_min=363084,
-            ...     y_min=5715326,
-            ...     x_max=363340,
-            ...     y_max=5715582,
-            ... )
-            >>> bounding_box.buffer(buffer_size=64)
+            ``` python
+            bounding_box = BoundingBox(
+                x_min=363084,
+                y_min=5715326,
+                x_max=363340,
+                y_max=5715582,
+            )
+            bounding_box = bounding_box.buffer(buffer_size=64)
+            print(bounding_box)
+            ```
+
+            ``` title="Output"
             BoundingBox(
                 x_min=363020,
                 y_min=5715262,
                 x_max=363404,
                 y_max=5715646,
             )
+            ```
 
         Parameters:
             buffer_size: Buffer size in meters
@@ -294,36 +362,42 @@ class BoundingBox(Iterable[Coordinate]):
             y_max=y_max,
         )
 
-    def quantize(
+    def snap(
         self,
         value: int,
         inplace: bool = False,
     ) -> BoundingBox:
-        """Quantizes the bounding box.
+        """Snaps the bounding box.
 
-        Examples:
+        Example:
             Assume the area of interest is specified by `x_min`=363084, `y_min`=5715326, `x_max`=363340, and
             `y_max`=5715582.
 
-            You can align the area of interest to a grid by quantizing the bounding box.
+            You can align the area of interest to a grid by snapping the bounding box.
 
-            >>> bounding_box = BoundingBox(
-            ...     x_min=363084,
-            ...     y_min=5715326,
-            ...     x_max=363340,
-            ...     y_max=5715582,
-            ... )
-            >>> bounding_box.quantize(value=128)
+            ``` python
+            bounding_box = BoundingBox(
+                x_min=363084,
+                y_min=5715326,
+                x_max=363340,
+                y_max=5715582,
+            )
+            bounding_box = bounding_box.snap(value=128)
+            print(bounding_box)
+            ```
+
+            ``` title="Output"
             BoundingBox(
                 x_min=363008,
                 y_min=5715200,
                 x_max=363392,
                 y_max=5715584,
             )
+            ```
 
         Parameters:
-            value: Value to quantize the coordinates to in meters
-            inplace: If True, the bounding box is quantized inplace
+            value: Value to snap the coordinates to in meters
+            inplace: If True, the bounding box is snapped inplace
 
         Returns:
             Bounding box

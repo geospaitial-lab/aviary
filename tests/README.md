@@ -1,9 +1,10 @@
 ## Tests
 
-The tests are based on [pytest] and [pytest-cov].
+The tests are based on [pytest], [pytest-cov], and [hypothesis].
 
   [pytest]: https://docs.pytest.org
   [pytest-cov]: https://pytest-cov.readthedocs.io
+  [hypothesis]: https://hypothesis.readthedocs.io
 
 ## Run the tests locally
 
@@ -19,11 +20,15 @@ or:
 uv pip install -r dev/requirements.txt
 ```
 
+---
+
 Run the tests:
 
 ```
 pytest
 ```
+
+---
 
 Run the tests with coverage:
 

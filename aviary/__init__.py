@@ -6,7 +6,6 @@ from .core.channel import (
 )
 from .core.enums import (
     ChannelName,
-    Device,
     GeospatialFilterMode,
     InterpolationMode,
     SetFilterMode,
@@ -19,6 +18,7 @@ from .core.exceptions import (
 from .core.grid import (
     Grid,
     GridConfig,
+    GridFactory,
 )
 from .core.tiles import (
     Tile,
@@ -54,12 +54,12 @@ __all__ = [
     'Coordinate',
     'Coordinates',
     'CoordinatesSet',
-    'Device',
     'EPSGCode',
     'FractionalBufferSize',
     'GeospatialFilterMode',
     'Grid',
     'GridConfig',
+    'GridFactory',
     'GroundSamplingDistance',
     'InterpolationMode',
     'RasterChannel',
