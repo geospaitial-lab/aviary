@@ -22,5 +22,5 @@ aviary’s Python API is structured into the following namespaces:
 
   [**aviary**]: core/bounding_box.md
   [**aviary.pipeline**]: pipeline/tile_pipeline.md
-  [**aviary.tile**]: tile/tile_fetcher/tile_fetcher.md
+  [**aviary.tile**]: tile/model/adois.md
   [**aviary.utils**]: utils/coordinates_filter/coordinates_filter.md

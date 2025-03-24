@@ -29,6 +29,8 @@ nav:
       - Tiles: api_reference/core/tiles.md
       - Type Aliases: api_reference/core/type_aliases.md
     - aviary.tile:
+      - Model:
+          - Adois: api_reference/tile/model/adois.md
       - TileFetcher:
           - TileFetcher: api_reference/tile/tile_fetcher/tile_fetcher.md
           - CompositeFetcher: api_reference/tile/tile_fetcher/composite_fetcher.md

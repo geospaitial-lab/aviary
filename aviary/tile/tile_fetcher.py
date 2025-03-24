@@ -77,7 +77,7 @@ class TileFetcherConfig(pydantic.BaseModel):
         You can create the configuration from a config file.
 
         ``` yaml title="config.yaml"
-        name: 'MyTileFetcher'
+        name: 'TileFetcher'
         config:
           ...
         ```

@@ -1,3 +1,7 @@
+from .model import (
+    Adois,
+    AdoisConfig,
+)
 from .tile_fetcher import (
     CompositeFetcher,
     CompositeFetcherConfig,
@@ -44,6 +48,8 @@ from .tiles_processor import (
 )
 
 __all__ = [
+    'Adois',
+    'AdoisConfig',
     'CompositeFetcher',
     'CompositeFetcherConfig',
     'CopyProcessor',
