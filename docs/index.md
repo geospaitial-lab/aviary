@@ -5,8 +5,7 @@
   .md-sidebar--secondary { visibility: hidden }
 </style>
 
-aviary provides composable components for building inference and postprocessing pipelines
-for remote sensing data.
+aviary provides composable components for tile-based processing of geospatial data.
 This enables you to easily run models on large datasets, export the predictions in a
 georeferenced file format and postprocess them for further downstream tasks.<br />
 Besides the pipelines, aviary also provides task-specific models for remote sensing applications.
@@ -33,6 +32,12 @@ aviary is designed upon the following concepts:
 -   **Support for geospatial data**<br />
     Export predictions as geodata, ready for downstream tasks
 
+-   **Task-agnostic**<br />
+    Process geospatial data with a range of machine learning tasks
+
+-   **ML-framework agnostic**<br />
+    Use your favorite machine learning framework
+
 </div>
 
 ## Installation
@@ -40,6 +45,9 @@ aviary is designed upon the following concepts:
 You can choose between two installation methods, whether you need access to the Python API or
 the command-line interface (CLI) only.
 If you just want to use the pre-built pipelines with the command-line interface, you can use the Docker image.
+
+⚠️ **Note**: aviary is currently released as a pre-release version.
+To install the latest version, you need to add the `--pre` flag.
 
 === "pip"
 
