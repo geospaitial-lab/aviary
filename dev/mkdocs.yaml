@@ -78,6 +78,7 @@ theme:
       abstract: material/run-fast
     repo: simple/github
   features:
+    - content.code.annotate
     - content.code.copy
     - navigation.indexes
     - navigation.instant
