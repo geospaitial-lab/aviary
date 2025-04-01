@@ -84,4 +84,4 @@ we can use the `aviary plugins` command.
 aviary plugins /path/to/our/plugins_dir
 ```
 
-This command will list the registered plugins.
+This command lists the registered plugins.
