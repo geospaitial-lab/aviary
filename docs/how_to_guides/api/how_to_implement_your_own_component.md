@@ -3,7 +3,7 @@
 <span class="aviary-skill-level">Skill level: Intermediate</span>
 
 !!! abstract "TL;DR"
-    Custom components just need to implement their respective protocols.
+    Custom components just need to implement their respective protocol.
     Optionally, a config class and a `from_config` class method can be implemented
     to create an instance from a configuration.
 
@@ -58,7 +58,8 @@ class MyTilesProcessor:
         return tiles
 ```
 
-It’s as simple as that! Now you can use `MyTilesProcessor` like any other tiles processor in aviary.
+It’s as simple as that!
+Now you can use `MyTilesProcessor` like any other tiles processor in aviary.
 
 #### Implementing a config class and a `from_config` class method
 
@@ -107,9 +108,18 @@ class MyTilesProcessor:
         return tiles
 ```
 
-1.  This import is required for correct type hinting in the `from_config` class method.
+1.  This import is required for correct type hinting of the `from_config` class method’s return type.
 
 Now you can create an instance of `MyTilesProcessor` from a configuration.
 
   [TilesProcessor]: ../../api_reference/tile/tiles_processor/tiles_processor.md#aviary.tile.TilesProcessor
   [Tiles]: ../../api_reference/core/tiles.md#aviary.Tiles
+
+---
+
+## Next step
+
+Do you want to use custom components in the CLI?<br>
+Have a look at the [How to register your own component] guide.
+
+  [How to register your own component]: ../cli/how_to_register_your_own_component.md

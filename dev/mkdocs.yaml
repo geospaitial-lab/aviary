@@ -11,6 +11,8 @@ nav:
     - How-to guides: how_to_guides/index.md
     - API:
       - How to implement your own component: how_to_guides/api/how_to_implement_your_own_component.md
+    - CLI:
+      - How to register your own component: how_to_guides/cli/how_to_register_your_own_component.md
     - Installation:
       - How to install aviary with pip: how_to_guides/installation/how_to_install_aviary_with_pip.md
       - How to install aviary with uv: how_to_guides/installation/how_to_install_aviary_with_uv.md
