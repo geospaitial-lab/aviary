@@ -4,6 +4,6 @@
   }
 </style>
 
-## Privacy Policy
+## Privacy policy
 
 TODO

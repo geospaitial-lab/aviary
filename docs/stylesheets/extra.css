@@ -50,3 +50,7 @@ html {
 .md-main {
   padding-bottom: 1rem;
 }
+
+.aviary-skill-level {
+    color: var(--md-default-fg-color--light);
+}

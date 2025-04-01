@@ -7,14 +7,18 @@ exclude_docs: README.md
 
 nav:
   - Get started: index.md
-  - How-to Guides:
-    - How-to Guides: how_to_guides/index.md
+  - How-to guides:
+    - How-to guides: how_to_guides/index.md
+    - API:
+      - How to implement your own component: how_to_guides/api/how_to_implement_your_own_component.md
+    - CLI:
+      - How to register your own component: how_to_guides/cli/how_to_register_your_own_component.md
     - Installation:
       - How to install aviary with pip: how_to_guides/installation/how_to_install_aviary_with_pip.md
       - How to install aviary with uv: how_to_guides/installation/how_to_install_aviary_with_uv.md
       - How to install aviary with Docker: how_to_guides/installation/how_to_install_aviary_with_docker.md
-  - API Reference:
-    - API Reference: api_reference/index.md
+  - API reference:
+    - API reference: api_reference/index.md
     - aviary:
       - BoundingBox: api_reference/core/bounding_box.md
       - Channel:
@@ -72,8 +76,11 @@ theme:
     text: Noto Sans
     code: Noto Sans Mono
   icon:
+    admonition:
+      abstract: material/run-fast
     repo: simple/github
   features:
+    - content.code.annotate
     - content.code.copy
     - navigation.indexes
     - navigation.instant
