@@ -63,7 +63,7 @@ def docs() -> None:
 @app.command()
 def plugins(
     plugins_dir_path: str = typer.Argument(
-        ...,
+        default=...,
         help='Path to the plugins directory',
     ),
 ) -> None:
@@ -88,7 +88,7 @@ def plugins(
 @app.command()
 def tile_pipeline(
     config_path: str = typer.Argument(
-        ...,
+        default=...,
         help='Path to the configuration file',
     ),
 ) -> None:
