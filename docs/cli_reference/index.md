@@ -12,6 +12,9 @@ aviary’s CLI is structured into the following commands:
 -   [**`aviary docs`**][**aviary docs**]<br>
     Open the documentation in a web browser.
 
+-   [**`aviary github`**][**aviary github**]<br>
+    Open the GitHub repository in a web browser.
+
 -   [**`aviary plugins`**][**aviary plugins**]<br>
     List the registered plugins.
 
@@ -22,5 +25,6 @@ aviary’s CLI is structured into the following commands:
 
   [**aviary**]: aviary.md
   [**aviary docs**]: aviary_docs.md
+  [**aviary github**]: aviary_github.md
   [**aviary plugins**]: aviary_plugins.md
   [**aviary tile-pipeline**]: aviary_tile_pipeline.md

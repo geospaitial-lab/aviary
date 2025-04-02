@@ -61,6 +61,13 @@ def docs() -> None:
 
 
 @app.command()
+def github() -> None:
+    """Open the GitHub repository in a web browser."""
+    url = 'https://github.com/geospaitial-lab/aviary'
+    typer.launch(url)
+
+
+@app.command()
 def plugins(
     plugins_dir_path: str = typer.Argument(
         default=...,

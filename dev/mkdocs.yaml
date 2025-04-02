@@ -68,6 +68,7 @@ nav:
     - CLI reference: cli_reference/index.md
     - aviary: cli_reference/aviary.md
     - aviary docs: cli_reference/aviary_docs.md
+    - aviary github: cli_reference/aviary_github.md
     - aviary plugins: cli_reference/aviary_plugins.md
     - aviary tile-pipeline: cli_reference/aviary_tile_pipeline.md
 
