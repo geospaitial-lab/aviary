@@ -64,6 +64,12 @@ nav:
             - GeospatialFilter: api_reference/utils/coordinates_filter/geospatial_filter.md
             - MaskFilter: api_reference/utils/coordinates_filter/mask_filter.md
             - SetFilter: api_reference/utils/coordinates_filter/set_filter.md
+  - CLI reference:
+    - CLI reference: cli_reference/index.md
+    - aviary: cli_reference/aviary.md
+    - aviary docs: cli_reference/aviary_docs.md
+    - aviary plugins: cli_reference/aviary_plugins.md
+    - aviary tile-pipeline: cli_reference/aviary_tile_pipeline.md
 
 theme:
   name: material
