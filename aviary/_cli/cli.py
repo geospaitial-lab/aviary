@@ -28,7 +28,7 @@ from aviary.tile.tiles_processor import _registry as tiles_processor_registry
 app = typer.Typer(
     no_args_is_help=True,
     add_completion=False,
-    help='aviary',
+    help='Python Framework for tile-based processing of geospatial data',
 )
 
 
@@ -61,39 +61,13 @@ def docs() -> None:
 
 
 @app.command()
-def tile_pipeline(
-    config_path: str,
-) -> None:
-    """Run the tile pipeline.
-
-    Parameters:
-        config_path: Path to the configuration file
-    """
-    config_path = Path(config_path)
-
-    with config_path.open() as file:
-        config = yaml.safe_load(file)
-
-    plugins_dir_path = config.get('plugins_dir_path')
-
-    if plugins_dir_path is not None:
-        plugins_dir_path = Path(plugins_dir_path)
-        register_plugins(plugins_dir_path=plugins_dir_path)
-
-    tile_pipeline_config = TilePipelineConfig(**config)
-    tile_pipeline = TilePipelineFactory.create(config=tile_pipeline_config)
-    tile_pipeline()
-
-
-@app.command()
 def plugins(
-    plugins_dir_path: str,
+    plugins_dir_path: str = typer.Argument(
+        default=...,
+        help='Path to the plugins directory',
+    ),
 ) -> None:
-    """List the registered plugins.
-
-    Parameters:
-        plugins_dir_path: Path to the plugins directory
-    """
+    """List the registered plugins."""
     plugins_dir_path = Path(plugins_dir_path)
 
     register_plugins(plugins_dir_path=plugins_dir_path)
@@ -109,6 +83,30 @@ def plugins(
 
     for plugin_name in plugin_names:
         print(plugin_name)
+
+
+@app.command()
+def tile_pipeline(
+    config_path: str = typer.Argument(
+        default=...,
+        help='Path to the configuration file',
+    ),
+) -> None:
+    """Run the tile pipeline."""
+    config_path = Path(config_path)
+
+    with config_path.open() as file:
+        config = yaml.safe_load(file)
+
+    plugins_dir_path = config.get('plugins_dir_path')
+
+    if plugins_dir_path is not None:
+        plugins_dir_path = Path(plugins_dir_path)
+        register_plugins(plugins_dir_path=plugins_dir_path)
+
+    tile_pipeline_config = TilePipelineConfig(**config)
+    tile_pipeline = TilePipelineFactory.create(config=tile_pipeline_config)
+    tile_pipeline()
 
 
 if __name__ == '__main__':
