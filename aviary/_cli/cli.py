@@ -46,6 +46,7 @@ def main(
     version: bool = typer.Option(
         None,
         '--version',
+        '-v',
         callback=version_callback,
         help='Show the version of the package and exit.',
     ),
