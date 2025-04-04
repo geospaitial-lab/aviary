@@ -29,6 +29,7 @@ app = typer.Typer(
     no_args_is_help=True,
     add_completion=False,
     help='Python Framework for tile-based processing of geospatial data',
+    pretty_exceptions_show_locals=False,
 )
 
 
