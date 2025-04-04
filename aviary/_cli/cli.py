@@ -70,7 +70,7 @@ def github() -> None:
 @app.command()
 def plugins(
     plugins_dir_path: str = typer.Argument(
-        default=...,
+        ...,
         help='Path to the plugins directory',
     ),
 ) -> None:
@@ -95,8 +95,14 @@ def plugins(
 @app.command()
 def tile_pipeline(
     config_path: str = typer.Argument(
-        default=...,
+        ...,
         help='Path to the configuration file',
+    ),
+    set_options: list[str] | None = typer.Option(
+        None,
+        '--set',
+        '-s',
+        help='Set configuration fields using key=value format.',
     ),
 ) -> None:
     """Run the tile pipeline."""
@@ -104,6 +110,26 @@ def tile_pipeline(
 
     with config_path.open() as file:
         config = yaml.safe_load(file)
+
+    if set_options is not None:
+        for set_option in set_options:
+            if '=' not in set_option:
+                message = (
+                    'Invalid set_option! '
+                    'The set option must be in key=value format.'
+                )
+                raise typer.BadParameter(message)
+
+            key, value = set_option.split('=', 1)
+            value = yaml.safe_load(value)
+
+            sub_config = config
+            sub_keys = key.split('.')
+
+            for sub_key in sub_keys[:-1]:
+                sub_config = sub_config.setdefault(sub_key, {})
+
+            sub_config[sub_keys[-1]] = value
 
     plugins_dir_path = config.get('plugins_dir_path')
 
