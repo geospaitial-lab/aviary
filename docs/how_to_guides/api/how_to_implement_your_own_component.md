@@ -25,7 +25,7 @@ Implementing them is straightforward as they only require you to implement the `
 
 ### Example
 
-#### Implementing a custom tiles processor
+#### Implement a custom tiles processor
 
 Let’s implement our own tiles processor called `MyTilesProcessor`.
 
@@ -61,7 +61,7 @@ class MyTilesProcessor:
 It’s as simple as that!
 Now you can use `MyTilesProcessor` like any other tiles processor in aviary.
 
-#### Implementing a config class and a `from_config` class method
+#### Implement a config class and a `from_config` class method
 
 If we want to create an instance of our tiles processor from a configuration,
 we need to implement a config class and a `from_config` class method.

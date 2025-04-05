@@ -15,7 +15,7 @@ This allows aviary to discover your component at runtime.
 
 ### Example
 
-#### Registering a custom tiles processor
+#### Register a custom tiles processor
 
 All we need to do is to register our own tiles processor as a plugin using the
 [`register_tiles_processor`][register_tiles_processor] decorator.
@@ -75,7 +75,7 @@ Now you can use `MyTilesProcessor` like any other tiles processor in aviary.
 
   [register_tiles_processor]: ../../api_reference/tile/tiles_processor/tiles_processor.md#aviary.tile.register_tiles_processor
 
-#### Validating the registration and discovery of a custom tiles processor
+#### Validate the registration and discovery of a custom tiles processor
 
 To validate that our own tiles processor was registered and discovered correctly,
 we can use the `aviary plugins` command.
