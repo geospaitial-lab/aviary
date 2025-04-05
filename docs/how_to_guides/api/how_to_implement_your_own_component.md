@@ -3,7 +3,7 @@
 <span class="aviary-skill-level">Skill level: Intermediate</span>
 
 !!! abstract "TL;DR"
-    Custom components just need to implement their respective protocol.
+    Custom components just need to implement their respective protocol.<br>
     Optionally, a config class and a `from_config` class method can be implemented
     to create an instance from a configuration.
 

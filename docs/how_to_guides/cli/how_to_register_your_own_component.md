@@ -4,7 +4,7 @@
 
 !!! abstract "TL;DR"
     Custom components need to implement their respective protocol, a config class, and a `from_config` class method.
-    They can be registered as plugins using their respective registration decorator.
+    They’re registered as plugins using their respective registration decorator.
 
 Make sure to read the [How to implement your own component] guide first.
 
@@ -78,10 +78,12 @@ Now you can use `MyTilesProcessor` like any other tiles processor in aviary.
 #### Validate the registration and discovery of a custom tiles processor
 
 To validate that our own tiles processor was registered and discovered correctly,
-we can use the `aviary plugins` command.
+we can use the [`aviary plugins`][aviary plugins] command.
 
 ```
 aviary plugins /path/to/our/plugins_dir
 ```
 
 This command lists the registered plugins.
+
+  [aviary plugins]: ../../cli_reference/aviary_plugins.md
