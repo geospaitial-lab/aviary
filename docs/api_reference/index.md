@@ -2,20 +2,20 @@
   .md-sidebar--secondary { visibility: hidden }
 </style>
 
-aviary’s Python API is structured into the following namespaces:
+aviary’s Python API includes the following subpackages:
 
 <div class="grid cards" markdown>
 
--   [**`aviary`**][**aviary**]<br />
+-   [**`aviary`**][**aviary**]<br>
     Core types
 
--   [**`aviary.pipeline`**][**aviary.pipeline**]<br />
+-   [**`aviary.pipeline`**][**aviary.pipeline**]<br>
     Pre-built pipelines
 
--   [**`aviary.tile`**][**aviary.tile**]<br />
+-   [**`aviary.tile`**][**aviary.tile**]<br>
     Components for tile-based processing
 
--   [**`aviary.utils`**][**aviary.utils**]<br />
+-   [**`aviary.utils`**][**aviary.utils**]<br>
     Utilities
 
 </div>
