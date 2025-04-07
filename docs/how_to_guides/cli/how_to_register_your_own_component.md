@@ -75,9 +75,9 @@ Now you can use `MyTilesProcessor` like any other tiles processor in aviary.
 
   [register_tiles_processor]: ../../api_reference/tile/tiles_processor/tiles_processor.md#aviary.tile.register_tiles_processor
 
-#### Validate the registration and discovery of a custom tiles processor
+#### Verify the registration and discovery of a custom tiles processor
 
-To validate that our own tiles processor was registered and discovered correctly,
+To verify that our own tiles processor was registered and discovered correctly,
 we can use the [`aviary plugins`][aviary plugins] command.
 
 ```
