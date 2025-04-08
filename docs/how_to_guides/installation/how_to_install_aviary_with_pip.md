@@ -1,43 +1,37 @@
 ## How to install aviary with pip
 
-Follow along this step-by-step guide to install aviary using pip and a virtual environment.
+<span class="aviary-skill-level">Skill level: Beginner</span>
 
-### Step 1: Install Python
+!!! abstract "TL;DR"
+    Use `pip install geospaitial-lab-aviary` to install aviary.<br>
+    To include the CLI, use `pip install geospaitial-lab-aviary[cli]`.
 
-First, make sure you have Python installed.<br />
-Note that some operating systems come with Python pre-installed.
-To verify this, launch your command-line interface and run the following command:
+The most common and convenient way to install aviary is using pip – Python’s built-in package manager.
 
-```
-python --version
-```
+### Install Python
 
-To use aviary, you need at least Python 3.10.
+First, make sure Python 3.10, 3.11, or 3.12 is installed on your system.
 
-If you don't have Python installed or need to upgrade to a newer version,
-you can download the latest version from the [official Python website].
-If you need help installing Python, you can refer to the [official Python installation guide].
+Download Python from the
+[official Python website :material-arrow-top-right:][official Python website].
+If you need help, you can refer to the
+[official Python installation guide :material-arrow-top-right:][official Python installation guide].
 
   [official Python website]: https://www.python.org
   [official Python installation guide]: https://wiki.python.org/moin/BeginnersGuide/Download
 
----
+### Set up a virtual environment
 
-### Step 2: Set up a virtual environment
+It is considered best practice to use a virtual environment to install Python packages.
+This keeps your project dependencies isolated.
 
-It is considered best practice to use a virtual environment to install Python packages.<br />
-Note that this is not required, so you can skip this step if you prefer.
-However, it is **strongly recommended** to use a virtual environment to avoid conflicts with other Python packages
-and to keep your project dependencies isolated.
-
-To create a virtual environment named `venv`, navigate to the directory where you want to install aviary
-and run the command below:
+Navigate to the directory where you want to install aviary and create a virtual environment.
 
 ```
 python -m venv venv
 ```
 
-Next, activate the virtual environment by running the following command:
+Next, activate the virtual environment.
 
 === "Linux and macOS"
 
@@ -51,25 +45,51 @@ Next, activate the virtual environment by running the following command:
     venv\Scripts\activate
     ```
 
-If the virtual environment is activated successfully, you should see its name
-(in this case, `venv`) in your command-line prompt.
+Once activated, you should see its name – in this case, `venv` – in your terminal prompt.
 
----
+### Install aviary
 
-### Step 3: Install the package
+Install aviary using pip.
 
-Install the package using pip by running the command below:
+=== "Default"
 
-```
-pip install geospaitial-lab-aviary
-```
+    ```
+    pip install geospaitial-lab-aviary
+    ```
 
----
+=== "+ CLI"
 
-### Step 4: Verify the installation
+    ```
+    pip install geospaitial-lab-aviary[cli]
+    ```
 
-To verify that the package was installed successfully, you can run the following command:
+=== "+ All"
 
-```
-aviary --version
-```
+    ```
+    pip install geospaitial-lab-aviary[all]
+    ```
+
+Note that there are optional dependency groups:
+
+- `cli`: Required for aviary’s CLI
+- `all`: Includes optional dependencies, such as `cli`
+
+### Verify the installation
+
+To verify that aviary is installed correctly, you can check the version.
+
+=== "Python API"
+
+    ``` python
+    import aviary
+
+    print(aviary.__version__)
+    ```
+
+=== "CLI"
+
+    ```
+    aviary --version
+    ```
+
+This shows the version of aviary.
