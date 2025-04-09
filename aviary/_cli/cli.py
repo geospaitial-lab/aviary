@@ -1,6 +1,7 @@
 from pathlib import Path
 
 try:
+    import rich.traceback
     import typer
     import yaml
 except ImportError as error:
@@ -30,8 +31,11 @@ app = typer.Typer(
     no_args_is_help=True,
     add_completion=False,
     help='Python Framework for tile-based processing of geospatial data',
-    pretty_exceptions_show_locals=False,
 )
+
+state = {
+    'verbose': False,
+}
 
 
 def version_callback(
@@ -45,15 +49,24 @@ def version_callback(
 # noinspection PyUnusedLocal
 @app.callback()
 def main(
+    verbose: bool = typer.Option(
+        False,
+        '--verbose',
+        '-v',
+        help='Enable verbose mode.',
+    ),
     version: bool = typer.Option(
         None,
         '--version',
-        '-v',
         callback=version_callback,
         help='Show the version of the package and exit.',
     ),
 ) -> None:
-    pass
+    if verbose:
+        state['verbose'] = True
+        rich.traceback.install()
+    else:
+        rich.traceback.install(max_frames=1)
 
 
 @app.command()
