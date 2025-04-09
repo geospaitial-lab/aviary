@@ -5,8 +5,9 @@ try:
     import yaml
 except ImportError as error:
     message = (
-        'Missing dependency! '
-        'To use the CLI, you need to install pyyaml and typer.'
+        'Missing dependencies! '
+        'To use the CLI, you need to install the cli dependency group:\n'
+        'pip install geospaitial-lab-aviary[cli]'
     )
     raise ImportError(message) from error
 
@@ -71,14 +72,12 @@ def github() -> None:
 
 @app.command()
 def plugins(
-    plugins_dir_path: str = typer.Argument(
+    plugins_dir_path: Path = typer.Argument(
         ...,
         help='Path to the plugins directory',
     ),
 ) -> None:
     """List the registered plugins."""
-    plugins_dir_path = Path(plugins_dir_path)
-
     register_plugins(plugins_dir_path=plugins_dir_path)
 
     tile_fetcher_names = list(tile_fetcher_registry.keys())
@@ -96,7 +95,7 @@ def plugins(
 
 @app.command()
 def tile_pipeline(
-    config_path: str = typer.Argument(
+    config_path: Path = typer.Argument(
         ...,
         help='Path to the configuration file',
     ),
@@ -108,8 +107,6 @@ def tile_pipeline(
     ),
 ) -> None:
     """Run the tile pipeline."""
-    config_path = Path(config_path)
-
     with config_path.open() as file:
         config = yaml.safe_load(file)
 
