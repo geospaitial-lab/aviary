@@ -1,7 +1,11 @@
+from collections.abc import Callable
+from functools import wraps
 from pathlib import Path
+from typing import Any
 
 try:
-    import rich.traceback
+    import click
+    import rich.console
     import typer
     import yaml
 except ImportError as error:
@@ -31,11 +35,9 @@ app = typer.Typer(
     no_args_is_help=True,
     add_completion=False,
     help='Python Framework for tile-based processing of geospatial data',
+    pretty_exceptions_show_locals=False,
 )
-
-state = {
-    'verbose': False,
-}
+console = rich.console.Console()
 
 
 def version_callback(
@@ -43,30 +45,56 @@ def version_callback(
 ) -> None:
     if value:
         print(f'aviary {__version__}')
-        raise typer.Exit
+        raise typer.Exit(0)
 
 
 # noinspection PyUnusedLocal
 @app.callback()
 def main(
+    context: typer.Context,
     verbose: bool = typer.Option(
-        False,
+        False,  # noqa: FBT003
         '--verbose',
         '-v',
         help='Enable verbose mode.',
     ),
-    version: bool = typer.Option(
+    version: bool = typer.Option(  # noqa: ARG001
         None,
         '--version',
         callback=version_callback,
         help='Show the version of the package and exit.',
     ),
 ) -> None:
-    if verbose:
-        state['verbose'] = True
-        rich.traceback.install()
-    else:
-        rich.traceback.install(max_frames=1)
+    context.obj = {
+        'verbose': verbose,
+    }
+
+
+def handle_exception(
+    func: Callable,
+) -> Callable:
+    @wraps(func)
+    def wrapper(
+        *args: Any,  # noqa: ANN401
+        **kwargs: Any,  # noqa: ANN401
+    ) -> Any:  # noqa: ANN401
+        context = click.get_current_context()
+        verbose = context.obj['verbose']
+
+        try:
+            return func(
+                *args,
+                **kwargs,
+            )
+        except click.ClickException:
+            raise
+        except Exception as error:
+            if verbose:
+                raise
+
+            console.print(f'[bold bright_red]{type(error).__name__}:[/] {error}')
+            context.exit(1)
+    return wrapper
 
 
 @app.command()
@@ -84,13 +112,14 @@ def github() -> None:
 
 
 @app.command()
+@handle_exception
 def plugins(
     plugins_dir_path: Path = typer.Argument(
         ...,
         help='Path to the plugins directory',
     ),
 ) -> None:
-    """List the registered plugins."""
+    """Show the registered plugins."""
     register_plugins(plugins_dir_path=plugins_dir_path)
 
     tile_fetcher_names = list(tile_fetcher_registry.keys())
@@ -107,6 +136,7 @@ def plugins(
 
 
 @app.command()
+@handle_exception
 def tile_pipeline(
     config_path: Path = typer.Argument(
         ...,
