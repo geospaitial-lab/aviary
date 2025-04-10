@@ -1,5 +1,6 @@
 from collections.abc import Callable
 from functools import wraps
+from gettext import gettext as _
 from pathlib import Path
 from typing import Any
 
@@ -7,6 +8,7 @@ try:
     import click
     import rich.console
     import typer
+    import typer.rich_utils
     import yaml
 except ImportError as error:
     message = (
@@ -30,6 +32,14 @@ from aviary.tile.tile_fetcher import _registry as tile_fetcher_registry
 
 # noinspection PyProtectedMember
 from aviary.tile.tiles_processor import _registry as tiles_processor_registry
+
+typer.rich_utils.DEFAULT_STRING = _('default: {}')
+typer.rich_utils.REQUIRED_LONG_STRING = _('required')
+typer.rich_utils.RICH_HELP = _('Try [green]{command_path} {help_option}[/] for help.')
+typer.rich_utils.STYLE_COMMANDS_TABLE_FIRST_COLUMN = 'bold green'
+typer.rich_utils.STYLE_METAVAR = 'dim green'
+typer.rich_utils.STYLE_OPTION = 'green'
+typer.rich_utils.STYLE_USAGE = 'bold green'
 
 app = typer.Typer(
     no_args_is_help=True,
