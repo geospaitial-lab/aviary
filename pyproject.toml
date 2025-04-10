@@ -45,11 +45,11 @@ dependencies = [
 [project.optional-dependencies]
 cli = [
     "pyyaml>=6.0.1",
-    "typer>=0.12.0",
+    "typer>=0.15.2",
 ]
 all = [
     "pyyaml>=6.0.1",
-    "typer>=0.12.0",
+    "typer>=0.15.2",
 ]
 
 [project.urls]
