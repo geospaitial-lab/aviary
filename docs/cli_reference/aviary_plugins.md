@@ -1,6 +1,6 @@
 ## `aviary plugins`
 
-List the registered plugins.
+Show the registered plugins.
 
 ### Usage
 
