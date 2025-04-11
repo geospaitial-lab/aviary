@@ -45,6 +45,8 @@ app = typer.Typer(
     no_args_is_help=True,
     add_completion=False,
     help='Python Framework for tile-based processing of geospatial data',
+    epilog='geosp[bold green]ai[/]tial lab',
+    rich_markup_mode='rich',
     pretty_exceptions_show_locals=False,
 )
 console = rich.console.Console()
