@@ -21,6 +21,9 @@ except ImportError as error:
 from aviary import __version__
 
 # noinspection PyProtectedMember
+from aviary._cli.template import registry as template_registry
+
+# noinspection PyProtectedMember
 from aviary._utils.plugins import register_plugins
 from aviary.pipeline.tile_pipeline import (
     TilePipelineConfig,
@@ -48,6 +51,15 @@ app = typer.Typer(
     epilog='geosp[bold green]ai[/]tial lab',
     rich_markup_mode='rich',
     pretty_exceptions_show_locals=False,
+)
+tile_pipeline_app = typer.Typer(
+    name='tile-pipeline',
+    no_args_is_help=True,
+    help='Subcommands for the tile pipeline',
+)
+app.add_typer(
+    typer_instance=tile_pipeline_app,
+    rich_help_panel='Pipeline commands',
 )
 console = rich.console.Console()
 
@@ -109,21 +121,27 @@ def handle_exception(
     return wrapper
 
 
-@app.command()
+@app.command(
+    rich_help_panel='General commands',
+)
 def docs() -> None:
     """Open the documentation in a web browser."""
     url = 'https://geospaitial-lab.github.io/aviary'
     typer.launch(url)
 
 
-@app.command()
+@app.command(
+    rich_help_panel='General commands',
+)
 def github() -> None:
     """Open the GitHub repository in a web browser."""
     url = 'https://github.com/geospaitial-lab/aviary'
     typer.launch(url)
 
 
-@app.command()
+@app.command(
+    rich_help_panel='General commands',
+)
 @handle_exception
 def plugins(
     plugins_dir_path: Path = typer.Argument(
@@ -147,9 +165,34 @@ def plugins(
         print(plugin_name)
 
 
-@app.command()
+@tile_pipeline_app.command(
+    name='init',
+)
 @handle_exception
-def tile_pipeline(
+def tile_pipeline_init(
+    config_path: Path = typer.Argument(
+        ...,
+        help='Path to the configuration file',
+    ),
+    template: str = typer.Argument(
+        'base',
+        click_type=click.Choice(['base']),
+        help='Template for the configuration file',
+    ),
+) -> None:
+    """Create a configuration file."""
+    pipeline = 'tile_pipeline'
+    config = template_registry[(pipeline, template)]
+
+    with config_path.open('w') as file:
+        file.write(config)
+
+
+@tile_pipeline_app.command(
+    name='run',
+)
+@handle_exception
+def tile_pipeline_run(
     config_path: Path = typer.Argument(
         ...,
         help='Path to the configuration file',
@@ -162,6 +205,58 @@ def tile_pipeline(
     ),
 ) -> None:
     """Run the tile pipeline."""
+    config = parse_config(
+        config_path=config_path,
+        set_options=set_options,
+    )
+
+    plugins_dir_path = config.get('plugins_dir_path')
+
+    if plugins_dir_path is not None:
+        plugins_dir_path = Path(plugins_dir_path)
+        register_plugins(plugins_dir_path=plugins_dir_path)
+
+    tile_pipeline_config = TilePipelineConfig(**config)
+    tile_pipeline = TilePipelineFactory.create(config=tile_pipeline_config)
+    tile_pipeline()
+
+
+@tile_pipeline_app.command(
+    name='validate',
+)
+@handle_exception
+def tile_pipeline_validate(
+    config_path: Path = typer.Argument(
+        ...,
+        help='Path to the configuration file',
+    ),
+    set_options: list[str] | None = typer.Option(
+        None,
+        '--set',
+        '-s',
+        help='Set configuration fields using key=value format.',
+    ),
+) -> None:
+    """Validate the configuration file."""
+    config = parse_config(
+        config_path=config_path,
+        set_options=set_options,
+    )
+
+    plugins_dir_path = config.get('plugins_dir_path')
+
+    if plugins_dir_path is not None:
+        plugins_dir_path = Path(plugins_dir_path)
+        register_plugins(plugins_dir_path=plugins_dir_path)
+
+    tile_pipeline_config = TilePipelineConfig(**config)
+    _ = TilePipelineFactory.create(config=tile_pipeline_config)
+
+
+def parse_config(
+    config_path: Path,
+    set_options: list[str] | None = None,
+) -> dict:
     with config_path.open() as file:
         config = yaml.safe_load(file)
 
@@ -184,16 +279,6 @@ def tile_pipeline(
                 sub_config = sub_config.setdefault(sub_key, {})
 
             sub_config[sub_keys[-1]] = value
-
-    plugins_dir_path = config.get('plugins_dir_path')
-
-    if plugins_dir_path is not None:
-        plugins_dir_path = Path(plugins_dir_path)
-        register_plugins(plugins_dir_path=plugins_dir_path)
-
-    tile_pipeline_config = TilePipelineConfig(**config)
-    tile_pipeline = TilePipelineFactory.create(config=tile_pipeline_config)
-    tile_pipeline()
 
 
 if __name__ == '__main__':
