@@ -154,15 +154,15 @@ def plugins(
 
     tile_fetcher_names = list(tile_fetcher_registry.keys())
     tiles_processor_names = list(tiles_processor_registry.keys())
-    plugin_names = (
-        tile_fetcher_names +
-        tiles_processor_names
-    )
 
     print('Registered plugins:')
+    print('  TileFetcher:')
+    for plugin_name in tile_fetcher_names:
+        print(f'    - {plugin_name}')
 
-    for plugin_name in plugin_names:
-        print(plugin_name)
+    print('  TilesProcessor:')
+    for plugin_name in tiles_processor_names:
+        print(f'    - {plugin_name}')
 
 
 @tile_pipeline_app.command(
