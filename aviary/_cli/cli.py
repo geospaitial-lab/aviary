@@ -280,6 +280,8 @@ def parse_config(
 
             sub_config[sub_keys[-1]] = value
 
+    return config
+
 
 if __name__ == '__main__':
     app()
