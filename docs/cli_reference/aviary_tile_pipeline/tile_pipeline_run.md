@@ -1,16 +1,16 @@
-## `aviary tile-pipeline`
+## `aviary tile-pipeline run`
 
 Run the tile pipeline.
 
 ### Usage
 
 ```
-aviary tile-pipeline [OPTIONS] CONFIG_PATH
+aviary tile-pipeline run [OPTIONS] CONFIG_PATH
 ```
 
 ### Arguments
 
-- `CONFIG_PATH`: Path to the configuration file
+- `CONFIG_PATH`: Path to the config file
 
 ### Options
 

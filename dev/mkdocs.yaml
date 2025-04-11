@@ -70,7 +70,11 @@ nav:
     - aviary docs: cli_reference/aviary_docs.md
     - aviary github: cli_reference/aviary_github.md
     - aviary plugins: cli_reference/aviary_plugins.md
-    - aviary tile-pipeline: cli_reference/aviary_tile_pipeline.md
+    - aviary tile-pipeline:
+        - tile-pipeline: cli_reference/aviary_tile_pipeline/tile_pipeline.md
+        - tile-pipeline init: cli_reference/aviary_tile_pipeline/tile_pipeline_init.md
+        - tile-pipeline run: cli_reference/aviary_tile_pipeline/tile_pipeline_run.md
+        - tile-pipeline validate: cli_reference/aviary_tile_pipeline/tile_pipeline_validate.md
 
 theme:
   name: material

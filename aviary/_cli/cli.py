@@ -172,15 +172,15 @@ def plugins(
 def tile_pipeline_init(
     config_path: Path = typer.Argument(
         ...,
-        help='Path to the configuration file',
+        help='Path to the config file',
     ),
     template: str = typer.Argument(
         'base',
         click_type=click.Choice(['base']),
-        help='Template for the configuration file',
+        help='Template for the config file',
     ),
 ) -> None:
-    """Create a configuration file."""
+    """Initialize a config file."""
     pipeline = 'tile_pipeline'
     config = template_registry[(pipeline, template)]
 
@@ -195,7 +195,7 @@ def tile_pipeline_init(
 def tile_pipeline_run(
     config_path: Path = typer.Argument(
         ...,
-        help='Path to the configuration file',
+        help='Path to the config file',
     ),
     set_options: list[str] | None = typer.Option(
         None,
@@ -228,7 +228,7 @@ def tile_pipeline_run(
 def tile_pipeline_validate(
     config_path: Path = typer.Argument(
         ...,
-        help='Path to the configuration file',
+        help='Path to the config file',
     ),
     set_options: list[str] | None = typer.Option(
         None,
@@ -237,7 +237,7 @@ def tile_pipeline_validate(
         help='Set configuration fields using key=value format.',
     ),
 ) -> None:
-    """Validate the configuration file."""
+    """Validate the config file."""
     config = parse_config(
         config_path=config_path,
         set_options=set_options,
