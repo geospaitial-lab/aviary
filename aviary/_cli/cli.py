@@ -24,7 +24,7 @@ from aviary import __version__
 from aviary._cli.template import registry as template_registry
 
 # noinspection PyProtectedMember
-from aviary._utils.plugins import register_plugins
+from aviary._utils.plugins import discover_plugins
 from aviary.pipeline.tile_pipeline import (
     TilePipelineConfig,
     TilePipelineFactory,
@@ -150,7 +150,7 @@ def plugins(
     ),
 ) -> None:
     """Show the registered plugins."""
-    register_plugins(plugins_dir_path=plugins_dir_path)
+    discover_plugins(plugins_dir_path=plugins_dir_path)
 
     tile_fetcher_names = list(tile_fetcher_registry.keys())
     tiles_processor_names = list(tiles_processor_registry.keys())
@@ -214,7 +214,7 @@ def tile_pipeline_run(
 
     if plugins_dir_path is not None:
         plugins_dir_path = Path(plugins_dir_path)
-        register_plugins(plugins_dir_path=plugins_dir_path)
+        discover_plugins(plugins_dir_path=plugins_dir_path)
 
     tile_pipeline_config = TilePipelineConfig(**config)
     tile_pipeline = TilePipelineFactory.create(config=tile_pipeline_config)
@@ -247,7 +247,7 @@ def tile_pipeline_validate(
 
     if plugins_dir_path is not None:
         plugins_dir_path = Path(plugins_dir_path)
-        register_plugins(plugins_dir_path=plugins_dir_path)
+        discover_plugins(plugins_dir_path=plugins_dir_path)
 
     tile_pipeline_config = TilePipelineConfig(**config)
     _ = TilePipelineFactory.create(config=tile_pipeline_config)

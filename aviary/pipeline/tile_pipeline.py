@@ -6,7 +6,7 @@ import pydantic
 from rich.progress import track
 
 # noinspection PyProtectedMember
-from aviary._utils.plugins import register_plugins
+from aviary._utils.plugins import discover_plugins
 from aviary.core.grid import (
     Grid,
     GridConfig,
@@ -58,7 +58,7 @@ class TilePipeline:
         self._plugins_dir_path = plugins_dir_path
 
         if self._plugins_dir_path is not None:
-            register_plugins(plugins_dir_path=self._plugins_dir_path)
+            discover_plugins(plugins_dir_path=self._plugins_dir_path)
 
     @classmethod
     def from_config(

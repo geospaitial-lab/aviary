@@ -3,10 +3,10 @@ import sys
 from pathlib import Path
 
 
-def register_plugins(
+def discover_plugins(
     plugins_dir_path: Path,
 ) -> None:
-    """Registers plugins.
+    """Discover plugins.
 
     Parameters:
         plugins_dir_path: Path to the plugins directory
