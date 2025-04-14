@@ -14,8 +14,4 @@
 
 ---
 
-::: aviary.tile.TilesProcessorFactory
-
----
-
 ::: aviary.tile.register_tiles_processor

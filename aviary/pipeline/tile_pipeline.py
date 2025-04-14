@@ -15,14 +15,14 @@ from aviary.core.grid import (
 from aviary.tile.tile_fetcher import (
     TileFetcher,
     TileFetcherConfig,
-    TileFetcherFactory,
+    _TileFetcherFactory,
 )
 from aviary.tile.tile_loader import TileLoader
 from aviary.tile.tile_set import TileSet
 from aviary.tile.tiles_processor import (
     TilesProcessor,
     TilesProcessorConfig,
-    TilesProcessorFactory,
+    _TilesProcessorFactory,
 )
 
 
@@ -74,8 +74,8 @@ class TilePipeline:
             Tile pipeline
         """
         grid = GridFactory.create(config=config.grid_config)
-        tile_fetcher = TileFetcherFactory.create(config=config.tile_fetcher_config)
-        tiles_processor = TilesProcessorFactory.create(config=config.tiles_processor_config)
+        tile_fetcher = _TileFetcherFactory.create(config=config.tile_fetcher_config)
+        tiles_processor = _TilesProcessorFactory.create(config=config.tiles_processor_config)
         return cls(
             grid=grid,
             tile_fetcher=tile_fetcher,

@@ -57,6 +57,8 @@ __all__ = [
     'VectorExporterConfig',
 ]
 
+_PACKAGE = 'aviary'
+
 
 class TilesProcessor(Protocol):
     """Protocol for tiles processors
@@ -107,51 +109,47 @@ class TilesProcessorConfig(pydantic.BaseModel):
         You can create the configuration from a config file.
 
         ``` yaml title="config.yaml"
+        package: 'aviary'
         name: 'TilesProcessor'
         config:
           ...
         ```
 
     Attributes:
+        package: Package -
+            defaults to 'aviary'
         name: Name
         config: Configuration -
             defaults to None
     """
+    package: str = 'aviary'
     name: str
     config: pydantic.BaseModel | None = None
 
     # noinspection PyNestedDecorators
-    @pydantic.field_validator('config', mode='before')
+    @pydantic.field_validator(
+        'config',
+        mode='before',
+    )
     @classmethod
     def _validate_config(
         cls,
         value: Any,  # noqa: ANN401
         info: ValidationInfo,
     ) -> pydantic.BaseModel:
-        name = info.data.get('name')
+        package = info.data['package']
+        name = info.data['name']
+        key = (package, name)
+        registry_entry = _TilesProcessorFactory.registry.get(key)
 
-        if name is None:
+        if registry_entry is None:
             message = (
                 'Invalid config! '
-                'The name is required.'
+                f'The tiles processor {name} from {package} must be registered.'
             )
             raise ValueError(message)
 
-        tiles_processor_class = globals().get(name)
-
-        if tiles_processor_class is not None:
-            config_class = globals().get(f'{name}Config')
-        else:
-            registry_entry = _registry.get(name)
-
-            if registry_entry is None:
-                message = (
-                    'Invalid config! '
-                    f'The tiles processor {name} is not registered.'
-                )
-                raise ValueError(message)
-
-            _, config_class = registry_entry
+        _, config_class = registry_entry
 
         if value is None:
             return config_class()
@@ -162,11 +160,9 @@ class TilesProcessorConfig(pydantic.BaseModel):
         return config_class(**value)
 
 
-_registry: dict[str, tuple[type[TilesProcessor], type[pydantic.BaseModel]]] = {}
-
-
-class TilesProcessorFactory:
+class _TilesProcessorFactory:
     """Factory for tiles processors"""
+    registry: dict[tuple[str, str], tuple[type[TilesProcessor], type[pydantic.BaseModel]]] = {}  # noqa: RUF012
 
     @staticmethod
     def create(
@@ -179,39 +175,44 @@ class TilesProcessorFactory:
 
         Returns:
             Tiles processor
+
+        Raises:
+            AviaryUserError: Invalid `config` (the tiles processor is not registered)
         """
-        try:
-            tiles_processor_class = globals()[config.name]
-            return tiles_processor_class.from_config(config=config.config)
-        except KeyError:
-            registry_entry = _registry.get(config.name)
+        key = (config.package, config.name)
+        registry_entry = _TilesProcessorFactory.registry.get(key)
 
-            if registry_entry is None:
-                message = (
-                    'Invalid config! '
-                    f'The tiles processor {config.name} is not registered.'
-                )
-                raise AviaryUserError(message) from None
+        if registry_entry is None:
+            message = (
+                'Invalid config! '
+                f'The tiles processor {config.name} from {config.package} must be registered.'
+            )
+            raise AviaryUserError(message) from None
 
-            tiles_processor_class, _ = registry_entry
-            # noinspection PyUnresolvedReferences
-            return tiles_processor_class.from_config(config=config.config)
+        tiles_processor_class, _ = registry_entry
+        # noinspection PyUnresolvedReferences
+        return tiles_processor_class.from_config(config=config.config)
 
     @staticmethod
     def register(
         tiles_processor_class: type[TilesProcessor],
         config_class: type[pydantic.BaseModel],
+        package: str = _PACKAGE,
     ) -> None:
         """Registers a tiles processor.
 
         Parameters:
             tiles_processor_class: Tiles processor class
             config_class: Configuration class
+            package: Package
         """
-        _registry[tiles_processor_class.__name__] = (tiles_processor_class, config_class)
+        key = (package, tiles_processor_class.__name__)
+        _TilesProcessorFactory.registry[key] = (tiles_processor_class, config_class)
 
 
-def register_tiles_processor(config_class: type[pydantic.BaseModel]) -> Callable:
+def register_tiles_processor(
+    config_class: type[pydantic.BaseModel],
+) -> Callable:
     """Registers a tiles processor.
 
     Parameters:
@@ -219,11 +220,26 @@ def register_tiles_processor(config_class: type[pydantic.BaseModel]) -> Callable
 
     Returns:
         Decorator
+
+    Raises:
+        AviaryUserError: Invalid registration (the package name is equal to aviary)
     """
-    def decorator(cls: type[TilesProcessor]) -> type[TilesProcessor]:
-        TilesProcessorFactory.register(
+    def decorator(
+        cls: type[TilesProcessor],
+    ) -> type[TilesProcessor]:
+        package = cls.__module__.split('.')[0]
+
+        if package == _PACKAGE:
+            message = (
+                'Invalid registration! '
+                f'The package name must be different from {_PACKAGE}.'
+            )
+            raise AviaryUserError(message)
+
+        _TilesProcessorFactory.register(
             tiles_processor_class=cls,
             config_class=config_class,
+            package=package,
         )
         return cls
     return decorator
@@ -307,6 +323,13 @@ class CopyProcessorConfig(pydantic.BaseModel):
     """
     channel_key: ChannelName | str | ChannelKey
     new_channel_key: ChannelName | str | ChannelKey | None = None
+
+
+_TilesProcessorFactory.register(
+    tiles_processor_class=CopyProcessor,
+    config_class=CopyProcessorConfig,
+    package=_PACKAGE,
+)
 
 
 class NormalizeProcessor:
@@ -412,6 +435,13 @@ class NormalizeProcessorConfig(pydantic.BaseModel):
     max_num_threads: int | None = None
 
 
+_TilesProcessorFactory.register(
+    tiles_processor_class=NormalizeProcessor,
+    config_class=NormalizeProcessorConfig,
+    package=_PACKAGE,
+)
+
+
 class ParallelCompositeProcessor:
     """Tiles processor that composes multiple tiles processors in parallel
 
@@ -447,7 +477,7 @@ class ParallelCompositeProcessor:
             Parallel composite processor
         """
         tiles_processors = [
-            TilesProcessorFactory.create(config=tiles_processor_config)
+            _TilesProcessorFactory.create(config=tiles_processor_config)
             for tiles_processor_config in config.tiles_processor_configs
         ]
         return cls(
@@ -488,6 +518,13 @@ class ParallelCompositeProcessorConfig(pydantic.BaseModel):
         tiles_processor_configs: Configurations of the tiles processors
     """
     tiles_processor_configs: list[TilesProcessorConfig]
+
+
+_TilesProcessorFactory.register(
+    tiles_processor_class=ParallelCompositeProcessor,
+    config_class=ParallelCompositeProcessorConfig,
+    package=_PACKAGE,
+)
 
 
 class RemoveBufferProcessor:
@@ -577,6 +614,13 @@ class RemoveBufferProcessorConfig(pydantic.BaseModel):
     ) = True
 
 
+_TilesProcessorFactory.register(
+    tiles_processor_class=RemoveBufferProcessor,
+    config_class=RemoveBufferProcessorConfig,
+    package=_PACKAGE,
+)
+
+
 class RemoveProcessor:
     """Tiles processor that removes channels
 
@@ -662,6 +706,13 @@ class RemoveProcessorConfig(pydantic.BaseModel):
         bool |
         None
     ) = True
+
+
+_TilesProcessorFactory.register(
+    tiles_processor_class=RemoveProcessor,
+    config_class=RemoveProcessorConfig,
+    package=_PACKAGE,
+)
 
 
 class SelectProcessor:
@@ -751,6 +802,13 @@ class SelectProcessorConfig(pydantic.BaseModel):
     ) = True
 
 
+_TilesProcessorFactory.register(
+    tiles_processor_class=SelectProcessor,
+    config_class=SelectProcessorConfig,
+    package=_PACKAGE,
+)
+
+
 class SequentialCompositeProcessor:
     """Tiles processor that composes multiple tiles processors in sequence
 
@@ -784,7 +842,7 @@ class SequentialCompositeProcessor:
             Sequential composite processor
         """
         tiles_processors = [
-            TilesProcessorFactory.create(config=tiles_processor_config)
+            _TilesProcessorFactory.create(config=tiles_processor_config)
             for tiles_processor_config in config.tiles_processor_configs
         ]
         return cls(
@@ -825,6 +883,13 @@ class SequentialCompositeProcessorConfig(pydantic.BaseModel):
         tiles_processor_configs: Configurations of the tiles processors
     """
     tiles_processor_configs: list[TilesProcessorConfig]
+
+
+_TilesProcessorFactory.register(
+    tiles_processor_class=SequentialCompositeProcessor,
+    config_class=SequentialCompositeProcessorConfig,
+    package=_PACKAGE,
+)
 
 
 class StandardizeProcessor:
@@ -930,6 +995,13 @@ class StandardizeProcessorConfig(pydantic.BaseModel):
     max_num_threads: int | None = None
 
 
+_TilesProcessorFactory.register(
+    tiles_processor_class=StandardizeProcessor,
+    config_class=StandardizeProcessorConfig,
+    package=_PACKAGE,
+)
+
+
 class VectorizeProcessor:
     """Tiles processor that vectorizes a channel
 
@@ -1026,3 +1098,10 @@ class VectorizeProcessorConfig(pydantic.BaseModel):
     ignore_background_class: bool = True
     new_channel_key: ChannelName | str | ChannelKey | None = None
     max_num_threads: int | None = None
+
+
+_TilesProcessorFactory.register(
+    tiles_processor_class=VectorizeProcessor,
+    config_class=VectorizeProcessorConfig,
+    package=_PACKAGE,
+)

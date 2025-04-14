@@ -14,8 +14,4 @@
 
 ---
 
-::: aviary.tile.TileFetcherFactory
-
----
-
 ::: aviary.tile.register_tile_fetcher
