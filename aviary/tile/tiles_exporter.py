@@ -15,9 +15,12 @@ from aviary.core.type_aliases import (
     ChannelKey,
     EPSGCode,
 )
+from aviary.tile.tiles_processor import _TilesProcessorFactory
 
 if TYPE_CHECKING:
     from aviary.core.tiles import Tiles
+
+_PACKAGE = 'aviary'
 
 
 class GridExporter:
@@ -94,6 +97,13 @@ class GridExporterConfig(pydantic.BaseModel):
     """
     dir_path: Path
     json_name: str
+
+
+_TilesProcessorFactory.register(
+    tiles_processor_class=GridExporter,
+    config_class=GridExporterConfig,
+    package=_PACKAGE,
+)
 
 
 class VectorExporter:
@@ -199,3 +209,10 @@ class VectorExporterConfig(pydantic.BaseModel):
     dir_path: Path
     gpkg_name: str
     remove_channel: bool = True
+
+
+_TilesProcessorFactory.register(
+    tiles_processor_class=VectorExporter,
+    config_class=VectorExporterConfig,
+    package=_PACKAGE,
+)
