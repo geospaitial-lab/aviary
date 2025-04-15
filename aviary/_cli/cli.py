@@ -21,7 +21,7 @@ except ImportError as error:
 from aviary import __version__
 
 # noinspection PyProtectedMember
-from aviary._cli.template import registry as template_registry
+from aviary._cli.templates import registry as template_registry
 
 # noinspection PyProtectedMember
 from aviary._utils.plugins import discover_plugins
