@@ -15,7 +15,3 @@
 ---
 
 ::: aviary.pipeline.TileLoaderConfig
-
----
-
-::: aviary.pipeline.TilePipelineFactory

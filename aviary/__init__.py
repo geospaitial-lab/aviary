@@ -18,7 +18,6 @@ from .core.exceptions import (
 from .core.grid import (
     Grid,
     GridConfig,
-    GridFactory,
 )
 from .core.tiles import (
     Tile,
@@ -59,7 +58,6 @@ __all__ = [
     'GeospatialFilterMode',
     'Grid',
     'GridConfig',
-    'GridFactory',
     'GroundSamplingDistance',
     'InterpolationMode',
     'RasterChannel',

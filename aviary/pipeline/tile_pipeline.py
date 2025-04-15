@@ -8,7 +8,7 @@ from rich.progress import track
 from aviary.core.grid import (
     Grid,
     GridConfig,
-    GridFactory,
+    _GridFactory,
 )
 from aviary.tile.tile_fetcher import (
     TileFetcher,
@@ -65,7 +65,7 @@ class TilePipeline:
         Returns:
             Tile pipeline
         """
-        grid = GridFactory.create(config=config.grid_config)
+        grid = _GridFactory.create(config=config.grid_config)
         tile_fetcher = _TileFetcherFactory.create(config=config.tile_fetcher_config)
         tiles_processor = _TilesProcessorFactory.create(config=config.tiles_processor_config)
         return cls(
@@ -165,7 +165,7 @@ class TilePipelineConfig(pydantic.BaseModel):
     tiles_processor_config: TilesProcessorConfig
 
 
-class TilePipelineFactory:
+class _TilePipelineFactory:
     """Factory for tile pipelines"""
 
     @staticmethod

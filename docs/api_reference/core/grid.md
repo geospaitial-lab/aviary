@@ -19,7 +19,3 @@
     options:
       filters:
       - "!"
-
----
-
-::: aviary.GridFactory
