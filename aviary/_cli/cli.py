@@ -174,15 +174,18 @@ def tile_pipeline_init(
         ...,
         help='Path to the config file',
     ),
-    template: str = typer.Argument(
+    template_option: str = typer.Option(
         'base',
+        '--template',
+        '-t',
         click_type=click.Choice(['base']),
         help='Template for the config file',
     ),
 ) -> None:
     """Initialize a config file."""
     pipeline = 'tile_pipeline'
-    config = template_registry[(pipeline, template)]
+    key = (pipeline, template_option)
+    config = template_registry[key]
 
     with config_path.open('w') as file:
         file.write(config)
