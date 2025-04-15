@@ -76,13 +76,13 @@ def version_callback(
 @app.callback()
 def main(
     context: typer.Context,
-    verbose: bool = typer.Option(
+    verbose_option: bool = typer.Option(
         False,  # noqa: FBT003
         '--verbose',
         '-v',
         help='Enable verbose mode.',
     ),
-    version: bool = typer.Option(  # noqa: ARG001
+    version_option: bool = typer.Option(  # noqa: ARG001
         None,
         '--version',
         callback=version_callback,
@@ -90,7 +90,7 @@ def main(
     ),
 ) -> None:
     context.obj = {
-        'verbose': verbose,
+        'verbose': verbose_option,
     }
 
 
