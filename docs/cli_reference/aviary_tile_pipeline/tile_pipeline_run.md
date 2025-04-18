@@ -14,5 +14,5 @@ aviary tile-pipeline run [OPTIONS] CONFIG_PATH
 
 ### Options
 
-- `-s, --set TEXT`: Configuration fields using key=value format.
+- `-s, --set TEXT`: Configuration fields using key=value format
 - `--help`: Show this message and exit.
