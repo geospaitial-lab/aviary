@@ -10,7 +10,7 @@ aviary tile-pipeline validate [OPTIONS] CONFIG_PATH
 
 ### Arguments
 
-- `CONFIG_PATH`: Path to the config file
+- `CONFIG_PATH`: Path to the config file (env var: `AVIARY_CONFIG_PATH`)
 
 ### Options
 
