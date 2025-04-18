@@ -9,6 +9,9 @@ aviary’s CLI is structured into the following commands:
 -   [**`aviary`**][**aviary**]<br>
     Show help.
 
+-   [**`aviary components`**][**aviary components**]<br>
+    Show the components.
+
 -   [**`aviary docs`**][**aviary docs**]<br>
     Open the documentation in a web browser.
 
@@ -24,6 +27,7 @@ aviary’s CLI is structured into the following commands:
 </div>
 
   [**aviary**]: aviary.md
+  [**aviary components**]: aviary_components.md
   [**aviary docs**]: aviary_docs.md
   [**aviary github**]: aviary_github.md
   [**aviary plugins**]: aviary_plugins.md

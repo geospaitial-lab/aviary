@@ -16,6 +16,7 @@ aviary [OPTIONS] COMMAND [ARGS]...
 
 ### General commands
 
+- `components`: Show the components.
 - `docs`: Open the documentation in a web browser.
 - `github`: Open the GitHub repository in a web browser.
 - `plugins`: Show the registered plugins.
