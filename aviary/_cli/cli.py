@@ -40,11 +40,13 @@ from aviary.tile.tiles_processor import _TilesProcessorFactory
 _PACKAGE = 'aviary'
 
 typer.rich_utils.DEFAULT_STRING = _('default: {}')
+typer.rich_utils.ENVVAR_STRING = _('env var: {}')
 typer.rich_utils.REQUIRED_LONG_STRING = _('required')
 typer.rich_utils.RICH_HELP = _('Try [green]{command_path} {help_option}[/] for help.')
 typer.rich_utils.STYLE_COMMANDS_TABLE_FIRST_COLUMN = 'bold green'
 typer.rich_utils.STYLE_METAVAR = 'dim green'
 typer.rich_utils.STYLE_OPTION = 'green'
+typer.rich_utils.STYLE_OPTION_ENVVAR = 'dim green'
 typer.rich_utils.STYLE_USAGE = 'bold green'
 
 app = typer.Typer(
@@ -213,6 +215,7 @@ def plugins(
 def tile_pipeline_init(
     config_path: Path = typer.Argument(
         ...,
+        envvar='AVIARY_CONFIG_PATH',
         help='Path to the config file',
     ),
     template_option: str = typer.Option(
@@ -254,6 +257,7 @@ def tile_pipeline_init(
 def tile_pipeline_run(
     config_path: Path = typer.Argument(
         ...,
+        envvar='AVIARY_CONFIG_PATH',
         help='Path to the config file',
     ),
     set_options: list[str] | None = typer.Option(
@@ -287,6 +291,7 @@ def tile_pipeline_run(
 def tile_pipeline_validate(
     config_path: Path = typer.Argument(
         ...,
+        envvar='AVIARY_CONFIG_PATH',
         help='Path to the config file',
     ),
     set_options: list[str] | None = typer.Option(
