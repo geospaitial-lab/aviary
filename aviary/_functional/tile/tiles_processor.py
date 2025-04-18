@@ -3,6 +3,9 @@ from __future__ import annotations
 from concurrent.futures import ThreadPoolExecutor
 from typing import TYPE_CHECKING
 
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
 import geopandas as gpd
 import numpy as np
 import numpy.typing as npt
@@ -29,7 +32,7 @@ if TYPE_CHECKING:
 def _process_data(
     tiles: Tiles,
     channel_key: ChannelName | str | ChannelKey,
-    process_data_item: callable,
+    process_data_item: Callable,
     new_channel_key: ChannelName | str | ChannelKey | None = None,
     max_num_threads: int | None = None,
 ) -> Tiles:

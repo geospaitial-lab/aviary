@@ -7,7 +7,10 @@ aviary’s CLI is structured into the following commands:
 <div class="grid cards" markdown>
 
 -   [**`aviary`**][**aviary**]<br>
-    Show the available commands.
+    Show help.
+
+-   [**`aviary components`**][**aviary components**]<br>
+    Show the components.
 
 -   [**`aviary docs`**][**aviary docs**]<br>
     Open the documentation in a web browser.
@@ -19,12 +22,13 @@ aviary’s CLI is structured into the following commands:
     Show the registered plugins.
 
 -   [**`aviary tile-pipeline`**][**aviary tile-pipeline**]<br>
-    Run the tile pipeline.
+    Subcommands for the tile pipeline
 
 </div>
 
   [**aviary**]: aviary.md
+  [**aviary components**]: aviary_components.md
   [**aviary docs**]: aviary_docs.md
   [**aviary github**]: aviary_github.md
   [**aviary plugins**]: aviary_plugins.md
-  [**aviary tile-pipeline**]: aviary_tile_pipeline.md
+  [**aviary tile-pipeline**]: aviary_tile_pipeline/tile_pipeline.md

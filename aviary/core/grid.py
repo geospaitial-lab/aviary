@@ -1076,7 +1076,7 @@ class GridConfig(pydantic.BaseModel):
         return self
 
 
-class GridFactory:
+class _GridFactory:
     """Factory for grids"""
 
     @staticmethod

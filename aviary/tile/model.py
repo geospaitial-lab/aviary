@@ -12,9 +12,12 @@ from aviary.core.type_aliases import (
     ChannelKey,
     _coerce_channel_key,
 )
+from aviary.tile.tiles_processor import _TilesProcessorFactory
 
 if TYPE_CHECKING:
     from aviary.core.tiles import Tiles
+
+_PACKAGE = 'aviary'
 
 
 class Adois:
@@ -213,3 +216,10 @@ class AdoisConfig(pydantic.BaseModel):
     out_channel_key: ChannelName | str | ChannelKey = 'adois'
     cache_dir_path: Path = Path('cache')
     remove_channels: bool = True
+
+
+_TilesProcessorFactory.register(
+    tiles_processor_class=Adois,
+    config_class=AdoisConfig,
+    package=_PACKAGE,
+)

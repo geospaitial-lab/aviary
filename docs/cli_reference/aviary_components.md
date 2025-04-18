@@ -1,11 +1,11 @@
-## `aviary plugins`
+## `aviary components`
 
-Show the registered plugins.
+Show the components.
 
 ### Usage
 
 ```
-aviary plugins [OPTIONS]
+aviary components [OPTIONS]
 ```
 
 ### Options

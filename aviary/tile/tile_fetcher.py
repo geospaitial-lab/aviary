@@ -39,6 +39,8 @@ from aviary.core.type_aliases import (
 if TYPE_CHECKING:
     from aviary.core.tiles import Tile
 
+_PACKAGE = 'aviary'
+
 
 class TileFetcher(Protocol):
     """Protocol for tile fetchers
@@ -77,51 +79,47 @@ class TileFetcherConfig(pydantic.BaseModel):
         You can create the configuration from a config file.
 
         ``` yaml title="config.yaml"
+        package: 'aviary'
         name: 'TileFetcher'
         config:
           ...
         ```
 
     Attributes:
+        package: Package -
+            defaults to 'aviary'
         name: Name
         config: Configuration -
             defaults to None
     """
+    package: str = 'aviary'
     name: str
     config: pydantic.BaseModel | None = None
 
     # noinspection PyNestedDecorators
-    @pydantic.field_validator('config', mode='before')
+    @pydantic.field_validator(
+        'config',
+        mode='before',
+    )
     @classmethod
     def _validate_config(
         cls,
         value: Any,  # noqa: ANN401
         info: ValidationInfo,
     ) -> pydantic.BaseModel:
-        name = info.data.get('name')
+        package = info.data['package']
+        name = info.data['name']
+        key = (package, name)
+        registry_entry = _TileFetcherFactory.registry.get(key)
 
-        if name is None:
+        if registry_entry is None:
             message = (
                 'Invalid config! '
-                'The name is required.'
+                f'The tile fetcher {name} from {package} must be registered.'
             )
             raise ValueError(message)
 
-        tile_fetcher_class = globals().get(name)
-
-        if tile_fetcher_class is not None:
-            config_class = globals().get(f'{name}Config')
-        else:
-            registry_entry = _registry.get(name)
-
-            if registry_entry is None:
-                message = (
-                    'Invalid config! '
-                    f'The tile fetcher {name} is not registered.'
-                )
-                raise ValueError(message)
-
-            _, config_class = registry_entry
+        _, config_class = registry_entry
 
         if value is None:
             return config_class()
@@ -132,11 +130,9 @@ class TileFetcherConfig(pydantic.BaseModel):
         return config_class(**value)
 
 
-_registry: dict[str, tuple[type[TileFetcher], type[pydantic.BaseModel]]] = {}
-
-
-class TileFetcherFactory:
+class _TileFetcherFactory:
     """Factory for tile fetchers"""
+    registry: dict[tuple[str, str], tuple[type[TileFetcher], type[pydantic.BaseModel]]] = {}  # noqa: RUF012
 
     @staticmethod
     def create(
@@ -149,39 +145,44 @@ class TileFetcherFactory:
 
         Returns:
             Tile fetcher
+
+        Raises:
+            AviaryUserError: Invalid `config` (the tile fetcher is not registered)
         """
-        try:
-            tile_fetcher_class = globals()[config.name]
-            return tile_fetcher_class.from_config(config=config.config)
-        except KeyError:
-            registry_entry = _registry.get(config.name)
+        key = (config.package, config.name)
+        registry_entry = _TileFetcherFactory.registry.get(key)
 
-            if registry_entry is None:
-                message = (
-                    'Invalid config! '
-                    f'The tile fetcher {config.name} is not registered.'
-                )
-                raise AviaryUserError(message) from None
+        if registry_entry is None:
+            message = (
+                'Invalid config! '
+                f'The tile fetcher {config.name} from {config.package} must be registered.'
+            )
+            raise AviaryUserError(message) from None
 
-            tile_fetcher_class, _ = registry_entry
-            # noinspection PyUnresolvedReferences
-            return tile_fetcher_class.from_config(config=config.config)
+        tile_fetcher_class, _ = registry_entry
+        # noinspection PyUnresolvedReferences
+        return tile_fetcher_class.from_config(config=config.config)
 
     @staticmethod
     def register(
         tile_fetcher_class: type[TileFetcher],
         config_class: type[pydantic.BaseModel],
+        package: str = _PACKAGE,
     ) -> None:
         """Registers a tile fetcher.
 
         Parameters:
             tile_fetcher_class: Tile fetcher class
             config_class: Configuration class
+            package: Package
         """
-        _registry[tile_fetcher_class.__name__] = (tile_fetcher_class, config_class)
+        key = (package, tile_fetcher_class.__name__)
+        _TileFetcherFactory.registry[key] = (tile_fetcher_class, config_class)
 
 
-def register_tile_fetcher(config_class: type[pydantic.BaseModel]) -> Callable:
+def register_tile_fetcher(
+    config_class: type[pydantic.BaseModel],
+) -> Callable:
     """Registers a tile fetcher.
 
     Parameters:
@@ -189,11 +190,26 @@ def register_tile_fetcher(config_class: type[pydantic.BaseModel]) -> Callable:
 
     Returns:
         Decorator
+
+    Raises:
+        AviaryUserError: Invalid registration (the package is equal to aviary)
     """
-    def decorator(cls: type[TileFetcher]) -> type[TileFetcher]:
-        TileFetcherFactory.register(
+    def decorator(
+        cls: type[TileFetcher],
+    ) -> type[TileFetcher]:
+        package = cls.__name__.split('.')[0]
+
+        if package == _PACKAGE:
+            message = (
+                'Invalid registration! '
+                f'The package must be different from {_PACKAGE}.'
+            )
+            raise AviaryUserError(message)
+
+        _TileFetcherFactory.register(
             tile_fetcher_class=cls,
             config_class=config_class,
+            package=package,
         )
         return cls
     return decorator
@@ -238,7 +254,7 @@ class CompositeFetcher:
             Composite fetcher
         """
         tile_fetchers = [
-            TileFetcherFactory.create(config=tile_fetcher_config)
+            _TileFetcherFactory.create(config=tile_fetcher_config)
             for tile_fetcher_config in config.tile_fetcher_configs
         ]
         return cls(
@@ -288,6 +304,13 @@ class CompositeFetcherConfig(pydantic.BaseModel):
     """
     tile_fetcher_configs: list[TileFetcherConfig]
     max_num_threads: int | None = None
+
+
+_TileFetcherFactory.register(
+    tile_fetcher_class=CompositeFetcher,
+    config_class=CompositeFetcherConfig,
+    package=_PACKAGE,
+)
 
 
 class VRTFetcher:
@@ -411,6 +434,13 @@ class VRTFetcherConfig(pydantic.BaseModel):
     ground_sampling_distance: GroundSamplingDistance
     interpolation_mode: InterpolationMode = InterpolationMode.BILINEAR
     buffer_size: BufferSize = 0
+
+
+_TileFetcherFactory.register(
+    tile_fetcher_class=VRTFetcher,
+    config_class=VRTFetcherConfig,
+    package=_PACKAGE,
+)
 
 
 class WMSFetcher:
@@ -562,3 +592,10 @@ class WMSFetcherConfig(pydantic.BaseModel):
     ground_sampling_distance: GroundSamplingDistance
     style: str | None = None
     buffer_size: BufferSize = 0
+
+
+_TileFetcherFactory.register(
+    tile_fetcher_class=WMSFetcher,
+    config_class=WMSFetcherConfig,
+    package=_PACKAGE,
+)
