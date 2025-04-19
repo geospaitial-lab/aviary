@@ -8,14 +8,14 @@ from typing import Any
 try:
     import click
     import rich.console
+    import rich.markup
     import typer
     import typer.rich_utils
     import yaml
 except ImportError as error:
     message = (
         'Missing dependencies! '
-        'To use the CLI, you need to install the cli dependency group:\n'
-        'pip install geospaitial-lab-aviary[cli]'
+        'To use the CLI, you need to install the cli dependency group (pip install geospaitial-lab-aviary[cli]).'
     )
     raise ImportError(message) from error
 
@@ -142,7 +142,7 @@ def handle_exception(
                 raise
 
             message = (
-                f'[bold bright_red]{type(error).__name__}:[/] {error}'
+                f'[bold bright_red]{type(error).__name__}:[/] {rich.markup.escape(str(error))}'
             )
             error_console.print(message)
             context.exit(1)
