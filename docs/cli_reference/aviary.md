@@ -10,6 +10,7 @@ aviary [OPTIONS] COMMAND [ARGS]...
 
 ### Options
 
+- `-q, --quiet`: Enable quiet mode.
 - `-v, --verbose`: Enable verbose mode.
 - `--version`: Show the version of the package and exit.
 - `--help`: Show this message and exit.
