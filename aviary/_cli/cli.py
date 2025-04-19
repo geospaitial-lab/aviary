@@ -67,6 +67,9 @@ app.add_typer(
     rich_help_panel='Pipeline commands',
 )
 console = rich.console.Console()
+error_console = rich.console.Console(
+    stderr=True,
+)
 
 
 def version_callback(
@@ -84,6 +87,12 @@ def version_callback(
 @app.callback()
 def main(
     context: typer.Context,
+    quiet_option: bool = typer.Option(
+        False,  # noqa: FBT003
+        '--quiet',
+        '-q',
+        help='Enable quiet mode.',
+    ),
     verbose_option: bool = typer.Option(
         False,  # noqa: FBT003
         '--verbose',
@@ -98,8 +107,12 @@ def main(
     ),
 ) -> None:
     context.obj = {
+        'quiet': quiet_option,
         'verbose': verbose_option,
     }
+
+    if quiet_option:
+        console.quiet = True
 
 
 def handle_exception(
@@ -131,7 +144,7 @@ def handle_exception(
             message = (
                 f'[bold bright_red]{type(error).__name__}:[/] {error}'
             )
-            console.print(message)
+            error_console.print(message)
             context.exit(1)
     return wrapper
 
@@ -228,6 +241,12 @@ def tile_pipeline_init(
 ) -> None:
     """Initialize a config file."""
     if config_path.exists():
+        context = click.get_current_context()
+        quiet = context.obj['quiet']
+
+        if quiet:
+            raise typer.Exit(0)
+
         message = (
             f'[bold yellow]The config file [/][dim yellow]at {config_path.resolve()}[/][bold yellow] already exists.'
         )
