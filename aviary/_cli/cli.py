@@ -231,6 +231,11 @@ def tile_pipeline_init(
         envvar='AVIARY_CONFIG_PATH',
         help='Path to the config file',
     ),
+    force_option: bool = typer.Option(
+        False,  # noqa: FBT003
+        '--force',
+        help='Force overwrite the config file if it already exists.',
+    ),
     template_option: str = typer.Option(
         'base',
         '--template',
@@ -240,12 +245,16 @@ def tile_pipeline_init(
     ),
 ) -> None:
     """Initialize a config file."""
-    if config_path.exists():
+    if config_path.exists() and not force_option:
         context = click.get_current_context()
         quiet = context.obj['quiet']
 
         if quiet:
-            raise typer.Exit(0)
+            message = (
+                'The config file already exists. '
+                'Use the --force option to overwrite it.'
+            )
+            raise typer.BadParameter(message)
 
         message = (
             f'[bold yellow]The config file [/][dim yellow]at {config_path.resolve()}[/][bold yellow] already exists.'
@@ -352,8 +361,7 @@ def parse_config(
         for set_option in set_options:
             if '=' not in set_option:
                 message = (
-                    'Invalid set_option! '
-                    'The set option must be in key=value format.'
+                    'The --set option must be in key=value format.'
                 )
                 raise typer.BadParameter(message)
 
