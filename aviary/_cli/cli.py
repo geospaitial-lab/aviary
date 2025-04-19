@@ -241,6 +241,12 @@ def tile_pipeline_init(
 ) -> None:
     """Initialize a config file."""
     if config_path.exists():
+        context = click.get_current_context()
+        quiet = context.obj['quiet']
+
+        if quiet:
+            raise typer.Exit(0)
+
         message = (
             f'[bold yellow]The config file [/][dim yellow]at {config_path.resolve()}[/][bold yellow] already exists.'
         )
