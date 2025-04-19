@@ -123,9 +123,6 @@ def handle_exception(
         *args: Any,  # noqa: ANN401
         **kwargs: Any,  # noqa: ANN401
     ) -> Any:  # noqa: ANN401
-        context = click.get_current_context()
-        verbose = context.obj['verbose']
-
         try:
             return func(
                 *args,
@@ -138,6 +135,9 @@ def handle_exception(
         except typer.Exit:
             raise
         except Exception as error:
+            context = click.get_current_context()
+            verbose = context.obj['verbose']
+
             if verbose:
                 raise
 
