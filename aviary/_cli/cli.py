@@ -163,6 +163,7 @@ def components(
     plugins_dir_path_option: Path | None = typer.Option(
         None,
         '--plugins-dir-path',
+        envvar='AVIARY_PLUGINS_DIR_PATH',
         help='Path to the plugins directory',
     ),
     type_options: list[str] | None = typer.Option(
@@ -208,6 +209,7 @@ def plugins(
     plugins_dir_path_option: Path | None = typer.Option(
         None,
         '--plugins-dir-path',
+        envvar='AVIARY_PLUGINS_DIR_PATH',
         help='Path to the plugins directory',
     ),
     type_options: list[str] | None = typer.Option(
