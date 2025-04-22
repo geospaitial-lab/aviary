@@ -234,6 +234,7 @@ def tile_pipeline_init(
     force_option: bool = typer.Option(
         False,  # noqa: FBT003
         '--force',
+        '-f',
         help='Force overwrite the config file if it already exists.',
     ),
     template_option: str = typer.Option(
@@ -252,9 +253,12 @@ def tile_pipeline_init(
         if quiet:
             message = (
                 'The config file already exists. '
-                'Use the --force option to overwrite it.'
+                "Use '--force' to overwrite it."
             )
-            raise typer.BadParameter(message)
+            raise typer.BadParameter(
+                message=message,
+                param_hint="'--force'",
+            )
 
         message = (
             f'[bold yellow]The config file [/][dim yellow]at {config_path.resolve()}[/][bold yellow] already exists.'
@@ -361,9 +365,12 @@ def parse_config(
         for set_option in set_options:
             if '=' not in set_option:
                 message = (
-                    'The --set option must be in key=value format.'
+                    'Must be in key=value format.'
                 )
-                raise typer.BadParameter(message)
+                raise typer.BadParameter(
+                    message=message,
+                    param_hint="'--set'",
+                )
 
             key, value = set_option.split('=', 1)
             value = yaml.safe_load(value)
