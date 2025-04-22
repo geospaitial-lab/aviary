@@ -8,14 +8,14 @@ from typing import Any
 try:
     import click
     import rich.console
+    import rich.markup
     import typer
     import typer.rich_utils
     import yaml
 except ImportError as error:
     message = (
         'Missing dependencies! '
-        'To use the CLI, you need to install the cli dependency group:\n'
-        'pip install geospaitial-lab-aviary[cli]'
+        'To use the CLI, you need to install the cli dependency group (pip install geospaitial-lab-aviary[cli]).'
     )
     raise ImportError(message) from error
 
@@ -123,9 +123,6 @@ def handle_exception(
         *args: Any,  # noqa: ANN401
         **kwargs: Any,  # noqa: ANN401
     ) -> Any:  # noqa: ANN401
-        context = click.get_current_context()
-        verbose = context.obj['verbose']
-
         try:
             return func(
                 *args,
@@ -138,11 +135,14 @@ def handle_exception(
         except typer.Exit:
             raise
         except Exception as error:
+            context = click.get_current_context()
+            verbose = context.obj['verbose']
+
             if verbose:
                 raise
 
             message = (
-                f'[bold bright_red]{type(error).__name__}:[/] {error}'
+                f'[bold bright_red]{type(error).__name__}:[/] {rich.markup.escape(str(error))}'
             )
             error_console.print(message)
             context.exit(1)
@@ -231,6 +231,12 @@ def tile_pipeline_init(
         envvar='AVIARY_CONFIG_PATH',
         help='Path to the config file',
     ),
+    force_option: bool = typer.Option(
+        False,  # noqa: FBT003
+        '--force',
+        '-f',
+        help='Force overwrite the config file if it already exists.',
+    ),
     template_option: str = typer.Option(
         'base',
         '--template',
@@ -240,12 +246,19 @@ def tile_pipeline_init(
     ),
 ) -> None:
     """Initialize a config file."""
-    if config_path.exists():
+    if config_path.exists() and not force_option:
         context = click.get_current_context()
         quiet = context.obj['quiet']
 
         if quiet:
-            raise typer.Exit(0)
+            message = (
+                'The config file already exists. '
+                "Use '--force' to overwrite it."
+            )
+            raise typer.BadParameter(
+                message=message,
+                param_hint="'--force'",
+            )
 
         message = (
             f'[bold yellow]The config file [/][dim yellow]at {config_path.resolve()}[/][bold yellow] already exists.'
@@ -352,10 +365,12 @@ def parse_config(
         for set_option in set_options:
             if '=' not in set_option:
                 message = (
-                    'Invalid set_option! '
-                    'The set option must be in key=value format.'
+                    'Must be in key=value format.'
                 )
-                raise typer.BadParameter(message)
+                raise typer.BadParameter(
+                    message=message,
+                    param_hint="'--set'",
+                )
 
             key, value = set_option.split('=', 1)
             value = yaml.safe_load(value)
