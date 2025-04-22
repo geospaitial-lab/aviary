@@ -22,6 +22,7 @@ aviary’s CLI is structured into the following commands:
     Show the registered plugins.
 
 -   [**`aviary tile-pipeline`**][**aviary tile-pipeline**]<br>
+    [**`aviary tile`**][**aviary tile-pipeline**]<br>
     Subcommands for the tile pipeline
 
 </div>

@@ -4,9 +4,17 @@ Subcommands for the tile pipeline
 
 ### Usage
 
-```
-aviary tile-pipeline [OPTIONS] COMMAND [ARGS]...
-```
+=== "Default"
+
+    ```
+    aviary tile-pipeline [OPTIONS] COMMAND [ARGS]...
+    ```
+
+=== "Alias"
+
+    ```
+    aviary tile [OPTIONS] COMMAND [ARGS]...
+    ```
 
 ### Options
 

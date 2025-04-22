@@ -29,7 +29,7 @@ aviary [OPTIONS] COMMAND [ARGS]...
 
 ### Pipeline commands
 
-- [`tile-pipeline`][tile-pipeline]: Subcommands for the tile pipeline
+- [`tile-pipeline`][tile-pipeline]: Subcommands for the tile pipeline (alias: [`tile`][tile-pipeline])
 - [`tile`][tile-pipeline]: Subcommands for the tile pipeline
 
   [tile-pipeline]: aviary_tile_pipeline/tile_pipeline.md
