@@ -4,9 +4,17 @@ Validate the config file.
 
 ### Usage
 
-```
-aviary tile-pipeline validate [OPTIONS] CONFIG_PATH
-```
+=== "Default"
+
+    ```
+    aviary tile-pipeline validate [OPTIONS] CONFIG_PATH
+    ```
+
+=== "Alias"
+
+    ```
+    aviary tile validate [OPTIONS] CONFIG_PATH
+    ```
 
 ### Arguments
 

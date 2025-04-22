@@ -60,10 +60,16 @@ app = typer.Typer(
 tile_pipeline_app = typer.Typer(
     name='tile-pipeline',
     no_args_is_help=True,
-    help='Subcommands for the tile pipeline',
 )
 app.add_typer(
     typer_instance=tile_pipeline_app,
+    help='Subcommands for the tile pipeline (alias: tile)',
+    rich_help_panel='Pipeline commands',
+)
+app.add_typer(
+    typer_instance=tile_pipeline_app,
+    name='tile',
+    help='Subcommands for the tile pipeline',
     rich_help_panel='Pipeline commands',
 )
 console = rich.console.Console()

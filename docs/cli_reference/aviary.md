@@ -17,11 +17,19 @@ aviary [OPTIONS] COMMAND [ARGS]...
 
 ### General commands
 
-- `components`: Show the components.
-- `docs`: Open the documentation in a web browser.
-- `github`: Open the GitHub repository in a web browser.
-- `plugins`: Show the registered plugins.
+- [`components`][components]: Show the components.
+- [`docs`][docs]: Open the documentation in a web browser.
+- [`github`][github]: Open the GitHub repository in a web browser.
+- [`plugins`][plugins]: Show the registered plugins.
+
+  [components]: aviary_components.md
+  [docs]: aviary_docs.md
+  [github]: aviary_github.md
+  [plugins]: aviary_plugins.md
 
 ### Pipeline commands
 
-- `tile-pipeline`: Subcommands for the tile pipeline
+- [`tile-pipeline`][tile-pipeline]: Subcommands for the tile pipeline (alias: [`tile`][tile-pipeline])
+- [`tile`][tile-pipeline]: Subcommands for the tile pipeline
+
+  [tile-pipeline]: aviary_tile_pipeline/tile_pipeline.md

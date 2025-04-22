@@ -4,9 +4,17 @@ Initialize a config file.
 
 ### Usage
 
-```
-aviary tile-pipeline init [OPTIONS] CONFIG_PATH
-```
+=== "Default"
+
+    ```
+    aviary tile-pipeline init [OPTIONS] CONFIG_PATH
+    ```
+
+=== "Alias"
+
+    ```
+    aviary tile init [OPTIONS] CONFIG_PATH
+    ```
 
 ### Arguments
 

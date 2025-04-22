@@ -4,9 +4,17 @@ Subcommands for the tile pipeline
 
 ### Usage
 
-```
-aviary tile-pipeline [OPTIONS] COMMAND [ARGS]...
-```
+=== "Default"
+
+    ```
+    aviary tile-pipeline [OPTIONS] COMMAND [ARGS]...
+    ```
+
+=== "Alias"
+
+    ```
+    aviary tile [OPTIONS] COMMAND [ARGS]...
+    ```
 
 ### Options
 
@@ -14,6 +22,10 @@ aviary tile-pipeline [OPTIONS] COMMAND [ARGS]...
 
 ### Commands
 
-- `init`: Initialize a config file.
-- `run`: Run the tile pipeline.
-- `validate`: Validate the config file.
+- [`init`][init]: Initialize a config file.
+- [`run`][run]: Run the tile pipeline.
+- [`validate`][validate]: Validate the config file.
+
+  [init]: tile_pipeline_init.md
+  [run]: tile_pipeline_run.md
+  [validate]: tile_pipeline_validate.md

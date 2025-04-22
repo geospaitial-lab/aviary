@@ -4,9 +4,17 @@ Run the tile pipeline.
 
 ### Usage
 
-```
-aviary tile-pipeline run [OPTIONS] CONFIG_PATH
-```
+=== "Default"
+
+    ```
+    aviary tile-pipeline run [OPTIONS] CONFIG_PATH
+    ```
+
+=== "Alias"
+
+    ```
+    aviary tile run [OPTIONS] CONFIG_PATH
+    ```
 
 ### Arguments
 
