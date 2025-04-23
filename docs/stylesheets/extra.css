@@ -1,5 +1,6 @@
 html {
   overflow-y: scroll;
+  scroll-behavior: smooth;
 }
 
 .md-header, .md-tabs {
