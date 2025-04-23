@@ -160,6 +160,12 @@ def handle_exception(
 )
 @handle_exception
 def components(
+    package_options: list[str] | None = typer.Option(
+        None,
+        '--package',
+        '-p',
+        help='Package of the components',
+    ),
     plugins_dir_path_option: Path | None = typer.Option(
         None,
         '--plugins-dir-path',
@@ -175,11 +181,23 @@ def components(
     ),
 ) -> None:
     """Show the components."""
+    if package_options is not None:
+        def filter_packages(package: str) -> bool:
+            return package in package_options
+    else:
+        filter_packages = None
+
+    if type_options is not None:
+        def filter_types(type_: str) -> bool:
+            return type_ in type_options
+    else:
+        filter_types = None
+
     show_components(
         title='Components:',
         plugins_dir_path=plugins_dir_path_option,
-        type_options=type_options,
-        filter_packages=None,
+        filter_packages=filter_packages,
+        filter_types=filter_types,
     )
 
 
@@ -206,6 +224,12 @@ def github() -> None:
 )
 @handle_exception
 def plugins(
+    package_options: list[str] | None = typer.Option(
+        None,
+        '--package',
+        '-p',
+        help='Package of the components',
+    ),
     plugins_dir_path_option: Path | None = typer.Option(
         None,
         '--plugins-dir-path',
@@ -221,11 +245,24 @@ def plugins(
     ),
 ) -> None:
     """Show the registered plugins."""
+    if package_options is not None:
+        def filter_packages(package: str) -> bool:
+            return package in package_options and package != _PACKAGE
+    else:
+        def filter_packages(package: str) -> bool:
+            return package != _PACKAGE
+
+    if type_options is not None:
+        def filter_types(type_: str) -> bool:
+            return type_ in type_options
+    else:
+        filter_types = None
+
     show_components(
         title='Registered plugins:',
         plugins_dir_path=plugins_dir_path_option,
-        type_options=type_options,
-        filter_packages=lambda package: package != _PACKAGE,
+        filter_packages=filter_packages,
+        filter_types=filter_types,
     )
 
 
@@ -397,8 +434,8 @@ def parse_config(
 def show_components(
     title: str,
     plugins_dir_path: Path | None = None,
-    type_options: list[str] | None = None,
-    filter_packages: Callable | None = None,
+    filter_packages: Callable[[str], bool] | None = None,
+    filter_types: Callable[[str], bool] | None = None,
 ) -> None:
     if plugins_dir_path is not None:
         discover_plugins(plugins_dir_path=plugins_dir_path)
@@ -425,7 +462,9 @@ def show_components(
     )
     console.print(message)
 
-    if type_options is None or 'tile_fetcher' in type_options:
+    show_tile_fetcher = filter_types is None or filter_types('tile_fetcher')
+
+    if show_tile_fetcher:
         message = (
             '  [bold green]TileFetcher:'
         )
@@ -443,7 +482,9 @@ def show_components(
                 )
                 console.print(message)
 
-    if type_options is None or 'tiles_processor' in type_options:
+    show_tiles_processor = filter_types is None or filter_types('tiles_processor')
+
+    if show_tiles_processor:
         message = (
             '  [bold green]TilesProcessor:'
         )
