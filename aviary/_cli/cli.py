@@ -164,7 +164,7 @@ def components(
         None,
         '--package',
         '-p',
-        help='Package',
+        help='Package of the components',
     ),
     plugins_dir_path_option: Path | None = typer.Option(
         None,
@@ -228,7 +228,7 @@ def plugins(
         None,
         '--package',
         '-p',
-        help='Package',
+        help='Package of the components',
     ),
     plugins_dir_path_option: Path | None = typer.Option(
         None,
