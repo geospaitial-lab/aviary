@@ -470,15 +470,15 @@ def show_components(
         )
         console.print(message)
 
-        for package, names in groupby(tile_fetchers, key=lambda registry_entry: registry_entry[0]):
+        for package, components in groupby(tile_fetchers, key=lambda registry_entry: registry_entry[0]):
             message = (
                 f'    [green]{package}:'
             )
             console.print(message)
 
-            for _, name in names:
+            for _, component in components:
                 message = (
-                    f'      - {name}'
+                    f'      - {component}'
                 )
                 console.print(message)
 
@@ -490,15 +490,15 @@ def show_components(
         )
         console.print(message)
 
-        for package, names in groupby(tiles_processors, key=lambda registry_entry: registry_entry[0]):
+        for package, components in groupby(tiles_processors, key=lambda registry_entry: registry_entry[0]):
             message = (
                 f'    [green]{package}:'
             )
             console.print(message)
 
-            for _, name in names:
+            for _, component in components:
                 message = (
-                    f'      - {name}'
+                    f'      - {component}'
                 )
                 console.print(message)
 
