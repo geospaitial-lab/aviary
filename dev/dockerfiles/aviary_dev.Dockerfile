@@ -20,7 +20,7 @@ RUN uv venv venv && \
     . venv/bin/activate && \
     uv pip install --upgrade pip setuptools wheel && \
     uv pip install huggingface_hub onnxruntime && \
-    uv pip install . && \
+    uv pip install .[all] && \
     adduser --disabled-password --gecos "" aviary_user
 
 USER aviary_user

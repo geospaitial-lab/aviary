@@ -9,7 +9,7 @@ RUN uv venv venv && \
     . venv/bin/activate && \
     uv pip install --upgrade pip setuptools wheel && \
     uv pip install huggingface_hub onnxruntime && \
-    uv build --wheel --no-cache .
+    uv build --wheel --no-cache .[all]
 
 FROM python:3.12-slim as runner
 
