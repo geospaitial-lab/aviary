@@ -269,6 +269,42 @@ def plugins(
 
 
 @tile_pipeline_app.command(
+    name='components',
+)
+@handle_exception
+def tile_pipeline_components(
+    package_options: list[str] | None = typer.Option(
+        None,
+        '--package',
+        '-p',
+        help='Package of the components',
+    ),
+    plugins_dir_path_option: Path | None = typer.Option(
+        None,
+        '--plugins-dir-path',
+        envvar='AVIARY_PLUGINS_DIR_PATH',
+        help='Path to the plugins directory',
+    ),
+) -> None:
+    """Show the components."""
+    if package_options is not None:
+        def filter_packages(package: str) -> bool:
+            return package in package_options
+    else:
+        filter_packages = None
+
+    def filter_types(type_: str) -> bool:
+        return type_ in ['tile_fetcher', 'tiles_processor']
+
+    show_components(
+        title='Components:',
+        plugins_dir_path=plugins_dir_path_option,
+        filter_packages=filter_packages,
+        filter_types=filter_types,
+    )
+
+
+@tile_pipeline_app.command(
     name='config',
 )
 @handle_exception
@@ -449,6 +485,43 @@ def tile_pipeline_init(
         f'[bold green]The config file [/][dim green]at {config_path.resolve()}[/][bold green] has been initialized.'
     )
     console.print(message)
+
+
+@tile_pipeline_app.command(
+    name='plugins',
+)
+@handle_exception
+def tile_pipeline_plugins(
+    package_options: list[str] | None = typer.Option(
+        None,
+        '--package',
+        '-p',
+        help='Package of the components',
+    ),
+    plugins_dir_path_option: Path | None = typer.Option(
+        None,
+        '--plugins-dir-path',
+        envvar='AVIARY_PLUGINS_DIR_PATH',
+        help='Path to the plugins directory',
+    ),
+) -> None:
+    """Show the registered plugins."""
+    if package_options is not None:
+        def filter_packages(package: str) -> bool:
+            return package in package_options and package != _PACKAGE
+    else:
+        def filter_packages(package: str) -> bool:
+            return package != _PACKAGE
+
+    def filter_types(type_: str) -> bool:
+        return type_ in ['tile_fetcher', 'tiles_processor']
+
+    show_components(
+        title='Registered plugins:',
+        plugins_dir_path=plugins_dir_path_option,
+        filter_packages=filter_packages,
+        filter_types=filter_types,
+    )
 
 
 @tile_pipeline_app.command(
