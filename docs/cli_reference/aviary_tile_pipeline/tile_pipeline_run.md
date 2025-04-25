@@ -2,7 +2,7 @@
 
 Run the tile pipeline.
 
-### Usage
+### **USAGE**
 
 === "Default"
 
@@ -16,11 +16,11 @@ Run the tile pipeline.
     aviary tile run [OPTIONS] CONFIG_PATH
     ```
 
-### Arguments
+### **ARGUMENTS**
 
 - `CONFIG_PATH`: Path to the config file (env var: `AVIARY_CONFIG_PATH`)
 
-### Options
+### **OPTIONS**
 
 - `-s, --set TEXT`: Configuration fields using key=value format
 - `--help`: Show this message and exit.

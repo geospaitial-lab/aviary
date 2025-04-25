@@ -2,7 +2,7 @@
 
 Initialize a config file.
 
-### Usage
+### **USAGE**
 
 === "Default"
 
@@ -16,11 +16,11 @@ Initialize a config file.
     aviary tile init [OPTIONS] CONFIG_PATH
     ```
 
-### Arguments
+### **ARGUMENTS**
 
 - `CONFIG_PATH`: Path to the config file (env var: `AVIARY_CONFIG_PATH`)
 
-### Options
+### **OPTIONS**
 
 - `-f, --force`: Force overwrite the config file if it already exists.
 - `-t, --template [base]`: Template for the config file - defaults to base

@@ -2,13 +2,13 @@
 
 Show the components.
 
-### Usage
+### **USAGE**
 
 ```
 aviary components [OPTIONS]
 ```
 
-### Options
+### **OPTIONS**
 
 - `-p, --package TEXT`: Package of the components
 - `--plugins-dir-path PATH`: Path to the plugins directory (env var: `AVIARY_PLUGINS_DIR_PATH`)

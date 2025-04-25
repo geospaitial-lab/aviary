@@ -2,12 +2,12 @@
 
 Open the documentation in a web browser.
 
-### Usage
+### **USAGE**
 
 ```
 aviary docs [OPTIONS]
 ```
 
-### Options
+### **OPTIONS**
 
 - `--help`: Show this message and exit.

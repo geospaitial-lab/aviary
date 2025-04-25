@@ -2,12 +2,12 @@
 
 Open the GitHub repository in a web browser.
 
-### Usage
+### **USAGE**
 
 ```
 aviary github [OPTIONS]
 ```
 
-### Options
+### **OPTIONS**
 
 - `--help`: Show this message and exit.

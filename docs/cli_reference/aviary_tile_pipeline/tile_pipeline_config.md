@@ -2,7 +2,7 @@
 
 Show the configuration for a component.
 
-### Usage
+### **USAGE**
 
 === "Default"
 
@@ -16,11 +16,11 @@ Show the configuration for a component.
     aviary tile config [OPTIONS] COMPONENT
     ```
 
-### Arguments
+### **ARGUMENTS**
 
 - `COMPONENT`: Component
 
-### Options
+### **OPTIONS**
 
 - `-c, --copy`: Copy the configuration to the clipboard.
 - `-l, --level INTEGER`: Indentation level - defaults to 0
