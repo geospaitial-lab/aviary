@@ -1,4 +1,5 @@
 from collections.abc import Callable
+from enum import Enum
 from functools import wraps
 from gettext import gettext as _
 from itertools import groupby
@@ -7,6 +8,7 @@ from typing import Any
 
 try:
     import click
+    import pyperclip
     import rich.console
     import rich.markup
     import typer
@@ -264,6 +266,128 @@ def plugins(
         filter_packages=filter_packages,
         filter_types=filter_types,
     )
+
+
+@tile_pipeline_app.command(
+    name='config',
+)
+@handle_exception
+def tile_pipeline_config(
+    component: str = typer.Argument(
+        ...,
+        help='Component',
+    ),
+    copy_option: bool = typer.Option(
+        False,  # noqa: FBT003
+        '--copy',
+        '-c',
+        help='Copy the configuration to the clipboard.',
+    ),
+    level_option: int = typer.Option(
+        0,
+        '--level',
+        '-l',
+        help='Indentation level',
+    ),
+    package_option: str = typer.Option(
+        'aviary',
+        '--package',
+        '-p',
+        help='Package of the component',
+    ),
+    plugins_dir_path: Path | None = typer.Option(
+        None,
+        '--plugins-dir-path',
+        envvar='AVIARY_PLUGINS_DIR_PATH',
+        help='Path to the plugins directory',
+    ),
+) -> None:
+    """Show the configuration for a component."""
+    if plugins_dir_path is not None:
+        discover_plugins(plugins_dir_path=plugins_dir_path)
+
+    registry = {
+        **_TileFetcherFactory.registry,
+        **_TilesProcessorFactory.registry,
+    }
+
+    key = (package_option, component)
+    registry_entry = registry.get(key)
+
+    if registry_entry is None:
+        message = (
+            f'The component {component} from package {package_option} must be registered.'
+        )
+        raise typer.BadParameter(
+            message=message,
+            param_hint="'COMPONENT'",
+        )
+
+    _, config_class = registry_entry
+    lines: list[str] = []
+
+    for field_key, field_info in config_class.model_fields.items():
+        if field_info.is_required():
+            line = f'{field_key}: '
+            lines.append(line)
+        else:
+            default_value = field_info.get_default()
+
+            if isinstance(default_value, Enum):
+                default_value = default_value.value
+            elif isinstance(default_value, Path):
+                default_value = str(default_value)
+
+            line = yaml.dump(
+                data={field_key: default_value},
+                default_flow_style=False,
+            )
+            line = line.rstrip()
+            lines.append(line)
+
+    message = (
+        f'[bold green]Configuration for[/] {component}[bold green] from[/][green] {package_option}[/][bold green]:'
+    )
+    console.print(message)
+
+    message = (
+        f'[green]  package:[/] {package_option}'
+    )
+    console.print(message)
+    message = (
+        f'[green]  name:[/] {component}'
+    )
+    console.print(message)
+    message = (
+        '[green]  config:'
+    )
+    console.print(message)
+
+    for line in lines:
+        key, value = line.split(':', 1)
+
+        if value.strip():
+            message = (
+                f'[green]    {key}:[/][default]{value}'
+            )
+            console.print(message)
+        else:
+            message = (
+                f'[green]    {key}:'
+            )
+            console.print(message)
+
+    if copy_option:
+        indent = ' ' * (level_option * 2)
+        component_lines = [
+            f'package: {package_option}',
+            f'name: {component}',
+            'config:',
+        ]
+        lines = [f'  {line}' for line in lines]
+        lines = component_lines + lines
+        config = indent + ('\n' + indent).join(lines)
+        pyperclip.copy(config)
 
 
 @tile_pipeline_app.command(
