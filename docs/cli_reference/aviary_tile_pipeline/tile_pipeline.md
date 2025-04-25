@@ -2,7 +2,7 @@
 
 Subcommands for the tile pipeline
 
-### Usage
+### **USAGE**
 
 === "Default"
 
@@ -16,11 +16,11 @@ Subcommands for the tile pipeline
     aviary tile [OPTIONS] COMMAND [ARGS]...
     ```
 
-### Options
+### **OPTIONS**
 
 - `--help`: Show this message and exit.
 
-### Commands
+### **COMMANDS**
 
 - [`config`][config]: Show the configuration for a component.
 - [`init`][init]: Initialize a config file.

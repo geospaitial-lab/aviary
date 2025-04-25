@@ -2,20 +2,20 @@
 
 Python Framework for tile-based processing of geospatial data
 
-### Usage
+### **USAGE**
 
 ```
 aviary [OPTIONS] COMMAND [ARGS]...
 ```
 
-### Options
+### **OPTIONS**
 
 - `-q, --quiet`: Enable quiet mode.
 - `-v, --verbose`: Enable verbose mode.
 - `--version`: Show the version of the package and exit.
 - `--help`: Show this message and exit.
 
-### General commands
+### **GENERAL COMMANDS**
 
 - [`components`][components]: Show the components.
 - [`docs`][docs]: Open the documentation in a web browser.
@@ -27,7 +27,7 @@ aviary [OPTIONS] COMMAND [ARGS]...
   [github]: aviary_github.md
   [plugins]: aviary_plugins.md
 
-### Pipeline commands
+### **PIPELINE COMMANDS**
 
 - [`tile-pipeline`][tile-pipeline]: Subcommands for the tile pipeline (alias: [`tile`][tile-pipeline])
 - [`tile`][tile-pipeline]: Subcommands for the tile pipeline
