@@ -15,15 +15,17 @@ FROM python:3.12-slim as runner
 
 WORKDIR /aviary
 
-ENV PYTHONUNBUFFERED 1
+ENV PYTHONUNBUFFERED=1
 
 ARG VERSION
+ARG CREATED
 
 LABEL org.opencontainers.image.title="aviary" \
-    org.opencontainers.image.description="Composable inference and postprocessing pipeline for remote sensing data" \
+    org.opencontainers.image.description="Python Framework for tile-based processing of geospatial data" \
     org.opencontainers.image.authors="Marius Maryniak (marius.maryniak@w-hs.de)" \
     org.opencontainers.image.licenses="GPL-3.0" \
     org.opencontainers.image.version=$VERSION \
+    org.opencontainers.image.created=$CREATED \
     org.opencontainers.image.url="https://www.github.com/geospaitial-lab/aviary" \
     org.opencontainers.image.source="https://www.github.com/geospaitial-lab/aviary" \
     org.opencontainers.image.documentation="https://geospaitial-lab.github.io/aviary"
