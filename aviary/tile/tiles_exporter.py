@@ -87,8 +87,11 @@ class GridExporterConfig(pydantic.BaseModel):
         You can create the configuration from a config file.
 
         ``` yaml title="config.yaml"
-        dir_path: 'path/to/my/directory'
-        json_name: 'processed_grid.json'
+        package: 'aviary'
+        name: 'GridExporter'
+        config:
+          dir_path: 'path/to/my/directory'
+          json_name: 'processed_grid.json'
         ```
 
     Attributes:
@@ -189,11 +192,14 @@ class VectorExporterConfig(pydantic.BaseModel):
         You can create the configuration from a config file.
 
         ``` yaml title="config.yaml"
-        channel_key: 'my_channel'
-        epsg_code: 25832
-        dir_path: 'path/to/my/directory'
-        gpkg_name: 'my_channel.gpkg'
-        remove_channel: true
+        package: 'aviary'
+        name: 'VectorExporter'
+        config:
+          channel_key: 'my_channel'
+          epsg_code: 25832
+          dir_path: 'path/to/my/directory'
+          gpkg_name: 'my_channel.gpkg'
+          remove_channel: true
         ```
 
     Attributes:

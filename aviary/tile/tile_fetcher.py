@@ -291,10 +291,13 @@ class CompositeFetcherConfig(pydantic.BaseModel):
         You can create the configuration from a config file.
 
         ``` yaml title="config.yaml"
-        tile_fetcher_configs:
-          - ...
-          ...
-        max_num_threads: null
+        package: 'aviary'
+        name: 'CompositeFetcher'
+        config:
+          tile_fetcher_configs:
+            - ...
+            ...
+          max_num_threads: null
         ```
 
     Attributes:
@@ -401,15 +404,18 @@ class VRTFetcherConfig(pydantic.BaseModel):
         You can create the configuration from a config file.
 
         ``` yaml title="config.yaml"
-        path: 'path/to/my_vrt.vrt'
-        channel_keys:
-          - 'r'
-          - 'g'
-          - 'b'
-        tile_size: 128
-        ground_sampling_distance: .2
-        interpolation_mode: 'bilinear'
-        buffer_size: 0
+        package: 'aviary'
+        name: 'VRTFetcher'
+        config:
+          path: 'path/to/my_vrt.vrt'
+          channel_keys:
+            - 'r'
+            - 'g'
+            - 'b'
+          tile_size: 128
+          ground_sampling_distance: .2
+          interpolation_mode: 'bilinear'
+          buffer_size: 0
         ```
 
     Attributes:
@@ -547,19 +553,22 @@ class WMSFetcherConfig(pydantic.BaseModel):
         You can create the configuration from a config file.
 
         ``` yaml title="config.yaml"
-        url: 'https://www.my-wms.com'
-        version: '1.3.0'
-        layer: 'my_layer'
-        epsg_code: 25832
-        response_format: 'image/png'
-        channel_keys:
-          - 'r'
-          - 'g'
-          - 'b'
-        tile_size: 128
-        ground_sampling_distance: .2
-        style: null
-        buffer_size: 0
+        package: 'aviary'
+        name: 'WMSFetcher'
+        config:
+          url: 'https://www.my-wms.com'
+          version: '1.3.0'
+          layer: 'my_layer'
+          epsg_code: 25832
+          response_format: 'image/png'
+          channel_keys:
+            - 'r'
+            - 'g'
+            - 'b'
+          tile_size: 128
+          ground_sampling_distance: .2
+          style: null
+          buffer_size: 0
         ```
 
     Attributes:
