@@ -1,4 +1,4 @@
-FROM python:3.12-slim as builder
+FROM python:3.12-slim-bookworm AS builder
 
 WORKDIR /aviary
 
@@ -11,7 +11,7 @@ RUN uv venv venv && \
     uv pip install huggingface_hub onnxruntime && \
     uv build --wheel --no-cache .[all]
 
-FROM python:3.12-slim as runner
+FROM python:3.12-slim-bookworm AS runner
 
 WORKDIR /aviary
 
