@@ -17,18 +17,18 @@ WORKDIR /aviary
 
 ENV PYTHONUNBUFFERED=1
 
-ARG VERSION
 ARG CREATED
+ARG VERSION
 
-LABEL org.opencontainers.image.title="aviary" \
-    org.opencontainers.image.description="Python Framework for tile-based processing of geospatial data" \
-    org.opencontainers.image.authors="Marius Maryniak (marius.maryniak@w-hs.de)" \
-    org.opencontainers.image.licenses="GPL-3.0" \
-    org.opencontainers.image.version=$VERSION \
+LABEL org.opencontainers.image.authors="Marius Maryniak (marius.maryniak@w-hs.de)" \
     org.opencontainers.image.created=$CREATED \
-    org.opencontainers.image.url="https://www.github.com/geospaitial-lab/aviary" \
+    org.opencontainers.image.description="Python Framework for tile-based processing of geospatial data" \
+    org.opencontainers.image.documentation="https://geospaitial-lab.github.io/aviary" \
+    org.opencontainers.image.licenses="GPL-3.0" \
     org.opencontainers.image.source="https://www.github.com/geospaitial-lab/aviary" \
-    org.opencontainers.image.documentation="https://geospaitial-lab.github.io/aviary"
+    org.opencontainers.image.title="aviary" \
+    org.opencontainers.image.url="https://www.github.com/geospaitial-lab/aviary" \
+    org.opencontainers.image.version=$VERSION
 
 COPY --from=builder /bin/uv /bin/uv
 COPY --from=builder /aviary/venv /aviary/venv
