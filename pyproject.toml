@@ -15,6 +15,7 @@ authors = [
 maintainers = [
     {name = "Marius Maryniak", email = "marius.maryniak@w-hs.de"},
     {name = "Alexander Roß", email = "alexander.ross@w-hs.de"},
+    {name = "Stefan Küpper", email = "stefan.kuepper@w-hs.de"},
 ]
 license = {text = "GPL-3.0"}
 requires-python = ">=3.10"
