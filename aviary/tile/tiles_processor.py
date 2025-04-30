@@ -293,8 +293,11 @@ class CopyProcessorConfig(pydantic.BaseModel):
         You can create the configuration from a config file.
 
         ``` yaml title="config.yaml"
-        channel_key: 'my_channel'
-        new_channel_key: 'my_new_channel'
+        package: 'aviary'
+        name: 'CopyProcessor'
+        config:
+          channel_key: 'my_channel'
+          new_channel_key: 'my_new_channel'
         ```
 
     Attributes:
@@ -393,11 +396,14 @@ class NormalizeProcessorConfig(pydantic.BaseModel):
         You can create the configuration from a config file.
 
         ``` yaml title="config.yaml"
-        channel_key: 'my_channel'
-        min_value: 0.
-        max_value: 255.
-        new_channel_key: null
-        max_num_threads: null
+        package: 'aviary'
+        name: 'NormalizeProcessor'
+        config:
+          channel_key: 'my_channel'
+          min_value: 0.
+          max_value: 255.
+          new_channel_key: null
+          max_num_threads: null
         ```
 
     Attributes:
@@ -490,9 +496,12 @@ class ParallelCompositeProcessorConfig(pydantic.BaseModel):
         You can create the configuration from a config file.
 
         ``` yaml title="config.yaml"
-        tiles_processor_configs:
-          - ...
-          ...
+        package: 'aviary'
+        name: 'ParallelCompositeProcessor'
+        config:
+          tiles_processor_configs:
+            - ...
+            ...
         ```
 
     Attributes:
@@ -578,7 +587,10 @@ class RemoveBufferProcessorConfig(pydantic.BaseModel):
         You can create the configuration from a config file.
 
         ``` yaml title="config.yaml"
-        channel_keys: true
+        package: 'aviary'
+        name: 'RemoveBufferProcessor'
+        config:
+          channel_keys: true
         ```
 
     Attributes:
@@ -672,7 +684,10 @@ class RemoveProcessorConfig(pydantic.BaseModel):
         You can create the configuration from a config file.
 
         ``` yaml title="config.yaml"
-        channel_keys: true
+        package: 'aviary'
+        name: 'RemoveProcessor'
+        config:
+          channel_keys: true
         ```
 
     Attributes:
@@ -766,7 +781,10 @@ class SelectProcessorConfig(pydantic.BaseModel):
         You can create the configuration from a config file.
 
         ``` yaml title="config.yaml"
-        channel_keys: true
+        package: 'aviary'
+        name: 'SelectProcessor'
+        config:
+          channel_keys: true
         ```
 
     Attributes:
@@ -855,9 +873,12 @@ class SequentialCompositeProcessorConfig(pydantic.BaseModel):
         You can create the configuration from a config file.
 
         ``` yaml title="config.yaml"
-        tiles_processor_configs:
-          - ...
-          ...
+        package: 'aviary'
+        name: 'SequentialCompositeProcessor'
+        config:
+          tiles_processor_configs:
+            - ...
+            ...
         ```
 
     Attributes:
@@ -953,11 +974,14 @@ class StandardizeProcessorConfig(pydantic.BaseModel):
         You can create the configuration from a config file.
 
         ``` yaml title="config.yaml"
-        channel_key: 'my_channel'
-        mean_value: .5
-        std_value: .25
-        new_channel_key: null
-        max_num_threads: null
+        package: 'aviary'
+        name: 'StandardizeProcessor'
+        config:
+          channel_key: 'my_channel'
+          mean_value: .5
+          std_value: .25
+          new_channel_key: null
+          max_num_threads: null
         ```
 
     Attributes:
@@ -1060,10 +1084,13 @@ class VectorizeProcessorConfig(pydantic.BaseModel):
         You can create the configuration from a config file.
 
         ``` yaml title="config.yaml"
-        channel_key: 'my_channel'
-        ignore_background_class: true
-        new_channel_key: null
-        max_num_threads: null
+        package: 'aviary'
+        name: 'VectorizeProcessor'
+        config:
+          channel_key: 'my_channel'
+          ignore_background_class: true
+          new_channel_key: null
+          max_num_threads: null
         ```
 
     Attributes:

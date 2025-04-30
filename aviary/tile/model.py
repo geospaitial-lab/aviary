@@ -183,14 +183,19 @@ class AdoisConfig(pydantic.BaseModel):
         - Use false or true instead of False or True
 
     Example:
+        You can create the configuration from a config file.
+
         ``` yaml title="config.yaml"
-        r_channel_key: 'r'
-        g_channel_key: 'g'
-        b_channel_key: 'b'
-        nir_channel_key: 'nir'
-        out_channel_key: 'adois'
-        cache_dir_path: 'cache'
-        remove_channels: true
+        package: 'aviary'
+        name: 'Adois'
+        config:
+          r_channel_key: 'r'
+          g_channel_key: 'g'
+          b_channel_key: 'b'
+          nir_channel_key: 'nir'
+          out_channel_key: 'adois'
+          cache_dir_path: 'cache'
+          remove_channels: true
         ```
 
     Attributes:
