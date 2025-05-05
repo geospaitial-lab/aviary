@@ -2,7 +2,8 @@ FROM python:3.12-slim-bookworm AS builder
 
 WORKDIR /aviary
 
-ENV UV_COMPILE_BYTECODE=1 UV_NO_CACHE=1
+ENV UV_COMPILE_BYTECODE=1 \
+    UV_NO_CACHE=1
 
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
 COPY . .
