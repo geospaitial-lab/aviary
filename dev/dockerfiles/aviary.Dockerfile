@@ -2,14 +2,16 @@ FROM python:3.12-slim-bookworm AS builder
 
 WORKDIR /aviary
 
+ENV UV_NO_CACHE=1
+
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
 COPY . .
 
 RUN uv venv venv && \
     . venv/bin/activate && \
     uv pip install --upgrade pip setuptools wheel && \
-    uv pip install huggingface_hub onnxruntime && \
-    uv build --wheel --no-cache .[all]
+    uv pip install .[all] && \
+    uv pip install huggingface_hub onnxruntime
 
 FROM python:3.12-slim-bookworm AS runner
 
@@ -30,15 +32,16 @@ LABEL org.opencontainers.image.authors="Marius Maryniak (marius.maryniak@w-hs.de
     org.opencontainers.image.url="https://www.github.com/geospaitial-lab/aviary" \
     org.opencontainers.image.version=$VERSION
 
-COPY --from=builder /bin/uv /bin/uv
 COPY --from=builder /aviary/venv /aviary/venv
-COPY --from=builder /aviary/dist /aviary/dist
 
-RUN uv venv venv && \
-    . venv/bin/activate && \
-    uv pip install --no-cache dist/* && \
-    rm -rf dist && \
-    adduser --disabled-password --gecos "" aviary_user
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        libexpat1 \
+    && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* && \
+    adduser --disabled-password --gecos "" aviary_user && \
+    chown aviary_user:aviary_user /aviary
 
 USER aviary_user
 
