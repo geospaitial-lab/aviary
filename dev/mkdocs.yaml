@@ -131,6 +131,7 @@ plugins:
             show_source: false
             show_root_heading: true
             show_root_full_path: false
+            heading_level: 3
             show_symbol_type_heading: true
             show_symbol_type_toc: true
             members_order: source
@@ -164,7 +165,7 @@ markdown_extensions:
 
 extra:
   consent:
-    title: Privacy consent
+    title: Privacy Consent
     description: |
       We use third-party services (but <strong>no cookies</strong>)
       to improve the documentation and the user experience.<br />
