@@ -1,5 +1,7 @@
 ## Environment Variables
 
+aviary’s CLI can be configured using environment variables.
+
 === "Linux and macOS"
 
     ```
