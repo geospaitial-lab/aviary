@@ -99,12 +99,14 @@ def main(
         False,  # noqa: FBT003
         '--quiet',
         '-q',
+        envvar='AVIARY_QUIET',
         help='Enable quiet mode.',
     ),
     verbose_option: bool = typer.Option(
         False,  # noqa: FBT003
         '--verbose',
         '-v',
+        envvar='AVIARY_VERBOSE',
         help='Enable verbose mode.',
     ),
     version_option: bool = typer.Option(  # noqa: ARG001
@@ -538,7 +540,7 @@ def tile_pipeline_run(
         None,
         '--set',
         '-s',
-        help='Configuration fields using key=value format.',
+        help='Configuration fields using key=value format',
     ),
 ) -> None:
     """Run the tile pipeline."""
@@ -572,7 +574,7 @@ def tile_pipeline_validate(
         None,
         '--set',
         '-s',
-        help='Configuration fields using key=value format.',
+        help='Configuration fields using key=value format',
     ),
 ) -> None:
     """Validate the config file."""
