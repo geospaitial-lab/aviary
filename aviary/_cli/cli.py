@@ -99,12 +99,14 @@ def main(
         False,  # noqa: FBT003
         '--quiet',
         '-q',
+        envvar='AVIARY_QUIET',
         help='Enable quiet mode.',
     ),
     verbose_option: bool = typer.Option(
         False,  # noqa: FBT003
         '--verbose',
         '-v',
+        envvar='AVIARY_VERBOSE',
         help='Enable verbose mode.',
     ),
     version_option: bool = typer.Option(  # noqa: ARG001
