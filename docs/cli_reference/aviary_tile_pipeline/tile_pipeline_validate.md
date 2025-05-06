@@ -18,7 +18,9 @@ Validate the config file.
 
 ### **ARGUMENTS**
 
-- `CONFIG_PATH`: Path to the config file (env var: `AVIARY_CONFIG_PATH`)
+- `CONFIG_PATH`: Path to the config file (env var: [`AVIARY_CONFIG_PATH`][AVIARY_CONFIG_PATH])
+
+  [AVIARY_CONFIG_PATH]: ../environment_variables.md#aviary_config_path
 
 ### **OPTIONS**
 
