@@ -540,7 +540,7 @@ def tile_pipeline_run(
         None,
         '--set',
         '-s',
-        help='Configuration fields using key=value format.',
+        help='Configuration fields using key=value format',
     ),
 ) -> None:
     """Run the tile pipeline."""
@@ -574,7 +574,7 @@ def tile_pipeline_validate(
         None,
         '--set',
         '-s',
-        help='Configuration fields using key=value format.',
+        help='Configuration fields using key=value format',
     ),
 ) -> None:
     """Validate the config file."""
