@@ -3,9 +3,7 @@
 <span class="aviary-skill-level">Skill level: Intermediate</span>
 
 !!! abstract "TL;DR"
-    Custom components just need to implement their respective protocol.<br>
-    Optionally, a config class and a `from_config` class method can be implemented
-    to create an instance from a configuration.
+    Custom components just need to implement their respective protocol.
 
 aviary’s components are designed to be modular and extensible.
 This means that you can easily implement your own components and use them just like the built-in ones.
@@ -60,57 +58,6 @@ class MyTilesProcessor:
 
 It’s as simple as that!
 Now you can use `MyTilesProcessor` like any other tiles processor in aviary.
-
-#### Implement a config class and a `from_config` class method
-
-If we want to create an instance of our tiles processor from a configuration,
-we need to implement a config class and a `from_config` class method.
-
-Let’s implement the config class called `MyTilesProcessorConfig` and the `from_config` class method.
-The config class is a Pydantic model that defines the configuration for our tiles processor.
-This may seem complicated, but in most cases it simply mimics the parameters of the `__init__` method.
-When we pass the configuration to the `from_config` class method, it should return an instance of our tiles processor.
-
-``` python title="my_tiles_processor.py" hl_lines="1 4 7-9 21-27"
-from __future__ import annotations  # (1)
-
-import aviary
-import pydantic
-
-
-class MyTilesProcessorConfig(pydantic.BaseModel):
-    param_1: int
-    param_2: str
-
-class MyTilesProcessor:
-
-    def __init__(
-        self,
-        param_1: int,
-        param_2: str,
-    ) -> None:
-        self._param_1 = param_1
-        self._param_2 = param_2
-
-    @classmethod
-    def from_config(
-        cls,
-        config: MyTilesProcessorConfig,
-    ) -> MyTilesProcessor:
-        config = config.model_dump()
-        return cls(**config)
-
-    def __call__(
-        self,
-        tiles: aviary.Tiles,
-    ) -> aviary.Tiles:
-        # Process the tiles here
-        return tiles
-```
-
-1.  This import is required for correct type hinting of the `from_config` class method’s return type.
-
-Now you can create an instance of `MyTilesProcessor` from a configuration.
 
   [TilesProcessor]: ../../api_reference/tile/tiles_processor/tiles_processor.md#aviary.tile.TilesProcessor
   [Tiles]: ../../api_reference/core/tiles.md#aviary.Tiles
