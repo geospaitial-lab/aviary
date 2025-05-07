@@ -65,9 +65,9 @@ We have to specify the path to the plugins directory containing `my_tiles_proces
 in the config file, so that aviary knows where to look for the custom components.
 
 ``` yaml title="config.yaml"
-# Configure the pipeline here
-
 plugins_dir_path: /path/to/our/plugins_dir
+
+# Configure the pipeline here
 ```
 
 It’s as simple as that!
@@ -75,15 +75,15 @@ Now you can use `MyTilesProcessor` like any other tiles processor in aviary.
 
   [register_tiles_processor]: ../../api_reference/tile/tiles_processor/tiles_processor.md#aviary.tile.register_tiles_processor
 
-#### Verify the registration and discovery of a custom tiles processor
+#### Verify the registration of a custom tiles processor
 
-To verify that our own tiles processor was registered and discovered correctly,
+To verify that our own tiles processor was registered successfully,
 we can use the [`aviary plugins`][aviary plugins] command.
 
 ```
-aviary plugins /path/to/our/plugins_dir
+aviary plugins --plugins-dir-path /path/to/our/plugins_dir
 ```
 
-This command lists the registered plugins.
+This shows the registered plugins.
 
   [aviary plugins]: ../../cli_reference/aviary_plugins.md
