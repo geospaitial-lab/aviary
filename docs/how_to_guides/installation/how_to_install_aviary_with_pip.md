@@ -76,7 +76,7 @@ Note that there are optional dependency groups:
 
 ### Verify the installation
 
-To verify that aviary is installed correctly, you can check the version.
+To verify that aviary was installed successfully, you can check the version.
 
 === "Python API"
 

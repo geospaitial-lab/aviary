@@ -62,7 +62,7 @@ class MyTilesProcessor:
 1.  This import is required for correct type hinting of the `from_config` class method’s return type.
 
 We have to specify the path to the plugins directory containing `my_tiles_processor.py`
-in the configuration file, so that aviary knows where to look for the custom components.
+in the config file, so that aviary knows where to look for the custom components.
 
 ``` yaml title="config.yaml"
 # Configure the pipeline here
