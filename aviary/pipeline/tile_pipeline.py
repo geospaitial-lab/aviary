@@ -101,7 +101,7 @@ class TileLoaderConfig(pydantic.BaseModel):
         - Use null instead of None
 
     Example:
-        You can create a configuration from a config file.
+        You can create the configuration from a config file.
 
         ``` yaml title="config.yaml"
         batch_size: 1
@@ -129,7 +129,7 @@ class TilePipelineConfig(pydantic.BaseModel):
         - Use null instead of None
 
     Example:
-        You can create a configuration from a config file.
+        You can create the configuration from a config file.
 
         ``` yaml title="config.yaml"
         plugins_dir_path: null
