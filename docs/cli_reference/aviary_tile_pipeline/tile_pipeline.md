@@ -1,3 +1,7 @@
+<style>
+  .md-sidebar--secondary { visibility: hidden }
+</style>
+
 ## `aviary tile-pipeline`
 
 Subcommands for the tile pipeline

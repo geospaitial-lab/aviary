@@ -1,3 +1,7 @@
+<style>
+  .md-sidebar--secondary { visibility: hidden }
+</style>
+
 ## `aviary tile-pipeline validate`
 
 Validate the config file.

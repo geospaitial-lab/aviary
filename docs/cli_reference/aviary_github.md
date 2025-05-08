@@ -1,3 +1,7 @@
+<style>
+  .md-sidebar--secondary { visibility: hidden }
+</style>
+
 ## `aviary github`
 
 Open the GitHub repository in a web browser.
