@@ -6,9 +6,9 @@ docs_dir: ../docs
 exclude_docs: README.md
 
 nav:
-  - Get started: index.md
-  - How-to guides:
-    - How-to guides: how_to_guides/index.md
+  - Get Started: index.md
+  - How-to Guides:
+    - How-to Guides: how_to_guides/index.md
     - API:
       - How to implement your own component: how_to_guides/api/how_to_implement_your_own_component.md
     - CLI:
@@ -17,8 +17,8 @@ nav:
       - How to install aviary with pip: how_to_guides/installation/how_to_install_aviary_with_pip.md
       - How to install aviary with uv: how_to_guides/installation/how_to_install_aviary_with_uv.md
       - How to install aviary with Docker: how_to_guides/installation/how_to_install_aviary_with_docker.md
-  - API reference:
-    - API reference: api_reference/index.md
+  - API Reference:
+    - API Reference: api_reference/index.md
     - aviary:
       - BoundingBox: api_reference/core/bounding_box.md
       - Channel:
@@ -64,8 +64,8 @@ nav:
             - GeospatialFilter: api_reference/utils/coordinates_filter/geospatial_filter.md
             - MaskFilter: api_reference/utils/coordinates_filter/mask_filter.md
             - SetFilter: api_reference/utils/coordinates_filter/set_filter.md
-  - CLI reference:
-    - CLI reference: cli_reference/index.md
+  - CLI Reference:
+    - CLI Reference: cli_reference/index.md
     - aviary: cli_reference/aviary.md
     - aviary components: cli_reference/aviary_components.md
     - aviary docs: cli_reference/aviary_docs.md
@@ -79,7 +79,7 @@ nav:
         - tile-pipeline plugins: cli_reference/aviary_tile_pipeline/tile_pipeline_plugins.md
         - tile-pipeline run: cli_reference/aviary_tile_pipeline/tile_pipeline_run.md
         - tile-pipeline validate: cli_reference/aviary_tile_pipeline/tile_pipeline_validate.md
-    - Environment variables: cli_reference/environment_variables.md
+    - Environment Variables: cli_reference/environment_variables.md
 
 theme:
   name: material
