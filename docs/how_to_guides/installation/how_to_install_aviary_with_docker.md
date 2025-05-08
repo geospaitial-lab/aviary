@@ -5,7 +5,10 @@
 !!! abstract "TL;DR"
     Use `docker pull ghcr.io/geospaitial-lab/aviary` to install aviary’s CLI.
 
-todo
+Docker offers a simple way to use aviary’s CLI in a containerized environment.
+This approach is ideal for users who want to run the pipelines
+on systems where installing software directly is not feasible or in distributed environments
+where the use of containers is necessary.
 
 ### Install Docker
 
