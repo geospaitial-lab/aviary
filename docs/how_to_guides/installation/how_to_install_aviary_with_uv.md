@@ -83,6 +83,8 @@ Note that there are optional dependency groups:
 - `cli`: Required for aviary’s CLI
 - `all`: Includes optional dependencies, such as `cli`
 
+---
+
 #### Install aviary using uv tool
 
 In case you only need the CLI, aviary can be installed globally as a tool.
@@ -95,6 +97,8 @@ For more information, you can refer to the
 [official uv tool documentation :material-arrow-top-right:][official uv tool documentation].
 
   [official uv tool documentation]: https://docs.astral.sh/uv/guides/tools
+
+---
 
 #### Install aviary using uv add
 

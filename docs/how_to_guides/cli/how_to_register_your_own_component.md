@@ -66,6 +66,8 @@ class MyTilesProcessor:
 
 Now you can create an instance of `MyTilesProcessor` from a configuration.
 
+---
+
 #### Register a custom tiles processor
 
 All we need to do is to register our own tiles processor as a plugin using the
@@ -125,6 +127,8 @@ It’s as simple as that!
 Now you can use `MyTilesProcessor` like any other tiles processor in aviary.
 
   [register_tiles_processor]: ../../api_reference/tile/tiles_processor/tiles_processor.md#aviary.tile.register_tiles_processor
+
+---
 
 #### Verify the registration of a custom tiles processor
 
