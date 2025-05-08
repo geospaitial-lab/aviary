@@ -1,3 +1,7 @@
+<style>
+  .md-sidebar--secondary { visibility: hidden }
+</style>
+
 ## `aviary`
 
 Python Framework for tile-based processing of geospatial data
