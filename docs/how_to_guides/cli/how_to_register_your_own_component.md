@@ -8,8 +8,11 @@
 
 Make sure to read the [How to implement your own component] guide first.
 
-After implementing your own component, you can register it as a plugin with its registration decorator.
-This allows aviary to discover your component at runtime.
+Using custom components in aviary’s CLI requires a few more steps.<br>
+After implementing the protocol, you need to implement a config class and a `from_config` class method,
+so that components can be created from a configuration.
+The component is then registered as a plugin using its registration decorator.
+This allows aviary to discover your component at runtime when using the CLI.
 
 [How to implement your own component]: ../../how_to_guides/api/how_to_implement_your_own_component.md
 
