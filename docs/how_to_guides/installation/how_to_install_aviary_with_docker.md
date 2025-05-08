@@ -3,7 +3,7 @@
 <span class="aviary-skill-level">Skill level: Beginner</span>
 
 !!! abstract "TL;DR"
-    todo
+    Use `docker pull ghcr.io/geospaitial-lab/aviary` to install aviary’s CLI.
 
 todo
 

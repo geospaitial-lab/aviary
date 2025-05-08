@@ -3,7 +3,9 @@
 <span class="aviary-skill-level">Skill level: Beginner</span>
 
 !!! abstract "TL;DR"
-    todo
+    Use `uv pip install geospaitial-lab-aviary` to install aviary.<br>
+    To include the CLI, use `uv pip install geospaitial-lab-aviary[cli]`.<br>
+    For CLI-only, use `uv tool install geospaitial-lab-aviary[cli]`.
 
 The recommended way to install aviary is using uv – a Python package and project manager
 that simplifies the installation and management of Python packages, their dependencies, and even Python itself.
