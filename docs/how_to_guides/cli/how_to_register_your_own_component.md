@@ -14,7 +14,7 @@ so that components can be created from a configuration.
 The component is then registered as a plugin using its registration decorator.
 This allows aviary to discover your component at runtime when using the CLI.
 
-[How to implement your own component]: ../../how_to_guides/api/how_to_implement_your_own_component.md
+  [How to implement your own component]: ../../how_to_guides/api/how_to_implement_your_own_component.md
 
 ### Example
 
@@ -25,7 +25,7 @@ we need to implement a config class and a `from_config` class method.
 
 Let’s implement the config class called `MyTilesProcessorConfig` and the `from_config` class method.
 The config class is a Pydantic model that defines the configuration for our tiles processor.
-This may seem complicated, but in most cases it simply mimics the parameters of the `__init__` method.
+In most cases it simply mimics the parameters of the `__init__` method.
 When we pass the configuration to the `from_config` class method, it should return an instance of our tiles processor.
 
 ``` python title="my_tiles_processor.py" hl_lines="1 4 7-9 21-27"
@@ -77,7 +77,7 @@ All we need to do is to register our own tiles processor as a plugin using the
 [`register_tiles_processor`][register_tiles_processor] decorator.
 
 ``` python title="my_tiles_processor.py" hl_lines="5 12"
-from __future__ import annotations  # (1)
+from __future__ import annotations  # (1)!
 
 import aviary
 import pydantic
