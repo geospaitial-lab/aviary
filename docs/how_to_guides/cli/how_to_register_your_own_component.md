@@ -8,7 +8,7 @@
 
 Make sure to read the [How to implement your own component] guide first.
 
-Using custom components in aviary’s CLI requires a few more steps.<br>
+Using custom components in aviary’s CLI requires a few additional steps.<br>
 After implementing the protocol, you need to implement a config class and a `from_config` class method,
 so that components can be created from a configuration.
 The component is then registered as a plugin using its registration decorator.
@@ -117,8 +117,15 @@ class MyTilesProcessor:
 
 1.  This import is required for correct type hinting of the `from_config` class method’s return type.
 
-We have to specify the path to the plugins directory containing `my_tiles_processor.py`
-in the config file, so that aviary knows where to look for the custom components.
+We need to create an `__init__.py` file in the root of the plugins directory
+– this is the directory containing `my_tiles_processor.py` – to make it a package.
+In this file, we import the custom tiles processor.
+
+``` python title="__init__.py"
+from .my_tiles_processor import MyTilesProcessor
+```
+
+To use it in the CLI, we need to specify the path to the plugins directory in the config file.
 
 ``` yaml title="config.yaml"
 plugins_dir_path: /path/to/our/plugins_dir
