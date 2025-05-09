@@ -1,3 +1,7 @@
+<style>
+  .md-sidebar--secondary { visibility: hidden }
+</style>
+
 ## `aviary plugins`
 
 Show the registered plugins.

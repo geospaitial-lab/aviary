@@ -5,6 +5,6 @@
   .md-sidebar--secondary { visibility: hidden }
 </style>
 
-## Legal notice
+## Legal Notice
 
 TODO

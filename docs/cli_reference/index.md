@@ -2,7 +2,7 @@
   .md-sidebar--secondary { visibility: hidden }
 </style>
 
-aviary’s CLI is structured into the following commands:
+aviary’s CLI includes the following commands:
 
 <div class="grid cards" markdown>
 
