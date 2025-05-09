@@ -56,7 +56,6 @@ class MyTilesProcessor:
         return tiles
 ```
 
-It’s as simple as that!
 Now you can use `MyTilesProcessor` like any other tiles processor in aviary.
 
   [TilesProcessor]: ../../api_reference/tile/tiles_processor/tiles_processor.md#aviary.tile.TilesProcessor

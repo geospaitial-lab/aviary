@@ -12,7 +12,7 @@ Using custom components in aviary’s CLI requires a few more steps.<br>
 After implementing the protocol, you need to implement a config class and a `from_config` class method,
 so that components can be created from a configuration.
 The component is then registered as a plugin using its registration decorator.
-This allows aviary to discover your component at runtime when using the CLI.
+This allows aviary to discover your component dynamically at runtime when using the CLI.
 
   [How to implement your own component]: ../../how_to_guides/api/how_to_implement_your_own_component.md
 
@@ -126,7 +126,6 @@ plugins_dir_path: /path/to/our/plugins_dir
 # Configure the pipeline here
 ```
 
-It’s as simple as that!
 Now you can use `MyTilesProcessor` like any other tiles processor in aviary.
 
   [register_tiles_processor]: ../../api_reference/tile/tiles_processor/tiles_processor.md#aviary.tile.register_tiles_processor
