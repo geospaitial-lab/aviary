@@ -24,7 +24,5 @@ updates:
       timezone: Europe/Berlin
     assignees:
       - mrsmrynk
-    reviewers:
-      - mrsmrynk
     labels:
       - build
