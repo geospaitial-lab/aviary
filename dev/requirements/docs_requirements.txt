@@ -1,3 +1,3 @@
-folium==0.19.5
+folium==0.19.6
 mkdocs-material==9.6.14
 mkdocstrings-python==1.16.10
