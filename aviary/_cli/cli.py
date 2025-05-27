@@ -52,7 +52,6 @@ typer.rich_utils.STYLE_OPTION_ENVVAR = 'dim green'
 typer.rich_utils.STYLE_USAGE = 'bold green'
 
 app = typer.Typer(
-    no_args_is_help=True,
     add_completion=False,
     help='Python Framework for tile-based processing of geospatial data',
     epilog='geosp[bold green]ai[/]tial lab',
@@ -61,7 +60,6 @@ app = typer.Typer(
 )
 tile_pipeline_app = typer.Typer(
     name='tile-pipeline',
-    no_args_is_help=True,
 )
 app.add_typer(
     typer_instance=tile_pipeline_app,
