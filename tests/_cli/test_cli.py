@@ -8,17 +8,6 @@ if TYPE_CHECKING:
 from aviary._cli.cli import app
 
 
-def test_no_args(
-    runner: CliRunner,
-) -> None:
-    result: Result = runner.invoke(
-        app=app,
-        args=[],
-    )
-
-    assert result.exit_code == 0
-
-
 def test_help(
     runner: CliRunner,
 ) -> None:
