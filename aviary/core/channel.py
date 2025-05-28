@@ -86,7 +86,7 @@ class Channel(ABC, Iterable[object]):
         self._name = _coerce_channel_name(channel_name=self._name)
         validate_channel_name(
             channel_name=self._name,
-            param_name='name',
+            param='name',
             description='name',
         )
         self._validate_buffer_size()
@@ -164,7 +164,7 @@ class Channel(ABC, Iterable[object]):
         self._name = _coerce_channel_name(channel_name=name)
         validate_channel_name(
             channel_name=self._name,
-            param_name='name',
+            param='name',
             description='name',
         )
 
