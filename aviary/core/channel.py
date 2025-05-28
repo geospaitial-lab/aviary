@@ -33,12 +33,10 @@ if TYPE_CHECKING:
     from aviary.core.tiles import Tiles
     from aviary.core.type_aliases import (
         BufferSize,
-        ChannelKey,
         Coordinates,
         CoordinatesSet,
         FractionalBufferSize,
         TileSize,
-        TimeStep,
     )
 
 
@@ -60,7 +58,6 @@ class Channel(ABC, Iterable[object]):
         data: object | list[object],
         name: ChannelName | str,
         buffer_size: FractionalBufferSize = 0.,
-        time_step: TimeStep | None = None,
         copy: bool = False,
     ) -> None:
         """
@@ -68,13 +65,11 @@ class Channel(ABC, Iterable[object]):
             data: Data
             name: Name
             buffer_size: Buffer size as a fraction of the spatial extent of the data
-            time_step: Time step
             copy: If True, the data is copied during initialization
         """
         self._data = data
         self._name = name
         self._buffer_size = buffer_size
-        self._time_step = time_step
         self._copy = copy
 
         self._validate()
@@ -193,36 +188,6 @@ class Channel(ABC, Iterable[object]):
         return self._buffer_size
 
     @property
-    def time_step(self) -> TimeStep | None:
-        """
-        Returns:
-            Time step
-        """
-        return self._time_step
-
-    @time_step.setter
-    def time_step(
-        self,
-        time_step: TimeStep | None,
-    ) -> None:
-        """
-        Parameters:
-            time_step: Time step
-        """
-        self._time_step = time_step
-
-        if self._observer_tiles is None:
-            return
-
-        observer_tiles = self._observer_tiles()
-
-        if observer_tiles is None:
-            return
-
-        # noinspection PyProtectedMember
-        observer_tiles._validate()  # noqa: SLF001
-
-    @property
     def is_copied(self) -> bool:
         """
         Returns:
@@ -249,14 +214,6 @@ class Channel(ABC, Iterable[object]):
 
         return self._observer_tiles() is not None
 
-    @property
-    def key(self) -> ChannelKey:
-        """
-        Returns:
-            Name and time step combination
-        """
-        return self._name, self._time_step
-
     @classmethod
     def from_channels(
         cls,
@@ -276,7 +233,6 @@ class Channel(ABC, Iterable[object]):
             AviaryUserError: Invalid channels (the channels must contain at least one channel)
             AviaryUserError: Invalid channels (the names of the channels are not equal)
             AviaryUserError: Invalid channels (the buffer sizes of the channels are not equal)
-            AviaryUserError: Invalid channels (the time steps of the channels are not equal)
         """
         if not channels:
             message = (
@@ -303,26 +259,15 @@ class Channel(ABC, Iterable[object]):
             )
             raise AviaryUserError(message)
 
-        time_steps = {channel.time_step for channel in channels}
-
-        if len(time_steps) > 1:
-            message = (
-                'Invalid channels! '
-                'The time steps of the channels must be equal.'
-            )
-            raise AviaryUserError(message)
-
         first_channel = channels[0]
 
         data = [data_item for channel in channels for data_item in channel]
         name = first_channel.name
         buffer_size = first_channel.buffer_size
-        time_step = first_channel.time_step
         return cls(
             data=data,
             name=name,
             buffer_size=buffer_size,
-            time_step=time_step,
             copy=copy,
         )
 
@@ -428,7 +373,6 @@ class Channel(ABC, Iterable[object]):
         Raises:
             AviaryUserError: Invalid other (the names of the channels are not equal)
             AviaryUserError: Invalid other (the buffer sizes of the channels are not equal)
-            AviaryUserError: Invalid other (the time steps of the channels are not equal)
         """
         if self._name != other.name:
             message = (
@@ -444,19 +388,11 @@ class Channel(ABC, Iterable[object]):
             )
             raise AviaryUserError(message)
 
-        if self._time_step != other.time_step:
-            message = (
-                'Invalid other! '
-                'The time steps of the channels must be equal.'
-            )
-            raise AviaryUserError(message)
-
         data = self._data + other.data
         return self.__class__(
             data=data,
             name=self._name,
             buffer_size=self._buffer_size,
-            time_step=self._time_step,
             copy=True,
         )
 
@@ -487,7 +423,6 @@ class Channel(ABC, Iterable[object]):
             data=data,
             name=self._name,
             buffer_size=self._buffer_size,
-            time_step=self._time_step,
             copy=True,
         )
 
@@ -529,7 +464,6 @@ class RasterChannel(Channel, Iterable[npt.NDArray]):
         data: npt.NDArray | list[npt.NDArray],
         name: ChannelName | str,
         buffer_size: FractionalBufferSize = 0.,
-        time_step: TimeStep | None = None,
         copy: bool = False,
     ) -> None:
         """
@@ -537,14 +471,12 @@ class RasterChannel(Channel, Iterable[npt.NDArray]):
             data: Data
             name: Name
             buffer_size: Buffer size as a fraction of the spatial extent of the data
-            time_step: Time step
             copy: If True, the data is copied during initialization
         """
         super().__init__(
             data=data,
             name=name,
             buffer_size=buffer_size,
-            time_step=time_step,
             copy=copy,
         )
 
@@ -668,7 +600,6 @@ class RasterChannel(Channel, Iterable[npt.NDArray]):
             f'    data={data_repr},\n'
             f'    name={self._name},\n'
             f'    buffer_size={self._buffer_size},\n'
-            f'    time_step={self._time_step},\n'
             f'    copy={self._copy},\n'
             ')'
         )
@@ -715,7 +646,6 @@ class RasterChannel(Channel, Iterable[npt.NDArray]):
             ),
             self._name == other.name,
             self._buffer_size == other.buffer_size,
-            self._time_step == other.time_step,
         ]
         return all(conditions)
 
@@ -798,7 +728,6 @@ class RasterChannel(Channel, Iterable[npt.NDArray]):
             data=self._data,
             name=self._name,
             buffer_size=self._buffer_size,
-            time_step=self._time_step,
             copy=True,
         )
 
@@ -839,7 +768,6 @@ class RasterChannel(Channel, Iterable[npt.NDArray]):
             data=data,
             name=self._name,
             buffer_size=buffer_size,
-            time_step=self._time_step,
             copy=True,
         )
 
@@ -877,7 +805,6 @@ class VectorChannel(Channel, Iterable[gpd.GeoDataFrame]):
         data: gpd.GeoDataFrame | list[gpd.GeoDataFrame],
         name: ChannelName | str,
         buffer_size: FractionalBufferSize = 0.,
-        time_step: TimeStep | None = None,
         copy: bool = False,
     ) -> None:
         """
@@ -885,14 +812,12 @@ class VectorChannel(Channel, Iterable[gpd.GeoDataFrame]):
             data: Data
             name: Name
             buffer_size: Buffer size as a fraction of the spatial extent of the data
-            time_step: Time step
             copy: If True, the data is copied during initialization
         """
         super().__init__(
             data=data,
             name=name,
             buffer_size=buffer_size,
-            time_step=time_step,
             copy=copy,
         )
 
@@ -1042,7 +967,6 @@ class VectorChannel(Channel, Iterable[gpd.GeoDataFrame]):
         coordinates: Coordinates | CoordinatesSet,
         tile_size: TileSize,
         buffer_size: BufferSize = 0,
-        time_step: TimeStep | None = None,
         copy: bool = False,
     ) -> VectorChannel:
         """Creates a vector channel from unnormalized data.
@@ -1053,7 +977,6 @@ class VectorChannel(Channel, Iterable[gpd.GeoDataFrame]):
             coordinates: Coordinates (x_min, y_min) of the tile or of each tile in meters
             tile_size: Tile size in meters
             buffer_size: Buffer size in meters
-            time_step: Time step
             copy: If True, the data is copied during initialization
 
         Raises:
@@ -1147,7 +1070,6 @@ class VectorChannel(Channel, Iterable[gpd.GeoDataFrame]):
             data=data,
             name=name,
             buffer_size=buffer_size,
-            time_step=time_step,
             copy=False,
         )
 
@@ -1208,7 +1130,6 @@ class VectorChannel(Channel, Iterable[gpd.GeoDataFrame]):
             f'    data={data_repr},\n'
             f'    name={self._name},\n'
             f'    buffer_size={self._buffer_size},\n'
-            f'    time_step={self._time_step},\n'
             f'    copy={self._copy},\n'
             ')'
         )
@@ -1255,7 +1176,6 @@ class VectorChannel(Channel, Iterable[gpd.GeoDataFrame]):
             ),
             self._name == other.name,
             self._buffer_size == other.buffer_size,
-            self._time_step == other.time_step,
         ]
         return all(conditions)
 
@@ -1338,7 +1258,6 @@ class VectorChannel(Channel, Iterable[gpd.GeoDataFrame]):
             data=self._data,
             name=self._name,
             buffer_size=self._buffer_size,
-            time_step=self._time_step,
             copy=True,
         )
 
@@ -1380,7 +1299,6 @@ class VectorChannel(Channel, Iterable[gpd.GeoDataFrame]):
             data=data,
             name=self._name,
             buffer_size=buffer_size,
-            time_step=self._time_step,
             copy=False,
         )
         vector_channel._mark_as_copied()
