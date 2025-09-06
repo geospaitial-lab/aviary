@@ -12,24 +12,6 @@
 
 ---
 
-::: aviary.ChannelKey
-    options:
-      show_labels: false
-
----
-
-::: aviary.ChannelKeySet
-    options:
-      show_labels: false
-
----
-
-::: aviary.ChannelNameKeySet
-    options:
-      show_labels: false
-
----
-
 ::: aviary.ChannelNameSet
     options:
       show_labels: false
@@ -73,11 +55,5 @@
 ---
 
 ::: aviary.TileSize
-    options:
-      show_labels: false
-
----
-
-::: aviary.TimeStep
     options:
       show_labels: false
