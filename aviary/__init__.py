@@ -25,9 +25,6 @@ from .core.tiles import (
 )
 from .core.type_aliases import (
     BufferSize,
-    ChannelKey,
-    ChannelKeySet,
-    ChannelNameKeySet,
     ChannelNameSet,
     Coordinate,
     Coordinates,
@@ -36,7 +33,6 @@ from .core.type_aliases import (
     FractionalBufferSize,
     GroundSamplingDistance,
     TileSize,
-    TimeStep,
 )
 
 __all__ = [
@@ -45,10 +41,7 @@ __all__ = [
     'BoundingBox',
     'BufferSize',
     'Channel',
-    'ChannelKey',
-    'ChannelKeySet',
     'ChannelName',
-    'ChannelNameKeySet',
     'ChannelNameSet',
     'Coordinate',
     'Coordinates',
@@ -65,7 +58,6 @@ __all__ = [
     'Tile',
     'TileSize',
     'Tiles',
-    'TimeStep',
     'VectorChannel',
     'WMSVersion',
     '__version__',

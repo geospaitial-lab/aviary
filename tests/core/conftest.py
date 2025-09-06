@@ -69,13 +69,11 @@ def get_raster_channel() -> RasterChannel:
     data = get_raster_channel_data()
     name = ChannelName.R
     buffer_size = 0.
-    time_step = None
     copy = False
     return RasterChannel(
         data=data,
         name=name,
         buffer_size=buffer_size,
-        time_step=time_step,
         copy=copy,
     )
 
@@ -154,13 +152,11 @@ def get_tiles_channel_1() -> RasterChannel:
     data = get_raster_channel_data()
     name = ChannelName.R
     buffer_size = 0.
-    time_step = None
     copy = False
     return RasterChannel(
         data=data,
         name=name,
         buffer_size=buffer_size,
-        time_step=time_step,
         copy=copy,
     )
 
@@ -174,13 +170,11 @@ def get_tiles_channel_2() -> RasterChannel:
     data = get_raster_channel_data()
     name = ChannelName.G
     buffer_size = 0.
-    time_step = None
     copy = False
     return RasterChannel(
         data=data,
         name=name,
         buffer_size=buffer_size,
-        time_step=time_step,
         copy=copy,
     )
 
@@ -194,13 +188,11 @@ def get_tiles_channel_3() -> RasterChannel:
     data = get_raster_channel_data()
     name = ChannelName.B
     buffer_size = 0.
-    time_step = None
     copy = False
     return RasterChannel(
         data=data,
         name=name,
         buffer_size=buffer_size,
-        time_step=time_step,
         copy=copy,
     )
 
@@ -214,13 +206,11 @@ def get_tiles_channel_4() -> VectorChannel:
     data = get_vector_channel_data()
     name = 'custom'
     buffer_size = 0.
-    time_step = None
     copy = False
     return VectorChannel(
         data=data,
         name=name,
         buffer_size=buffer_size,
-        time_step=time_step,
         copy=copy,
     )
 
@@ -246,13 +236,11 @@ def get_vector_channel() -> VectorChannel:
     data = get_vector_channel_data()
     name = ChannelName.R
     buffer_size = 0.
-    time_step = None
     copy = False
     return VectorChannel(
         data=data,
         name=name,
         buffer_size=buffer_size,
-        time_step=time_step,
         copy=copy,
     )
 

@@ -19,7 +19,6 @@ from aviary.core.type_aliases import (
     CoordinatesSet,
     FractionalBufferSize,
     TileSize,
-    TimeStep,
 )
 from tests.core.data.data_test_channel import (
     data_test_raster_channel_add,
@@ -61,12 +60,10 @@ from tests.core.data.data_test_channel import (
         'data',
         'name',
         'buffer_size',
-        'time_step',
         'copy',
         'expected_data',
         'expected_name',
         'expected_buffer_size',
-        'expected_time_step',
         'expected_copy',
     ),
     data_test_raster_channel_init,
@@ -75,19 +72,16 @@ def test_raster_channel_init(
     data: npt.NDArray | list[npt.NDArray],
     name: ChannelName | str,
     buffer_size: FractionalBufferSize,
-    time_step: TimeStep | None,
     copy: bool,
     expected_data: list[npt.NDArray],
     expected_name: ChannelName | str,
     expected_buffer_size: FractionalBufferSize,
-    expected_time_step: TimeStep | None,
     expected_copy: bool,
 ) -> None:
     raster_channel = RasterChannel(
         data=data,
         name=name,
         buffer_size=buffer_size,
-        time_step=time_step,
         copy=copy,
     )
 
@@ -96,7 +90,6 @@ def test_raster_channel_init(
 
     assert raster_channel.name == expected_name
     assert raster_channel.buffer_size == expected_buffer_size
-    assert raster_channel.time_step == expected_time_step
     assert raster_channel.is_copied is expected_copy
 
 
@@ -107,7 +100,6 @@ def test_raster_channel_init_exceptions(
     message: str,
 ) -> None:
     name = ChannelName.R
-    time_step = None
     copy = False
 
     with pytest.raises(AviaryUserError, match=message):
@@ -115,7 +107,6 @@ def test_raster_channel_init_exceptions(
             data=data,
             name=name,
             buffer_size=buffer_size,
-            time_step=time_step,
             copy=copy,
         )
 
@@ -123,15 +114,12 @@ def test_raster_channel_init_exceptions(
 def test_raster_channel_init_defaults() -> None:
     signature = inspect.signature(RasterChannel)
     buffer_size = signature.parameters['buffer_size'].default
-    time_step = signature.parameters['time_step'].default
     copy = signature.parameters['copy'].default
 
     expected_buffer_size = 0.
-    expected_time_step = None
     expected_copy = False
 
     assert buffer_size == expected_buffer_size
-    assert time_step is expected_time_step
     assert copy is expected_copy
 
 
@@ -140,14 +128,12 @@ def test_raster_channel_mutability_no_copy(
 ) -> None:
     name = ChannelName.R
     buffer_size = 0.
-    time_step = None
     copy = False
 
     raster_channel = RasterChannel(
         data=raster_channel_data,
         name=name,
         buffer_size=buffer_size,
-        time_step=time_step,
         copy=copy,
     )
 
@@ -164,14 +150,12 @@ def test_raster_channel_mutability_copy(
 ) -> None:
     name = ChannelName.R
     buffer_size = 0.
-    time_step = None
     copy = True
 
     raster_channel = RasterChannel(
         data=raster_channel_data,
         name=name,
         buffer_size=buffer_size,
-        time_step=time_step,
         copy=copy,
     )
 
@@ -210,16 +194,6 @@ def test_raster_channel_batch_size(
     expected = 2
 
     assert raster_channel.batch_size == expected
-
-
-def test_raster_channel_key(
-    raster_channel: RasterChannel,
-) -> None:
-    expected_name = ChannelName.R
-    expected_time_step = None
-    expected = (expected_name, expected_time_step)
-
-    assert raster_channel.key == expected
 
 
 @pytest.mark.parametrize(('channels', 'copy', 'expected'), data_test_raster_channel_from_channels)
@@ -473,12 +447,10 @@ def test_raster_channel_remove_buffer_defaults() -> None:
         'data',
         'name',
         'buffer_size',
-        'time_step',
         'copy',
         'expected_data',
         'expected_name',
         'expected_buffer_size',
-        'expected_time_step',
         'expected_copy',
     ),
     data_test_vector_channel_init,
@@ -487,19 +459,16 @@ def test_vector_channel_init(
     data: gpd.GeoDataFrame | list[gpd.GeoDataFrame],
     name: ChannelName | str,
     buffer_size: FractionalBufferSize,
-    time_step: TimeStep | None,
     copy: bool,
     expected_data: list[gpd.GeoDataFrame],
     expected_name: ChannelName | str,
     expected_buffer_size: FractionalBufferSize,
-    expected_time_step: TimeStep | None,
     expected_copy: bool,
 ) -> None:
     vector_channel = VectorChannel(
         data=data,
         name=name,
         buffer_size=buffer_size,
-        time_step=time_step,
         copy=copy,
     )
 
@@ -508,7 +477,6 @@ def test_vector_channel_init(
 
     assert vector_channel.name == expected_name
     assert vector_channel.buffer_size == expected_buffer_size
-    assert vector_channel.time_step == expected_time_step
     assert vector_channel.is_copied is expected_copy
 
 
@@ -519,7 +487,6 @@ def test_vector_channel_init_exceptions(
     message: str,
 ) -> None:
     name = ChannelName.R
-    time_step = None
     copy = False
 
     with pytest.raises(AviaryUserError, match=message):
@@ -527,7 +494,6 @@ def test_vector_channel_init_exceptions(
             data=data,
             name=name,
             buffer_size=buffer_size,
-            time_step=time_step,
             copy=copy,
         )
 
@@ -535,15 +501,12 @@ def test_vector_channel_init_exceptions(
 def test_vector_channel_init_defaults() -> None:
     signature = inspect.signature(VectorChannel)
     buffer_size = signature.parameters['buffer_size'].default
-    time_step = signature.parameters['time_step'].default
     copy = signature.parameters['copy'].default
 
     expected_buffer_size = 0.
-    expected_time_step = None
     expected_copy = False
 
     assert buffer_size == expected_buffer_size
-    assert time_step is expected_time_step
     assert copy is expected_copy
 
 
@@ -552,14 +515,12 @@ def test_vector_channel_mutability_no_copy(
 ) -> None:
     name = ChannelName.R
     buffer_size = 0.
-    time_step = None
     copy = False
 
     vector_channel = VectorChannel(
         data=vector_channel_data,
         name=name,
         buffer_size=buffer_size,
-        time_step=time_step,
         copy=copy,
     )
 
@@ -576,14 +537,12 @@ def test_vector_channel_mutability_copy(
 ) -> None:
     name = ChannelName.R
     buffer_size = 0.
-    time_step = None
     copy = True
 
     vector_channel = VectorChannel(
         data=vector_channel_data,
         name=name,
         buffer_size=buffer_size,
-        time_step=time_step,
         copy=copy,
     )
 
@@ -622,16 +581,6 @@ def test_vector_channel_batch_size(
     expected = 2
 
     assert vector_channel.batch_size == expected
-
-
-def test_vector_channel_key(
-    vector_channel: VectorChannel,
-) -> None:
-    expected_name = ChannelName.R
-    expected_time_step = None
-    expected = (expected_name, expected_time_step)
-
-    assert vector_channel.key == expected
 
 
 @pytest.mark.parametrize(('channels', 'copy', 'expected'), data_test_vector_channel_from_channels)
@@ -694,7 +643,6 @@ def test_vector_channel_from_unnormalized_data_exceptions(
     message: str,
 ) -> None:
     name = ChannelName.R
-    time_step = None
     copy = False
 
     with pytest.raises(AviaryUserError, match=message):
@@ -704,7 +652,6 @@ def test_vector_channel_from_unnormalized_data_exceptions(
             coordinates=coordinates,
             tile_size=tile_size,
             buffer_size=buffer_size,
-            time_step=time_step,
             copy=copy,
         )
 
@@ -712,15 +659,12 @@ def test_vector_channel_from_unnormalized_data_exceptions(
 def test_vector_channel_from_unnormalized_data_defaults() -> None:
     signature = inspect.signature(VectorChannel.from_unnormalized_data)
     buffer_size = signature.parameters['buffer_size'].default
-    time_step = signature.parameters['time_step'].default
     copy = signature.parameters['copy'].default
 
     expected_buffer_size = 0.
-    expected_time_step = None
     expected_copy = False
 
     assert buffer_size == expected_buffer_size
-    assert time_step is expected_time_step
     assert copy is expected_copy
 
 
