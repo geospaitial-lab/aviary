@@ -72,8 +72,8 @@ class Adois:
             remove_channels: If True, the channels are removed
         """
         try:
-            import onnxruntime as ort
-            from huggingface_hub import hf_hub_download
+            import onnxruntime as ort  # noqa: PLC0415
+            from huggingface_hub import hf_hub_download  # noqa: PLC0415
         except ImportError as error:
             message = (
                 'Missing dependency! '
