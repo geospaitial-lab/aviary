@@ -27,7 +27,6 @@ from aviary.core.tiles import Tile
 if TYPE_CHECKING:
     from aviary.core.type_aliases import (
         BufferSize,
-        ChannelKey,
         Coordinates,
         EPSGCode,
         GroundSamplingDistance,
@@ -76,10 +75,9 @@ def composite_fetcher(
 def vrt_fetcher(
     coordinates: Coordinates,
     path: Path,
-    channel_keys:
+    channel_names:
         ChannelName | str |
-        ChannelKey |
-        list[ChannelName | str | ChannelKey | None] |
+        list[ChannelName | str | None] |
         None,
     tile_size: TileSize,
     ground_sampling_distance: GroundSamplingDistance,
@@ -92,8 +90,7 @@ def vrt_fetcher(
     Parameters:
         coordinates: Coordinates (x_min, y_min) of the tile in meters
         path: Path to the virtual raster (.vrt file)
-        channel_keys: Channel name, channel name and time step combination, channel names,
-            or channel name and time step combinations (if None, the channel is ignored)
+        channel_names: Channel name or channel names (if None, the channel is ignored)
         tile_size: Tile size in meters
         ground_sampling_distance: Ground sampling distance in meters
         interpolation_mode: Interpolation mode (`BILINEAR` or `NEAREST`)
@@ -143,7 +140,7 @@ def vrt_fetcher(
     )
     return Tile.from_composite_raster(
         data=data,
-        channel_keys=channel_keys,
+        channel_names=channel_names,
         coordinates=coordinates,
         tile_size=tile_size,
         buffer_size=buffer_size,
@@ -158,10 +155,9 @@ def wms_fetcher(
     layer: str,
     epsg_code: EPSGCode,
     response_format: str,
-    channel_keys:
+    channel_names:
         ChannelName | str |
-        ChannelKey |
-        list[ChannelName | str | ChannelKey | None] |
+        list[ChannelName | str | None] |
         None,
     tile_size: TileSize,
     ground_sampling_distance: GroundSamplingDistance,
@@ -178,8 +174,7 @@ def wms_fetcher(
         layer: Layer
         epsg_code: EPSG code
         response_format: Format of the response (MIME type, e.g., 'image/png')
-        channel_keys: Channel name, channel name and time step combination, channel names,
-            or channel name and time step combinations (if None, the channel is ignored)
+        channel_names: Channel name or channel names (if None, the channel is ignored)
         tile_size: Tile size in meters
         ground_sampling_distance: Ground sampling distance in meters
         style: Style
@@ -228,7 +223,7 @@ def wms_fetcher(
     )
     return Tile.from_composite_raster(
         data=data,
-        channel_keys=channel_keys,
+        channel_names=channel_names,
         coordinates=coordinates,
         tile_size=tile_size,
         buffer_size=buffer_size,

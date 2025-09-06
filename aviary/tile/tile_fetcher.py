@@ -29,7 +29,6 @@ from aviary.core.enums import (
 from aviary.core.exceptions import AviaryUserError
 from aviary.core.type_aliases import (
     BufferSize,
-    ChannelKey,
     Coordinates,
     EPSGCode,
     GroundSamplingDistance,
@@ -326,10 +325,9 @@ class VRTFetcher:
     def __init__(
         self,
         path: Path,
-        channel_keys:
+        channel_names:
             ChannelName | str |
-            ChannelKey |
-            list[ChannelName | str | ChannelKey | None] |
+            list[ChannelName | str | None] |
             None,
         tile_size: TileSize,
         ground_sampling_distance: GroundSamplingDistance,
@@ -339,15 +337,14 @@ class VRTFetcher:
         """
         Parameters:
             path: Path to the virtual raster (.vrt file)
-            channel_keys: Channel name, channel name and time step combination, channel names,
-                or channel name and time step combinations (if None, the channel is ignored)
+            channel_names: Channel name or channel names (if None, the channel is ignored)
             tile_size: Tile size in meters
             ground_sampling_distance: Ground sampling distance in meters
             interpolation_mode: Interpolation mode (`BILINEAR` or `NEAREST`)
             buffer_size: Buffer size in meters
         """
         self._path = path
-        self._channel_keys = channel_keys
+        self._channel_names = channel_names
         self._tile_size = tile_size
         self._ground_sampling_distance = ground_sampling_distance
         self._interpolation_mode = interpolation_mode
@@ -384,7 +381,7 @@ class VRTFetcher:
         return vrt_fetcher(
             coordinates=coordinates,
             path=self._path,
-            channel_keys=self._channel_keys,
+            channel_names=self._channel_names,
             tile_size=self._tile_size,
             ground_sampling_distance=self._ground_sampling_distance,
             interpolation_mode=self._interpolation_mode,
@@ -408,7 +405,7 @@ class VRTFetcherConfig(pydantic.BaseModel):
         name: 'VRTFetcher'
         config:
           path: 'path/to/my_vrt.vrt'
-          channel_keys:
+          channel_names:
             - 'r'
             - 'g'
             - 'b'
@@ -420,8 +417,7 @@ class VRTFetcherConfig(pydantic.BaseModel):
 
     Attributes:
         path: Path to the virtual raster (.vrt file)
-        channel_keys: Channel name, channel name and time step combination, channel names,
-            or channel name and time step combinations (if None, the channel is ignored)
+        channel_names: Channel name or channel names (if None, the channel is ignored)
         tile_size: Tile size in meters
         ground_sampling_distance: Ground sampling distance in meters
         interpolation_mode: Interpolation mode (`BILINEAR` or `NEAREST`) -
@@ -430,10 +426,9 @@ class VRTFetcherConfig(pydantic.BaseModel):
             defaults to 0
     """
     path: Path
-    channel_keys: (
+    channel_names: (
         ChannelName | str |
-        ChannelKey |
-        list[ChannelName | str | ChannelKey | None] |
+        list[ChannelName | str | None] |
         None
     )
     tile_size: TileSize
@@ -463,10 +458,9 @@ class WMSFetcher:
         layer: str,
         epsg_code: EPSGCode,
         response_format: str,
-        channel_keys:
+        channel_names:
             ChannelName | str |
-            ChannelKey |
-            list[ChannelName | str | ChannelKey | None] |
+            list[ChannelName | str | None] |
             None,
         tile_size: TileSize,
         ground_sampling_distance: GroundSamplingDistance,
@@ -480,8 +474,7 @@ class WMSFetcher:
             layer: Layer
             epsg_code: EPSG code
             response_format: Format of the response (MIME type, e.g., 'image/png')
-            channel_keys: Channel name, channel name and time step combination, channel names,
-                or channel name and time step combinations (if None, the channel is ignored)
+            channel_names: Channel name or channel names (if None, the channel is ignored)
             tile_size: Tile size in meters
             ground_sampling_distance: Ground sampling distance in meters
             style: Style
@@ -492,7 +485,7 @@ class WMSFetcher:
         self._layer = layer
         self._epsg_code = epsg_code
         self._response_format = response_format
-        self._channel_keys = channel_keys
+        self._channel_names = channel_names
         self._tile_size = tile_size
         self._ground_sampling_distance = ground_sampling_distance
         self._style = style
@@ -533,7 +526,7 @@ class WMSFetcher:
             layer=self._layer,
             epsg_code=self._epsg_code,
             response_format=self._response_format,
-            channel_keys=self._channel_keys,
+            channel_names=self._channel_names,
             tile_size=self._tile_size,
             ground_sampling_distance=self._ground_sampling_distance,
             style=self._style,
@@ -561,7 +554,7 @@ class WMSFetcherConfig(pydantic.BaseModel):
           layer: 'my_layer'
           epsg_code: 25832
           response_format: 'image/png'
-          channel_keys:
+          channel_names:
             - 'r'
             - 'g'
             - 'b'
@@ -577,8 +570,7 @@ class WMSFetcherConfig(pydantic.BaseModel):
         layer: Layer
         epsg_code: EPSG code
         response_format: Format of the response (MIME type, e.g., 'image/png')
-        channel_keys: Channel name, channel name and time step combination, channel names,
-            or channel name and time step combinations (if None, the channel is ignored)
+        channel_names: Channel name or channel names (if None, the channel is ignored)
         tile_size: Tile size in meters
         ground_sampling_distance: Ground sampling distance in meters
         style: Style -
@@ -591,10 +583,9 @@ class WMSFetcherConfig(pydantic.BaseModel):
     layer: str
     epsg_code: EPSGCode
     response_format: str
-    channel_keys: (
+    channel_names: (
         ChannelName | str |
-        ChannelKey |
-        list[ChannelName | str | ChannelKey | None] |
+        list[ChannelName | str | None] |
         None
     )
     tile_size: TileSize

@@ -13,46 +13,39 @@ import rasterio as rio
 import rasterio.features
 
 from aviary.core.channel import VectorChannel
+from aviary.core.enums import _coerce_channel_name
 from aviary.core.tiles import Tiles
-
-# noinspection PyProtectedMember
-from aviary.core.type_aliases import _coerce_channel_key
 
 if TYPE_CHECKING:
     from aviary.core.enums import ChannelName
-    from aviary.core.type_aliases import (
-        ChannelKey,
-        ChannelKeySet,
-        ChannelNameKeySet,
-        ChannelNameSet,
-    )
+    from aviary.core.type_aliases import ChannelNameSet
     from aviary.tile.tiles_processor import TilesProcessor
 
 
 def _process_data(
     tiles: Tiles,
-    channel_key: ChannelName | str | ChannelKey,
+    channel_name: ChannelName | str,
     process_data_item: Callable,
-    new_channel_key: ChannelName | str | ChannelKey | None = None,
+    new_channel_name: ChannelName | str | None = None,
     max_num_threads: int | None = None,
 ) -> Tiles:
     """Processes the data of the channel.
 
     Parameters:
         tiles: Tiles
-        channel_key: Channel name or channel name and time step combination
+        channel_name: Channel name
         process_data_item: Function to process each data item
-        new_channel_key: New channel name or channel name and time step combination
+        new_channel_name: New channel name
         max_num_threads: Maximum number of threads
 
     Returns:
         Tiles
     """
-    new_channel_key = _coerce_channel_key(channel_key=new_channel_key)
+    new_channel_name = _coerce_channel_name(channel_name=new_channel_name)
 
-    channel = tiles[channel_key]
+    channel = tiles[channel_name]
 
-    if new_channel_key is not None:
+    if new_channel_name is not None:
         channel = channel.copy()
 
     data = channel.data
@@ -71,8 +64,8 @@ def _process_data(
 
     channel._data = data  # noqa: SLF001
 
-    if new_channel_key is not None:
-        channel.name, channel.time_step = new_channel_key
+    if new_channel_name is not None:
+        channel.name = new_channel_name
         return tiles.append(
             channels=channel,
             inplace=True,
@@ -83,30 +76,28 @@ def _process_data(
 
 def copy_processor(
     tiles: Tiles,
-    channel_key: ChannelName | str | ChannelKey,
-    new_channel_key: ChannelName | str | ChannelKey | None = None,
+    channel_name: ChannelName | str,
+    new_channel_name: ChannelName | str | None = None,
 ) -> Tiles:
     """Copies the channel.
 
     Parameters:
         tiles: Tiles
-        channel_key: Channel name or channel name and time step combination
-        new_channel_key: New channel name or channel name and time step combination
+        channel_name: Channel name
+        new_channel_name: New channel name
 
     Returns:
         Tiles
     """
-    new_channel_key = _coerce_channel_key(channel_key=new_channel_key)
+    new_channel_name = _coerce_channel_name(channel_name=new_channel_name)
 
-    if new_channel_key is None:
+    if new_channel_name is None:
         return tiles
 
-    channel = tiles[channel_key]
+    channel = tiles[channel_name]
     channel = channel.copy()
 
-    new_channel_name, new_time_step = new_channel_key
     channel.name = new_channel_name
-    channel.time_step = new_time_step
     return tiles.append(
         channels=channel,
         inplace=True,
@@ -115,20 +106,20 @@ def copy_processor(
 
 def normalize_processor(
     tiles: Tiles,
-    channel_key: ChannelName | str | ChannelKey,
+    channel_name: ChannelName | str,
     min_value: float,
     max_value: float,
-    new_channel_key: ChannelName | str | ChannelKey | None = None,
+    new_channel_name: ChannelName | str | None = None,
     max_num_threads: int | None = None,
 ) -> Tiles:
     """Normalizes the channel.
 
     Parameters:
         tiles: Tiles
-        channel_key: Channel name or channel name and time step combination
+        channel_name: Channel name
         min_value: Minimum value
         max_value: Maximum value
-        new_channel_key: New channel name or channel name and time step combination
+        new_channel_name: New channel name
         max_num_threads: Maximum number of threads
 
     Returns:
@@ -136,13 +127,13 @@ def normalize_processor(
     """
     return _process_data(
         tiles=tiles,
-        channel_key=channel_key,
+        channel_name=channel_name,
         process_data_item=lambda data_item: _normalize_data_item(
             data_item=data_item,
             min_value=min_value,
             max_value=max_value,
         ),
-        new_channel_key=new_channel_key,
+        new_channel_name=new_channel_name,
         max_num_threads=max_num_threads,
     )
 
@@ -195,10 +186,9 @@ def parallel_composite_processor(
 
 def remove_buffer_processor(
     tiles: Tiles,
-    channel_keys:
+    channel_names:
         ChannelName | str |
-        ChannelKey |
-        ChannelNameSet | ChannelKeySet | ChannelNameKeySet |
+        ChannelNameSet |
         bool |
         None = True,
 ) -> Tiles:
@@ -206,24 +196,22 @@ def remove_buffer_processor(
 
     Parameters:
         tiles: Tiles
-        channel_keys: Channel name, channel name and time step combination, channel names,
-            channel name and time step combinations, no channels (False or None), or all channels (True)
+        channel_names: Channel name, channel names, no channels (False or None), or all channels (True)
 
     Returns:
         Tiles
     """
     return tiles.remove_buffer(
-        channel_keys=channel_keys,
+        channel_names=channel_names,
         inplace=True,
     )
 
 
 def remove_processor(
     tiles: Tiles,
-    channel_keys:
+    channel_names:
         ChannelName | str |
-        ChannelKey |
-        ChannelNameSet | ChannelKeySet | ChannelNameKeySet |
+        ChannelNameSet |
         bool |
         None = True,
 ) -> Tiles:
@@ -231,24 +219,22 @@ def remove_processor(
 
     Parameters:
         tiles: Tiles
-        channel_keys: Channel name, channel name and time step combination, channel names,
-            channel name and time step combinations, no channels (False or None), or all channels (True)
+        channel_names: Channel name, channel names, no channels (False or None), or all channels (True)
 
     Returns:
         Tiles
     """
     return tiles.remove(
-        channel_keys=channel_keys,
+        channel_names=channel_names,
         inplace=True,
     )
 
 
 def select_processor(
     tiles: Tiles,
-    channel_keys:
+    channel_names:
         ChannelName | str |
-        ChannelKey |
-        ChannelNameSet | ChannelKeySet | ChannelNameKeySet |
+        ChannelNameSet |
         bool |
         None = True,
 ) -> Tiles:
@@ -256,14 +242,13 @@ def select_processor(
 
     Parameters:
         tiles: Tiles
-        channel_keys: Channel name, channel name and time step combination, channel names,
-            channel name and time step combinations, no channels (False or None), or all channels (True)
+        channel_names: Channel name, channel names, no channels (False or None), or all channels (True)
 
     Returns:
         Tiles
     """
     return tiles.select(
-        channel_keys=channel_keys,
+        channel_names=channel_names,
         inplace=True,
     )
 
@@ -289,20 +274,20 @@ def sequential_composite_processor(
 
 def standardize_processor(
     tiles: Tiles,
-    channel_key: ChannelName | str | ChannelKey,
+    channel_name: ChannelName | str,
     mean_value: float,
     std_value: float,
-    new_channel_key: ChannelName | str | ChannelKey | None = None,
+    new_channel_name: ChannelName | str | None = None,
     max_num_threads: int | None = None,
 ) -> Tiles:
     """Standardizes the channel.
 
     Parameters:
         tiles: Tiles
-        channel_key: Channel name or channel name and time step combination
+        channel_name: Channel name
         mean_value: Mean value
         std_value: Standard deviation value
-        new_channel_key: New channel name or channel name and time step combination
+        new_channel_name: New channel name
         max_num_threads: Maximum number of threads
 
     Returns:
@@ -310,13 +295,13 @@ def standardize_processor(
     """
     return _process_data(
         tiles=tiles,
-        channel_key=channel_key,
+        channel_name=channel_name,
         process_data_item=lambda data_item: _standardize_data_item(
             data_item=data_item,
             mean_value=mean_value,
             std_value=std_value,
         ),
-        new_channel_key=new_channel_key,
+        new_channel_name=new_channel_name,
         max_num_threads=max_num_threads,
     )
 
@@ -346,18 +331,18 @@ def _standardize_data_item(
 
 def vectorize_processor(
     tiles: Tiles,
-    channel_key: ChannelName | str | ChannelKey,
+    channel_name: ChannelName | str,
     ignore_background_class: bool = True,
-    new_channel_key: ChannelName | str | ChannelKey | None = None,
+    new_channel_name: ChannelName | str | None = None,
     max_num_threads: int | None = None,
 ) -> Tiles:
     """Vectorizes the channel.
 
     Parameters:
         tiles: Tiles
-        channel_key: Channel name or channel name and time step combination
+        channel_name: Channel name
         ignore_background_class: If True, the background class (value 0) is not vectorized
-        new_channel_key: New channel name or channel name and time step combination
+        new_channel_name: New channel name
         max_num_threads: Maximum number of threads
 
     Returns:
@@ -365,31 +350,30 @@ def vectorize_processor(
     """
     tiles = _process_data(
         tiles=tiles,
-        channel_key=channel_key,
+        channel_name=channel_name,
         process_data_item=lambda data_item: _vectorize_data_item(
             data_item=data_item,
             ignore_background_class=ignore_background_class,
         ),
-        new_channel_key=new_channel_key,
+        new_channel_name=new_channel_name,
         max_num_threads=max_num_threads,
     )
 
-    if new_channel_key is not None:  # noqa: SIM108
-        channel = tiles[new_channel_key]
+    if new_channel_name is not None:  # noqa: SIM108
+        channel = tiles[new_channel_name]
     else:
-        channel = tiles[channel_key]
+        channel = tiles[channel_name]
 
     channel = VectorChannel(
         data=channel.data,
         name=channel.name,
         buffer_size=channel.buffer_size,
-        time_step=channel.time_step,
         copy=False,
     )
 
-    if new_channel_key is not None:
+    if new_channel_name is not None:
         tiles = tiles.remove(
-            channel_keys=new_channel_key,
+            channel_names=new_channel_name,
             inplace=True,
         )
         tiles = tiles.append(
@@ -398,7 +382,7 @@ def vectorize_processor(
         )
     else:
         tiles = tiles.remove(
-            channel_keys=channel_key,
+            channel_names=channel_name,
             inplace=True,
         )
         tiles = tiles.append(

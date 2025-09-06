@@ -28,12 +28,7 @@ from aviary._functional.tile.tiles_processor import (
 )
 from aviary.core.enums import ChannelName
 from aviary.core.exceptions import AviaryUserError
-from aviary.core.type_aliases import (
-    ChannelKey,
-    ChannelKeySet,
-    ChannelNameKeySet,
-    ChannelNameSet,
-)
+from aviary.core.type_aliases import ChannelNameSet
 
 if TYPE_CHECKING:
     from aviary.core.tiles import Tiles
@@ -229,24 +224,21 @@ def register_tiles_processor(
 class CopyProcessor:
     """Tiles processor that copies a channel
 
-    Notes:
-        - Copying a channel by its name assumes the time step is None
-
     Implements the `TilesProcessor` protocol.
     """
 
     def __init__(
         self,
-        channel_key: ChannelName | str | ChannelKey,
-        new_channel_key: ChannelName | str | ChannelKey | None = None,
+        channel_name: ChannelName | str,
+        new_channel_name: ChannelName | str | None = None,
     ) -> None:
         """
         Parameters:
-            channel_key: Channel name or channel name and time step combination
-            new_channel_key: New channel name or channel name and time step combination
+            channel_name: Channel name
+            new_channel_name: New channel name
         """
-        self._channel_key = channel_key
-        self._new_channel_key = new_channel_key
+        self._channel_name = channel_name
+        self._new_channel_name = new_channel_name
 
     @classmethod
     def from_config(
@@ -278,8 +270,8 @@ class CopyProcessor:
         """
         return copy_processor(
             tiles=tiles,
-            channel_key=self._channel_key,
-            new_channel_key=self._new_channel_key,
+            channel_name=self._channel_name,
+            new_channel_name=self._new_channel_name,
         )
 
 
@@ -296,17 +288,17 @@ class CopyProcessorConfig(pydantic.BaseModel):
         package: 'aviary'
         name: 'CopyProcessor'
         config:
-          channel_key: 'my_channel'
-          new_channel_key: 'my_new_channel'
+          channel_name: 'my_channel'
+          new_channel_name: 'my_new_channel'
         ```
 
     Attributes:
-        channel_key: Channel name or channel name and time step combination
-        new_channel_key: New channel name or channel name and time step combination -
+        channel_name: Channel name
+        new_channel_name: New channel name -
             defaults to None
     """
-    channel_key: ChannelName | str | ChannelKey
-    new_channel_key: ChannelName | str | ChannelKey | None = None
+    channel_name: ChannelName | str
+    new_channel_name: ChannelName | str | None = None
 
 
 _TilesProcessorFactory.register(
@@ -320,7 +312,6 @@ class NormalizeProcessor:
     """Tiles processor that normalizes a channel
 
     Notes:
-        - Normalizing a channel by its name assumes the time step is None
         - Requires a raster channel
 
     Implements the `TilesProcessor` protocol.
@@ -328,24 +319,24 @@ class NormalizeProcessor:
 
     def __init__(
         self,
-        channel_key: ChannelName | str | ChannelKey,
+        channel_name: ChannelName | str,
         min_value: float,
         max_value: float,
-        new_channel_key: ChannelName | str | ChannelKey | None = None,
+        new_channel_name: ChannelName | str | None = None,
         max_num_threads: int | None = None,
     ) -> None:
         """
         Parameters:
-            channel_key: Channel name or channel name and time step combination
+            channel_name: Channel name
             min_value: Minimum value
             max_value: Maximum value
-            new_channel_key: New channel name or channel name and time step combination
+            new_channel_name: New channel name
             max_num_threads: Maximum number of threads
         """
-        self._channel_key = channel_key
+        self._channel_name = channel_name
         self._min_value = min_value
         self._max_value = max_value
-        self._new_channel_key = new_channel_key
+        self._new_channel_name = new_channel_name
         self._max_num_threads = max_num_threads
 
     @classmethod
@@ -378,10 +369,10 @@ class NormalizeProcessor:
         """
         return normalize_processor(
             tiles=tiles,
-            channel_key=self._channel_key,
+            channel_name=self._channel_name,
             min_value=self._min_value,
             max_value=self._max_value,
-            new_channel_key=self._new_channel_key,
+            new_channel_name=self._new_channel_name,
             max_num_threads=self._max_num_threads,
         )
 
@@ -399,26 +390,26 @@ class NormalizeProcessorConfig(pydantic.BaseModel):
         package: 'aviary'
         name: 'NormalizeProcessor'
         config:
-          channel_key: 'my_channel'
+          channel_name: 'my_channel'
           min_value: 0.
           max_value: 255.
-          new_channel_key: null
+          new_channel_name: null
           max_num_threads: null
         ```
 
     Attributes:
-        channel_key: Channel name or channel name and time step combination
+        channel_name: Channel name
         min_value: Minimum value
         max_value: Maximum value
-        new_channel_key: New channel name or channel name and time step combination -
+        new_channel_name: New channel name -
             defaults to None
         max_num_threads: Maximum number of threads -
             defaults to None
     """
-    channel_key: ChannelName | str | ChannelKey
+    channel_name: ChannelName | str
     min_value: float
     max_value: float
-    new_channel_key: ChannelName | str | ChannelKey | None = None
+    new_channel_name: ChannelName | str | None = None
     max_num_threads: int | None = None
 
 
@@ -520,27 +511,22 @@ _TilesProcessorFactory.register(
 class RemoveBufferProcessor:
     """Tiles processor that removes the buffer of channels
 
-    Notes:
-        - Removing the buffer of a channel by its name assumes the time step is None
-
     Implements the `TilesProcessor` protocol.
     """
 
     def __init__(
         self,
-        channel_keys:
+        channel_names:
             ChannelName | str |
-            ChannelKey |
-            ChannelNameSet | ChannelKeySet | ChannelNameKeySet |
+            ChannelNameSet |
             bool |
             None = True,
     ) -> None:
         """
         Parameters:
-            channel_keys: Channel name, channel name and time step combination, channel names,
-                channel name and time step combinations, no channels (False or None), or all channels (True)
+            channel_names: Channel name, channel names, no channels (False or None), or all channels (True)
         """
-        self._channel_keys = channel_keys
+        self._channel_names = channel_names
 
     @classmethod
     def from_config(
@@ -572,7 +558,7 @@ class RemoveBufferProcessor:
         """
         return remove_buffer_processor(
             tiles=tiles,
-            channel_keys=self._channel_keys,
+            channel_names=self._channel_names,
         )
 
 
@@ -590,18 +576,16 @@ class RemoveBufferProcessorConfig(pydantic.BaseModel):
         package: 'aviary'
         name: 'RemoveBufferProcessor'
         config:
-          channel_keys: true
+          channel_names: true
         ```
 
     Attributes:
-        channel_keys: Channel name, channel name and time step combination, channel names,
-            channel name and time step combinations, no channels (False or None), or all channels (True) -
+        channel_names: Channel name, channel names, no channels (False or None), or all channels (True) -
             defaults to True
     """
-    channel_keys: (
+    channel_names: (
         ChannelName | str |
-        ChannelKey |
-        ChannelNameSet | ChannelKeySet | ChannelNameKeySet |
+        ChannelNameSet |
         bool |
         None
     ) = True
@@ -617,27 +601,22 @@ _TilesProcessorFactory.register(
 class RemoveProcessor:
     """Tiles processor that removes channels
 
-    Notes:
-        - Removing a channel by its name assumes the time step is None
-
     Implements the `TilesProcessor` protocol.
     """
 
     def __init__(
         self,
-        channel_keys:
+        channel_names:
             ChannelName | str |
-            ChannelKey |
-            ChannelNameSet | ChannelKeySet | ChannelNameKeySet |
+            ChannelNameSet |
             bool |
             None = True,
     ) -> None:
         """
         Parameters:
-            channel_keys: Channel name, channel name and time step combination, channel names,
-                channel name and time step combinations, no channels (False or None), or all channels (True)
+            channel_names: Channel name, channel names, no channels (False or None), or all channels (True)
         """
-        self._channel_keys = channel_keys
+        self._channel_names = channel_names
 
     @classmethod
     def from_config(
@@ -669,7 +648,7 @@ class RemoveProcessor:
         """
         return remove_processor(
             tiles=tiles,
-            channel_keys=self._channel_keys,
+            channel_names=self._channel_names,
         )
 
 
@@ -687,18 +666,16 @@ class RemoveProcessorConfig(pydantic.BaseModel):
         package: 'aviary'
         name: 'RemoveProcessor'
         config:
-          channel_keys: true
+          channel_names: true
         ```
 
     Attributes:
-        channel_keys: Channel name, channel name and time step combination, channel names,
-            channel name and time step combinations, no channels (False or None), or all channels (True) -
+        channel_names: Channel name, channel names, no channels (False or None), or all channels (True) -
             defaults to True
     """
-    channel_keys: (
+    channel_names: (
         ChannelName | str |
-        ChannelKey |
-        ChannelNameSet | ChannelKeySet | ChannelNameKeySet |
+        ChannelNameSet |
         bool |
         None
     ) = True
@@ -714,27 +691,22 @@ _TilesProcessorFactory.register(
 class SelectProcessor:
     """Tiles processor that selects channels
 
-    Notes:
-        - Selecting a channel by its name assumes the time step is None
-
     Implements the `TilesProcessor` protocol.
     """
 
     def __init__(
         self,
-        channel_keys:
+        channel_names:
             ChannelName | str |
-            ChannelKey |
-            ChannelNameSet | ChannelKeySet | ChannelNameKeySet |
+            ChannelNameSet |
             bool |
             None = True,
     ) -> None:
         """
         Parameters:
-            channel_keys: Channel name, channel name and time step combination, channel names,
-                channel name and time step combinations, no channels (False or None), or all channels (True)
+            channel_names: Channel name, channel names, no channels (False or None), or all channels (True)
         """
-        self._channel_keys = channel_keys
+        self._channel_names = channel_names
 
     @classmethod
     def from_config(
@@ -766,7 +738,7 @@ class SelectProcessor:
         """
         return select_processor(
             tiles=tiles,
-            channel_keys=self._channel_keys,
+            channel_names=self._channel_names,
         )
 
 
@@ -784,18 +756,16 @@ class SelectProcessorConfig(pydantic.BaseModel):
         package: 'aviary'
         name: 'SelectProcessor'
         config:
-          channel_keys: true
+          channel_names: true
         ```
 
     Attributes:
-        channel_keys: Channel name, channel name and time step combination, channel names,
-            channel name and time step combinations, no channels (False or None), or all channels (True) -
+        channel_names: Channel name, channel names, no channels (False or None), or all channels (True) -
             defaults to True
     """
-    channel_keys: (
+    channel_names: (
         ChannelName | str |
-        ChannelKey |
-        ChannelNameSet | ChannelKeySet | ChannelNameKeySet |
+        ChannelNameSet |
         bool |
         None
     ) = True
@@ -898,7 +868,6 @@ class StandardizeProcessor:
     """Tiles processor that standardizes a channel
 
     Notes:
-        - Standardizing a channel by its name assumes the time step is None
         - Requires a raster channel
 
     Implements the `TilesProcessor` protocol.
@@ -906,24 +875,24 @@ class StandardizeProcessor:
 
     def __init__(
         self,
-        channel_key: ChannelName | str | ChannelKey,
+        channel_name: ChannelName | str,
         mean_value: float,
         std_value: float,
-        new_channel_key: ChannelName | str | ChannelKey | None = None,
+        new_channel_name: ChannelName | str | None = None,
         max_num_threads: int | None = None,
     ) -> None:
         """
         Parameters:
-            channel_key: Channel name or channel name and time step combination
+            channel_name: Channel name
             mean_value: Mean value
             std_value: Standard deviation value
-            new_channel_key: New channel name or channel name and time step combination
+            new_channel_name: New channel name
             max_num_threads: Maximum number of threads
         """
-        self._channel_key = channel_key
+        self._channel_name = channel_name
         self._mean_value = mean_value
         self._std_value = std_value
-        self._new_channel_key = new_channel_key
+        self._new_channel_name = new_channel_name
         self._max_num_threads = max_num_threads
 
     @classmethod
@@ -956,10 +925,10 @@ class StandardizeProcessor:
         """
         return standardize_processor(
             tiles=tiles,
-            channel_key=self._channel_key,
+            channel_name=self._channel_name,
             mean_value=self._mean_value,
             std_value=self._std_value,
-            new_channel_key=self._new_channel_key,
+            new_channel_name=self._new_channel_name,
             max_num_threads=self._max_num_threads,
         )
 
@@ -977,26 +946,26 @@ class StandardizeProcessorConfig(pydantic.BaseModel):
         package: 'aviary'
         name: 'StandardizeProcessor'
         config:
-          channel_key: 'my_channel'
+          channel_name: 'my_channel'
           mean_value: .5
           std_value: .25
-          new_channel_key: null
+          new_channel_name: null
           max_num_threads: null
         ```
 
     Attributes:
-        channel_key: Channel name or channel name and time step combination
+        channel_name: Channel name
         mean_value: Mean value
         std_value: Standard deviation value
-        new_channel_key: New channel name or channel name and time step combination -
+        new_channel_name: New channel name -
             defaults to None
         max_num_threads: Maximum number of threads -
             defaults to None
     """
-    channel_key: ChannelName | str | ChannelKey
+    channel_name: ChannelName | str
     mean_value: float
     std_value: float
-    new_channel_key: ChannelName | str | ChannelKey | None = None
+    new_channel_name: ChannelName | str | None = None
     max_num_threads: int | None = None
 
 
@@ -1011,7 +980,6 @@ class VectorizeProcessor:
     """Tiles processor that vectorizes a channel
 
     Notes:
-        - Vectorizing a channel by its name assumes the time step is None
         - Requires a raster channel
 
     Implements the `TilesProcessor` protocol.
@@ -1019,21 +987,21 @@ class VectorizeProcessor:
 
     def __init__(
         self,
-        channel_key: ChannelName | str | ChannelKey,
+        channel_name: ChannelName | str,
         ignore_background_class: bool = True,
-        new_channel_key: ChannelName | str | ChannelKey | None = None,
+        new_channel_name: ChannelName | str | None = None,
         max_num_threads: int | None = None,
     ) -> None:
         """
         Parameters:
-            channel_key: Channel name or channel name and time step combination
+            channel_name: Channel name
             ignore_background_class: If True, the background class (value 0) is not vectorized
-            new_channel_key: New channel name or channel name and time step combination
+            new_channel_name: New channel name
             max_num_threads: Maximum number of threads
         """
-        self._channel_key = channel_key
+        self._channel_name = channel_name
         self._ignore_background_class = ignore_background_class
-        self._new_channel_key = new_channel_key
+        self._new_channel_name = new_channel_name
         self._max_num_threads = max_num_threads
 
     @classmethod
@@ -1066,9 +1034,9 @@ class VectorizeProcessor:
         """
         return vectorize_processor(
             tiles=tiles,
-            channel_key=self._channel_key,
+            channel_name=self._channel_name,
             ignore_background_class=self._ignore_background_class,
-            new_channel_key=self._new_channel_key,
+            new_channel_name=self._new_channel_name,
             max_num_threads=self._max_num_threads,
         )
 
@@ -1087,24 +1055,24 @@ class VectorizeProcessorConfig(pydantic.BaseModel):
         package: 'aviary'
         name: 'VectorizeProcessor'
         config:
-          channel_key: 'my_channel'
+          channel_name: 'my_channel'
           ignore_background_class: true
-          new_channel_key: null
+          new_channel_name: null
           max_num_threads: null
         ```
 
     Attributes:
-        channel_key: Channel name or channel name and time step combination
+        channel_name: Channel name
         ignore_background_class: If True, the background class (value 0) is not vectorized -
             defaults to True
-        new_channel_key: New channel name or channel name and time step combination -
+        new_channel_name: New channel name -
             defaults to None
         max_num_threads: Maximum number of threads -
             defaults to None
     """
-    channel_key: ChannelName | str | ChannelKey
+    channel_name: ChannelName | str
     ignore_background_class: bool = True
-    new_channel_key: ChannelName | str | ChannelKey | None = None
+    new_channel_name: ChannelName | str | None = None
     max_num_threads: int | None = None
 
 
