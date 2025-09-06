@@ -3,6 +3,8 @@ from typing import overload
 
 import rasterio as rio
 
+from aviary.core.type_aliases import ChannelNameSet
+
 
 class Enum(BaseEnum):  # noqa: D101
 
@@ -71,6 +73,36 @@ def _coerce_channel_name(
         return ChannelName(channel_name)
 
     return channel_name
+
+
+def _coerce_channel_names(
+    channel_names:
+        ChannelName | str |
+        ChannelNameSet |
+        bool |
+        None,
+) -> ChannelNameSet | bool:
+    """Coerces `channel_names` to `ChannelNameSet`.
+
+    Parameters:
+        channel_names: Channel name, channel names, no channels (False or None), or all channels (True)
+
+    Returns:
+        Channel names or all channels (True)
+    """
+    if channel_names is True:
+        return True
+
+    if channel_names is False or channel_names is None:
+        return set()
+
+    if isinstance(channel_names, (ChannelName | str)):
+        return {_coerce_channel_name(channel_name=channel_names)}
+
+    return {
+        _coerce_channel_name(channel_name=channel_name)
+        for channel_name in channel_names
+    }
 
 
 class GeospatialFilterMode(Enum):
