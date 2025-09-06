@@ -1,9 +1,15 @@
+from __future__ import annotations
+
 from enum import Enum as BaseEnum
-from typing import overload
+from typing import (
+    TYPE_CHECKING,
+    overload,
+)
 
 import rasterio as rio
 
-from aviary.core.type_aliases import ChannelNameSet
+if TYPE_CHECKING:
+    from aviary.core.type_aliases import ChannelNameSet
 
 
 class Enum(BaseEnum):  # noqa: D101
