@@ -36,15 +36,7 @@ data_test_tiles_contains = [
     (ChannelName.R, True),
     ('r', True),
     ('custom', True),
-    ((ChannelName.R, None), True),
-    (('r', None), True),
-    (('custom', None), True),
     ('invalid', False),
-    (('invalid', None), False),
-    ((ChannelName.R, 0), False),
-    (('r', 0), False),
-    (('custom', 0), False),
-    (('invalid', 0), False),
 ]
 
 data_test_tiles_eq = [
@@ -120,13 +112,6 @@ data_test_tiles_getitem = [
     (ChannelName.B, get_tiles_channel_3()),
     ('b', get_tiles_channel_3()),
     ('custom', get_tiles_channel_4()),
-    ((ChannelName.R, None), get_tiles_channel_1()),
-    (('r', None), get_tiles_channel_1()),
-    ((ChannelName.G, None), get_tiles_channel_2()),
-    (('g', None), get_tiles_channel_2()),
-    ((ChannelName.B, None), get_tiles_channel_3()),
-    (('b', None), get_tiles_channel_3()),
-    (('custom', None), get_tiles_channel_4()),
 ]
 
 data_test_tiles_init = [
@@ -156,7 +141,7 @@ data_test_tiles_init = [
 ]
 
 data_test_tiles_init_exceptions = [
-    # test case 1: channels contains duplicate channel name and time step combinations
+    # test case 1: channels contains duplicate channel names
     (
         [
             *get_tiles_channels(),
@@ -164,7 +149,7 @@ data_test_tiles_init_exceptions = [
         ],
         get_tiles_coordinates(),
         128,
-        re.escape('Invalid channels! The channels must contain unique channel name and time step combinations.'),
+        re.escape('Invalid channels! The channels must contain unique channel names.'),
     ),
     # test case 2: batch_size is not equal
     # test case 3: coordinates has one dimension
