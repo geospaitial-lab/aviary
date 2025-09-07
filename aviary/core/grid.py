@@ -403,7 +403,12 @@ class Grid(Iterable[Coordinates]):
         Raises:
             AviaryUserError: Invalid `config`
         """
-        if config.bounding_box is not None:
+        if config.coordinates is not None:
+            grid = cls(
+                coordinates=config.coordinates,
+                tile_size=config.tile_size,
+            )
+        elif config.bounding_box is not None:
             grid = cls.from_bounding_box(
                 bounding_box=config.bounding_box,
                 tile_size=config.tile_size,
@@ -925,6 +930,7 @@ class GridConfig(pydantic.BaseModel):
     """Configuration for the `from_config` class method of `Grid`
 
     The configuration must have exactly one of the following field combinations:
+        - `coordinates` and `tile_size`
         - `bounding_box_coordinates` and `tile_size`
         - `gpkg_path` and `tile_size`
         - `json_path`
@@ -934,7 +940,7 @@ class GridConfig(pydantic.BaseModel):
         - Use false or true instead of False or True
 
     Example:
-        You can create a configuration from a config file.
+        You can create the configuration from a config file.
 
         ``` yaml title="config.yaml"
         bounding_box_coordinates:
@@ -952,11 +958,15 @@ class GridConfig(pydantic.BaseModel):
         ```
 
     Attributes:
+        coordinates: Coordinates (x_min, y_min) of each tile in meters -
+            defaults to None
         bounding_box_coordinates: Bounding box coordinates (x_min, y_min, x_max, y_max) in meters -
             defaults to None
         gpkg_path: Path to the geopackage (.gpkg file) -
             defaults to None
         json_path: Path to the JSON file (.json file) -
+            defaults to None
+        ignore_coordinates: Coordinates (x_min, y_min) of each tile to ignore -
             defaults to None
         ignore_bounding_box_coordinates: Bounding box coordinates to ignore (x_min, y_min, x_max, y_max) in meters -
             defaults to None
@@ -969,9 +979,11 @@ class GridConfig(pydantic.BaseModel):
         snap: If True, the bounding box is snapped to `tile_size` -
             defaults to True
     """
+    coordinates: list[Coordinates] | None = None
     bounding_box_coordinates: tuple[Coordinate, Coordinate, Coordinate, Coordinate] | None = None
     gpkg_path: Path | None = None
     json_path: Path | None = None
+    ignore_coordinates: list[Coordinates] | None = None
     ignore_bounding_box_coordinates: tuple[Coordinate, Coordinate, Coordinate, Coordinate] | None = None
     ignore_gpkg_path: Path | None = None
     ignore_json_path: Path | None = None
