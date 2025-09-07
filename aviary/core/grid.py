@@ -331,16 +331,16 @@ class Grid(Iterable[Coordinates]):
         Raises:
             AviaryUserError: Invalid `json_string` (the JSON string does not contain the keys coordinates and tile_size)
         """
-        dict_ = json.loads(json_string)
+        json_dict = json.loads(json_string)
 
-        if 'coordinates' not in dict_ or 'tile_size' not in dict_:
+        if 'coordinates' not in json_dict or 'tile_size' not in json_dict:
             message = (
                 'Invalid json_string! '
                 'The JSON string must contain the keys coordinates and tile_size.'
             )
             raise AviaryUserError(message)
 
-        coordinates, tile_size = dict_['coordinates'], dict_['tile_size']
+        coordinates, tile_size = json_dict['coordinates'], json_dict['tile_size']
         coordinates = np.array(coordinates, dtype=np.int32) if coordinates else None
         return cls(
             coordinates=coordinates,
@@ -919,11 +919,11 @@ class Grid(Iterable[Coordinates]):
         Returns:
             JSON string
         """
-        dict_ = {
+        json_dict = {
             'coordinates': self._coordinates.tolist(),
             'tile_size': self._tile_size,
         }
-        return json.dumps(dict_)
+        return json.dumps(json_dict)
 
 
 class GridConfig(pydantic.BaseModel):
