@@ -1074,6 +1074,7 @@ class GridConfig(pydantic.BaseModel):
     def _validate(self) -> GridConfig:
         """Validates the configuration."""
         conditions = [
+            self.coordinates is not None and self.tile_size is not None,
             self.bounding_box is not None and self.tile_size is not None,
             self.gdf is not None and self.tile_size is not None,
             self.json_string is not None,
@@ -1083,7 +1084,7 @@ class GridConfig(pydantic.BaseModel):
             message = (
                 'Invalid config! '
                 'The configuration must have exactly one of the following field combinations: '
-                'bounding_box_coordinates, tile_size | gpkg_path, tile_size | json_path'
+                'coordinates, tile_size | bounding_box_coordinates, tile_size | gpkg_path, tile_size | json_path'
             )
             raise ValueError(message)
 
