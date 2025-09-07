@@ -409,6 +409,9 @@ class Grid(Iterable[Coordinates]):
                 coordinates=coordinates,
                 tile_size=config.tile_size,
             )
+
+            if config.snap:
+                grid = grid.snap(inplace=False)
         elif config.bounding_box is not None:
             grid = cls.from_bounding_box(
                 bounding_box=config.bounding_box,
@@ -888,6 +891,33 @@ class Grid(Iterable[Coordinates]):
             coordinates=coordinates,
             tile_size=self._tile_size,
         )
+
+    def snap(
+        self,
+        inplace: bool = False,
+    ) -> Grid:
+        """Snaps the coordinates to the tile size.
+
+        Parameters:
+            inplace: If True, the coordinates are snapped inplace
+
+        Returns:
+            Grid
+        """
+        gdf = self.to_gdf(epsg_code=None)
+
+        grid = self.from_gdf(
+            gdf=gdf,
+            tile_size=self._tile_size,
+            snap=True,
+        )
+
+        if inplace:
+            self._coordinates = grid.coordinates
+            self._validate()
+            return self
+
+        return grid
 
     def to_gdf(
         self,
