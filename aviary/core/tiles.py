@@ -49,6 +49,8 @@ class Tiles(Iterable[Channel]):
     """
     _coordinates: CoordinatesSet
 
+    __hash__ = None
+
     def __init__(
         self,
         channels: list[Channel],

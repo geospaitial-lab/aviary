@@ -50,6 +50,8 @@ class Grid(Iterable[Coordinates]):
     """
     _coordinates: CoordinatesSet
 
+    __hash__ = None
+
     def __init__(
         self,
         coordinates: CoordinatesSet | None,

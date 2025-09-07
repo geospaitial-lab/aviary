@@ -53,6 +53,8 @@ class Channel(ABC, Iterable[object]):
     """
     _data: list[object]
 
+    __hash__ = None
+
     def __init__(
         self,
         data: object | list[object],
@@ -459,6 +461,8 @@ class RasterChannel(Channel, Iterable[npt.NDArray]):
     """
     _data: list[npt.NDArray]
 
+    __hash__ = None
+
     def __init__(
         self,
         data: npt.NDArray | list[npt.NDArray],
@@ -799,6 +803,8 @@ class VectorChannel(Channel, Iterable[gpd.GeoDataFrame]):
         - The dunder methods `__getitem__` and `__iter__` return or yield a reference to a data item
     """
     _data: list[gpd.GeoDataFrame]
+
+    __hash__ = None
 
     def __init__(
         self,
