@@ -78,7 +78,7 @@ def geospatial_filter(
     Raises:
         AviaryUserError: Invalid `mode`
     """
-    from aviary.core.grid import Grid
+    from aviary.core.grid import Grid  # noqa: PLC0415
 
     grid = Grid(
         coordinates=coordinates,

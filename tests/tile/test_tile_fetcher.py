@@ -72,7 +72,7 @@ def test_composite_fetcher_call(
 
 def test_vrt_fetcher_init() -> None:
     path = Path('test/test.vrt')
-    channel_keys = [
+    channel_names = [
         ChannelName.R,
         ChannelName.G,
         ChannelName.B,
@@ -86,7 +86,7 @@ def test_vrt_fetcher_init() -> None:
 
     vrt_fetcher = VRTFetcher(
         path=path,
-        channel_keys=channel_keys,
+        channel_names=channel_names,
         tile_size=tile_size,
         ground_sampling_distance=ground_sampling_distance,
         interpolation_mode=interpolation_mode,
@@ -94,7 +94,7 @@ def test_vrt_fetcher_init() -> None:
     )
 
     assert vrt_fetcher._path == path
-    assert vrt_fetcher._channel_keys == channel_keys
+    assert vrt_fetcher._channel_names == channel_names
     assert vrt_fetcher._tile_size == tile_size
     assert vrt_fetcher._ground_sampling_distance == ground_sampling_distance
     assert vrt_fetcher._interpolation_mode == interpolation_mode
@@ -115,7 +115,7 @@ def test_vrt_fetcher_init_defaults() -> None:
 
 def test_vrt_fetcher_from_config() -> None:
     path = Path('test/test.vrt')
-    channel_keys = [
+    channel_names = [
         ChannelName.R,
         ChannelName.G,
         ChannelName.B,
@@ -128,7 +128,7 @@ def test_vrt_fetcher_from_config() -> None:
     buffer_size = 0
     vrt_fetcher_config = VRTFetcherConfig(
         path=path,
-        channel_keys=channel_keys,
+        channel_names=channel_names,
         tile_size=tile_size,
         ground_sampling_distance=ground_sampling_distance,
         interpolation_mode=interpolation_mode,
@@ -138,7 +138,7 @@ def test_vrt_fetcher_from_config() -> None:
     vrt_fetcher = VRTFetcher.from_config(vrt_fetcher_config)
 
     assert vrt_fetcher._path == path
-    assert vrt_fetcher._channel_keys == channel_keys
+    assert vrt_fetcher._channel_names == channel_names
     assert vrt_fetcher._tile_size == tile_size
     assert vrt_fetcher._ground_sampling_distance == ground_sampling_distance
     assert vrt_fetcher._interpolation_mode == interpolation_mode
@@ -161,7 +161,7 @@ def test_vrt_fetcher_call(
     mocked_vrt_fetcher.assert_called_once_with(
         coordinates=coordinates,
         path=vrt_fetcher._path,
-        channel_keys=vrt_fetcher._channel_keys,
+        channel_names=vrt_fetcher._channel_names,
         tile_size=vrt_fetcher._tile_size,
         ground_sampling_distance=vrt_fetcher._ground_sampling_distance,
         interpolation_mode=vrt_fetcher._interpolation_mode,
@@ -176,7 +176,7 @@ def test_wms_fetcher_init() -> None:
     layer = 'test_layer'
     epsg_code = 25832
     response_format = 'image/png'
-    channel_keys = [
+    channel_names = [
         ChannelName.R,
         ChannelName.G,
         ChannelName.B,
@@ -192,7 +192,7 @@ def test_wms_fetcher_init() -> None:
         layer=layer,
         epsg_code=epsg_code,
         response_format=response_format,
-        channel_keys=channel_keys,
+        channel_names=channel_names,
         tile_size=tile_size,
         ground_sampling_distance=ground_sampling_distance,
         style=style,
@@ -204,7 +204,7 @@ def test_wms_fetcher_init() -> None:
     assert wms_fetcher._layer == layer
     assert wms_fetcher._epsg_code == epsg_code
     assert wms_fetcher._response_format == response_format
-    assert wms_fetcher._channel_keys == channel_keys
+    assert wms_fetcher._channel_names == channel_names
     assert wms_fetcher._tile_size == tile_size
     assert wms_fetcher._ground_sampling_distance == ground_sampling_distance
     assert wms_fetcher._style == style
@@ -229,7 +229,7 @@ def test_wms_fetcher_from_config() -> None:
     layer = 'test_layer'
     epsg_code = 25832
     response_format = 'image/png'
-    channel_keys = [
+    channel_names = [
         ChannelName.R,
         ChannelName.G,
         ChannelName.B,
@@ -244,7 +244,7 @@ def test_wms_fetcher_from_config() -> None:
         layer=layer,
         epsg_code=epsg_code,
         response_format=response_format,
-        channel_keys=channel_keys,
+        channel_names=channel_names,
         tile_size=tile_size,
         ground_sampling_distance=ground_sampling_distance,
         style=style,
@@ -258,7 +258,7 @@ def test_wms_fetcher_from_config() -> None:
     assert wms_fetcher._layer == layer
     assert wms_fetcher._epsg_code == epsg_code
     assert wms_fetcher._response_format == response_format
-    assert wms_fetcher._channel_keys == channel_keys
+    assert wms_fetcher._channel_names == channel_names
     assert wms_fetcher._tile_size == tile_size
     assert wms_fetcher._ground_sampling_distance == ground_sampling_distance
     assert wms_fetcher._style == style
@@ -285,7 +285,7 @@ def test_wms_fetcher_call(
         layer=wms_fetcher._layer,
         epsg_code=wms_fetcher._epsg_code,
         response_format=wms_fetcher._response_format,
-        channel_keys=wms_fetcher._channel_keys,
+        channel_names=wms_fetcher._channel_names,
         tile_size=wms_fetcher._tile_size,
         ground_sampling_distance=wms_fetcher._ground_sampling_distance,
         style=wms_fetcher._style,

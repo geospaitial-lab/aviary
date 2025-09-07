@@ -13,7 +13,6 @@ from aviary.core.tiles import (
     Tiles,
 )
 from aviary.core.type_aliases import (
-    ChannelKey,
     Coordinates,
     CoordinatesSet,
     TileSize,
@@ -190,19 +189,6 @@ def test_tiles_batch_size(
     assert tiles.batch_size == expected
 
 
-def test_tiles_channel_keys(
-    tiles: Tiles,
-) -> None:
-    expected = {
-        (ChannelName.R, None),
-        (ChannelName.G, None),
-        (ChannelName.B, None),
-        ('custom', None),
-    }
-
-    assert tiles.channel_keys == expected
-
-
 def test_tiles_channel_names(
     tiles: Tiles,
 ) -> None:
@@ -256,13 +242,13 @@ def test_tiles_bool(
     assert bool(tiles) is expected
 
 
-@pytest.mark.parametrize(('channel_key', 'expected'), data_test_tiles_contains)
+@pytest.mark.parametrize(('channel_name', 'expected'), data_test_tiles_contains)
 def test_tiles_contains(
-    channel_key: ChannelName | str | ChannelKey,
+    channel_name: ChannelName | str,
     expected: bool,
     tiles: Tiles,
 ) -> None:
-    contains = channel_key in tiles
+    contains = channel_name in tiles
 
     assert contains is expected
 
@@ -278,13 +264,13 @@ def test_tiles_getattr(
     assert channel == expected
 
 
-@pytest.mark.parametrize(('channel_key', 'expected'), data_test_tiles_getitem)
+@pytest.mark.parametrize(('channel_name', 'expected'), data_test_tiles_getitem)
 def test_tiles_getitem(
-    channel_key: ChannelName | str | ChannelKey,
+    channel_name: ChannelName | str,
     expected: Channel,
     tiles: Tiles,
 ) -> None:
-    channel = tiles[channel_key]
+    channel = tiles[channel_name]
 
     assert channel == expected
 

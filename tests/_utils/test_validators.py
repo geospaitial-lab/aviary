@@ -24,7 +24,10 @@ def test_validate_channel_name_valid(
 def test_validate_channel_name_invalid(
     channel_name: str,
 ) -> None:
-    message = re.escape('Invalid channel_name! The channel name must contain only characters and underscores.')
+    message = re.escape(
+        'Invalid channel_name! '
+        'The channel name must start with a letter or underscore and contain only letters, numbers, and underscores.',
+    )
 
     with pytest.raises(AviaryUserError, match=message):
         validate_channel_name(channel_name=channel_name)

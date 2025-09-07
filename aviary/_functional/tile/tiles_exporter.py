@@ -14,10 +14,7 @@ if TYPE_CHECKING:
     from aviary.core.channel import VectorChannel
     from aviary.core.enums import ChannelName
     from aviary.core.tiles import Tiles
-    from aviary.core.type_aliases import (
-        ChannelKey,
-        EPSGCode,
-    )
+    from aviary.core.type_aliases import EPSGCode
 
 
 def grid_exporter(
@@ -62,7 +59,7 @@ def grid_exporter(
 
 def vector_exporter(
     tiles: Tiles,
-    channel_key: ChannelName | str | ChannelKey,
+    channel_name: ChannelName | str,
     epsg_code: EPSGCode | None,
     dir_path: Path,
     gpkg_name: str,
@@ -72,7 +69,7 @@ def vector_exporter(
 
     Parameters:
         tiles: Tiles
-        channel_key: Channel name or channel name and time step combination
+        channel_name: Channel name
         epsg_code: EPSG code
         dir_path: Path to the directory
         gpkg_name: Name of the geopackage (.gpkg file)
@@ -81,7 +78,7 @@ def vector_exporter(
     Returns:
         Tiles
     """
-    channel: VectorChannel = tiles[channel_key]
+    channel: VectorChannel = tiles[channel_name]
     coordinates = tiles.coordinates
     tile_size = tiles.tile_size
     data = channel.to_denormalized_data(
@@ -113,7 +110,7 @@ def vector_exporter(
 
     if remove_channel:
         tiles = tiles.remove(
-            channel_keys=channel_key,
+            channel_names=channel_name,
             inplace=True,
         )
 

@@ -29,6 +29,8 @@ class BoundingBox(Iterable[Coordinate]):
         'y_max',
     )
 
+    __hash__ = None
+
     def __init__(
         self,
         x_min: Coordinate,

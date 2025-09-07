@@ -7,10 +7,9 @@ import numpy as np
 import pydantic
 
 from aviary.core.channel import RasterChannel
-from aviary.core.enums import ChannelName
-from aviary.core.type_aliases import (
-    ChannelKey,
-    _coerce_channel_key,
+from aviary.core.enums import (
+    ChannelName,
+    _coerce_channel_name,
 )
 from aviary.tile.tiles_processor import _TilesProcessorFactory
 
@@ -29,9 +28,6 @@ class Adois:
     impervious surfaces (e.g., pavements, roads, sidewalks, driveways, parking lots or industrial areas).
     It is recommended to use the model with leaf-off orthophotos (i.e., without foliage on trees or shrubs),
     so canopies do not cover buildings or impervious surfaces.
-
-    Notes:
-        - Accessing a channel by its name assumes the time step is None
 
     Model input channels:
         - `ChannelName.R`: Red channel, raster channel, ground sampling distance of 0.2 meters,
@@ -57,27 +53,27 @@ class Adois:
 
     def __init__(
         self,
-        r_channel_key: ChannelName | str | ChannelKey = ChannelName.R,
-        g_channel_key: ChannelName | str | ChannelKey = ChannelName.G,
-        b_channel_key: ChannelName | str | ChannelKey = ChannelName.B,
-        nir_channel_key: ChannelName | str | ChannelKey = ChannelName.NIR,
-        out_channel_key: ChannelName | str | ChannelKey = 'adois',
+        r_channel_name: ChannelName | str = ChannelName.R,
+        g_channel_name: ChannelName | str = ChannelName.G,
+        b_channel_name: ChannelName | str = ChannelName.B,
+        nir_channel_name: ChannelName | str = ChannelName.NIR,
+        out_channel_name: ChannelName | str = 'adois',
         cache_dir_path: Path = Path('cache'),
         remove_channels: bool = True,
     ) -> None:
         """
         Parameters:
-            r_channel_key: Channel name or channel name and time step combination of the red channel
-            g_channel_key: Channel name or channel name and time step combination of the green channel
-            b_channel_key: Channel name or channel name and time step combination of the blue channel
-            nir_channel_key: Channel name or channel name and time step combination of the near-infrared channel
-            out_channel_key: Channel name or channel name and time step combination of the output channel
+            r_channel_name: Channel name of the red channel
+            g_channel_name: Channel name of the green channel
+            b_channel_name: Channel name of the blue channel
+            nir_channel_name: Channel name of the near-infrared channel
+            out_channel_name: Channel name of the output channel
             cache_dir_path: Path to the cache directory of the model
             remove_channels: If True, the channels are removed
         """
         try:
-            import onnxruntime as ort
-            from huggingface_hub import hf_hub_download
+            import onnxruntime as ort  # noqa: PLC0415
+            from huggingface_hub import hf_hub_download  # noqa: PLC0415
         except ImportError as error:
             message = (
                 'Missing dependency! '
@@ -85,17 +81,17 @@ class Adois:
             )
             raise ImportError(message) from error
 
-        self._r_channel_key = r_channel_key
-        self._g_channel_key = g_channel_key
-        self._b_channel_key = b_channel_key
-        self._nir_channel_key = nir_channel_key
-        self._channel_keys = [
-            self._r_channel_key,
-            self._g_channel_key,
-            self._b_channel_key,
-            self._nir_channel_key,
+        self._r_channel_name = r_channel_name
+        self._g_channel_name = g_channel_name
+        self._b_channel_name = b_channel_name
+        self._nir_channel_name = nir_channel_name
+        self._channel_names = [
+            self._r_channel_name,
+            self._g_channel_name,
+            self._b_channel_name,
+            self._nir_channel_name,
         ]
-        self._out_channel_key = out_channel_key
+        self._out_channel_name = out_channel_name
         self._cache_dir_path = cache_dir_path
         self._remove_channels = remove_channels
 
@@ -136,7 +132,7 @@ class Adois:
         Returns:
             Tiles
         """
-        inputs = tiles.to_composite_raster(channel_keys=self._channel_keys)
+        inputs = tiles.to_composite_raster(channel_names=self._channel_names)
 
         preds = self._model.run(
             output_names=[self._model_output_name],
@@ -149,14 +145,12 @@ class Adois:
         preds = preds.astype(np.uint8)
 
         data = list(preds)
-        out_channel_key = _coerce_channel_key(channel_key=self._out_channel_key)
-        name, time_step = out_channel_key
-        buffer_size = tiles[self._channel_keys[0]].buffer_size
+        out_channel_name = _coerce_channel_name(channel_name=self._out_channel_name)
+        buffer_size = tiles[self._channel_names[0]].buffer_size
         preds_channel = RasterChannel(
             data=data,
-            name=name,
+            name=out_channel_name,
             buffer_size=buffer_size,
-            time_step=time_step,
             copy=False,
         )
 
@@ -166,9 +160,9 @@ class Adois:
         )
 
         if self._remove_channels:
-            channel_keys = set(self._channel_keys)
+            channel_names = set(self._channel_names)
             tiles = tiles.remove(
-                channel_keys=channel_keys,
+                channel_names=channel_names,
                 inplace=True,
             )
 
@@ -189,36 +183,36 @@ class AdoisConfig(pydantic.BaseModel):
         package: 'aviary'
         name: 'Adois'
         config:
-          r_channel_key: 'r'
-          g_channel_key: 'g'
-          b_channel_key: 'b'
-          nir_channel_key: 'nir'
-          out_channel_key: 'adois'
+          r_channel_name: 'r'
+          g_channel_name: 'g'
+          b_channel_name: 'b'
+          nir_channel_name: 'nir'
+          out_channel_name: 'adois'
           cache_dir_path: 'cache'
           remove_channels: true
         ```
 
     Attributes:
-        r_channel_key: Channel name or channel name and time step combination of the red channel -
+        r_channel_name: Channel name of the red channel -
             defaults to `ChannelName.R`
-        g_channel_key: Channel name or channel name and time step combination of the green channel -
+        g_channel_name: Channel name of the green channel -
             defaults to `ChannelName.G`
-        b_channel_key: Channel name or channel name and time step combination of the blue channel -
+        b_channel_name: Channel name of the blue channel -
             defaults to `ChannelName.B`
-        nir_channel_key: Channel name or channel name and time step combination of the near-infrared channel -
+        nir_channel_name: Channel name of the near-infrared channel -
             defaults to `ChannelName.NIR`
-        out_channel_key: Channel name or channel name and time step combination of the output channel -
+        out_channel_name: Channel name of the output channel -
             defaults to 'adois'
         cache_dir_path: Path to the cache directory of the model -
             defaults to 'cache'
         remove_channels: If True, the channels are removed -
             defaults to True
     """
-    r_channel_key: ChannelName | str | ChannelKey = ChannelName.R
-    g_channel_key: ChannelName | str | ChannelKey = ChannelName.G
-    b_channel_key: ChannelName | str | ChannelKey = ChannelName.B
-    nir_channel_key: ChannelName | str | ChannelKey = ChannelName.NIR
-    out_channel_key: ChannelName | str | ChannelKey = 'adois'
+    r_channel_name: ChannelName | str = ChannelName.R
+    g_channel_name: ChannelName | str = ChannelName.G
+    b_channel_name: ChannelName | str = ChannelName.B
+    nir_channel_name: ChannelName | str = ChannelName.NIR
+    out_channel_name: ChannelName | str = 'adois'
     cache_dir_path: Path = Path('cache')
     remove_channels: bool = True
 
