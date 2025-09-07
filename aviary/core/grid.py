@@ -404,8 +404,9 @@ class Grid(Iterable[Coordinates]):
             AviaryUserError: Invalid `config`
         """
         if config.coordinates is not None:
+            coordinates = np.array(config.coordinates, dtype=np.int32) if config.coordinates else None
             grid = cls(
-                coordinates=config.coordinates,
+                coordinates=coordinates,
                 tile_size=config.tile_size,
             )
         elif config.bounding_box is not None:
