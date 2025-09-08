@@ -1033,6 +1033,28 @@ data_test_grid_remove_exceptions = [
 data_test_grid_remove_inplace = copy.deepcopy(data_test_grid_remove)
 data_test_grid_remove_inplace_return = copy.deepcopy(data_test_grid_remove)
 
+data_test_grid_snap = [
+    # test case 1: coordinates is divisible by tile_size
+    (
+        get_grid(),
+        get_grid(),
+    ),
+    # test case 2: coordinates is not divisible by tile_size
+    (
+        Grid(
+            coordinates=np.array(
+                [[-64, -64]],
+                dtype=np.int32,
+            ),
+            tile_size=128,
+        ),
+        get_grid(),
+    ),
+]
+
+data_test_grid_snap_inplace = copy.deepcopy(data_test_grid_snap)
+data_test_grid_snap_inplace_return = copy.deepcopy(data_test_grid_snap)
+
 data_test_grid_sub = [
     # test case 1: other contains no coordinates
     (

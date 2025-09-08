@@ -409,6 +409,9 @@ class Grid(Iterable[Coordinates]):
                 coordinates=coordinates,
                 tile_size=config.tile_size,
             )
+
+            if config.snap:
+                grid = grid.snap(inplace=False)
         elif config.bounding_box is not None:
             grid = cls.from_bounding_box(
                 bounding_box=config.bounding_box,
@@ -889,6 +892,33 @@ class Grid(Iterable[Coordinates]):
             tile_size=self._tile_size,
         )
 
+    def snap(
+        self,
+        inplace: bool = False,
+    ) -> Grid:
+        """Snaps the coordinates to the tile size.
+
+        Parameters:
+            inplace: If True, the coordinates are snapped inplace
+
+        Returns:
+            Grid
+        """
+        gdf = self.to_gdf(epsg_code=None)
+
+        grid = self.from_gdf(
+            gdf=gdf,
+            tile_size=self._tile_size,
+            snap=True,
+        )
+
+        if inplace:
+            self._coordinates = grid.coordinates
+            self._validate()
+            return self
+
+        return grid
+
     def to_gdf(
         self,
         epsg_code: EPSGCode | None,
@@ -944,6 +974,7 @@ class GridConfig(pydantic.BaseModel):
         You can create the configuration from a config file.
 
         ``` yaml title="config.yaml"
+        coordinates: null
         bounding_box_coordinates:
           - 363084
           - 5715326
@@ -951,6 +982,7 @@ class GridConfig(pydantic.BaseModel):
           - 5715582
         gpkg_path: null
         json_path: null
+        ignore_coordinates: null
         ignore_bounding_box_coordinates: null
         ignore_gpkg_path: null
         ignore_json_path: null

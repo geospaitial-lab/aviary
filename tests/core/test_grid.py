@@ -52,6 +52,9 @@ from tests.core.data.data_test_grid import (
     data_test_grid_remove_exceptions,
     data_test_grid_remove_inplace,
     data_test_grid_remove_inplace_return,
+    data_test_grid_snap,
+    data_test_grid_snap_inplace,
+    data_test_grid_snap_inplace_return,
     data_test_grid_sub,
     data_test_grid_sub_exceptions,
     data_test_grid_to_gdf,
@@ -680,6 +683,51 @@ def test_grid_remove_exceptions(
 
 def test_grid_remove_defaults() -> None:
     signature = inspect.signature(Grid.remove)
+    inplace = signature.parameters['inplace'].default
+
+    expected_inplace = False
+
+    assert inplace is expected_inplace
+
+
+@pytest.mark.parametrize(('grid', 'expected'), data_test_grid_snap)
+def test_grid_snap(
+    grid: Grid,
+    expected: Grid,
+) -> None:
+    copied_grid = copy.deepcopy(grid)
+
+    grid_ = grid.snap(inplace=False)
+
+    assert grid == copied_grid
+    assert grid_ == expected
+    assert id(grid_) != id(grid)
+
+
+@pytest.mark.parametrize(('grid', 'expected'), data_test_grid_snap_inplace)
+def test_grid_snap_inplace(
+    grid: Grid,
+    expected: Grid,
+) -> None:
+    grid.snap(inplace=True)
+
+    assert grid == expected
+
+
+@pytest.mark.parametrize(('grid', 'expected'), data_test_grid_snap_inplace_return)
+def test_grid_snap_inplace_return(
+    grid: Grid,
+    expected: Grid,
+) -> None:
+    grid_ = grid.snap(inplace=True)
+
+    assert grid == expected
+    assert grid_ == expected
+    assert id(grid_) == id(grid)
+
+
+def test_grid_snap_defaults() -> None:
+    signature = inspect.signature(Grid.snap)
     inplace = signature.parameters['inplace'].default
 
     expected_inplace = False

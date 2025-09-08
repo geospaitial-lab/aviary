@@ -122,9 +122,19 @@ def _geospatial_filter_difference(
     Returns:
         Coordinates (x_min, y_min) of each tile in meters
     """
+    if gdf.empty:
+        return coordinates.copy()
+
+    union_geometry = [gdf.union_all()]
+    union_epsg_code = gdf.crs
+    union_gdf = gpd.GeoDataFrame(
+        geometry=union_geometry,
+        crs=union_epsg_code,
+    )
+
     invalid_tiles = gpd.sjoin(
         left_df=grid,
-        right_df=gdf,
+        right_df=union_gdf,
         how='inner',
         predicate='within',
     )
@@ -148,16 +158,30 @@ def _geospatial_filter_intersection(
     Returns:
         Coordinates (x_min, y_min) of each tile in meters
     """
+    if gdf.empty:
+        return coordinates[grid.index.isin([])]
+
+    union_geometry = [gdf.union_all()]
+    union_epsg_code = gdf.crs
+    union_gdf = gpd.GeoDataFrame(
+        geometry=union_geometry,
+        crs=union_epsg_code,
+    )
+
     intersecting_tiles = gpd.sjoin(
         left_df=grid,
-        right_df=gdf,
+        right_df=union_gdf,
         how='inner',
         predicate='intersects',
         rsuffix='right_intersects',
     )
+
+    if intersecting_tiles.empty:
+        return coordinates[grid.index.isin([])]
+
     touching_tiles = gpd.sjoin(
         left_df=intersecting_tiles,
-        right_df=gdf,
+        right_df=union_gdf,
         how='inner',
         predicate='touches',
         rsuffix='right_touches',
