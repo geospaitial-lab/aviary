@@ -60,6 +60,7 @@ class Channel(ABC, Iterable[object]):
         data: object | list[object],
         name: ChannelName | str,
         buffer_size: FractionalBufferSize = 0.,
+        metadata: dict[str, object] | None = None,
         copy: bool = False,
     ) -> None:
         """
@@ -67,17 +68,20 @@ class Channel(ABC, Iterable[object]):
             data: Data
             name: Name
             buffer_size: Buffer size as a fraction of the spatial extent of the data
+            metadata: Metadata
             copy: If True, the data is copied during initialization
         """
         self._data = data
         self._name = name
         self._buffer_size = buffer_size
+        self._metadata = {} if metadata is None else metadata
         self._copy = copy
 
         self._validate()
 
         if self._copy:
             self._copy_data()
+            self._copy_metadata()
 
         self._observer_tiles = None
 
@@ -105,6 +109,10 @@ class Channel(ABC, Iterable[object]):
     @abstractmethod
     def _copy_data(self) -> None:
         """Copies `data`."""
+
+    def _copy_metadata(self) -> None:
+        """Copies `metadata`."""
+        self._metadata = self._metadata.copy()
 
     def _mark_as_copied(self) -> None:
         """Sets `_copy` to True if the data is copied before the initialization."""
@@ -190,6 +198,14 @@ class Channel(ABC, Iterable[object]):
         return self._buffer_size
 
     @property
+    def metadata(self) -> dict[str, object]:
+        """
+        Returns:
+            Metadata
+        """
+        return self._metadata
+
+    @property
     def is_copied(self) -> bool:
         """
         Returns:
@@ -266,10 +282,16 @@ class Channel(ABC, Iterable[object]):
         data = [data_item for channel in channels for data_item in channel]
         name = first_channel.name
         buffer_size = first_channel.buffer_size
+        metadata: dict[str, object] = {}
+
+        for channel in channels:
+            metadata.update(channel.metadata)
+
         return cls(
             data=data,
             name=name,
             buffer_size=buffer_size,
+            metadata=metadata,
             copy=copy,
         )
 
@@ -391,10 +413,14 @@ class Channel(ABC, Iterable[object]):
             raise AviaryUserError(message)
 
         data = self._data + other.data
+        metadata: dict[str, object] = {}
+        metadata.update(self._metadata)
+        metadata.update(other.metadata)
         return self.__class__(
             data=data,
             name=self._name,
             buffer_size=self._buffer_size,
+            metadata=metadata,
             copy=True,
         )
 
@@ -425,6 +451,7 @@ class Channel(ABC, Iterable[object]):
             data=data,
             name=self._name,
             buffer_size=self._buffer_size,
+            metadata=self._metadata,
             copy=True,
         )
 
@@ -468,6 +495,7 @@ class RasterChannel(Channel, Iterable[npt.NDArray]):
         data: npt.NDArray | list[npt.NDArray],
         name: ChannelName | str,
         buffer_size: FractionalBufferSize = 0.,
+        metadata: dict[str, object] | None = None,
         copy: bool = False,
     ) -> None:
         """
@@ -475,12 +503,14 @@ class RasterChannel(Channel, Iterable[npt.NDArray]):
             data: Data
             name: Name
             buffer_size: Buffer size as a fraction of the spatial extent of the data
+            metadata: Metadata
             copy: If True, the data is copied during initialization
         """
         super().__init__(
             data=data,
             name=name,
             buffer_size=buffer_size,
+            metadata=metadata,
             copy=copy,
         )
 
@@ -650,6 +680,7 @@ class RasterChannel(Channel, Iterable[npt.NDArray]):
             ),
             self._name == other.name,
             self._buffer_size == other.buffer_size,
+            self._metadata == other.metadata,
         ]
         return all(conditions)
 
@@ -732,6 +763,7 @@ class RasterChannel(Channel, Iterable[npt.NDArray]):
             data=self._data,
             name=self._name,
             buffer_size=self._buffer_size,
+            metadata=self._metadata,
             copy=True,
         )
 
@@ -772,6 +804,7 @@ class RasterChannel(Channel, Iterable[npt.NDArray]):
             data=data,
             name=self._name,
             buffer_size=buffer_size,
+            metadata=self._metadata,
             copy=True,
         )
 
@@ -811,6 +844,7 @@ class VectorChannel(Channel, Iterable[gpd.GeoDataFrame]):
         data: gpd.GeoDataFrame | list[gpd.GeoDataFrame],
         name: ChannelName | str,
         buffer_size: FractionalBufferSize = 0.,
+        metadata: dict[str, object] | None = None,
         copy: bool = False,
     ) -> None:
         """
@@ -818,12 +852,14 @@ class VectorChannel(Channel, Iterable[gpd.GeoDataFrame]):
             data: Data
             name: Name
             buffer_size: Buffer size as a fraction of the spatial extent of the data
+            metadata: Metadata
             copy: If True, the data is copied during initialization
         """
         super().__init__(
             data=data,
             name=name,
             buffer_size=buffer_size,
+            metadata=metadata,
             copy=copy,
         )
 
@@ -973,6 +1009,7 @@ class VectorChannel(Channel, Iterable[gpd.GeoDataFrame]):
         coordinates: Coordinates | CoordinatesSet,
         tile_size: TileSize,
         buffer_size: BufferSize = 0,
+        metadata: dict[str, object] | None = None,
         copy: bool = False,
     ) -> VectorChannel:
         """Creates a vector channel from unnormalized data.
@@ -983,6 +1020,7 @@ class VectorChannel(Channel, Iterable[gpd.GeoDataFrame]):
             coordinates: Coordinates (x_min, y_min) of the tile or of each tile in meters
             tile_size: Tile size in meters
             buffer_size: Buffer size in meters
+            metadata: Metadata
             copy: If True, the data is copied during initialization
 
         Raises:
@@ -1076,6 +1114,7 @@ class VectorChannel(Channel, Iterable[gpd.GeoDataFrame]):
             data=data,
             name=name,
             buffer_size=buffer_size,
+            metadata=metadata,
             copy=False,
         )
 
@@ -1182,6 +1221,7 @@ class VectorChannel(Channel, Iterable[gpd.GeoDataFrame]):
             ),
             self._name == other.name,
             self._buffer_size == other.buffer_size,
+            self._metadata == other.metadata,
         ]
         return all(conditions)
 
@@ -1264,6 +1304,7 @@ class VectorChannel(Channel, Iterable[gpd.GeoDataFrame]):
             data=self._data,
             name=self._name,
             buffer_size=self._buffer_size,
+            metadata=self._metadata,
             copy=True,
         )
 
@@ -1305,6 +1346,7 @@ class VectorChannel(Channel, Iterable[gpd.GeoDataFrame]):
             data=data,
             name=self._name,
             buffer_size=buffer_size,
+            metadata=self._metadata,
             copy=False,
         )
         vector_channel._mark_as_copied()
