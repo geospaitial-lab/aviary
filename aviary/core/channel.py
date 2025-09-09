@@ -206,6 +206,13 @@ class Channel(ABC, Iterable[object]):
         """
         return self._metadata
 
+    @metadata.setter
+    def metadata(
+        self,
+        metadata: dict[str, object] | None,
+    ) -> None:
+        self._metadata = metadata
+
     @property
     def is_copied(self) -> bool:
         """
