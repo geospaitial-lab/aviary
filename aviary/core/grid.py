@@ -388,7 +388,7 @@ class Grid(Iterable[Coordinates]):
         )
 
     @classmethod
-    def from_config(
+    def from_config(  # noqa: C901
         cls,
         config: GridConfig,
     ) -> Grid:
@@ -402,6 +402,7 @@ class Grid(Iterable[Coordinates]):
 
         Raises:
             AviaryUserError: Invalid `config`
+            AviaryUserError: Invalid `config` (the chunk is not in the range [0, num_chunks) or [-num_chunks, 0))
         """
         if config.coordinates is not None:
             coordinates = np.array(config.coordinates, dtype=np.int32) if config.coordinates else None
@@ -432,7 +433,7 @@ class Grid(Iterable[Coordinates]):
             message = (
                 'Invalid config! '
                 'The configuration must have exactly one of the following field combinations: '
-                'bounding_box_coordinates, tile_size | gpkg_path, tile_size | json_path'
+                'coordinates, tile_size | bounding_box_coordinates, tile_size | gpkg_path, tile_size | json_path'
             )
             raise AviaryUserError(message)
 
@@ -457,6 +458,22 @@ class Grid(Iterable[Coordinates]):
                 json_string=config.ignore_json_string,
             )
             grid -= ignore_grid
+
+        if config.num_chunks is not None and config.chunk is not None:
+            conditions = [
+                config.chunk >= 0 and config.chunk >= config.num_chunks,
+                config.chunk < 0 and config.chunk < -config.num_chunks,
+            ]
+
+            if any(conditions):
+                message = (
+                    'Invalid config! '
+                    'chunk must be in the range [0, num_chunks) or [-num_chunks, 0).'
+                )
+                raise AviaryUserError(message)
+
+            grids = grid.chunk(num_chunks=config.num_chunks)
+            grid = grids[config.chunk]
 
         return grid
 
@@ -988,6 +1005,8 @@ class GridConfig(pydantic.BaseModel):
         ignore_json_path: null
         tile_size: 128
         snap: true
+        num_chunks: null
+        chunk: null
         ```
 
     Attributes:
@@ -1011,6 +1030,10 @@ class GridConfig(pydantic.BaseModel):
             defaults to None
         snap: If True, the bounding box is snapped to `tile_size` -
             defaults to True
+        num_chunks: Number of chunks -
+            defaults to None
+        chunk: Chunk -
+            defaults to None
     """
     coordinates: list[Coordinates] | None = None
     bounding_box_coordinates: tuple[Coordinate, Coordinate, Coordinate, Coordinate] | None = None
@@ -1022,6 +1045,8 @@ class GridConfig(pydantic.BaseModel):
     ignore_json_path: Path | None = None
     tile_size: TileSize | None = None
     snap: bool = True
+    num_chunks: int | None = None
+    chunk: int | None = None
 
     @property
     def bounding_box(self) -> BoundingBox | None:
@@ -1118,6 +1143,19 @@ class GridConfig(pydantic.BaseModel):
                 'Invalid config! '
                 'The configuration must have exactly one of the following field combinations: '
                 'coordinates, tile_size | bounding_box_coordinates, tile_size | gpkg_path, tile_size | json_path'
+            )
+            raise ValueError(message)
+
+        conditions = [
+            self.num_chunks is not None and self.chunk is None,
+            self.num_chunks is None and self.chunk is not None,
+        ]
+
+        if any(conditions):
+            message = (
+                'Invalid config! '
+                'The configuration must have both of the following field combination if one of them is specified: '
+                'num_chunks, chunk'
             )
             raise ValueError(message)
 
