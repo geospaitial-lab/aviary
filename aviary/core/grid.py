@@ -458,6 +458,10 @@ class Grid(Iterable[Coordinates]):
             )
             grid -= ignore_grid
 
+        if config.num_chunks is not None and config.chunk is not None:
+            grids = grid.chunk(num_chunks=config.num_chunks)
+            grid = grids[config.chunk]
+
         return grid
 
     def __repr__(self) -> str:
@@ -988,6 +992,8 @@ class GridConfig(pydantic.BaseModel):
         ignore_json_path: null
         tile_size: 128
         snap: true
+        num_chunks: null
+        chunk: null
         ```
 
     Attributes:
@@ -1011,6 +1017,10 @@ class GridConfig(pydantic.BaseModel):
             defaults to None
         snap: If True, the bounding box is snapped to `tile_size` -
             defaults to True
+        num_chunks: Number of chunks -
+            defaults to None
+        chunk: Chunk -
+            defaults to None
     """
     coordinates: list[Coordinates] | None = None
     bounding_box_coordinates: tuple[Coordinate, Coordinate, Coordinate, Coordinate] | None = None
@@ -1022,6 +1032,8 @@ class GridConfig(pydantic.BaseModel):
     ignore_json_path: Path | None = None
     tile_size: TileSize | None = None
     snap: bool = True
+    num_chunks: int | None = None
+    chunk: int | None = None
 
     @property
     def bounding_box(self) -> BoundingBox | None:
@@ -1118,6 +1130,19 @@ class GridConfig(pydantic.BaseModel):
                 'Invalid config! '
                 'The configuration must have exactly one of the following field combinations: '
                 'coordinates, tile_size | bounding_box_coordinates, tile_size | gpkg_path, tile_size | json_path'
+            )
+            raise ValueError(message)
+
+        conditions = [
+            self.num_chunks is not None and self.chunk is None,
+            self.num_chunks is None and self.chunk is not None,
+        ]
+
+        if any(conditions):
+            message = (
+                'Invalid config! '
+                'The configuration must have both of the following field combination if one of them is specified: '
+                'num_chunks, chunk'
             )
             raise ValueError(message)
 
