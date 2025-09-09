@@ -1146,6 +1146,17 @@ class GridConfig(pydantic.BaseModel):
             )
             raise ValueError(message)
 
+        conditions = [
+            self.num_chunks <= self.chunk,
+        ]
+
+        if any(conditions):
+            message = (
+                'Invalid config! '
+                'num_chunks must be greater than chunk.'
+            )
+            raise ValueError(message)
+
         return self
 
 
