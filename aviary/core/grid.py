@@ -388,7 +388,7 @@ class Grid(Iterable[Coordinates]):
         )
 
     @classmethod
-    def from_config(
+    def from_config(  # noqa: C901
         cls,
         config: GridConfig,
     ) -> Grid:
@@ -402,6 +402,7 @@ class Grid(Iterable[Coordinates]):
 
         Raises:
             AviaryUserError: Invalid `config`
+            AviaryUserError: Invalid `config` (the chunk is not in the range [0, num_chunks) or [-num_chunks, 0))
         """
         if config.coordinates is not None:
             coordinates = np.array(config.coordinates, dtype=np.int32) if config.coordinates else None
@@ -432,7 +433,7 @@ class Grid(Iterable[Coordinates]):
             message = (
                 'Invalid config! '
                 'The configuration must have exactly one of the following field combinations: '
-                'bounding_box_coordinates, tile_size | gpkg_path, tile_size | json_path'
+                'coordinates, tile_size | bounding_box_coordinates, tile_size | gpkg_path, tile_size | json_path'
             )
             raise AviaryUserError(message)
 
@@ -459,6 +460,18 @@ class Grid(Iterable[Coordinates]):
             grid -= ignore_grid
 
         if config.num_chunks is not None and config.chunk is not None:
+            conditions = [
+                config.chunk >= 0 and config.chunk >= config.num_chunks,
+                config.chunk < 0 and config.chunk < -config.num_chunks,
+            ]
+
+            if any(conditions):
+                message = (
+                    'Invalid config! '
+                    'chunk must be in the range [0, num_chunks) or [-num_chunks, 0).'
+                )
+                raise AviaryUserError(message)
+
             grids = grid.chunk(num_chunks=config.num_chunks)
             grid = grids[config.chunk]
 
@@ -1143,17 +1156,6 @@ class GridConfig(pydantic.BaseModel):
                 'Invalid config! '
                 'The configuration must have both of the following field combination if one of them is specified: '
                 'num_chunks, chunk'
-            )
-            raise ValueError(message)
-
-        conditions = [
-            self.num_chunks <= self.chunk,
-        ]
-
-        if any(conditions):
-            message = (
-                'Invalid config! '
-                'num_chunks must be greater than chunk.'
             )
             raise ValueError(message)
 
