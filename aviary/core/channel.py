@@ -45,6 +45,7 @@ class Channel(ABC, Iterable[object]):
 
     Notes:
         - The `data` property returns a reference to the data
+        - The `metadata` property returns a reference to the metadata
         - The dunder methods `__getitem__` and `__iter__` return or yield a reference to a data item
 
     Implemented channels:
@@ -69,7 +70,7 @@ class Channel(ABC, Iterable[object]):
             name: Name
             buffer_size: Buffer size as a fraction of the spatial extent of the data
             metadata: Metadata
-            copy: If True, the data is copied during initialization
+            copy: If True, the data and metadata are copied during initialization
         """
         self._data = data
         self._name = name
@@ -115,7 +116,7 @@ class Channel(ABC, Iterable[object]):
         self._metadata = self._metadata.copy()
 
     def _mark_as_copied(self) -> None:
-        """Sets `_copy` to True if the data is copied before the initialization."""
+        """Sets `_copy` to True if the data and metadata are copied before the initialization."""
         self._copy = True
 
     def _validate_buffer_size(self) -> None:
@@ -209,7 +210,7 @@ class Channel(ABC, Iterable[object]):
     def is_copied(self) -> bool:
         """
         Returns:
-            If True, the data is copied during initialization
+            If True, the data and metadata are copied during initialization
         """
         return self._copy
 
@@ -242,7 +243,7 @@ class Channel(ABC, Iterable[object]):
 
         Parameters:
             channels: Channels
-            copy: If True, the data is copied during initialization
+            copy: If True, the data and metadata are copied during initialization
 
         Returns:
             Channel
@@ -504,7 +505,7 @@ class RasterChannel(Channel, Iterable[npt.NDArray]):
             name: Name
             buffer_size: Buffer size as a fraction of the spatial extent of the data
             metadata: Metadata
-            copy: If True, the data is copied during initialization
+            copy: If True, the data and metadata are copied during initialization
         """
         super().__init__(
             data=data,
@@ -612,7 +613,7 @@ class RasterChannel(Channel, Iterable[npt.NDArray]):
 
         Parameters:
             channels: Raster channels
-            copy: If True, the data is copied during initialization
+            copy: If True, the data and metadata are copied during initialization
 
         Returns:
             Raster channel
@@ -854,7 +855,7 @@ class VectorChannel(Channel, Iterable[gpd.GeoDataFrame]):
             name: Name
             buffer_size: Buffer size as a fraction of the spatial extent of the data
             metadata: Metadata
-            copy: If True, the data is copied during initialization
+            copy: If True, the data and metadata are copied during initialization
         """
         super().__init__(
             data=data,
@@ -992,7 +993,7 @@ class VectorChannel(Channel, Iterable[gpd.GeoDataFrame]):
 
         Parameters:
             channels: Vector channels
-            copy: If True, the data is copied during initialization
+            copy: If True, the data and metadata are copied during initialization
 
         Returns:
             Vector channel
@@ -1022,7 +1023,7 @@ class VectorChannel(Channel, Iterable[gpd.GeoDataFrame]):
             tile_size: Tile size in meters
             buffer_size: Buffer size in meters
             metadata: Metadata
-            copy: If True, the data is copied during initialization
+            copy: If True, the data and metadata are copied during initialization
 
         Raises:
             AviaryUserError: Invalid `data` (the data contains no data items)
