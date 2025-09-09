@@ -1128,6 +1128,7 @@ class VectorChannel(Channel, Iterable[gpd.GeoDataFrame]):
         )
 
         if copy:
+            vector_channel._copy_metadata()
             vector_channel._mark_as_copied()
 
         return vector_channel
@@ -1352,11 +1353,12 @@ class VectorChannel(Channel, Iterable[gpd.GeoDataFrame]):
             for data_item in self
         ]
         buffer_size = 0.
+        metadata = self._metadata.copy()
         vector_channel = VectorChannel(
             data=data,
             name=self._name,
             buffer_size=buffer_size,
-            metadata=self._metadata,
+            metadata=metadata,
             copy=False,
         )
         vector_channel._mark_as_copied()
