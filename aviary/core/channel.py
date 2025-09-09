@@ -634,6 +634,7 @@ class RasterChannel(Channel, Iterable[npt.NDArray]):
             f'    data={data_repr},\n'
             f'    name={self._name},\n'
             f'    buffer_size={self._buffer_size},\n'
+            f'    metadata={self._metadata},\n'
             f'    copy={self._copy},\n'
             ')'
         )
@@ -1175,6 +1176,7 @@ class VectorChannel(Channel, Iterable[gpd.GeoDataFrame]):
             f'    data={data_repr},\n'
             f'    name={self._name},\n'
             f'    buffer_size={self._buffer_size},\n'
+            f'    metadata={self._metadata},\n'
             f'    copy={self._copy},\n'
             ')'
         )
