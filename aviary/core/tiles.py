@@ -45,6 +45,7 @@ class Tiles(Iterable[Channel]):
         - The type alias `Tile` can be used for semantic consistency if it specifies a single tile
             instead of a batch of tiles
         - The `channels` property returns a reference to the channels
+        - The `metadata` property returns a reference to the metadata
         - The dunder methods `__getattr__`, `__getitem__`, and `__iter__` return or yield a reference to a channel
     """
     _coordinates: CoordinatesSet
@@ -56,6 +57,7 @@ class Tiles(Iterable[Channel]):
         channels: list[Channel],
         coordinates: Coordinates | CoordinatesSet,
         tile_size: TileSize,
+        metadata: dict[str, object] | None = None,
         copy: bool = False,
     ) -> None:
         """
@@ -63,18 +65,21 @@ class Tiles(Iterable[Channel]):
             channels: Channels
             coordinates: Coordinates (x_min, y_min) of the tile or of each tile in meters
             tile_size: Tile size in meters
-            copy: If True, the channels are copied during initialization
+            metadata: Metadata
+            copy: If True, the channels and metadata are copied during initialization
         """
         self._channels = channels
         self._channels_dict = None
         self._coordinates = coordinates
         self._tile_size = tile_size
+        self._metadata = {} if metadata is None else metadata
         self._copy = copy
 
         self._validate()
 
         if self._copy:
             self._copy_channels()
+            self._copy_metadata()
 
         for channel in self:
             # noinspection PyProtectedMember
@@ -121,8 +126,12 @@ class Tiles(Iterable[Channel]):
         """Copies `channels`."""
         self._channels = [channel.copy() for channel in self]
 
+    def _copy_metadata(self) -> None:
+        """Copies `metadata`."""
+        self._metadata = self._metadata.copy()
+
     def _mark_as_copied(self) -> None:
-        """Sets `_copy` to True if the channels are copied before the initialization."""
+        """Sets `_copy` to True if the channels and metadata are copied before the initialization."""
         self._copy = True
 
     def _coerce_coordinates(self) -> None:
@@ -229,10 +238,29 @@ class Tiles(Iterable[Channel]):
         return self._tile_size
 
     @property
+    def metadata(self) -> dict[str, object]:
+        """
+        Returns:
+            Metadata
+        """
+        return self._metadata
+
+    @metadata.setter
+    def metadata(
+        self,
+        metadata: dict[str, object] | None,
+    ) -> None:
+        """
+        Parameters:
+            metadata: Metadata
+        """
+        self._metadata = metadata
+
+    @property
     def is_copied(self) -> bool:
         """
         Returns:
-            If True, the channels are copied during initialization
+            If True, the channels and metadata are copied during initialization
         """
         return self._copy
 
@@ -282,6 +310,7 @@ class Tiles(Iterable[Channel]):
         coordinates: Coordinates,
         tile_size: TileSize,
         buffer_size: BufferSize = 0,
+        metadata: dict[str, object] | None = None,
         copy: bool = False,
     ) -> Tiles:
         """Creates tiles from composite raster data.
@@ -292,7 +321,8 @@ class Tiles(Iterable[Channel]):
             coordinates: Coordinates (x_min, y_min) of the tile in meters
             tile_size: Tile size in meters
             buffer_size: Buffer size in meters
-            copy: If True, the channels are copied during initialization
+            metadata: Metadata
+            copy: If True, the channels and metadata are copied during initialization
 
         Returns:
             Tiles
@@ -356,6 +386,7 @@ class Tiles(Iterable[Channel]):
             channels=channels,
             coordinates=coordinates,
             tile_size=tile_size,
+            metadata=metadata,
             copy=copy,
         )
 
@@ -369,7 +400,7 @@ class Tiles(Iterable[Channel]):
 
         Parameters:
             tiles: Tiles
-            copy: If True, the channels are copied during initialization
+            copy: If True, the channels and metadata are copied during initialization
 
         Returns:
             Tiles
@@ -407,10 +438,16 @@ class Tiles(Iterable[Channel]):
             channels = [channel for tile in tiles for channel in tile]
             coordinates = first_tile._coordinates  # noqa: SLF001
             tile_size = first_tile.tile_size
+            metadata: dict[str, object] = {}
+
+            for tile in tiles:
+                metadata.update(tile.metadata)
+
             return cls(
                 channels=channels,
                 coordinates=coordinates,
                 tile_size=tile_size,
+                metadata=metadata,
                 copy=copy,
             )
 
@@ -439,10 +476,16 @@ class Tiles(Iterable[Channel]):
                 for channel_name in first_tile.channel_names
             ]
             tile_size = first_tile.tile_size
+            metadata: dict[str, object] = {}
+
+            for tile in tiles:
+                metadata.update(tile.metadata)
+
             return cls(
                 channels=channels,
                 coordinates=coordinates,
                 tile_size=tile_size,
+                metadata=metadata,
                 copy=copy,
             )
 
@@ -473,6 +516,7 @@ class Tiles(Iterable[Channel]):
             f'    channels={channels_repr}\n'
             f'    coordinates={coordinates_repr},\n'
             f'    tile_size={self._tile_size},\n'
+            f'    metadata={self._metadata},\n'
             f'    copy={self._copy},\n'
             ')'
         )
@@ -519,6 +563,7 @@ class Tiles(Iterable[Channel]):
             self._channels == other.channels,
             np.array_equal(self._coordinates, other._coordinates),
             self._tile_size == other.tile_size,
+            self._metadata == other.metadata,
         )
         return all(conditions)
 
@@ -625,10 +670,14 @@ class Tiles(Iterable[Channel]):
 
         if coordinates_equal:
             channels = self._channels + other.channels
+            metadata: dict[str, object] = {}
+            metadata.update(self._metadata)
+            metadata.update(other.metadata)
             return Tiles(
                 channels=channels,
                 coordinates=self._coordinates,
                 tile_size=self._tile_size,
+                metadata=metadata,
                 copy=True,
             )
 
@@ -648,10 +697,14 @@ class Tiles(Iterable[Channel]):
                 self[channel_name] + other[channel_name]
                 for channel_name in self.channel_names
             ]
+            metadata: dict[str, object] = {}
+            metadata.update(self._metadata)
+            metadata.update(other.metadata)
             tiles = Tiles(
                 channels=channels,
                 coordinates=coordinates,
                 tile_size=self._tile_size,
+                metadata=metadata,
                 copy=False,
             )
             tiles._mark_as_copied()
@@ -695,6 +748,7 @@ class Tiles(Iterable[Channel]):
             channels=channels,
             coordinates=self._coordinates,
             tile_size=self._tile_size,
+            metadata=self._metadata,
             copy=True,
         )
 
@@ -708,6 +762,7 @@ class Tiles(Iterable[Channel]):
             channels=self._channels,
             coordinates=self._coordinates,
             tile_size=self._tile_size,
+            metadata=self._metadata,
             copy=True,
         )
 
@@ -820,6 +875,7 @@ class Tiles(Iterable[Channel]):
             channels=channels,
             coordinates=self._coordinates,
             tile_size=self._tile_size,
+            metadata=self._metadata,
             copy=True,
         )
 
