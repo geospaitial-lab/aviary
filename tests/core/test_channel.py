@@ -60,10 +60,12 @@ from tests.core.data.data_test_channel import (
         'data',
         'name',
         'buffer_size',
+        'metadata',
         'copy',
         'expected_data',
         'expected_name',
         'expected_buffer_size',
+        'expected_metadata',
         'expected_copy',
     ),
     data_test_raster_channel_init,
@@ -72,16 +74,19 @@ def test_raster_channel_init(
     data: npt.NDArray | list[npt.NDArray],
     name: ChannelName | str,
     buffer_size: FractionalBufferSize,
+    metadata: dict[str, object] | None,
     copy: bool,
     expected_data: list[npt.NDArray],
     expected_name: ChannelName | str,
     expected_buffer_size: FractionalBufferSize,
+    expected_metadata: dict[str, object],
     expected_copy: bool,
 ) -> None:
     raster_channel = RasterChannel(
         data=data,
         name=name,
         buffer_size=buffer_size,
+        metadata=metadata,
         copy=copy,
     )
 
@@ -90,6 +95,7 @@ def test_raster_channel_init(
 
     assert raster_channel.name == expected_name
     assert raster_channel.buffer_size == expected_buffer_size
+    assert raster_channel.metadata == expected_metadata
     assert raster_channel.is_copied is expected_copy
 
 
@@ -100,6 +106,7 @@ def test_raster_channel_init_exceptions(
     message: str,
 ) -> None:
     name = ChannelName.R
+    metadata = None
     copy = False
 
     with pytest.raises(AviaryUserError, match=message):
@@ -107,6 +114,7 @@ def test_raster_channel_init_exceptions(
             data=data,
             name=name,
             buffer_size=buffer_size,
+            metadata=metadata,
             copy=copy,
         )
 
@@ -114,17 +122,21 @@ def test_raster_channel_init_exceptions(
 def test_raster_channel_init_defaults() -> None:
     signature = inspect.signature(RasterChannel)
     buffer_size = signature.parameters['buffer_size'].default
+    metadata = signature.parameters['metadata'].default
     copy = signature.parameters['copy'].default
 
     expected_buffer_size = 0.
+    expected_metadata = None
     expected_copy = False
 
     assert buffer_size == expected_buffer_size
+    assert metadata is expected_metadata
     assert copy is expected_copy
 
 
 def test_raster_channel_mutability_no_copy(
     raster_channel_data: list[npt.NDArray],
+    metadata: dict[str, object],
 ) -> None:
     name = ChannelName.R
     buffer_size = 0.
@@ -134,19 +146,23 @@ def test_raster_channel_mutability_no_copy(
         data=raster_channel_data,
         name=name,
         buffer_size=buffer_size,
+        metadata=metadata,
         copy=copy,
     )
 
     assert id(raster_channel._data) == id(raster_channel_data)
+    assert id(raster_channel._metadata) == id(metadata)
 
     for data_item, data_item_ in zip(raster_channel, raster_channel_data, strict=True):
         assert id(data_item) == id(data_item_)
 
     assert id(raster_channel.data) == id(raster_channel._data)
+    assert id(raster_channel.metadata) == id(raster_channel._metadata)
 
 
 def test_raster_channel_mutability_copy(
     raster_channel_data: list[npt.NDArray],
+    metadata: dict[str, object],
 ) -> None:
     name = ChannelName.R
     buffer_size = 0.
@@ -156,15 +172,18 @@ def test_raster_channel_mutability_copy(
         data=raster_channel_data,
         name=name,
         buffer_size=buffer_size,
+        metadata=metadata,
         copy=copy,
     )
 
     assert id(raster_channel._data) != id(raster_channel_data)
+    assert id(raster_channel._metadata) != id(metadata)
 
     for data_item, data_item_ in zip(raster_channel, raster_channel_data, strict=True):
         assert id(data_item) != id(data_item_)
 
     assert id(raster_channel.data) == id(raster_channel._data)
+    assert id(raster_channel.metadata) == id(raster_channel._metadata)
 
 
 def test_raster_channel_setters(
@@ -321,6 +340,7 @@ def test_raster_channel_append(
     assert raster_channel_ == expected
     assert id(raster_channel_) != id(raster_channel)
     assert id(raster_channel_.data) != id(raster_channel.data)
+    assert id(raster_channel_.metadata) != id(raster_channel.metadata)
 
     for data_item_, data_item in zip(raster_channel_, raster_channel, strict=False):
         assert id(data_item_) != id(data_item)
@@ -358,6 +378,7 @@ def test_raster_channel_append_inplace_return(
     assert raster_channel_ == expected
     assert id(raster_channel_) == id(raster_channel)
     assert id(raster_channel_.data) == id(raster_channel.data)
+    assert id(raster_channel_.metadata) == id(raster_channel.metadata)
 
     for data_item_, data_item in zip(raster_channel_, raster_channel, strict=False):
         assert id(data_item_) == id(data_item)
@@ -381,6 +402,7 @@ def test_raster_channel_copy(
     assert copied_raster_channel.is_copied is True
     assert id(copied_raster_channel) != id(raster_channel)
     assert id(copied_raster_channel.data) != id(raster_channel.data)
+    assert id(copied_raster_channel.metadata) != id(raster_channel.metadata)
 
     for copied_data_item, data_item in zip(copied_raster_channel, raster_channel, strict=True):
         assert id(copied_data_item) != id(data_item)
@@ -399,6 +421,7 @@ def test_raster_channel_remove_buffer(
     assert raster_channel_ == expected
     assert id(raster_channel_) != id(raster_channel)
     assert id(raster_channel_.data) != id(raster_channel.data)
+    assert id(raster_channel_.metadata) != id(raster_channel.metadata)
 
     for data_item_, data_item in zip(raster_channel_, raster_channel, strict=True):
         assert id(data_item_) != id(data_item)
@@ -428,6 +451,7 @@ def test_raster_channel_remove_buffer_inplace_return(
     assert raster_channel_ == expected
     assert id(raster_channel_) == id(raster_channel)
     assert id(raster_channel_.data) == id(raster_channel.data)
+    assert id(raster_channel_.metadata) == id(raster_channel.metadata)
 
     for data_item_, data_item in zip(raster_channel_, raster_channel, strict=True):
         assert id(data_item_) == id(data_item)
@@ -447,10 +471,12 @@ def test_raster_channel_remove_buffer_defaults() -> None:
         'data',
         'name',
         'buffer_size',
+        'metadata',
         'copy',
         'expected_data',
         'expected_name',
         'expected_buffer_size',
+        'expected_metadata',
         'expected_copy',
     ),
     data_test_vector_channel_init,
@@ -459,16 +485,19 @@ def test_vector_channel_init(
     data: gpd.GeoDataFrame | list[gpd.GeoDataFrame],
     name: ChannelName | str,
     buffer_size: FractionalBufferSize,
+    metadata: dict[str, object] | None,
     copy: bool,
     expected_data: list[gpd.GeoDataFrame],
     expected_name: ChannelName | str,
     expected_buffer_size: FractionalBufferSize,
+    expected_metadata: dict[str, object],
     expected_copy: bool,
 ) -> None:
     vector_channel = VectorChannel(
         data=data,
         name=name,
         buffer_size=buffer_size,
+        metadata=metadata,
         copy=copy,
     )
 
@@ -477,6 +506,7 @@ def test_vector_channel_init(
 
     assert vector_channel.name == expected_name
     assert vector_channel.buffer_size == expected_buffer_size
+    assert vector_channel.metadata == expected_metadata
     assert vector_channel.is_copied is expected_copy
 
 
@@ -487,6 +517,7 @@ def test_vector_channel_init_exceptions(
     message: str,
 ) -> None:
     name = ChannelName.R
+    metadata = None
     copy = False
 
     with pytest.raises(AviaryUserError, match=message):
@@ -494,6 +525,7 @@ def test_vector_channel_init_exceptions(
             data=data,
             name=name,
             buffer_size=buffer_size,
+            metadata=metadata,
             copy=copy,
         )
 
@@ -501,17 +533,21 @@ def test_vector_channel_init_exceptions(
 def test_vector_channel_init_defaults() -> None:
     signature = inspect.signature(VectorChannel)
     buffer_size = signature.parameters['buffer_size'].default
+    metadata = signature.parameters['metadata'].default
     copy = signature.parameters['copy'].default
 
     expected_buffer_size = 0.
+    expected_metadata = None
     expected_copy = False
 
     assert buffer_size == expected_buffer_size
+    assert metadata is expected_metadata
     assert copy is expected_copy
 
 
 def test_vector_channel_mutability_no_copy(
     vector_channel_data: list[gpd.GeoDataFrame],
+    metadata: dict[str, object],
 ) -> None:
     name = ChannelName.R
     buffer_size = 0.
@@ -521,19 +557,23 @@ def test_vector_channel_mutability_no_copy(
         data=vector_channel_data,
         name=name,
         buffer_size=buffer_size,
+        metadata=metadata,
         copy=copy,
     )
 
     assert id(vector_channel._data) == id(vector_channel_data)
+    assert id(vector_channel._metadata) == id(metadata)
 
     for data_item, data_item_ in zip(vector_channel, vector_channel_data, strict=True):
         assert id(data_item) == id(data_item_)
 
     assert id(vector_channel.data) == id(vector_channel._data)
+    assert id(vector_channel.metadata) == id(vector_channel._metadata)
 
 
 def test_vector_channel_mutability_copy(
     vector_channel_data: list[gpd.GeoDataFrame],
+    metadata: dict[str, object],
 ) -> None:
     name = ChannelName.R
     buffer_size = 0.
@@ -543,15 +583,18 @@ def test_vector_channel_mutability_copy(
         data=vector_channel_data,
         name=name,
         buffer_size=buffer_size,
+        metadata=metadata,
         copy=copy,
     )
 
     assert id(vector_channel._data) != id(vector_channel_data)
+    assert id(vector_channel._metadata) != id(metadata)
 
     for data_item, data_item_ in zip(vector_channel, vector_channel_data, strict=True):
         assert id(data_item) != id(data_item_)
 
     assert id(vector_channel.data) == id(vector_channel._data)
+    assert id(vector_channel.metadata) == id(vector_channel._metadata)
 
 
 def test_vector_channel_setters(
@@ -643,6 +686,7 @@ def test_vector_channel_from_unnormalized_data_exceptions(
     message: str,
 ) -> None:
     name = ChannelName.R
+    metadata = None
     copy = False
 
     with pytest.raises(AviaryUserError, match=message):
@@ -652,6 +696,7 @@ def test_vector_channel_from_unnormalized_data_exceptions(
             coordinates=coordinates,
             tile_size=tile_size,
             buffer_size=buffer_size,
+            metadata=metadata,
             copy=copy,
         )
 
@@ -659,12 +704,15 @@ def test_vector_channel_from_unnormalized_data_exceptions(
 def test_vector_channel_from_unnormalized_data_defaults() -> None:
     signature = inspect.signature(VectorChannel.from_unnormalized_data)
     buffer_size = signature.parameters['buffer_size'].default
+    metadata = signature.parameters['metadata'].default
     copy = signature.parameters['copy'].default
 
     expected_buffer_size = 0.
+    expected_metadata = None
     expected_copy = False
 
     assert buffer_size == expected_buffer_size
+    assert metadata is expected_metadata
     assert copy is expected_copy
 
 
@@ -756,6 +804,7 @@ def test_vector_channel_append(
     assert vector_channel_ == expected
     assert id(vector_channel_) != id(vector_channel)
     assert id(vector_channel_.data) != id(vector_channel.data)
+    assert id(vector_channel_.metadata) != id(vector_channel.metadata)
 
     for data_item_, data_item in zip(vector_channel_, vector_channel, strict=False):
         assert id(data_item_) != id(data_item)
@@ -793,6 +842,7 @@ def test_vector_channel_append_inplace_return(
     assert vector_channel_ == expected
     assert id(vector_channel_) == id(vector_channel)
     assert id(vector_channel_.data) == id(vector_channel.data)
+    assert id(vector_channel_.metadata) == id(vector_channel.metadata)
 
     for data_item_, data_item in zip(vector_channel_, vector_channel, strict=False):
         assert id(data_item_) == id(data_item)
@@ -816,6 +866,7 @@ def test_vector_channel_copy(
     assert copied_vector_channel.is_copied is True
     assert id(copied_vector_channel) != id(vector_channel)
     assert id(copied_vector_channel.data) != id(vector_channel.data)
+    assert id(copied_vector_channel.metadata) != id(vector_channel.metadata)
 
     for copied_data_item, data_item in zip(copied_vector_channel, vector_channel, strict=True):
         assert id(copied_data_item) != id(data_item)
@@ -834,6 +885,7 @@ def test_vector_channel_remove_buffer(
     assert vector_channel_ == expected
     assert id(vector_channel_) != id(vector_channel)
     assert id(vector_channel_.data) != id(vector_channel.data)
+    assert id(vector_channel_.metadata) != id(vector_channel.metadata)
 
     for data_item_, data_item in zip(vector_channel_, vector_channel, strict=True):
         assert id(data_item_) != id(data_item)
@@ -863,6 +915,7 @@ def test_vector_channel_remove_buffer_inplace_return(
     assert vector_channel_ == expected
     assert id(vector_channel_) == id(vector_channel)
     assert id(vector_channel_.data) == id(vector_channel.data)
+    assert id(vector_channel_.metadata) == id(vector_channel.metadata)
 
     for data_item_, data_item in zip(vector_channel_, vector_channel, strict=True):
         assert id(data_item_) == id(data_item)
