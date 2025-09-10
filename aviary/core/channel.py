@@ -211,6 +211,10 @@ class Channel(ABC, Iterable[object]):
         self,
         metadata: dict[str, object] | None,
     ) -> None:
+        """
+        Parameters:
+            metadata: Metadata
+        """
         self._metadata = metadata
 
     @property

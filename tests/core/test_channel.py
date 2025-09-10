@@ -151,12 +151,12 @@ def test_raster_channel_mutability_no_copy(
     )
 
     assert id(raster_channel._data) == id(raster_channel_data)
-    assert id(raster_channel._metadata) == id(metadata)
 
     for data_item, data_item_ in zip(raster_channel, raster_channel_data, strict=True):
         assert id(data_item) == id(data_item_)
 
     assert id(raster_channel.data) == id(raster_channel._data)
+    assert id(raster_channel._metadata) == id(metadata)
     assert id(raster_channel.metadata) == id(raster_channel._metadata)
 
 
@@ -177,12 +177,12 @@ def test_raster_channel_mutability_copy(
     )
 
     assert id(raster_channel._data) != id(raster_channel_data)
-    assert id(raster_channel._metadata) != id(metadata)
 
     for data_item, data_item_ in zip(raster_channel, raster_channel_data, strict=True):
         assert id(data_item) != id(data_item_)
 
     assert id(raster_channel.data) == id(raster_channel._data)
+    assert id(raster_channel._metadata) != id(metadata)
     assert id(raster_channel.metadata) == id(raster_channel._metadata)
 
 
@@ -340,11 +340,11 @@ def test_raster_channel_append(
     assert raster_channel_ == expected
     assert id(raster_channel_) != id(raster_channel)
     assert id(raster_channel_.data) != id(raster_channel.data)
-    assert id(raster_channel_.metadata) != id(raster_channel.metadata)
 
     for data_item_, data_item in zip(raster_channel_, raster_channel, strict=False):
         assert id(data_item_) != id(data_item)
 
+    assert id(raster_channel_.metadata) != id(raster_channel.metadata)
     assert raster_channel.is_copied is False
     assert raster_channel_.is_copied is True
 
@@ -378,10 +378,11 @@ def test_raster_channel_append_inplace_return(
     assert raster_channel_ == expected
     assert id(raster_channel_) == id(raster_channel)
     assert id(raster_channel_.data) == id(raster_channel.data)
-    assert id(raster_channel_.metadata) == id(raster_channel.metadata)
 
     for data_item_, data_item in zip(raster_channel_, raster_channel, strict=False):
         assert id(data_item_) == id(data_item)
+
+    assert id(raster_channel_.metadata) == id(raster_channel.metadata)
 
 
 def test_raster_channel_append_defaults() -> None:
@@ -402,10 +403,11 @@ def test_raster_channel_copy(
     assert copied_raster_channel.is_copied is True
     assert id(copied_raster_channel) != id(raster_channel)
     assert id(copied_raster_channel.data) != id(raster_channel.data)
-    assert id(copied_raster_channel.metadata) != id(raster_channel.metadata)
 
     for copied_data_item, data_item in zip(copied_raster_channel, raster_channel, strict=True):
         assert id(copied_data_item) != id(data_item)
+
+    assert id(copied_raster_channel.metadata) != id(raster_channel.metadata)
 
 
 @pytest.mark.parametrize(('raster_channel', 'expected'), data_test_raster_channel_remove_buffer)
@@ -421,11 +423,11 @@ def test_raster_channel_remove_buffer(
     assert raster_channel_ == expected
     assert id(raster_channel_) != id(raster_channel)
     assert id(raster_channel_.data) != id(raster_channel.data)
-    assert id(raster_channel_.metadata) != id(raster_channel.metadata)
 
     for data_item_, data_item in zip(raster_channel_, raster_channel, strict=True):
         assert id(data_item_) != id(data_item)
 
+    assert id(raster_channel_.metadata) != id(raster_channel.metadata)
     assert raster_channel.is_copied is False
     assert raster_channel_.is_copied is True
 
@@ -451,10 +453,11 @@ def test_raster_channel_remove_buffer_inplace_return(
     assert raster_channel_ == expected
     assert id(raster_channel_) == id(raster_channel)
     assert id(raster_channel_.data) == id(raster_channel.data)
-    assert id(raster_channel_.metadata) == id(raster_channel.metadata)
 
     for data_item_, data_item in zip(raster_channel_, raster_channel, strict=True):
         assert id(data_item_) == id(data_item)
+
+    assert id(raster_channel_.metadata) == id(raster_channel.metadata)
 
 
 def test_raster_channel_remove_buffer_defaults() -> None:
@@ -562,12 +565,12 @@ def test_vector_channel_mutability_no_copy(
     )
 
     assert id(vector_channel._data) == id(vector_channel_data)
-    assert id(vector_channel._metadata) == id(metadata)
 
     for data_item, data_item_ in zip(vector_channel, vector_channel_data, strict=True):
         assert id(data_item) == id(data_item_)
 
     assert id(vector_channel.data) == id(vector_channel._data)
+    assert id(vector_channel._metadata) == id(metadata)
     assert id(vector_channel.metadata) == id(vector_channel._metadata)
 
 
@@ -588,12 +591,12 @@ def test_vector_channel_mutability_copy(
     )
 
     assert id(vector_channel._data) != id(vector_channel_data)
-    assert id(vector_channel._metadata) != id(metadata)
 
     for data_item, data_item_ in zip(vector_channel, vector_channel_data, strict=True):
         assert id(data_item) != id(data_item_)
 
     assert id(vector_channel.data) == id(vector_channel._data)
+    assert id(vector_channel._metadata) != id(metadata)
     assert id(vector_channel.metadata) == id(vector_channel._metadata)
 
 
@@ -804,11 +807,11 @@ def test_vector_channel_append(
     assert vector_channel_ == expected
     assert id(vector_channel_) != id(vector_channel)
     assert id(vector_channel_.data) != id(vector_channel.data)
-    assert id(vector_channel_.metadata) != id(vector_channel.metadata)
 
     for data_item_, data_item in zip(vector_channel_, vector_channel, strict=False):
         assert id(data_item_) != id(data_item)
 
+    assert id(vector_channel_.metadata) != id(vector_channel.metadata)
     assert vector_channel.is_copied is False
     assert vector_channel_.is_copied is True
 
@@ -842,10 +845,11 @@ def test_vector_channel_append_inplace_return(
     assert vector_channel_ == expected
     assert id(vector_channel_) == id(vector_channel)
     assert id(vector_channel_.data) == id(vector_channel.data)
-    assert id(vector_channel_.metadata) == id(vector_channel.metadata)
 
     for data_item_, data_item in zip(vector_channel_, vector_channel, strict=False):
         assert id(data_item_) == id(data_item)
+
+    assert id(vector_channel_.metadata) == id(vector_channel.metadata)
 
 
 def test_vector_channel_append_defaults() -> None:
@@ -866,10 +870,11 @@ def test_vector_channel_copy(
     assert copied_vector_channel.is_copied is True
     assert id(copied_vector_channel) != id(vector_channel)
     assert id(copied_vector_channel.data) != id(vector_channel.data)
-    assert id(copied_vector_channel.metadata) != id(vector_channel.metadata)
 
     for copied_data_item, data_item in zip(copied_vector_channel, vector_channel, strict=True):
         assert id(copied_data_item) != id(data_item)
+
+    assert id(copied_vector_channel.metadata) != id(vector_channel.metadata)
 
 
 @pytest.mark.parametrize(('vector_channel', 'expected'), data_test_vector_channel_remove_buffer)
@@ -885,11 +890,11 @@ def test_vector_channel_remove_buffer(
     assert vector_channel_ == expected
     assert id(vector_channel_) != id(vector_channel)
     assert id(vector_channel_.data) != id(vector_channel.data)
-    assert id(vector_channel_.metadata) != id(vector_channel.metadata)
 
     for data_item_, data_item in zip(vector_channel_, vector_channel, strict=True):
         assert id(data_item_) != id(data_item)
 
+    assert id(vector_channel_.metadata) != id(vector_channel.metadata)
     assert vector_channel.is_copied is False
     assert vector_channel_.is_copied is True
 
@@ -915,10 +920,11 @@ def test_vector_channel_remove_buffer_inplace_return(
     assert vector_channel_ == expected
     assert id(vector_channel_) == id(vector_channel)
     assert id(vector_channel_.data) == id(vector_channel.data)
-    assert id(vector_channel_.metadata) == id(vector_channel.metadata)
 
     for data_item_, data_item in zip(vector_channel_, vector_channel, strict=True):
         assert id(data_item_) == id(data_item)
+
+    assert id(vector_channel_.metadata) == id(vector_channel.metadata)
 
 
 def test_vector_channel_remove_buffer_defaults() -> None:
