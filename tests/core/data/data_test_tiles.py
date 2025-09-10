@@ -5,6 +5,7 @@ import numpy as np
 from aviary.core.enums import ChannelName
 from aviary.core.tiles import Tiles
 from tests.core.conftest import (
+    get_metadata,
     get_tiles,
     get_tiles_channel_1,
     get_tiles_channel_2,
@@ -120,10 +121,12 @@ data_test_tiles_init = [
         get_tiles_channels(),
         get_tiles_coordinates(),
         128,
+        None,
         False,
         get_tiles_channels(),
         get_tiles_coordinates(),
         128,
+        {},
         False,
     ),
     # test case 2: channels contains no channels
@@ -131,13 +134,28 @@ data_test_tiles_init = [
         [],
         get_tiles_coordinates(),
         128,
+        None,
         False,
         [],
         get_tiles_coordinates(),
         128,
+        {},
         False,
     ),
     # test case 3: batch_size is 1
+    # test case 4: metadata is not None
+    (
+        get_tiles_channels(),
+        get_tiles_coordinates(),
+        128,
+        get_metadata(),
+        False,
+        get_tiles_channels(),
+        get_tiles_coordinates(),
+        128,
+        get_metadata(),
+        False,
+    ),
 ]
 
 data_test_tiles_init_exceptions = [

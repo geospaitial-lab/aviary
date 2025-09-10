@@ -135,11 +135,13 @@ def get_tiles() -> Tiles:
     channels = get_tiles_channels()
     coordinates = get_tiles_coordinates()
     tile_size = 128
+    metadata = None
     copy = False
     return Tiles(
         channels=channels,
         coordinates=coordinates,
         tile_size=tile_size,
+        metadata=metadata,
         copy=copy,
     )
 
