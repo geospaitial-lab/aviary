@@ -249,7 +249,7 @@ data_test_raster_channel_from_channels = [
             RasterChannel(
                 data=get_raster_channel_data(),
                 name=ChannelName.R,
-                buffer_size=0.0,
+                buffer_size=0.,
                 metadata=get_metadata(),
                 copy=False,
             ),
@@ -261,7 +261,7 @@ data_test_raster_channel_from_channels = [
                 *get_raster_channel_data(),
             ],
             name=ChannelName.R,
-            buffer_size=0.0,
+            buffer_size=0.,
             metadata=get_metadata(),
             copy=False,
         ),
