@@ -61,6 +61,19 @@ def get_grid_coordinates() -> CoordinatesSet:
 
 
 @pytest.fixture(scope='function')
+def metadata() -> dict[str, object]:
+    return get_metadata()
+
+
+def get_metadata() -> dict[str, object]:
+    return {
+        'test_key_1': 'test_value_1',
+        'test_key_2': 'test_value_2',
+        'test_key_3': 'test_value_3',
+    }
+
+
+@pytest.fixture(scope='function')
 def raster_channel() -> RasterChannel:
     return get_raster_channel()
 
@@ -69,11 +82,13 @@ def get_raster_channel() -> RasterChannel:
     data = get_raster_channel_data()
     name = ChannelName.R
     buffer_size = 0.
+    metadata = None
     copy = False
     return RasterChannel(
         data=data,
         name=name,
         buffer_size=buffer_size,
+        metadata=metadata,
         copy=copy,
     )
 
@@ -152,11 +167,13 @@ def get_tiles_channel_1() -> RasterChannel:
     data = get_raster_channel_data()
     name = ChannelName.R
     buffer_size = 0.
+    metadata = None
     copy = False
     return RasterChannel(
         data=data,
         name=name,
         buffer_size=buffer_size,
+        metadata=metadata,
         copy=copy,
     )
 
@@ -170,11 +187,13 @@ def get_tiles_channel_2() -> RasterChannel:
     data = get_raster_channel_data()
     name = ChannelName.G
     buffer_size = 0.
+    metadata = None
     copy = False
     return RasterChannel(
         data=data,
         name=name,
         buffer_size=buffer_size,
+        metadata=metadata,
         copy=copy,
     )
 
@@ -188,11 +207,13 @@ def get_tiles_channel_3() -> RasterChannel:
     data = get_raster_channel_data()
     name = ChannelName.B
     buffer_size = 0.
+    metadata = None
     copy = False
     return RasterChannel(
         data=data,
         name=name,
         buffer_size=buffer_size,
+        metadata=metadata,
         copy=copy,
     )
 
@@ -206,11 +227,13 @@ def get_tiles_channel_4() -> VectorChannel:
     data = get_vector_channel_data()
     name = 'custom'
     buffer_size = 0.
+    metadata = None
     copy = False
     return VectorChannel(
         data=data,
         name=name,
         buffer_size=buffer_size,
+        metadata=metadata,
         copy=copy,
     )
 
@@ -236,11 +259,13 @@ def get_vector_channel() -> VectorChannel:
     data = get_vector_channel_data()
     name = ChannelName.R
     buffer_size = 0.
+    metadata = None
     copy = False
     return VectorChannel(
         data=data,
         name=name,
         buffer_size=buffer_size,
+        metadata=metadata,
         copy=copy,
     )
 
