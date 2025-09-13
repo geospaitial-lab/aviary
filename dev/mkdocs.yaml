@@ -93,8 +93,8 @@ theme:
   logo_dark_mode: assets/aviary_logo_white.svg
   favicon: assets/aviary_logo_white.svg
   font:
-    text: Noto Sans
-    code: Noto Sans Mono
+    text: Inter
+    code: JetBrains Mono
   icon:
     admonition:
       abstract: material/run-fast
