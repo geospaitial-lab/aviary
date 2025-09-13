@@ -536,17 +536,17 @@ def tile_pipeline_run(
         envvar='AVIARY_CONFIG_PATH',
         help='Path to the config file',
     ),
-    log_path_option: Path | None = typer.Option(
-        None,
-        '--log-path',
-        envvar='AVIARY_LOG_PATH',
-        help='Path to the log file',
-    ),
     set_options: list[str] | None = typer.Option(
         None,
         '--set',
         '-s',
         help='Configuration fields using key=value format',
+    ),
+    log_path_option: Path | None = typer.Option(
+        None,
+        '--log-path',
+        envvar='AVIARY_LOG_PATH',
+        help='Path to the log file',
     ),
 ) -> None:
     """Run the tile pipeline."""

@@ -20,6 +20,12 @@ Path to the config file
 
 ---
 
+### `AVIARY_LOG_PATH`
+
+Path to the log file
+
+---
+
 ### `AVIARY_PLUGINS_DIR_PATH`
 
 Path to the plugins directory
