@@ -1,8 +1,10 @@
 from __future__ import annotations
 
+import time
 from pathlib import Path
 
 import pydantic
+from loguru import logger
 from rich.progress import track
 
 from aviary.core.grid import (
@@ -90,8 +92,47 @@ class TilePipeline:
             num_prefetched_tiles=self._tile_loader_num_prefetched_tiles,
         )
 
-        for tiles in track(tile_loader, description='Processing tiles'):
+        num_tiles = len(tile_set)
+        logger.info(
+            'Starting tile pipeline with {} tiles...',
+            num_tiles,
+        )
+        num_tiles = len(tile_loader)
+        i_len = len(str(num_tiles))
+        tile_pipeline_start_time = time.perf_counter()
+
+        for i, tiles in enumerate(track(tile_loader, description='Processing tiles'), start=1):
+            batch_size = tiles.batch_size
+            logger.info(
+                'Processing {} tiles {:>{}} / {}...',
+                batch_size,
+                i,
+                i_len,
+                num_tiles,
+            )
+            start_time = time.perf_counter()
+
             _ = self._tiles_processor(tiles=tiles)
+
+            elapsed_time = time.perf_counter() - start_time
+            logger.success(
+                'Processed  {} tiles {:>{}} / {} in {:.3f} s.',
+                batch_size,
+                i,
+                i_len,
+                num_tiles,
+                elapsed_time,
+            )
+
+        tile_pipeline_elapsed_time = time.perf_counter() - tile_pipeline_start_time
+        num_tiles = len(tile_set)
+        tile_pipeline_average_time = tile_pipeline_elapsed_time / num_tiles if num_tiles else 0.
+        logger.success(
+            'Done with {} tiles in {:.3f} s and {:.3f} s/tile.',
+            num_tiles,
+            tile_pipeline_elapsed_time,
+            tile_pipeline_average_time,
+        )
 
 
 class TileLoaderConfig(pydantic.BaseModel):

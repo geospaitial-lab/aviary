@@ -6,6 +6,8 @@ from itertools import groupby
 from pathlib import Path
 from typing import Any
 
+from loguru import logger
+
 try:
     import click
     import pyperclip
@@ -534,6 +536,12 @@ def tile_pipeline_run(
         envvar='AVIARY_CONFIG_PATH',
         help='Path to the config file',
     ),
+    log_path_option: Path | None = typer.Option(
+        None,
+        '--log-path',
+        envvar='AVIARY_LOG_PATH',
+        help='Path to the log file',
+    ),
     set_options: list[str] | None = typer.Option(
         None,
         '--set',
@@ -542,20 +550,30 @@ def tile_pipeline_run(
     ),
 ) -> None:
     """Run the tile pipeline."""
-    config = parse_config(
-        config_path=config_path,
-        set_options=set_options,
-    )
+    logger.remove()
 
-    plugins_dir_path = config.get('plugins_dir_path')
+    if log_path_option is not None:
+        logger.add(
+            sink=log_path_option,
+            format='{time:YYYY-MM-DD HH:mm:ss.SSS} | {level:<8} | {message}',
+        )
+        logger.enable(name='aviary')
 
-    if plugins_dir_path is not None:
-        plugins_dir_path = Path(plugins_dir_path)
-        discover_plugins(plugins_dir_path=plugins_dir_path)
+    with logger.catch(level='CRITICAL', message='An error occurred:', reraise=True):
+        config = parse_config(
+            config_path=config_path,
+            set_options=set_options,
+        )
 
-    tile_pipeline_config = TilePipelineConfig(**config)
-    tile_pipeline = _TilePipelineFactory.create(config=tile_pipeline_config)
-    tile_pipeline()
+        plugins_dir_path = config.get('plugins_dir_path')
+
+        if plugins_dir_path is not None:
+            plugins_dir_path = Path(plugins_dir_path)
+            discover_plugins(plugins_dir_path=plugins_dir_path)
+
+        tile_pipeline_config = TilePipelineConfig(**config)
+        tile_pipeline = _TilePipelineFactory.create(config=tile_pipeline_config)
+        tile_pipeline()
 
 
 @tile_pipeline_app.command(
