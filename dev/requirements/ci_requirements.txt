@@ -1,4 +1,4 @@
-hypothesis==6.138.14
+hypothesis==6.138.16
 pre-commit==4.3.0
 pytest==8.4.2
 pytest-cov==7.0.0
