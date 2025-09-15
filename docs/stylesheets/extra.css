@@ -1,17 +1,25 @@
 html {
   overflow-y: scroll;
-  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
 .md-header, .md-tabs {
-  -webkit-backdrop-filter: blur(5px);
-  backdrop-filter: blur(5px);
-  background-color: hsla(0, 0%, 100%, 0.5);
+  box-shadow: none;
+}
+
+[data-md-color-scheme=default] .md-header,
+[data-md-color-scheme=default] .md-tabs {
+  background-color: oklch(100% 0 0);
 }
 
 [data-md-color-scheme=slate] .md-header,
 [data-md-color-scheme=slate] .md-tabs {
-  background-color: hsla(0, 0%, 6%, 0.5);
+  background-color: oklch(14.5% 0 0);
 }
 
 #logo_light_mode {
@@ -32,10 +40,6 @@ html {
   --md-logo-dark-mode: block;
 }
 
-.md-header__topic:first-child {
-  font-weight: normal;
-}
-
 .md-typeset h2:first-of-type {
   margin-top: 0;
 }
@@ -49,7 +53,7 @@ html {
 }
 
 .md-main {
-  padding-bottom: 1rem;
+  padding-bottom: 6rem;
 }
 
 .aviary-skill-level {

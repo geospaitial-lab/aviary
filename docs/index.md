@@ -89,7 +89,7 @@ Have a look at the [how-to guides] to get started.
 
 ## About
 
-aviary is developed by the [geospaitial lab]
+aviary is developed by the [geospaitial lab :material-arrow-top-right:][geospaitial lab]
 at the [Westfälische Hochschule - Westphalian University of Applied Sciences]
 in Gelsenkirchen, Germany.
 
