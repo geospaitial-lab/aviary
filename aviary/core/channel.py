@@ -496,6 +496,7 @@ class RasterChannel(Channel, Iterable[npt.NDArray]):
     Notes:
         - The data items are assumed to be in shape (n, n), where n is the spatial extent in x and y direction
         - The `data` property returns a reference to the data
+        - The `metadata` property returns a reference to the metadata
         - The dunder methods `__getitem__` and `__iter__` return or yield a reference to a data item
     """
     _data: list[npt.NDArray]
@@ -846,6 +847,7 @@ class VectorChannel(Channel, Iterable[gpd.GeoDataFrame]):
         - The data items are assumed to be normalized to the spatial extent [0, 1] in x and y direction
             without a coordinate reference system
         - The `data` property returns a reference to the data
+        - The `metadata` property returns a reference to the metadata
         - The dunder methods `__getitem__` and `__iter__` return or yield a reference to a data item
     """
     _data: list[gpd.GeoDataFrame]
