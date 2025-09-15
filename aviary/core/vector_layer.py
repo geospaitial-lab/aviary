@@ -197,3 +197,16 @@ class VectorLayer:
             state: State
         """
         self.__dict__ = state
+
+    def copy(self) -> VectorLayer:
+        """Copies the vector layer.
+
+        Returns:
+            Vector layer
+        """
+        return VectorLayer(
+            data=self._data,
+            name=self._name,
+            metadata=self._metadata,
+            copy=True,
+        )
