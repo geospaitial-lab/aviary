@@ -1,6 +1,11 @@
 html {
   overflow-y: scroll;
-  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
 .md-header, .md-tabs {
