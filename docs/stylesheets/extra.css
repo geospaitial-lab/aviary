@@ -35,10 +35,6 @@ html {
   --md-logo-dark-mode: block;
 }
 
-.md-header__topic:first-child {
-  font-weight: normal;
-}
-
 .md-typeset h2:first-of-type {
   margin-top: 0;
 }
