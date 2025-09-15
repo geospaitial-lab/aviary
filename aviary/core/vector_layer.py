@@ -160,3 +160,40 @@ class VectorLayer:
             return False
 
         return self._observer_vector() is not None
+
+    def __repr__(self) -> str:
+        """Returns the string representation.
+
+        Returns:
+            String representation
+        """
+        data_repr = len(self._data)
+        return (
+            'VectorLayer(\n'
+            f'    data={data_repr},\n'
+            f'    name={self._name},\n'
+            f'    metadata={self._metadata},\n'
+            f'    copy={self._copy},\n'
+            ')'
+        )
+
+    def __getstate__(self) -> dict:
+        """Gets the state for pickling.
+
+        Returns:
+            State
+        """
+        state = self.__dict__.copy()
+        state['_observer_vector'] = None
+        return state
+
+    def __setstate__(
+        self,
+        state: dict,
+    ) -> None:
+        """Sets the state for unpickling.
+
+        Parameters:
+            state: State
+        """
+        self.__dict__ = state
