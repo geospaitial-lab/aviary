@@ -75,6 +75,7 @@ def composite_fetcher(
 def vrt_fetcher(
     coordinates: Coordinates,
     path: Path,
+    epsg_code: EPSGCode,
     channel_names:
         ChannelName | str |
         list[ChannelName | str | None] |
@@ -90,6 +91,7 @@ def vrt_fetcher(
     Parameters:
         coordinates: Coordinates (x_min, y_min) of the tile in meters
         path: Path to the virtual raster (.vrt file)
+        epsg_code: EPSG code
         channel_names: Channel name or channel names (if None, the channel is ignored)
         tile_size: Tile size in meters
         ground_sampling_distance: Ground sampling distance in meters
@@ -99,6 +101,9 @@ def vrt_fetcher(
 
     Returns:
         Tile
+
+    Raises:
+        AviaryUserError: Invalid `epsg_code` (the EPSG code does not match the virtual raster)
     """
     x_min, y_min = coordinates
     x_max = x_min + tile_size
@@ -120,6 +125,13 @@ def vrt_fetcher(
     )
 
     with rio.open(path) as src:
+        if (src.crs is None) or (src.crs.to_epsg() != epsg_code):
+            message = (
+                'Invalid epsg_code! '
+                'The EPSG code must match the virtual raster.'
+            )
+            raise AviaryUserError(message)
+
         window = rio.windows.from_bounds(
             left=bounding_box.x_min,
             bottom=bounding_box.y_min,
