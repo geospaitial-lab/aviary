@@ -8,9 +8,9 @@ html {
   }
 }
 
-/*.md-header, .md-tabs {*/
-/*  box-shadow: none;*/
-/*}*/
+.md-header, .md-tabs {
+  box-shadow: none;
+}
 
 [data-md-color-scheme=default] .md-header,
 [data-md-color-scheme=default] .md-tabs {
