@@ -33,6 +33,7 @@ def composite_fetcher() -> CompositeFetcher:
 @pytest.fixture(scope='session')
 def vrt_fetcher() -> VRTFetcher:
     path = Path('test/test.vrt')
+    epsg_code = 25832
     channel_names = [
         ChannelName.R,
         ChannelName.G,
@@ -46,6 +47,7 @@ def vrt_fetcher() -> VRTFetcher:
     buffer_size = 0
     return VRTFetcher(
         path=path,
+        epsg_code=epsg_code,
         channel_names=channel_names,
         tile_size=tile_size,
         ground_sampling_distance=ground_sampling_distance,

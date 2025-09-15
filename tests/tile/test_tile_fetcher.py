@@ -72,6 +72,7 @@ def test_composite_fetcher_call(
 
 def test_vrt_fetcher_init() -> None:
     path = Path('test/test.vrt')
+    epsg_code = 25832
     channel_names = [
         ChannelName.R,
         ChannelName.G,
@@ -86,6 +87,7 @@ def test_vrt_fetcher_init() -> None:
 
     vrt_fetcher = VRTFetcher(
         path=path,
+        epsg_code=epsg_code,
         channel_names=channel_names,
         tile_size=tile_size,
         ground_sampling_distance=ground_sampling_distance,
@@ -94,6 +96,7 @@ def test_vrt_fetcher_init() -> None:
     )
 
     assert vrt_fetcher._path == path
+    assert vrt_fetcher._epsg_code == epsg_code
     assert vrt_fetcher._channel_names == channel_names
     assert vrt_fetcher._tile_size == tile_size
     assert vrt_fetcher._ground_sampling_distance == ground_sampling_distance
@@ -115,6 +118,7 @@ def test_vrt_fetcher_init_defaults() -> None:
 
 def test_vrt_fetcher_from_config() -> None:
     path = Path('test/test.vrt')
+    epsg_code = 25832
     channel_names = [
         ChannelName.R,
         ChannelName.G,
@@ -128,6 +132,7 @@ def test_vrt_fetcher_from_config() -> None:
     buffer_size = 0
     vrt_fetcher_config = VRTFetcherConfig(
         path=path,
+        epsg_code=epsg_code,
         channel_names=channel_names,
         tile_size=tile_size,
         ground_sampling_distance=ground_sampling_distance,
@@ -138,6 +143,7 @@ def test_vrt_fetcher_from_config() -> None:
     vrt_fetcher = VRTFetcher.from_config(vrt_fetcher_config)
 
     assert vrt_fetcher._path == path
+    assert vrt_fetcher._epsg_code == epsg_code
     assert vrt_fetcher._channel_names == channel_names
     assert vrt_fetcher._tile_size == tile_size
     assert vrt_fetcher._ground_sampling_distance == ground_sampling_distance
@@ -161,6 +167,7 @@ def test_vrt_fetcher_call(
     mocked_vrt_fetcher.assert_called_once_with(
         coordinates=coordinates,
         path=vrt_fetcher._path,
+        epsg_code=vrt_fetcher._epsg_code,
         channel_names=vrt_fetcher._channel_names,
         tile_size=vrt_fetcher._tile_size,
         ground_sampling_distance=vrt_fetcher._ground_sampling_distance,
