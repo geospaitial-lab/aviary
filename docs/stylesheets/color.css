@@ -102,6 +102,11 @@
   --md-typeset-a-color: oklch(70.7% 0.165 254.624);
 }
 
+[data-md-color-scheme=slate][data-md-color-primary=black] .md-nav--primary .md-nav__title[for=__drawer],
+[data-md-color-scheme=slate][data-md-color-primary=black] .md-nav__source {
+  background-color: oklch(14.5% 0 0);
+}
+
 [data-md-color-scheme=slate] {
   --doc-symbol-attribute-fg-color: oklch(70.4% 0.191 22.216);
   --doc-symbol-function-fg-color: oklch(84.1% 0.238 128.85);
