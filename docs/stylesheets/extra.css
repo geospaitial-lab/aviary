@@ -8,18 +8,18 @@ html {
   }
 }
 
-.md-header, .md-tabs {
-  box-shadow: none;
-}
+/*.md-header, .md-tabs {*/
+/*  box-shadow: none;*/
+/*}*/
 
 [data-md-color-scheme=default] .md-header,
 [data-md-color-scheme=default] .md-tabs {
-  background-color: oklch(1 0 0);
+  background-color: oklch(100% 0 0);
 }
 
 [data-md-color-scheme=slate] .md-header,
 [data-md-color-scheme=slate] .md-tabs {
-  background-color: oklch(0.145 0 0);
+  background-color: oklch(14.5% 0 0);
 }
 
 #logo_light_mode {
