@@ -325,6 +325,7 @@ class VRTFetcher:
     def __init__(
         self,
         path: Path,
+        epsg_code: EPSGCode,
         channel_names:
             ChannelName | str |
             list[ChannelName | str | None] |
@@ -337,6 +338,7 @@ class VRTFetcher:
         """
         Parameters:
             path: Path to the virtual raster (.vrt file)
+            epsg_code: EPSG code
             channel_names: Channel name or channel names (if None, the channel is ignored)
             tile_size: Tile size in meters
             ground_sampling_distance: Ground sampling distance in meters
@@ -344,6 +346,7 @@ class VRTFetcher:
             buffer_size: Buffer size in meters
         """
         self._path = path
+        self._epsg_code = epsg_code
         self._channel_names = channel_names
         self._tile_size = tile_size
         self._ground_sampling_distance = ground_sampling_distance
@@ -381,6 +384,7 @@ class VRTFetcher:
         return vrt_fetcher(
             coordinates=coordinates,
             path=self._path,
+            epsg_code=self._epsg_code,
             channel_names=self._channel_names,
             tile_size=self._tile_size,
             ground_sampling_distance=self._ground_sampling_distance,
@@ -405,6 +409,7 @@ class VRTFetcherConfig(pydantic.BaseModel):
         name: 'VRTFetcher'
         config:
           path: 'path/to/my_vrt.vrt'
+          epsg_code: 25832
           channel_names:
             - 'r'
             - 'g'
@@ -417,6 +422,7 @@ class VRTFetcherConfig(pydantic.BaseModel):
 
     Attributes:
         path: Path to the virtual raster (.vrt file)
+        epsg_code: EPSG code
         channel_names: Channel name or channel names (if None, the channel is ignored)
         tile_size: Tile size in meters
         ground_sampling_distance: Ground sampling distance in meters
@@ -426,6 +432,7 @@ class VRTFetcherConfig(pydantic.BaseModel):
             defaults to 0
     """
     path: Path
+    epsg_code: EPSGCode
     channel_names: (
         ChannelName | str |
         list[ChannelName | str | None] |
