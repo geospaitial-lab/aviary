@@ -4,14 +4,17 @@ html {
 }
 
 .md-header, .md-tabs {
-  -webkit-backdrop-filter: blur(5px);
-  backdrop-filter: blur(5px);
-  background-color: hsla(0, 0%, 100%, 0.5);
+  box-shadow: none;
+}
+
+[data-md-color-scheme=default] .md-header,
+[data-md-color-scheme=default] .md-tabs {
+  background-color: oklch(1 0 0);
 }
 
 [data-md-color-scheme=slate] .md-header,
 [data-md-color-scheme=slate] .md-tabs {
-  background-color: hsla(0, 0%, 6%, 0.5);
+  background-color: oklch(0.145 0 0);
 }
 
 #logo_light_mode {
