@@ -125,7 +125,7 @@ def vrt_fetcher(
     )
 
     with rio.open(path) as src:
-        if (src.crs is None) or (src.crs.to_epsg() != epsg_code):
+        if src.crs is None or src.crs.to_epsg() != epsg_code:
             message = (
                 'Invalid epsg_code! '
                 'The EPSG code must match the virtual raster.'
