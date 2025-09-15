@@ -1,7 +1,10 @@
+from __future__ import annotations
+
 import weakref
 from typing import TYPE_CHECKING
 
-import geopandas as gpd
+if TYPE_CHECKING:
+    import geopandas as gpd
 
 # noinspection PyProtectedMember
 from aviary._utils.validators import validate_layer_name
