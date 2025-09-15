@@ -198,6 +198,36 @@ class VectorLayer:
         """
         self.__dict__ = state
 
+    def __eq__(
+        self,
+        other: object,
+    ) -> bool:
+        """Compares the vector layers.
+
+        Parameters:
+            other: Other vector layer
+
+        Returns:
+            True if the vector layers are equal, False otherwise
+        """
+        if not isinstance(other, VectorLayer):
+            return False
+
+        conditions = [
+            self._data.equals(other.data),
+            self._name == other.name,
+            self._metadata == other.metadata,
+        ]
+        return all(conditions)
+
+    def __len__(self) -> int:
+        """Computes the number of geometries.
+
+        Returns:
+            Number of geometries
+        """
+        return len(self._data)
+
     def copy(self) -> VectorLayer:
         """Copies the vector layer.
 
