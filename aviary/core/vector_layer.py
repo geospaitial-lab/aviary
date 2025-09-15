@@ -7,7 +7,7 @@ if TYPE_CHECKING:
     import geopandas as gpd
 
 # noinspection PyProtectedMember
-from aviary._utils.validators import validate_layer_name
+from aviary._utils.validators import validate_name
 
 if TYPE_CHECKING:
     from aviary.core.vector import Vector
@@ -51,8 +51,8 @@ class VectorLayer:
 
     def _validate(self) -> None:
         """Validates the layer."""
-        validate_layer_name(
-            channel_name=self._name,
+        validate_name(
+            name=self._name,
             param='name',
             description='name',
         )
@@ -106,8 +106,8 @@ class VectorLayer:
             name: Name
         """
         self._name = name
-        validate_layer_name(
-            channel_name=self._name,
+        validate_name(
+            name=self._name,
             param='name',
             description='name',
         )
