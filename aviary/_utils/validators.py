@@ -28,3 +28,6 @@ def validate_channel_name(
             'and contain only letters, numbers, and underscores.'
         )
         raise AviaryUserError(message)
+
+
+validate_layer_name = validate_channel_name
