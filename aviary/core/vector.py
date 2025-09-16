@@ -127,6 +127,43 @@ class Vector(Iterable[VectorLayer]):
         """
         return {layer.name for layer in self}
 
+    @classmethod
+    def from_vectors(
+        cls,
+        vectors: list[Vector],
+        copy: bool = False,
+    ) -> Vector:
+        """Creates vector from vectors.
+
+        Parameters:
+            vectors: Vectors
+            copy: If True, the layers and metadata are copied during initialization
+
+        Returns:
+            Vector
+
+        Raises:
+            AviaryUserError: Invalid `vectors` (the vectors contain no vectors)
+        """
+        if not vectors:
+            message = (
+                'Invalid vectors! '
+                'The vectors must contain at least one vector.'
+            )
+            raise AviaryUserError(message)
+
+        layers = [layer for vector in vectors for layer in vector]
+        metadata: dict[str, object] = {}
+
+        for vector in vectors:
+            metadata.update(vector.metadata)
+
+        return cls(
+            layers=layers,
+            metadata=metadata,
+            copy=copy,
+        )
+
     def __repr__(self) -> str:
         """Returns the string representation.
 
