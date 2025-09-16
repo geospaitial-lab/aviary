@@ -36,6 +36,7 @@ from .core.type_aliases import (
     GroundSamplingDistance,
     TileSize,
 )
+from .core.vector import Vector
 from .core.vector_layer import VectorLayer
 
 __all__ = [
@@ -61,6 +62,7 @@ __all__ = [
     'Tile',
     'TileSize',
     'Tiles',
+    'Vector',
     'VectorChannel',
     'VectorLayer',
     'WMSVersion',
