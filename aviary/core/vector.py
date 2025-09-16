@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from collections.abc import (
     Iterable,
+    Iterator,
 )
 
 from aviary.core.exceptions import AviaryUserError
@@ -208,3 +209,59 @@ class Vector(Iterable[VectorLayer]):
             True if the vector contains layers, False otherwise
         """
         return bool(len(self))
+
+    def __contains__(
+        self,
+        layer_name: str,
+    ) -> bool:
+        """Checks if the layer is in the vector.
+
+        Parameters:
+            layer_name: Layer name
+
+        Returns:
+            True if the layer is in the vector, False otherwise
+        """
+        return layer_name in self.layer_names
+
+    def __getattr__(
+        self,
+        layer_name: str,
+    ) -> VectorLayer:
+        """Returns the layer.
+
+        Parameters:
+            layer_name: Layer name
+
+        Returns:
+            Layer
+        """
+        try:
+            return self[layer_name]
+        except KeyError as error:
+            raise AttributeError from error
+
+    def __getitem__(
+        self,
+        layer_name: str,
+    ) -> VectorLayer:
+        """Returns the layer.
+
+        Parameters:
+            layer_name: Layer name
+
+        Returns:
+            Layer
+        """
+        if self._layers_dict is None:
+            self._layers_dict = {layer.name: layer for layer in self}
+
+        return self._layers_dict[layer_name]
+
+    def __iter__(self) -> Iterator[VectorLayer]:
+        """Iterates over the layers.
+
+        Yields:
+            Layer
+        """
+        yield from self._layers
