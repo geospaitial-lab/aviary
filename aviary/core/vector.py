@@ -266,6 +266,28 @@ class Vector(Iterable[VectorLayer]):
         """
         yield from self._layers
 
+    def __add__(
+        self,
+        other: Vector,
+    ) -> Vector:
+        """Adds the vectors.
+
+        Parameters:
+            other: Other vector
+
+        Returns:
+            Vector
+        """
+        layers = self._layers + other.layers
+        metadata: dict[str, object] = {}
+        metadata.update(self._metadata)
+        metadata.update(other.metadata)
+        return Vector(
+            layers=layers,
+            metadata=metadata,
+            copy=True,
+        )
+
     def append(
         self,
         layers: VectorLayer | list[VectorLayer],
