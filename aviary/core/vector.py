@@ -265,3 +265,15 @@ class Vector(Iterable[VectorLayer]):
             Layer
         """
         yield from self._layers
+
+    def copy(self) -> Vector:
+        """Copies the vector.
+
+        Returns:
+            Vector
+        """
+        return Vector(
+            layers=self._layers,
+            metadata=self._metadata,
+            copy=True,
+        )
