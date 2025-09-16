@@ -12,7 +12,7 @@ from aviary.core.vector_layer import (
 
 
 class Vector(Iterable[VectorLayer]):
-    """TODO
+    """The vector specifies the layers.
 
     Notes:
         - The `layers` property returns a reference to the layers
