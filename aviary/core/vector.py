@@ -278,6 +278,29 @@ class Vector(Iterable[VectorLayer]):
             copy=True,
         )
 
+    def remove(
+        self,
+        layer_names: str | set[str] | bool | None = True,
+        inplace: bool = False,
+    ) -> Vector:
+        """Removes the layers.
+
+        Parameters:
+            layer_names: Layer name, layer names, no layers (False or None), or all layers (True)
+            inplace: If True, the layers are removed inplace
+
+        Returns:
+            Vector
+        """
+        if layer_names is True:
+            layer_names = self.layer_names
+
+        layer_names = self.layer_names - layer_names
+        return self.select(
+            layer_names=layer_names,
+            inplace=inplace,
+        )
+
     def select(
         self,
         layer_names: str | set[str] | bool | None = True,
