@@ -171,3 +171,40 @@ class Vector(Iterable[VectorLayer]):
         for layer in self:
             # noinspection PyProtectedMember
             layer._register_observer_vector(observer_vector=self)  # noqa: SLF001
+
+    def __eq__(
+        self,
+        other: object,
+    ) -> bool:
+        """Compares the vectors.
+
+        Parameters:
+            other: Other vector
+
+        Returns:
+            True if the vectors are equal, False otherwise
+        """
+        if not isinstance(other, Vector):
+            return False
+
+        conditions = (
+            self._layers == other.layers,
+            self._metadata == other.metadata,
+        )
+        return all(conditions)
+
+    def __len__(self) -> int:
+        """Computes the number of layers.
+
+        Returns:
+            Number of layers
+        """
+        return len(self._layers)
+
+    def __bool__(self) -> bool:
+        """Checks if the vector contains layers.
+
+        Returns:
+            True if the vector contains layers, False otherwise
+        """
+        return bool(len(self))
