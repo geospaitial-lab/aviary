@@ -125,3 +125,49 @@ class Vector(Iterable[VectorLayer]):
             Layer names
         """
         return {layer.name for layer in self}
+
+    def __repr__(self) -> str:
+        """Returns the string representation.
+
+        Returns:
+            String representation
+        """
+        if self:
+            layers_repr = '\n'.join(
+                f'        {layer.name}: {type(layer).__name__},'
+                for layer in self
+            )
+            layers_repr = '\n' + layers_repr
+        else:
+            layers_repr = ','
+
+        return (
+            'Vector(\n'
+            f'    layers={layers_repr}\n'
+            f'    metadata={self._metadata},\n'
+            f'    copy={self._copy},\n'
+            ')'
+        )
+
+    def __getstate__(self) -> dict:
+        """Gets the state for pickling.
+
+        Returns:
+            State
+        """
+        return self.__dict__
+
+    def __setstate__(
+        self,
+        state: dict,
+    ) -> None:
+        """Sets the state for unpickling.
+
+        Parameters:
+            state: State
+        """
+        self.__dict__ = state
+
+        for layer in self:
+            # noinspection PyProtectedMember
+            layer._register_observer_vector(observer_vector=self)  # noqa: SLF001
