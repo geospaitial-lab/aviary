@@ -277,3 +277,39 @@ class Vector(Iterable[VectorLayer]):
             metadata=self._metadata,
             copy=True,
         )
+
+    def select(
+        self,
+        layer_names: str | set[str] | bool | None = True,
+        inplace: bool = False,
+    ) -> Vector:
+        """Selects the layers.
+
+        Parameters:
+            layer_names: Layer name, layer names, no layers (False or None), or all layers (True)
+            inplace: If True, the layers are selected inplace
+
+        Returns:
+            Vector
+        """
+        if layer_names is True:
+            layer_names = self.layer_names
+
+        if inplace:
+            removed_layer_names = self.layer_names - layer_names
+            removed_layers = [layer for layer in self if layer.name in removed_layer_names]
+            self._layers = [layer for layer in self if layer.name in layer_names]
+            self._validate()
+
+            for layer in removed_layers:
+                # noinspection PyProtectedMember
+                layer._unregister_observer_vector()  # noqa: SLF001
+
+            return self
+
+        layers = [layer for layer in self if layer.name in layer_names]
+        return Vector(
+            layers=layers,
+            metadata=self._metadata,
+            copy=True,
+        )
