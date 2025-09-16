@@ -266,6 +266,40 @@ class Vector(Iterable[VectorLayer]):
         """
         yield from self._layers
 
+    def append(
+        self,
+        layers: VectorLayer | list[VectorLayer],
+        inplace: bool = False,
+    ) -> Vector:
+        """Appends the layers.
+
+        Parameters:
+            layers: Layers
+            inplace: If True, the layers are appended inplace
+
+        Returns:
+            Vector
+        """
+        if not isinstance(layers, list):
+            layers = [layers]
+
+        if inplace:
+            self._layers.extend(layers)
+            self._validate()
+
+            for layer in layers:
+                # noinspection PyProtectedMember
+                layer._register_observer_vector(observer_vector=self)  # noqa: SLF001
+
+            return self
+
+        layers = self._layers + layers
+        return Vector(
+            layers=layers,
+            metadata=self._metadata,
+            copy=True,
+        )
+
     def copy(self) -> Vector:
         """Copies the vector.
 
