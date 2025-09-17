@@ -565,6 +565,12 @@ def tile_pipeline_run(
             set_options=set_options,
         )
 
+        context = click.get_current_context()
+        quiet = context.obj['quiet']
+
+        if quiet:
+            config['show_progress'] = False
+
         plugins_dir_path = config.get('plugins_dir_path')
 
         if plugins_dir_path is not None:

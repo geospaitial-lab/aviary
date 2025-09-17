@@ -37,6 +37,7 @@ class TilePipeline:
         tile_loader_batch_size: int = 1,
         tile_loader_max_num_threads: int | None = None,
         tile_loader_num_prefetched_tiles: int = 0,
+        show_progress: bool = True,
     ) -> None:
         """
         Parameters:
@@ -46,6 +47,7 @@ class TilePipeline:
             tile_loader_batch_size: Batch size
             tile_loader_max_num_threads: Maximum number of threads
             tile_loader_num_prefetched_tiles: Number of prefetched tiles
+            show_progress: If True, show the progress in a progress bar
         """
         self._grid = grid
         self._tile_fetcher = tile_fetcher
@@ -53,6 +55,7 @@ class TilePipeline:
         self._tile_loader_batch_size = tile_loader_batch_size
         self._tile_loader_max_num_threads = tile_loader_max_num_threads
         self._tile_loader_num_prefetched_tiles = tile_loader_num_prefetched_tiles
+        self._show_progress = show_progress
 
     @classmethod
     def from_config(
@@ -77,6 +80,7 @@ class TilePipeline:
             tile_loader_batch_size=config.tile_loader_config.batch_size,
             tile_loader_max_num_threads=config.tile_loader_config.max_num_threads,
             tile_loader_num_prefetched_tiles=config.tile_loader_config.num_prefetched_tiles,
+            show_progress=config.show_progress,
         )
 
     def __call__(self) -> None:
@@ -101,7 +105,13 @@ class TilePipeline:
         i_len = len(str(num_tiles))
         tile_pipeline_start_time = time.perf_counter()
 
-        for i, tiles in enumerate(track(tile_loader, description='Processing tiles'), start=1):
+        progress_bar = track(
+            tile_loader,
+            description='Processing tiles',
+            disable=not self._show_progress,
+        )
+
+        for i, tiles in enumerate(progress_bar, start=1):
             batch_size = tiles.batch_size
             logger.info(
                 'Processing {} tiles {:>{}} / {}...',
@@ -168,12 +178,14 @@ class TilePipelineConfig(pydantic.BaseModel):
 
     Create the configuration from a config file:
         - Use null instead of None
+        - Use false or true instead of False or True
 
     Example:
         You can create the configuration from a config file.
 
         ``` yaml title="config.yaml"
         plugins_dir_path: null
+        show_progress: true
 
         grid_config:
           ...
@@ -193,6 +205,8 @@ class TilePipelineConfig(pydantic.BaseModel):
     Attributes:
         plugins_dir_path: Path to the plugins directory -
             defaults to None
+        show_progress: If True, show the progress in a progress bar -
+            defaults to True
         grid_config: Configuration for the grid
         tile_fetcher_config: Configuration for the tile fetcher
         tile_loader_config: Configuration for the tile loader -
@@ -200,6 +214,7 @@ class TilePipelineConfig(pydantic.BaseModel):
         tiles_processor_config: Configuration for the tiles processor
     """
     plugins_dir_path: Path | None = None
+    show_progress: bool = True
     grid_config: GridConfig
     tile_fetcher_config: TileFetcherConfig
     tile_loader_config: TileLoaderConfig = pydantic.Field(default=TileLoaderConfig())
