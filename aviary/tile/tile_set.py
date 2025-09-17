@@ -48,6 +48,14 @@ class TileSet(Iterable[Tile]):
         """
         return len(self._grid)
 
+    def __bool__(self) -> bool:
+        """Checks if the tile set contains tiles.
+
+        Returns:
+            True if the tile set contains tiles, False otherwise
+        """
+        return bool(len(self))
+
     def __getitem__(
         self,
         index: int,
