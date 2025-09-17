@@ -16,7 +16,16 @@ data_test_vector_init = [
         {},
         False,
     ),
-    # test case 2: metadata is not None
+    # test case 2: layers contains no layers
+    (
+        [],
+        None,
+        False,
+        [],
+        {},
+        False,
+    ),
+    # test case 3: metadata is not None
     (
         get_vector_layers(),
         get_metadata(),
