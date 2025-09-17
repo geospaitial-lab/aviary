@@ -14,6 +14,7 @@ from aviary.core.enums import ChannelName
 from aviary.core.grid import Grid
 from aviary.core.tiles import Tiles
 from aviary.core.type_aliases import CoordinatesSet
+from aviary.core.vector_layer import VectorLayer
 
 
 @pytest.fixture(scope='function')
@@ -309,4 +310,34 @@ def get_vector_channel_buffered_data_item() -> gpd.GeoDataFrame:
 
 def get_vector_channel_empty_data_item() -> gpd.GeoDataFrame:
     geometries = []
+    return gpd.GeoDataFrame(geometry=geometries)
+
+
+@pytest.fixture(scope='function')
+def vector_layer() -> VectorLayer:
+    return get_vector_layer()
+
+
+def get_vector_layer() -> VectorLayer:
+    data = get_vector_layer_data()
+    name = 'custom'
+    metadata = None
+    copy = False
+    return VectorLayer(
+        data=data,
+        name=name,
+        metadata=metadata,
+        copy=copy,
+    )
+
+
+@pytest.fixture(scope='function')
+def vector_layer_data() -> gpd.GeoDataFrame:
+    return get_vector_layer_data()
+
+
+def get_vector_layer_data() -> gpd.GeoDataFrame:
+    geometries = [
+        box(-128, -64, 128, 192),
+    ]
     return gpd.GeoDataFrame(geometry=geometries)
