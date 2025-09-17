@@ -14,6 +14,7 @@ from aviary.core.enums import ChannelName
 from aviary.core.grid import Grid
 from aviary.core.tiles import Tiles
 from aviary.core.type_aliases import CoordinatesSet
+from aviary.core.vector import Vector
 from aviary.core.vector_layer import VectorLayer
 
 
@@ -250,6 +251,70 @@ def get_tiles_coordinates() -> CoordinatesSet:
     return np.array(
         [[128, -128], [128, 0]],
         dtype=np.int32,
+    )
+
+
+@pytest.fixture(scope='function')
+def vector() -> Vector:
+    return get_vector()
+
+
+def get_vector() -> Vector:
+    layers = get_vector_layers()
+    metadata = None
+    copy = False
+    return Vector(
+        layers=layers,
+        metadata=metadata,
+        copy=copy,
+    )
+
+
+@pytest.fixture(scope='function')
+def vector_layers() -> list[VectorLayer]:
+    return get_vector_layers()
+
+
+def get_vector_layers() -> list[VectorLayer]:
+    return [
+        get_vector_layer_1(),
+        get_vector_layer_2(),
+    ]
+
+
+@pytest.fixture(scope='function')
+def vector_layer_1() -> VectorLayer:
+    return get_vector_layer_1()
+
+
+def get_vector_layer_1() -> VectorLayer:
+    data = get_vector_layer_data()
+    name = 'custom_1'
+    metadata = None
+    copy = False
+    return VectorLayer(
+        data=data,
+        name=name,
+        metadata=metadata,
+        copy=copy,
+    )
+
+
+@pytest.fixture(scope='function')
+def vector_layer_2() -> VectorLayer:
+    return get_vector_layer_2()
+
+
+def get_vector_layer_2() -> VectorLayer:
+    data = get_vector_layer_data()
+    name = 'custom_2'
+    metadata = None
+    copy = False
+    return VectorLayer(
+        data=data,
+        name=name,
+        metadata=metadata,
+        copy=copy,
     )
 
 
