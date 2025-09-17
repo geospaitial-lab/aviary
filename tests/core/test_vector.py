@@ -7,6 +7,11 @@ from aviary.core.exceptions import AviaryUserError
 from aviary.core.vector import Vector
 from aviary.core.vector_layer import VectorLayer
 from tests.core.data.data_test_vector import (
+    data_test_vector_bool,
+    data_test_vector_contains,
+    data_test_vector_eq,
+    data_test_vector_getattr,
+    data_test_vector_getitem,
     data_test_vector_init,
     data_test_vector_init_exceptions,
 )
@@ -129,3 +134,97 @@ def test_vector_serializability(
     deserialized_vector = pickle.loads(serialized_vector)  # noqa: S301
 
     assert vector == deserialized_vector
+
+
+def test_vector_layer_names(
+    vector: Vector,
+) -> None:
+    expected = {
+        'custom_1',
+        'custom_2',
+    }
+
+    assert vector.layer_names == expected
+
+
+@pytest.mark.parametrize(('other', 'expected'), data_test_vector_eq)
+def test_vector_eq(
+    other: object,
+    expected: bool,
+    vector: Vector,
+) -> None:
+    equals = vector == other
+
+    assert equals is expected
+
+
+def test_vector_len(
+    vector: Vector,
+) -> None:
+    expected = 2
+
+    assert len(vector) == expected
+
+
+@pytest.mark.parametrize(('vector', 'expected'), data_test_vector_bool)
+def test_vector_bool(
+    vector: Vector,
+    expected: bool,
+) -> None:
+    assert bool(vector) is expected
+
+
+@pytest.mark.parametrize(('layer_name', 'expected'), data_test_vector_contains)
+def test_vector_contains(
+    layer_name: str,
+    expected: bool,
+    vector: Vector,
+) -> None:
+    contains = layer_name in vector
+
+    assert contains is expected
+
+
+@pytest.mark.parametrize(('layer_name', 'expected'), data_test_vector_getattr)
+def test_vector_getattr(
+    layer_name: str,
+    expected: VectorLayer,
+    vector: Vector,
+) -> None:
+    layer = getattr(vector, layer_name)
+
+    assert layer == expected
+
+
+@pytest.mark.parametrize(('layer_name', 'expected'), data_test_vector_getitem)
+def test_vector_getitem(
+    layer_name: str,
+    expected: VectorLayer,
+    vector: Vector,
+) -> None:
+    layer = vector[layer_name]
+
+    assert layer == expected
+
+
+def test_vector_iter(
+    vector: Vector,
+    vector_layers: list[VectorLayer],
+) -> None:
+    assert list(vector) == vector_layers
+
+
+def test_vector_copy(
+    vector: Vector,
+) -> None:
+    copied_vector = vector.copy()
+
+    assert copied_vector == vector
+    assert copied_vector.is_copied is True
+    assert id(copied_vector) != id(vector)
+    assert id(copied_vector.layers) != id(vector.layers)
+
+    for copied_layer, layer in zip(copied_vector, vector, strict=True):
+        assert id(copied_layer) != id(layer)
+
+    assert id(copied_vector.metadata) != id(vector.metadata)

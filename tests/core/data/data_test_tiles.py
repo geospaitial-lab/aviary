@@ -85,7 +85,18 @@ data_test_tiles_eq = [
         ),
         False,
     ),
-    # test case 5: copy is not equal
+    # test case 5: metadata is not equal
+    (
+        Tiles(
+            channels=get_tiles_channels(),
+            coordinates=get_tiles_coordinates(),
+            tile_size=128,
+            metadata=get_metadata(),
+            copy=False,
+        ),
+        False,
+    ),
+    # test case 6: copy is not equal
     (
         Tiles(
             channels=get_tiles_channels(),
@@ -96,7 +107,7 @@ data_test_tiles_eq = [
         ),
         True,
     ),
-    # test case 6: other is not of type Tiles
+    # test case 7: other is not of type Tiles
     (
         'invalid',
         False,
