@@ -30,6 +30,8 @@ nav:
       - Grid: api_reference/core/grid.md
       - Tiles: api_reference/core/tiles.md
       - Type Aliases: api_reference/core/type_aliases.md
+      - Vector: api_reference/core/vector.md
+      - VectorLayer: api_reference/core/vector_layer.md
     - aviary.tile:
       - Model:
           - Adois: api_reference/tile/model/adois.md
