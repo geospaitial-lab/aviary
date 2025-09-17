@@ -535,7 +535,7 @@ class RasterChannel(Channel, Iterable[npt.NDArray]):
         Raises:
             AviaryUserError: Invalid `data` (the data contains no data items)
         """
-        if len(self._data) == 0:
+        if not self._data:
             message = (
                 'Invalid data! '
                 'The data must contain at least one data item.'
