@@ -338,6 +338,9 @@ def vector_layer_data() -> gpd.GeoDataFrame:
 
 def get_vector_layer_data() -> gpd.GeoDataFrame:
     geometries = [
-        box(-128, -64, 128, 192),
+        box(-128, -128, 0, 0),
+        box(0, -128, 128, 0),
+        box(-128, 0, 0, 128),
+        box(0, 0, 128, 128),
     ]
     return gpd.GeoDataFrame(geometry=geometries)

@@ -7,6 +7,7 @@ import pytest
 
 from aviary.core.vector_layer import VectorLayer
 from tests.core.data.data_test_vector_layer import (
+    data_test_vector_layer_eq,
     data_test_vector_layer_init,
 )
 
@@ -114,3 +115,34 @@ def test_vector_layer_serializability(
     deserialized_vector_layer = pickle.loads(serialized_vector_layer)  # noqa: S301
 
     assert vector_layer == deserialized_vector_layer
+
+
+@pytest.mark.parametrize(('other', 'expected'), data_test_vector_layer_eq)
+def test_vector_layer_eq(
+    other: object,
+    expected: bool,
+    vector_layer: VectorLayer,
+) -> None:
+    equals = vector_layer == other
+
+    assert equals is expected
+
+
+def test_vector_layer_len(
+    vector_layer: VectorLayer,
+) -> None:
+    expected = 4
+
+    assert len(vector_layer) == expected
+
+
+def test_vector_layer_copy(
+    vector_layer: VectorLayer,
+) -> None:
+    copied_vector_layer = vector_layer.copy()
+
+    assert copied_vector_layer == vector_layer
+    assert copied_vector_layer.is_copied is True
+    assert id(copied_vector_layer) != id(vector_layer)
+    assert id(copied_vector_layer.data) != id(vector_layer.data)
+    assert id(copied_vector_layer.metadata) != id(vector_layer.metadata)
