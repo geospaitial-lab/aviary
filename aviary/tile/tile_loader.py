@@ -111,6 +111,14 @@ class TileLoader(Iterable[Tiles]):
         """
         return (len(self._tile_set) + self._batch_size - 1) // self._batch_size
 
+    def __bool__(self) -> bool:
+        """Checks if the tile loader contains tiles.
+
+        Returns:
+            True if the tile loader contains tiles, False otherwise
+        """
+        return bool(len(self))
+
     def __iter__(self) -> Iterator[Tiles]:
         """Iterates over the tiles.
 
