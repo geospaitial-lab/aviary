@@ -19,7 +19,7 @@ def composite_loader(
     vector_loaders: list[VectorLoader],
     max_num_threads: int | None = None,
 ) -> Vector:
-    """Loads vector data from the sources.
+    """Loads a vector from the sources.
 
     Parameters:
         vector_loaders: Vector loaders
@@ -54,7 +54,7 @@ def gpkg_loader(
     path: Path,
     layer_name: str,
 ) -> Vector:
-    """Loads vector data from the geopackage.
+    """Loads a vector from the geopackage.
 
     Parameters:
         path: Path to the geopackage (.gpkg file)

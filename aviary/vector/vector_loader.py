@@ -31,15 +31,15 @@ _PACKAGE = 'aviary'
 class VectorLoader(Protocol):
     """Protocol for vector loaders
 
-    Vector loaders are callables that load vector data from a source.
+    Vector loaders are callables that load a vector from a source.
 
     Implemented vector loaders:
         - `CompositeLoader`: Composes multiple vector loaders
-        - `GPKGLoader`: Loads vector data from a geopackage
+        - `GPKGLoader`: Loads a vector from a geopackage
     """
 
     def __call__(self) -> Vector:
-        """Loads vector data from the source.
+        """Loads a vector from the source.
 
         Returns:
             Vector
@@ -241,7 +241,7 @@ class CompositeLoader:
         )
 
     def __call__(self) -> Vector:
-        """Loads vector data from the sources.
+        """Loads a vector from the sources.
 
         Returns:
             Vector
@@ -323,7 +323,7 @@ class GPKGLoader:
         return cls(**config)
 
     def __call__(self) -> Vector:
-        """Loads vector data from the geopackage.
+        """Loads a vector from the geopackage.
 
         Returns:
             Vector
