@@ -1,3 +1,7 @@
+from .vector_exporter import (
+    VectorExporter,
+    VectorExporterConfig,
+)
 from .vector_loader import (
     CompositeLoader,
     CompositeLoaderConfig,
@@ -7,13 +11,43 @@ from .vector_loader import (
     VectorLoaderConfig,
     register_vector_loader,
 )
+from .vector_processor import (
+    CopyProcessor,
+    CopyProcessorConfig,
+    ParallelCompositeProcessor,
+    ParallelCompositeProcessorConfig,
+    RemoveProcessor,
+    RemoveProcessorConfig,
+    SelectProcessor,
+    SelectProcessorConfig,
+    SequentialCompositeProcessor,
+    SequentialCompositeProcessorConfig,
+    VectorProcessor,
+    VectorProcessorConfig,
+    register_vector_processor,
+)
 
 __all__ = [
     'CompositeLoader',
     'CompositeLoaderConfig',
+    'CopyProcessor',
+    'CopyProcessorConfig',
     'GPKGLoader',
     'GPKGLoaderConfig',
+    'ParallelCompositeProcessor',
+    'ParallelCompositeProcessorConfig',
+    'RemoveProcessor',
+    'RemoveProcessorConfig',
+    'SelectProcessor',
+    'SelectProcessorConfig',
+    'SequentialCompositeProcessor',
+    'SequentialCompositeProcessorConfig',
+    'VectorExporter',
+    'VectorExporterConfig',
     'VectorLoader',
     'VectorLoaderConfig',
+    'VectorProcessor',
+    'VectorProcessorConfig',
     'register_vector_loader',
+    'register_vector_processor',
 ]

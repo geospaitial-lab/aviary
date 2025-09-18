@@ -1,0 +1,602 @@
+from __future__ import annotations
+
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Protocol,
+)
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
+import pydantic
+
+if TYPE_CHECKING:
+    from pydantic_core.core_schema import ValidationInfo
+
+# noinspection PyProtectedMember
+from aviary.core.exceptions import AviaryUserError
+
+if TYPE_CHECKING:
+    from aviary.core.vector import Vector
+
+_PACKAGE = 'aviary'
+
+
+class VectorProcessor(Protocol):
+    """Protocol for vector processors
+
+    Vector processors are callables that process vectors.
+
+    Implemented vector processors:
+        - `CopyProcessor`: Copies a layer
+        - `ParallelCompositeProcessor`: Composes multiple vector processors in parallel
+        - `RemoveProcessor`: Removes layers
+        - `SelectProcessor`: Selects layers
+        - `SequentialCompositeProcessor`: Composes multiple vector processors in sequence
+
+    Implemented exporters:
+        - `VectorExporter`: Exports a layer
+    """
+
+    def __call__(
+        self,
+        vector: Vector,
+    ) -> Vector:
+        """Processes the vector.
+
+        Parameters:
+            vector: Vector
+
+        Returns:
+            Vector
+        """
+        ...
+
+
+class VectorProcessorConfig(pydantic.BaseModel):
+    """Configuration for vector processors
+
+    Create the configuration from a config file:
+        - Use null instead of None
+
+    Example:
+        You can create the configuration from a config file.
+
+        ``` yaml title="config.yaml"
+        package: 'aviary'
+        name: 'VectorProcessor'
+        config:
+          ...
+        ```
+
+    Attributes:
+        package: Package -
+            defaults to 'aviary'
+        name: Name
+        config: Configuration -
+            defaults to None
+    """
+    package: str = 'aviary'
+    name: str
+    config: pydantic.BaseModel | None = None
+
+    # noinspection PyNestedDecorators
+    @pydantic.field_validator(
+        'config',
+        mode='before',
+    )
+    @classmethod
+    def _validate_config(
+        cls,
+        value: Any,  # noqa: ANN401
+        info: ValidationInfo,
+    ) -> pydantic.BaseModel:
+        package = info.data['package']
+        name = info.data['name']
+        key = (package, name)
+        registry_entry = _VectorProcessorFactory.registry.get(key)
+
+        if registry_entry is None:
+            message = (
+                'Invalid config! '
+                f'The vector processor {name} from {package} must be registered.'
+            )
+            raise ValueError(message)
+
+        _, config_class = registry_entry
+
+        if value is None:
+            return config_class()
+
+        if isinstance(value, config_class):
+            return value
+
+        return config_class(**value)
+
+
+class _VectorProcessorFactory:
+    """Factory for vector processors"""
+    registry: dict[tuple[str, str], tuple[type[VectorProcessor], type[pydantic.BaseModel]]] = {}  # noqa: RUF012
+
+    @staticmethod
+    def create(
+        config: VectorProcessorConfig,
+    ) -> VectorProcessor:
+        """Creates a vector processor from the configuration.
+
+        Parameters:
+            config: Configuration
+
+        Returns:
+            Vector processor
+
+        Raises:
+            AviaryUserError: Invalid `config` (the vector processor is not registered)
+        """
+        key = (config.package, config.name)
+        registry_entry = _VectorProcessorFactory.registry.get(key)
+
+        if registry_entry is None:
+            message = (
+                'Invalid config! '
+                f'The vector processor {config.name} from {config.package} must be registered.'
+            )
+            raise AviaryUserError(message) from None
+
+        vector_processor_class, _ = registry_entry
+        # noinspection PyUnresolvedReferences
+        return vector_processor_class.from_config(config=config.config)
+
+    @staticmethod
+    def register(
+        vector_processor_class: type[VectorProcessor],
+        config_class: type[pydantic.BaseModel],
+        package: str = _PACKAGE,
+    ) -> None:
+        """Registers a vector processor.
+
+        Parameters:
+            vector_processor_class: Vector processor class
+            config_class: Configuration class
+            package: Package
+        """
+        key = (package, vector_processor_class.__name__)
+        _VectorProcessorFactory.registry[key] = (vector_processor_class, config_class)
+
+
+def register_vector_processor(
+    config_class: type[pydantic.BaseModel],
+) -> Callable:
+    """Registers a vector processor.
+
+    Parameters:
+        config_class: Configuration class
+
+    Returns:
+        Decorator
+
+    Raises:
+        AviaryUserError: Invalid registration (the package name is equal to aviary)
+    """
+    def decorator(
+        cls: type[VectorProcessor],
+    ) -> type[VectorProcessor]:
+        package = cls.__module__.split('.')[0]
+
+        if package == _PACKAGE:
+            message = (
+                'Invalid registration! '
+                f'The package name must be different from {_PACKAGE}.'
+            )
+            raise AviaryUserError(message)
+
+        _VectorProcessorFactory.register(
+            vector_processor_class=cls,
+            config_class=config_class,
+            package=package,
+        )
+        return cls
+    return decorator
+
+
+class CopyProcessor:
+    """Vector processor that copies a layer
+
+    Implements the `VectorProcessor` protocol.
+    """
+
+    def __init__(
+        self,
+        layer_name: str,
+        new_layer_name: str | None = None,
+    ) -> None:
+        """
+        Parameters:
+            layer_name: Layer name
+            new_layer_name: New layer name
+        """
+        self._layer_name = layer_name
+        self._new_layer_name = new_layer_name
+
+    @classmethod
+    def from_config(
+        cls,
+        config: CopyProcessorConfig,
+    ) -> CopyProcessor:
+        """Creates a copy processor from the configuration.
+
+        Parameters:
+            config: Configuration
+
+        Returns:
+            Copy processor
+        """
+        config = config.model_dump()
+        return cls(**config)
+
+    def __call__(
+        self,
+        vector: Vector,
+    ) -> Vector:
+        """Copies the layer.
+
+        Parameters:
+            vector: Vector
+
+        Returns:
+            Vector
+        """
+
+
+class CopyProcessorConfig(pydantic.BaseModel):
+    """Configuration for the `from_config` class method of `CopyProcessor`
+
+    Create the configuration from a config file:
+        - Use null instead of None
+
+    Example:
+        You can create the configuration from a config file.
+
+        ``` yaml title="config.yaml"
+        package: 'aviary'
+        name: 'CopyProcessor'
+        config:
+          layer_name: 'my_layer'
+          new_layer_name: 'my_new_layer'
+        ```
+
+    Attributes:
+        layer_name: Layer name
+        new_layer_name: New layer name -
+            defaults to None
+    """
+    layer_name: str
+    new_layer_name: str | None = None
+
+
+_VectorProcessorFactory.register(
+    vector_processor_class=CopyProcessor,
+    config_class=CopyProcessorConfig,
+    package=_PACKAGE,
+)
+
+
+class ParallelCompositeProcessor:
+    """Vector processor that composes multiple vector processors in parallel
+
+    Notes:
+        - The vector processors are not called concurrently, but each one gets a copy of the vector
+            and the resulting vectors are combined
+        - The vector processors are composed horizontally, i.e., in parallel
+
+    Implements the `VectorProcessor` protocol.
+    """
+
+    def __init__(
+        self,
+        vector_processors: list[VectorProcessor],
+    ) -> None:
+        """
+        Parameters:
+            vector_processors: Vector processors
+        """
+        self._vector_processors = vector_processors
+
+    @classmethod
+    def from_config(
+        cls,
+        config: ParallelCompositeProcessorConfig,
+    ) -> ParallelCompositeProcessor:
+        """Creates a parallel composite processor from the configuration.
+
+        Parameters:
+            config: Configuration
+
+        Returns:
+            Parallel composite processor
+        """
+        vector_processors = [
+            _VectorProcessorFactory.create(config=vector_processor_config)
+            for vector_processor_config in config.vector_processor_configs
+        ]
+        return cls(
+            vector_processors=vector_processors,
+        )
+
+    def __call__(
+        self,
+        vector: Vector,
+    ) -> Vector:
+        """Processes the vector with each vector processor.
+
+        Parameters:
+            vector: Vector
+
+        Returns:
+            Vector
+        """
+
+
+class ParallelCompositeProcessorConfig(pydantic.BaseModel):
+    """Configuration for the `from_config` class method of `ParallelCompositeProcessor`
+
+    Example:
+        You can create the configuration from a config file.
+
+        ``` yaml title="config.yaml"
+        package: 'aviary'
+        name: 'ParallelCompositeProcessor'
+        config:
+          vector_processor_configs:
+            - ...
+            ...
+        ```
+
+    Attributes:
+        vector_processor_configs: Configurations of the vector processors
+    """
+    vector_processor_configs: list[VectorProcessorConfig]
+
+
+_VectorProcessorFactory.register(
+    vector_processor_class=ParallelCompositeProcessor,
+    config_class=ParallelCompositeProcessorConfig,
+    package=_PACKAGE,
+)
+
+
+class RemoveProcessor:
+    """Vector processor that removes layers
+
+    Implements the `VectorProcessor` protocol.
+    """
+
+    def __init__(
+        self,
+        layer_names: str | set[str] | bool | None = True,
+    ) -> None:
+        """
+        Parameters:
+            layer_names: Layer name, layer names, no layers (False or None), or all layers (True)
+        """
+        self._layer_names = layer_names
+
+    @classmethod
+    def from_config(
+        cls,
+        config: RemoveProcessorConfig,
+    ) -> RemoveProcessor:
+        """Creates a remove processor from the configuration.
+
+        Parameters:
+            config: Configuration
+
+        Returns:
+            Remove processor
+        """
+        config = config.model_dump()
+        return cls(**config)
+
+    def __call__(
+        self,
+        vector: Vector,
+    ) -> Vector:
+        """Removes the layers.
+
+        Parameters:
+            vector: Vector
+
+        Returns:
+            Vector
+        """
+
+
+class RemoveProcessorConfig(pydantic.BaseModel):
+    """Configuration for the `from_config` class method of `RemoveProcessor`
+
+    Create the configuration from a config file:
+        - Use null instead of None
+        - Use false or true instead of False or True
+
+    Example:
+        You can create the configuration from a config file.
+
+        ``` yaml title="config.yaml"
+        package: 'aviary'
+        name: 'RemoveProcessor'
+        config:
+          layer_names: true
+        ```
+
+    Attributes:
+        layer_names: Layer name, layer names, no layers (False or None), or all layers (True) -
+            defaults to True
+    """
+    layer_names: str | set[str] | bool | None = True
+
+
+_VectorProcessorFactory.register(
+    vector_processor_class=RemoveProcessor,
+    config_class=RemoveProcessorConfig,
+    package=_PACKAGE,
+)
+
+
+class SelectProcessor:
+    """Vector processor that selects layers
+
+    Implements the `VectorProcessor` protocol.
+    """
+
+    def __init__(
+        self,
+        layer_names: str | set[str] | bool | None = True,
+    ) -> None:
+        """
+        Parameters:
+            layer_names: Layer name, layer names, no layers (False or None), or all layers (True)
+        """
+        self._layer_names = layer_names
+
+    @classmethod
+    def from_config(
+        cls,
+        config: SelectProcessorConfig,
+    ) -> SelectProcessor:
+        """Creates a select processor from the configuration.
+
+        Parameters:
+            config: Configuration
+
+        Returns:
+            Select processor
+        """
+        config = config.model_dump()
+        return cls(**config)
+
+    def __call__(
+        self,
+        vector: Vector,
+    ) -> Vector:
+        """Selects the layers.
+
+        Parameters:
+            vector: Vector
+
+        Returns:
+            Vector
+        """
+
+
+class SelectProcessorConfig(pydantic.BaseModel):
+    """Configuration for the `from_config` class method of `SelectProcessor`
+
+    Create the configuration from a config file:
+        - Use null instead of None
+        - Use false or true instead of False or True
+
+    Example:
+        You can create the configuration from a config file.
+
+        ``` yaml title="config.yaml"
+        package: 'aviary'
+        name: 'SelectProcessor'
+        config:
+          layer_names: true
+        ```
+
+    Attributes:
+        layer_names: Layer name, layer names, no layers (False or None), or all layers (True) -
+            defaults to True
+    """
+    layer_names: str | set[str] | bool | None = True
+
+
+_VectorProcessorFactory.register(
+    vector_processor_class=SelectProcessor,
+    config_class=SelectProcessorConfig,
+    package=_PACKAGE,
+)
+
+
+class SequentialCompositeProcessor:
+    """Vector processor that composes multiple vector processors in sequence
+
+    Notes:
+        - The vector processors are composed vertically, i.e., in sequence
+
+    Implements the `VectorProcessor` protocol.
+    """
+
+    def __init__(
+        self,
+        vector_processors: list[VectorProcessor],
+    ) -> None:
+        """
+        Parameters:
+            vector_processors: Vector processors
+        """
+        self._vector_processors = vector_processors
+
+    @classmethod
+    def from_config(
+        cls,
+        config: SequentialCompositeProcessorConfig,
+    ) -> SequentialCompositeProcessor:
+        """Creates a sequential composite processor from the configuration.
+
+        Parameters:
+            config: Configuration
+
+        Returns:
+            Sequential composite processor
+        """
+        vector_processors = [
+            _VectorProcessorFactory.create(config=vector_processor_config)
+            for vector_processor_config in config.vector_processor_configs
+        ]
+        return cls(
+            vector_processors=vector_processors,
+        )
+
+    def __call__(
+        self,
+        vector: Vector,
+    ) -> Vector:
+        """Processes the vector with each vector processor.
+
+        Parameters:
+            vector: Vector
+
+        Returns:
+            Vector
+        """
+
+
+class SequentialCompositeProcessorConfig(pydantic.BaseModel):
+    """Configuration for the `from_config` class method of `SequentialCompositeProcessor`
+
+    Example:
+        You can create the configuration from a config file.
+
+        ``` yaml title="config.yaml"
+        package: 'aviary'
+        name: 'SequentialCompositeProcessor'
+        config:
+          vector_processor_configs:
+            - ...
+            ...
+        ```
+
+    Attributes:
+        vector_processor_configs: Configurations of the vector processors
+    """
+    vector_processor_configs: list[VectorProcessorConfig]
+
+
+_VectorProcessorFactory.register(
+    vector_processor_class=SequentialCompositeProcessor,
+    config_class=SequentialCompositeProcessorConfig,
+    package=_PACKAGE,
+)
