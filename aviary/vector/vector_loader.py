@@ -344,7 +344,7 @@ class GPKGLoaderConfig(pydantic.BaseModel):
         package: 'aviary'
         name: 'GPKGLoader'
         config:
-          path: 'path/to/my_data.gpkg'
+          path: 'path/to/my_gpkg.gpkg'
           layer_name: 'my_layer'
         ```
 
