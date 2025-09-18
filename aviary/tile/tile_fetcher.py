@@ -196,7 +196,7 @@ def register_tile_fetcher(
     def decorator(
         cls: type[TileFetcher],
     ) -> type[TileFetcher]:
-        package = cls.__name__.split('.')[0]
+        package = cls.__module__.split('.')[0]
 
         if package == _PACKAGE:
             message = (

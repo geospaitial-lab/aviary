@@ -66,6 +66,11 @@ nav:
             - GeospatialFilter: api_reference/utils/coordinates_filter/geospatial_filter.md
             - MaskFilter: api_reference/utils/coordinates_filter/mask_filter.md
             - SetFilter: api_reference/utils/coordinates_filter/set_filter.md
+    - aviary.vector:
+      - VectorLoader:
+          - VectorLoader: api_reference/vector/vector_loader/vector_loader.md
+          - CompositeLoader: api_reference/vector/vector_loader/composite_loader.md
+          - GPKGLoader: api_reference/vector/vector_loader/gpkg_loader.md
   - CLI Reference:
     - CLI Reference: cli_reference/index.md
     - aviary: cli_reference/aviary.md
