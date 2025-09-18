@@ -64,9 +64,13 @@ def gpkg_loader(
         Vector
     """
     data = gpd.read_file(path)
-
-    return VectorLayer(
+    layer = VectorLayer(
         data=data,
         name=layer_name,
+        copy=False,
+    )
+
+    return Vector(
+        layers=[layer],
         copy=False,
     )

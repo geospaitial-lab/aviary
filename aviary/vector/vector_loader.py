@@ -175,7 +175,7 @@ def register_vector_loader(
     def decorator(
         cls: type[VectorLoader],
     ) -> type[VectorLoader]:
-        package = cls.__name__.split('.')[0]
+        package = cls.__module__.split('.')[0]
 
         if package == _PACKAGE:
             message = (
