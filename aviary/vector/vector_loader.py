@@ -15,6 +15,11 @@ import pydantic
 if TYPE_CHECKING:
     from pydantic_core.core_schema import ValidationInfo
 
+# noinspection PyProtectedMember
+from aviary._functional.vector.vector_loader import (
+    composite_loader,
+    gpkg_loader,
+)
 from aviary.core.exceptions import AviaryUserError
 
 if TYPE_CHECKING:
@@ -241,6 +246,10 @@ class CompositeLoader:
         Returns:
             Vector
         """
+        return composite_loader(
+            vector_loaders=self._vector_loaders,
+            max_num_threads=self._max_num_threads,
+        )
 
 
 class CompositeLoaderConfig(pydantic.BaseModel):
@@ -319,6 +328,10 @@ class GPKGLoader:
         Returns:
             Vector
         """
+        return gpkg_loader(
+            path=self._path,
+            layer_name=self._layer_name,
+        )
 
 
 class GPKGLoaderConfig(pydantic.BaseModel):
