@@ -35,7 +35,7 @@ class VectorLoader(Protocol):
 
     Implemented vector loaders:
         - `CompositeLoader`: Composes multiple vector loaders
-        - `GPKGLoader`: Loads a vector from a geopackage
+        - `GPKGLoader`: Loads a vector from a geopackage or a directory containing geopackages
     """
 
     def __call__(self) -> Vector:
@@ -297,14 +297,18 @@ class GPKGLoader:
         self,
         path: Path,
         layer_name: str,
+        max_num_threads: int | None = None,
     ) -> None:
         """
         Parameters:
-            path: Path to the geopackage (.gpkg file)
+            path: Path to the geopackage (.gpkg file) or to the directory containing geopackages (.gpkg files)
+                exported by the `tile.VectorExporter`
             layer_name: Layer name
+            max_num_threads: Maximum number of threads
         """
         self._path = path
         self._layer_name = layer_name
+        self._max_num_threads = max_num_threads
 
     @classmethod
     def from_config(
@@ -323,7 +327,7 @@ class GPKGLoader:
         return cls(**config)
 
     def __call__(self) -> Vector:
-        """Loads a vector from the geopackage.
+        """Loads a vector from the geopackage or the directory containing geopackages.
 
         Returns:
             Vector
@@ -331,6 +335,7 @@ class GPKGLoader:
         return gpkg_loader(
             path=self._path,
             layer_name=self._layer_name,
+            max_num_threads=self._max_num_threads,
         )
 
 
@@ -346,14 +351,18 @@ class GPKGLoaderConfig(pydantic.BaseModel):
         config:
           path: 'path/to/my_gpkg.gpkg'
           layer_name: 'my_layer'
+          max_num_threads: null
         ```
 
     Attributes:
-        path: Path to the geopackage (.gpkg file)
+        path: Path to the geopackage (.gpkg file) or to the directory containing geopackages (.gpkg files)
+            exported by the `tile.VectorExporter` from
         layer_name: Layer name
+        max_num_threads: Maximum number of threads
     """
     path: Path
     layer_name: str
+    max_num_threads: int | None = None
 
 
 _VectorLoaderFactory.register(
