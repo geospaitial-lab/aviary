@@ -67,8 +67,7 @@ nav:
             - MaskFilter: api_reference/utils/coordinates_filter/mask_filter.md
             - SetFilter: api_reference/utils/coordinates_filter/set_filter.md
     - aviary.vector:
-      - VectorExporter:
-          - VectorExporter: api_reference/vector/vector_exporter.md
+      - VectorExporter: api_reference/vector/vector_exporter.md
       - VectorLoader:
           - VectorLoader: api_reference/vector/vector_loader/vector_loader.md
           - CompositeLoader: api_reference/vector/vector_loader/composite_loader.md
