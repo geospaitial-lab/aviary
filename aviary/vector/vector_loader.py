@@ -356,7 +356,7 @@ class GPKGLoaderConfig(pydantic.BaseModel):
 
     Attributes:
         path: Path to the geopackage (.gpkg file) or to the directory containing geopackages (.gpkg files)
-            exported by the `tile.VectorExporter` from
+            exported by the `tile.VectorExporter`
         layer_name: Layer name
         max_num_threads: Maximum number of threads
     """
