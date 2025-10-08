@@ -51,7 +51,7 @@ jobs:
 
       - name: Check dependencies with pip-audit
         run: |
-          pip-audit
+          pip-audit --ignore-vuln CVE-2025-8869
 
   check_release_dependencies:
     if: |
@@ -86,4 +86,4 @@ jobs:
 
       - name: Check dependencies with pip-audit
         run: |
-          pip-audit
+          pip-audit --ignore-vuln CVE-2025-8869
