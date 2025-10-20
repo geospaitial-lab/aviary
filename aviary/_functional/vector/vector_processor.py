@@ -57,3 +57,60 @@ def parallel_composite_processor(
         vectors=vector,
         copy=False,
     )
+
+
+def remove_processor(
+    vector: Vector,
+    layer_names: str | set[str] | bool | None = True,
+) -> Vector:
+    """Removes the layers.
+
+    Parameters:
+        vector: Vector
+        layer_names: Layer name, layer names, no layers (False or None), or all layers (True)
+
+    Returns:
+        Vector
+    """
+    return vector.remove(
+        layer_names=layer_names,
+        inplace=True,
+    )
+
+
+def select_processor(
+    vector: Vector,
+    layer_names: str | set[str] | bool | None = True,
+) -> Vector:
+    """Selects the layers.
+
+    Parameters:
+        vector: Vector
+        layer_names: Layer name, layer names, no layers (False or None), or all layers (True)
+
+    Returns:
+        Vector
+    """
+    return vector.select(
+        layer_names=layer_names,
+        inplace=True,
+    )
+
+
+def sequential_composite_processor(
+    vector: Vector,
+    vector_processors: list[VectorProcessor],
+) -> Vector:
+    """Processes the vector with each vector processor.
+
+    Parameters:
+        vector: Vector
+        vector_processors: Vector processors
+
+    Returns:
+        Vector
+    """
+    for vector_processor in vector_processors:
+        vector = vector_processor(vector=vector)
+
+    return vector
