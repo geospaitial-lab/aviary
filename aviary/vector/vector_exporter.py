@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 
 import pydantic
 
-from aviary.core.type_aliases import EPSGCode
+from aviary._functional.vector.vector_exporter import vector_exporter
 from aviary.vector.vector_processor import _VectorProcessorFactory
 
 if TYPE_CHECKING:
@@ -25,7 +25,6 @@ class VectorExporter:
     def __init__(
         self,
         layer_name: str,
-        epsg_code: EPSGCode | None,
         dir_path: Path,
         gpkg_name: str,
         remove_layer: bool = True,
@@ -33,13 +32,11 @@ class VectorExporter:
         """
         Parameters:
             layer_name: Layer name
-            epsg_code: EPSG code
             dir_path: Path to the directory
             gpkg_name: Name of the geopackage (.gpkg file)
             remove_layer: If True, the layer is removed
         """
         self._layer_name = layer_name
-        self._epsg_code = epsg_code
         self._dir_path = dir_path
         self._gpkg_name = gpkg_name
         self._remove_layer = remove_layer
@@ -72,6 +69,13 @@ class VectorExporter:
         Returns:
             Vector
         """
+        return vector_exporter(
+            vector=vector,
+            layer_name=self._layer_name,
+            dir_path=self._dir_path,
+            gpkg_name=self._gpkg_name,
+            remove_layer=self._remove_layer,
+        )
 
 
 class VectorExporterConfig(pydantic.BaseModel):
@@ -89,7 +93,6 @@ class VectorExporterConfig(pydantic.BaseModel):
         name: 'VectorExporter'
         config:
           layer_name: 'my_layer'
-          epsg_code: 25832
           dir_path: 'path/to/my/directory'
           gpkg_name: 'my_layer.gpkg'
           remove_layer: true
@@ -97,14 +100,12 @@ class VectorExporterConfig(pydantic.BaseModel):
 
     Attributes:
         layer_name: Layer name
-        epsg_code: EPSG code
         dir_path: Path to the directory
         gpkg_name: Name of the geopackage (.gpkg file)
         remove_layer: If True, the layer is removed -
             defaults to True
     """
     layer_name: str
-    epsg_code: EPSGCode | None
     dir_path: Path
     gpkg_name: str
     remove_layer: bool = True
