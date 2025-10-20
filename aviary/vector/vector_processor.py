@@ -15,6 +15,13 @@ if TYPE_CHECKING:
     from pydantic_core.core_schema import ValidationInfo
 
 # noinspection PyProtectedMember
+from aviary._functional.vector.vector_processor import (
+    copy_processor,
+    parallel_composite_processor,
+    remove_processor,
+    select_processor,
+    sequential_composite_processor,
+)
 from aviary.core.exceptions import AviaryUserError
 
 if TYPE_CHECKING:
@@ -247,6 +254,11 @@ class CopyProcessor:
         Returns:
             Vector
         """
+        return copy_processor(
+            vector=vector,
+            layer_name=self._layer_name,
+            new_layer_name=self._new_layer_name,
+        )
 
 
 class CopyProcessorConfig(pydantic.BaseModel):
@@ -336,6 +348,10 @@ class ParallelCompositeProcessor:
         Returns:
             Vector
         """
+        return parallel_composite_processor(
+            vector=vector,
+            vector_processors=self._vector_processors,
+        )
 
 
 class ParallelCompositeProcessorConfig(pydantic.BaseModel):
@@ -410,6 +426,10 @@ class RemoveProcessor:
         Returns:
             Vector
         """
+        return remove_processor(
+            vector=vector,
+            layer_names=self._layer_names,
+        )
 
 
 class RemoveProcessorConfig(pydantic.BaseModel):
@@ -487,6 +507,10 @@ class SelectProcessor:
         Returns:
             Vector
         """
+        return select_processor(
+            vector=vector,
+            layer_names=self._layer_names,
+        )
 
 
 class SelectProcessorConfig(pydantic.BaseModel):
@@ -572,6 +596,10 @@ class SequentialCompositeProcessor:
         Returns:
             Vector
         """
+        return sequential_composite_processor(
+            vector=vector,
+            vector_processors=self._vector_processors,
+        )
 
 
 class SequentialCompositeProcessorConfig(pydantic.BaseModel):
