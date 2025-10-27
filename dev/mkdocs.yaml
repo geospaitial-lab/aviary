@@ -76,6 +76,7 @@ nav:
           - VectorProcessor: api_reference/vector/vector_processor/vector_processor.md
           - CopyProcessor: api_reference/vector/vector_processor/copy_processor.md
           - ParallelCompositeProcessor: api_reference/vector/vector_processor/parallel_composite_processor.md
+          - QueryProcessor: api_reference/vector/vector_processor/query_processor.md
           - RemoveProcessor: api_reference/vector/vector_processor/remove_processor.md
           - SelectProcessor: api_reference/vector/vector_processor/select_processor.md
           - SequentialCompositeProcessor: api_reference/vector/vector_processor/sequential_composite_processor.md
