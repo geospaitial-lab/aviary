@@ -382,6 +382,94 @@ _VectorProcessorFactory.register(
 )
 
 
+class QueryProcessor:
+    """Vector processor that queries a layer
+
+    Implements the `VectorProcessor` protocol.
+    """
+
+    def __init__(
+        self,
+        layer_name: str,
+        query_string: str,
+        new_layer_name: str | None = None,
+    ) -> None:
+        """
+        Parameters:
+            layer_name: Layer name
+            query_string: Query string based on the pandas query syntax
+            new_layer_name: New layer name
+        """
+        self._layer_name = layer_name
+        self._query_string = query_string
+        self._new_layer_name = new_layer_name
+
+    @classmethod
+    def from_config(
+        cls,
+        config: QueryProcessorConfig,
+    ) -> QueryProcessor:
+        """Creates a query processor from the configuration.
+
+        Parameters:
+            config: Configuration
+
+        Returns:
+            Query processor
+        """
+        config = config.model_dump()
+        return cls(**config)
+
+    def __call__(
+        self,
+        vector: Vector,
+    ) -> Vector:
+        """Queries the layer.
+
+        Parameters:
+            vector: Vector
+
+        Returns:
+            vector: Vector
+        """
+
+
+class QueryProcessorConfig(pydantic.BaseModel):
+    """Configuration for the `from_config` class method of `QueryProcessor`
+
+    Create the configuration from a config file:
+        - Use null instead of None
+
+    Example:
+        You can create the configuration from a config file.
+
+        ``` yaml title="config.yaml"
+        package: 'aviary'
+        name: 'QueryProcessor'
+        config:
+          layer_name: 'my_layer'
+          query_string: 'area > 1'
+          new_layer_name: 'my_new_layer'
+        ```
+
+    Attributes:
+        layer_name: Layer name
+        query_string: Query string based on the pandas query syntax
+        new_layer_name: New layer name -
+            defaults to None
+    """
+    layer_name: str
+    query_string: str
+    new_layer_name: str | None = None
+
+
+_VectorProcessorFactory.register(
+    vector_processor_class=QueryProcessor,
+    config_class=QueryProcessorConfig,
+    package=_PACKAGE,
+)
+
+
 class RemoveProcessor:
     """Vector processor that removes layers
 
