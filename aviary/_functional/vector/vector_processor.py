@@ -59,6 +59,44 @@ def parallel_composite_processor(
     )
 
 
+def query_processor(
+    vector: Vector,
+    layer_name: str,
+    query_string: str,
+    new_layer_name: str | None = None,
+) -> Vector:
+    """Queries the layer.
+
+    Parameters:
+        vector: Vector
+        layer_name: Layer name
+        query_string: Query string based on the pandas query syntax
+        new_layer_name: New layer name
+
+    Returns:
+        Vector
+    """
+    layer = vector[layer_name]
+
+    if new_layer_name is None:
+        layer.query(
+            query_string=query_string,
+            inplace=True,
+        )
+        return vector
+
+    layer = layer.query(
+        query_string=query_string,
+        inplace=False,
+    )
+
+    layer.name = new_layer_name
+    return vector.append(
+        layers=layer,
+        inplace=True,
+    )
+
+
 def remove_processor(
     vector: Vector,
     layer_names: str | set[str] | bool | None = True,

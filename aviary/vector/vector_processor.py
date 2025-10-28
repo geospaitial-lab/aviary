@@ -18,6 +18,7 @@ if TYPE_CHECKING:
 from aviary._functional.vector.vector_processor import (
     copy_processor,
     parallel_composite_processor,
+    query_processor,
     remove_processor,
     select_processor,
     sequential_composite_processor,
@@ -432,6 +433,12 @@ class QueryProcessor:
         Returns:
             vector: Vector
         """
+        return query_processor(
+            vector=vector,
+            layer_name=self._layer_name,
+            query_string=self._query_string,
+            new_layer_name=self._new_layer_name,
+        )
 
 
 class QueryProcessorConfig(pydantic.BaseModel):
