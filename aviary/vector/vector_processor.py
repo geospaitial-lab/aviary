@@ -208,6 +208,94 @@ def register_vector_processor(
     return decorator
 
 
+class ClipProcessor:
+    """Vector processor that clips a layer
+
+    Implements the `VectorProcessor` protocol.
+    """
+
+    def __init__(
+        self,
+        layer_name: str,
+        mask_layer_name: str,
+        new_layer_name: str | None = None,
+    ) -> None:
+        """
+        Parameters:
+            layer_name: Layer name
+            mask_layer_name: Mask layer name
+            new_layer_name: New layer name
+        """
+        self._layer_name = layer_name
+        self._mask_layer_name = mask_layer_name
+        self._new_layer_name = new_layer_name
+
+    @classmethod
+    def from_config(
+        cls,
+        config: ClipProcessorConfig,
+    ) -> ClipProcessor:
+        """Creates a clip processor from the configuration.
+
+        Parameters:
+            config: Configuration
+
+        Returns:
+            Clip processor
+        """
+        config = config.model_dump()
+        return cls(**config)
+
+    def __call__(
+        self,
+        vector: Vector,
+    ) -> Vector:
+        """Clips the layer.
+
+        Parameters:
+            vector: Vector
+
+        Returns:
+            Vector
+        """
+
+
+class ClipProcessorConfig(pydantic.BaseModel):
+    """Configuration for the `from_config` class method of `ClipProcessor`
+
+    Create the configuration from a config file:
+        - Use null instead of None
+
+    Example:
+        You can create the configuration from a config file.
+
+        ``` yaml title="config.yaml"
+        package: 'aviary'
+        name: 'ClipProcessor'
+        config:
+          layer_name: 'my_layer'
+          mask_layer_name: 'my_mask_layer'
+          new_layer_name: 'my_new_layer'
+        ```
+
+    Attributes:
+        layer_name: Layer name
+        mask_layer_name: Mask layer name
+        new_layer_name: New layer name -
+            defaults to None
+    """
+    layer_name: str
+    mask_layer_name: str
+    new_layer_name: str | None = None
+
+
+_VectorProcessorFactory.register(
+    vector_processor_class=ClipProcessor,
+    config_class=ClipProcessorConfig,
+    package=_PACKAGE,
+)
+
+
 class CopyProcessor:
     """Vector processor that copies a layer
 
@@ -291,6 +379,94 @@ class CopyProcessorConfig(pydantic.BaseModel):
 _VectorProcessorFactory.register(
     vector_processor_class=CopyProcessor,
     config_class=CopyProcessorConfig,
+    package=_PACKAGE,
+)
+
+
+class FillProcessor:
+    """Vector processor that fills a layer
+
+    Implements the `VectorProcessor` protocol.
+    """
+
+    def __init__(
+        self,
+        layer_name: str,
+        fill_size: float,
+        new_layer_name: str | None = None,
+    ) -> None:
+        """
+        Parameters:
+            layer_name: Layer name
+            fill_size: Fill size in square meters
+            new_layer_name: New layer name
+        """
+        self._layer_name = layer_name
+        self._fill_size = fill_size
+        self._new_layer_name = new_layer_name
+
+    @classmethod
+    def from_config(
+        cls,
+        config: FillProcessorConfig,
+    ) -> FillProcessor:
+        """Creates a fill processor from the configuration.
+
+        Parameters:
+            config: Configuration
+
+        Returns:
+            Fill processor
+        """
+        config = config.model_dump()
+        return cls(**config)
+
+    def __call__(
+        self,
+        vector: Vector,
+    ) -> Vector:
+        """Fills the layer.
+
+        Parameters:
+            vector: Vector
+
+        Returns:
+            vector: Vector
+        """
+
+
+class FillProcessorConfig(pydantic.BaseModel):
+    """Configuration for the `from_config` class method of `FillProcessor`
+
+    Create the configuration from a config file:
+        - Use null instead of None
+
+    Example:
+        You can create the configuration from a config file.
+
+        ``` yaml title="config.yaml"
+        package: 'aviary'
+        name: 'FillProcessor'
+        config:
+          layer_name: 'my_layer'
+          fill_size: 1.
+          new_layer_name: 'my_new_layer'
+        ```
+
+    Attributes:
+        layer_name: Layer name
+        fill_size: Fill size in square meters
+        new_layer_name: New layer name -
+            defaults to None
+    """
+    layer_name: str
+    fill_size: float
+    new_layer_name: str | None = None
+
+
+_VectorProcessorFactory.register(
+    vector_processor_class=FillProcessor,
+    config_class=FillProcessorConfig,
     package=_PACKAGE,
 )
 
@@ -721,5 +897,93 @@ class SequentialCompositeProcessorConfig(pydantic.BaseModel):
 _VectorProcessorFactory.register(
     vector_processor_class=SequentialCompositeProcessor,
     config_class=SequentialCompositeProcessorConfig,
+    package=_PACKAGE,
+)
+
+
+class SieveProcessor:
+    """Vector processor that sieves a layer
+
+    Implements the `VectorProcessor` protocol.
+    """
+
+    def __init__(
+        self,
+        layer_name: str,
+        sieve_size: float,
+        new_layer_name: str | None = None,
+    ) -> None:
+        """
+        Parameters:
+            layer_name: Layer name
+            sieve_size: Sieve size in square meters
+            new_layer_name: New layer name
+        """
+        self._layer_name = layer_name
+        self._sieve_size = sieve_size
+        self._new_layer_name = new_layer_name
+
+    @classmethod
+    def from_config(
+        cls,
+        config: SieveProcessorConfig,
+    ) -> SieveProcessor:
+        """Creates a sieve processor from the configuration.
+
+        Parameters:
+            config: Configuration
+
+        Returns:
+            Sieve processor
+        """
+        config = config.model_dump()
+        return cls(**config)
+
+    def __call__(
+        self,
+        vector: Vector,
+    ) -> Vector:
+        """Sieves the layer.
+
+        Parameters:
+            vector: Vector
+
+        Returns:
+            vector: Vector
+        """
+
+
+class SieveProcessorConfig(pydantic.BaseModel):
+    """Configuration for the `from_config` class method of `SieveProcessor`
+
+    Create the configuration from a config file:
+        - Use null instead of None
+
+    Example:
+        You can create the configuration from a config file.
+
+        ``` yaml title="config.yaml"
+        package: 'aviary'
+        name: 'SieveProcessor'
+        config:
+          layer_name: 'my_layer'
+          sieve_size: 1.
+          new_layer_name: 'my_new_layer'
+        ```
+
+    Attributes:
+        layer_name: Layer name
+        sieve_size: Sieve size in square meters
+        new_layer_name: New layer name -
+            defaults to None
+    """
+    layer_name: str
+    sieve_size: float
+    new_layer_name: str | None = None
+
+
+_VectorProcessorFactory.register(
+    vector_processor_class=SieveProcessor,
+    config_class=SieveProcessorConfig,
     package=_PACKAGE,
 )
