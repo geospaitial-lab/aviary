@@ -217,6 +217,8 @@ def register_vector_processor(
 class AggregateProcessor:
     """Vector processor that aggregates a layer
 
+    The polygons are aggregated by class into the aggregation layer with absolute and relative area fields.
+
     Implements the `VectorProcessor` protocol.
     """
 
