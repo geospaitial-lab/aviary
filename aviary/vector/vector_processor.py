@@ -16,12 +16,19 @@ if TYPE_CHECKING:
 
 # noinspection PyProtectedMember
 from aviary._functional.vector.vector_processor import (
+    aggregate_processor,
+    clip_processor,
     copy_processor,
+    fill_processor,
+    map_field_processor,
     parallel_composite_processor,
     query_processor,
     remove_processor,
+    rename_fields_processor,
     select_processor,
     sequential_composite_processor,
+    sieve_processor,
+    simplify_processor,
 )
 from aviary.core.exceptions import AviaryUserError
 
@@ -283,6 +290,17 @@ class AggregateProcessor:
         Returns:
             Vector
         """
+        return aggregate_processor(
+            vector=vector,
+            layer_name=self._layer_name,
+            aggregation_layer_name=self._aggregation_layer_name,
+            field=self._field,
+            classes=self._classes,
+            background_class=self._background_class,
+            absolute_area_field_suffix=self._absolute_area_field_suffix,
+            relative_area_field_suffix=self._relative_area_field_suffix,
+            new_aggregation_layer_name=self._new_aggregation_layer_name,
+        )
 
 
 class AggregateProcessorConfig(pydantic.BaseModel):
@@ -387,6 +405,12 @@ class ClipProcessor:
         Returns:
             Vector
         """
+        return clip_processor(
+            vector=vector,
+            layer_name=self._layer_name,
+            mask_layer_name=self._mask_layer_name,
+            new_layer_name=self._new_layer_name,
+        )
 
 
 class ClipProcessorConfig(pydantic.BaseModel):
@@ -562,6 +586,12 @@ class FillProcessor:
         Returns:
             vector: Vector
         """
+        return fill_processor(
+            vector=vector,
+            layer_name=self._layer_name,
+            threshold=self._threshold,
+            new_layer_name=self._new_layer_name,
+        )
 
 
 class FillProcessorConfig(pydantic.BaseModel):
@@ -609,7 +639,7 @@ class MapFieldProcessor:
     def __init__(
         self,
         layer_name: str,
-        field: float,
+        field: str,
         mapping: dict[object, object],
         new_layer_name: str | None = None,
     ) -> None:
@@ -653,6 +683,13 @@ class MapFieldProcessor:
         Returns:
             vector: Vector
         """
+        return map_field_processor(
+            vector=vector,
+            layer_name=self._layer_name,
+            field=self._field,
+            mapping=self._mapping,
+            new_layer_name=self._new_layer_name,
+        )
 
 
 class MapFieldProcessorConfig(pydantic.BaseModel):
@@ -683,7 +720,7 @@ class MapFieldProcessorConfig(pydantic.BaseModel):
             defaults to None
     """
     layer_name: str
-    field: float
+    field: str
     mapping: dict[object, object]
     new_layer_name: str | None = None
 
@@ -1008,6 +1045,12 @@ class RenameFieldsProcessor:
         Returns:
             vector: Vector
         """
+        return rename_fields_processor(
+            vector=vector,
+            layer_name=self._layer_name,
+            mapping=self._mapping,
+            new_layer_name=self._new_layer_name,
+        )
 
 
 class RenameFieldsProcessorConfig(pydantic.BaseModel):
@@ -1264,6 +1307,12 @@ class SieveProcessor:
         Returns:
             vector: Vector
         """
+        return sieve_processor(
+            vector=vector,
+            layer_name=self._layer_name,
+            threshold=self._threshold,
+            new_layer_name=self._new_layer_name,
+        )
 
 
 class SieveProcessorConfig(pydantic.BaseModel):
@@ -1355,6 +1404,12 @@ class SimplifyProcessor:
         Returns:
             vector: Vector
         """
+        return simplify_processor(
+            vector=vector,
+            layer_name=self._layer_name,
+            threshold=self._threshold,
+            new_layer_name=self._new_layer_name,
+        )
 
 
 class SimplifyProcessorConfig(pydantic.BaseModel):
