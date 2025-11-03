@@ -37,11 +37,17 @@ class VectorProcessor(Protocol):
     Vector processors are callables that process vectors.
 
     Implemented vector processors:
+        - `AggregateProcessor`: Aggregates a layer
+        - `ClipProcessor`: Clips a layer
         - `CopyProcessor`: Copies a layer
+        - `FillProcessor`: Fills a layer
         - `ParallelCompositeProcessor`: Composes multiple vector processors in parallel
+        - `QueryProcessor`: Queries a layer
         - `RemoveProcessor`: Removes layers
         - `SelectProcessor`: Selects layers
         - `SequentialCompositeProcessor`: Composes multiple vector processors in sequence
+        - `SieveProcessor`: Sieves a layer
+        - `SimplifyProcessor`: Simplifies a layer
 
     Implemented exporters:
         - `VectorExporter`: Exports a layer

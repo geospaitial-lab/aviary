@@ -74,6 +74,7 @@ nav:
           - GPKGLoader: api_reference/vector/vector_loader/gpkg_loader.md
       - VectorProcessor:
           - VectorProcessor: api_reference/vector/vector_processor/vector_processor.md
+          - AggregateProcessor: api_reference/vector/vector_processor/aggregate_processor.md
           - ClipProcessor: api_reference/vector/vector_processor/clip_processor.md
           - CopyProcessor: api_reference/vector/vector_processor/copy_processor.md
           - FillProcessor: api_reference/vector/vector_processor/fill_processor.md
@@ -83,6 +84,7 @@ nav:
           - SelectProcessor: api_reference/vector/vector_processor/select_processor.md
           - SequentialCompositeProcessor: api_reference/vector/vector_processor/sequential_composite_processor.md
           - SieveProcessor: api_reference/vector/vector_processor/sieve_processor.md
+          - SimplifyProcessor: api_reference/vector/vector_processor/simplify_processor.md
   - CLI Reference:
     - CLI Reference: cli_reference/index.md
     - aviary: cli_reference/aviary.md
