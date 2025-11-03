@@ -41,9 +41,11 @@ class VectorProcessor(Protocol):
         - `ClipProcessor`: Clips a layer
         - `CopyProcessor`: Copies a layer
         - `FillProcessor`: Fills a layer
+        - `MapFieldProcessor`: Maps a field of a layer
         - `ParallelCompositeProcessor`: Composes multiple vector processors in parallel
         - `QueryProcessor`: Queries a layer
         - `RemoveProcessor`: Removes layers
+        - `RenameFieldsProcessor`: Renames fields of a layer
         - `SelectProcessor`: Selects layers
         - `SequentialCompositeProcessor`: Composes multiple vector processors in sequence
         - `SieveProcessor`: Sieves a layer
@@ -598,6 +600,101 @@ _VectorProcessorFactory.register(
 )
 
 
+class MapFieldProcessor:
+    """Vector processor that maps a field of a layer
+
+    Implements the `VectorProcessor` protocol.
+    """
+
+    def __init__(
+        self,
+        layer_name: str,
+        field: float,
+        mapping: dict[object, object],
+        new_layer_name: str | None = None,
+    ) -> None:
+        """
+        Parameters:
+            layer_name: Layer name
+            field: Field
+            mapping: Mapping of the values
+            new_layer_name: New layer name
+        """
+        self._layer_name = layer_name
+        self._field = field
+        self._mapping = mapping
+        self._new_layer_name = new_layer_name
+
+    @classmethod
+    def from_config(
+        cls,
+        config: MapFieldProcessorConfig,
+    ) -> MapFieldProcessor:
+        """Creates a map field processor from the configuration.
+
+        Parameters:
+            config: Configuration
+
+        Returns:
+            Map Field processor
+        """
+        config = config.model_dump()
+        return cls(**config)
+
+    def __call__(
+        self,
+        vector: Vector,
+    ) -> Vector:
+        """Maps the field of the layer.
+
+        Parameters:
+            vector: Vector
+
+        Returns:
+            vector: Vector
+        """
+
+
+class MapFieldProcessorConfig(pydantic.BaseModel):
+    """Configuration for the `from_config` class method of `MapFieldProcessor`
+
+    Create the configuration from a config file:
+        - Use null instead of None
+
+    Example:
+        You can create the configuration from a config file.
+
+        ``` yaml title="config.yaml"
+        package: 'aviary'
+        name: 'MapFieldProcessor'
+        config:
+          layer_name: 'my_layer'
+          field: 'my_field'
+          mapping:
+            'old_value': 'new_value'
+          new_layer_name: 'my_new_layer'
+        ```
+
+    Attributes:
+        layer_name: Layer name
+        field: Field
+        mapping: Mapping of the values
+        new_layer_name: New layer name -
+            defaults to None
+    """
+    layer_name: str
+    field: float
+    mapping: dict[object, object]
+    new_layer_name: str | None = None
+
+
+_VectorProcessorFactory.register(
+    vector_processor_class=MapFieldProcessor,
+    config_class=MapFieldProcessorConfig,
+    package=_PACKAGE,
+)
+
+
 class ParallelCompositeProcessor:
     """Vector processor that composes multiple vector processors in parallel
 
@@ -857,6 +954,95 @@ class RemoveProcessorConfig(pydantic.BaseModel):
 _VectorProcessorFactory.register(
     vector_processor_class=RemoveProcessor,
     config_class=RemoveProcessorConfig,
+    package=_PACKAGE,
+)
+
+
+class RenameFieldsProcessor:
+    """Vector processor that renames fields of a layer
+
+    Implements the `VectorProcessor` protocol.
+    """
+
+    def __init__(
+        self,
+        layer_name: str,
+        mapping: dict[object, object],
+        new_layer_name: str | None = None,
+    ) -> None:
+        """
+        Parameters:
+            layer_name: Layer name
+            mapping: Mapping of the field names
+            new_layer_name: New layer name
+        """
+        self._layer_name = layer_name
+        self._mapping = mapping
+        self._new_layer_name = new_layer_name
+
+    @classmethod
+    def from_config(
+        cls,
+        config: RenameFieldsProcessorConfig,
+    ) -> RenameFieldsProcessor:
+        """Creates a rename fields processor from the configuration.
+
+        Parameters:
+            config: Configuration
+
+        Returns:
+            Rename Fields processor
+        """
+        config = config.model_dump()
+        return cls(**config)
+
+    def __call__(
+        self,
+        vector: Vector,
+    ) -> Vector:
+        """Renames the fields of the layer.
+
+        Parameters:
+            vector: Vector
+
+        Returns:
+            vector: Vector
+        """
+
+
+class RenameFieldsProcessorConfig(pydantic.BaseModel):
+    """Configuration for the `from_config` class method of `RenameFieldsProcessor`
+
+    Create the configuration from a config file:
+        - Use null instead of None
+
+    Example:
+        You can create the configuration from a config file.
+
+        ``` yaml title="config.yaml"
+        package: 'aviary'
+        name: 'RenameFieldsProcessor'
+        config:
+          layer_name: 'my_layer'
+          mapping:
+            'old_field': 'new_field'
+          new_layer_name: 'my_new_layer'
+        ```
+
+    Attributes:
+        layer_name: Layer name
+        mapping: Mapping of the field names
+        new_layer_name: New layer name -
+            defaults to None
+    """
+    layer_name: str
+    mapping: dict[object, object]
+    new_layer_name: str | None = None
+
+
+_VectorProcessorFactory.register(
+    vector_processor_class=RenameFieldsProcessor,
+    config_class=RenameFieldsProcessorConfig,
     package=_PACKAGE,
 )
 
