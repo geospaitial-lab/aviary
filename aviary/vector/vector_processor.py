@@ -208,6 +208,125 @@ def register_vector_processor(
     return decorator
 
 
+class AggregateProcessor:
+    """Vector processor that aggregates a layer
+
+    Implements the `VectorProcessor` protocol.
+    """
+
+    def __init__(
+        self,
+        layer_name: str,
+        aggregation_layer_name: str,
+        field: str = 'class',
+        classes: list[str | int] | None = None,
+        background_class: str | int | None = None,
+        absolute_area_field_suffix: str = 'absolute_area',
+        relative_area_field_suffix: str = 'relative_area',
+        new_aggregation_layer_name: str | None = None,
+    ) -> None:
+        """
+        Parameters:
+            layer_name: Layer name
+            aggregation_layer_name: Aggregation layer name
+            field: Field
+            classes: Classes (if None, the classes are inferred from the layer)
+            background_class: Background class (if None, the background class is ignored)
+            absolute_area_field_suffix: Suffix of the absolute area field
+            relative_area_field_suffix: Suffix of the relative area field
+            new_aggregation_layer_name: New aggregation layer name
+        """
+        self._layer_name = layer_name
+        self._aggregation_layer_name = aggregation_layer_name
+        self._field = field
+        self._classes = classes
+        self._background_class = background_class
+        self._absolute_area_field_suffix = absolute_area_field_suffix
+        self._relative_area_field_suffix = relative_area_field_suffix
+        self._new_aggregation_layer_name = new_aggregation_layer_name
+
+    @classmethod
+    def from_config(
+        cls,
+        config: AggregateProcessorConfig,
+    ) -> AggregateProcessor:
+        """Creates an aggregate processor from the configuration.
+
+        Parameters:
+            config: Configuration
+
+        Returns:
+            Aggregate processor
+        """
+        config = config.model_dump()
+        return cls(**config)
+
+    def __call__(
+        self,
+        vector: Vector,
+    ) -> Vector:
+        """Aggregates the layer.
+
+        Parameters:
+            vector: Vector
+
+        Returns:
+            Vector
+        """
+
+
+class AggregateProcessorConfig(pydantic.BaseModel):
+    """Configuration for the `from_config` class method of `AggregateProcessor`
+
+    Create the configuration from a config file:
+        - Use null instead of None
+
+    Example:
+        You can create the configuration from a config file.
+
+        ``` yaml title="config.yaml"
+        package: 'aviary'
+        name: 'AggregateProcessor'
+        config:
+          layer_name: 'my_layer'
+          aggregation_layer_name: 'my_aggregation_layer'
+          field: 'class'
+          classes:
+            - 'a'
+            - 'b'
+            - 'c'
+          background_class: null
+          absolute_area_field_suffix: 'absolute_area'
+          relative_area_field_suffix: 'relative_area'
+          new_aggregation_layer_name: 'my_new_aggregation_layer'
+        ```
+
+    Attributes:
+        layer_name: Layer name
+        aggregation_layer_name: Aggregation layer name
+        field: Field -
+            defaults to 'class'
+        classes: Classes (if None, the classes are inferred from the layer) -
+            defaults to None
+        background_class: Background class (if None, the background class is ignored) -
+            defaults to None
+        absolute_area_field_suffix: Suffix of the absolute area field -
+            defaults to 'absolute_area'
+        relative_area_field_suffix: Suffix of the relative area field -
+            defaults to 'relative_area'
+        new_aggregation_layer_name: New aggregation layer name -
+            defaults to None
+    """
+    layer_name: str
+    aggregation_layer_name: str
+    field: str = 'class'
+    classes: list[str | int] | None = None
+    background_class: str | int | None = None
+    absolute_area_field_suffix: str = 'absolute_area'
+    relative_area_field_suffix: str = 'relative_area'
+    new_aggregation_layer_name: str | None = None
+
+
 class ClipProcessor:
     """Vector processor that clips a layer
 
@@ -392,17 +511,17 @@ class FillProcessor:
     def __init__(
         self,
         layer_name: str,
-        fill_size: float,
+        threshold: float,
         new_layer_name: str | None = None,
     ) -> None:
         """
         Parameters:
             layer_name: Layer name
-            fill_size: Fill size in square meters
+            threshold: Threshold (the maximum area of the hole within a polygon to retain) in square meters
             new_layer_name: New layer name
         """
         self._layer_name = layer_name
-        self._fill_size = fill_size
+        self._threshold = threshold
         self._new_layer_name = new_layer_name
 
     @classmethod
@@ -449,18 +568,18 @@ class FillProcessorConfig(pydantic.BaseModel):
         name: 'FillProcessor'
         config:
           layer_name: 'my_layer'
-          fill_size: 1.
+          threshold: 1.
           new_layer_name: 'my_new_layer'
         ```
 
     Attributes:
         layer_name: Layer name
-        fill_size: Fill size in square meters
+        threshold: Threshold (the maximum area of the hole within a polygon to retain) in square meters
         new_layer_name: New layer name -
             defaults to None
     """
     layer_name: str
-    fill_size: float
+    threshold: float
     new_layer_name: str | None = None
 
 
@@ -910,17 +1029,17 @@ class SieveProcessor:
     def __init__(
         self,
         layer_name: str,
-        sieve_size: float,
+        threshold: float,
         new_layer_name: str | None = None,
     ) -> None:
         """
         Parameters:
             layer_name: Layer name
-            sieve_size: Sieve size in square meters
+            threshold: Threshold (the minimum area of the polygon to retain) in square meters
             new_layer_name: New layer name
         """
         self._layer_name = layer_name
-        self._sieve_size = sieve_size
+        self._threshold = threshold
         self._new_layer_name = new_layer_name
 
     @classmethod
@@ -967,23 +1086,115 @@ class SieveProcessorConfig(pydantic.BaseModel):
         name: 'SieveProcessor'
         config:
           layer_name: 'my_layer'
-          sieve_size: 1.
+          threshold: 1.
           new_layer_name: 'my_new_layer'
         ```
 
     Attributes:
         layer_name: Layer name
-        sieve_size: Sieve size in square meters
+        threshold: Threshold (the minimum area of the polygon to retain) in square meters
         new_layer_name: New layer name -
             defaults to None
     """
     layer_name: str
-    sieve_size: float
+    threshold: float
     new_layer_name: str | None = None
 
 
 _VectorProcessorFactory.register(
     vector_processor_class=SieveProcessor,
     config_class=SieveProcessorConfig,
+    package=_PACKAGE,
+)
+
+
+class SimplifyProcessor:
+    """Vector processor that simplifies a layer
+
+    The polygons are simplified using a topology-preserving Visvalingam-Whyatt algorithm.
+
+    Implements the `VectorProcessor` protocol.
+    """
+
+    def __init__(
+        self,
+        layer_name: str,
+        threshold: float,
+        new_layer_name: str | None = None,
+    ) -> None:
+        """
+        Parameters:
+            layer_name: Layer name
+            threshold: Threshold (the minimum area of the triangle defined by three consecutive vertices to retain)
+                in square meters
+            new_layer_name: New layer name
+        """
+        self._layer_name = layer_name
+        self._threshold = threshold
+        self._new_layer_name = new_layer_name
+
+    @classmethod
+    def from_config(
+        cls,
+        config: SimplifyProcessorConfig,
+    ) -> SimplifyProcessor:
+        """Creates a simplify processor from the configuration.
+
+        Parameters:
+            config: Configuration
+
+        Returns:
+            Simplify processor
+        """
+        config = config.model_dump()
+        return cls(**config)
+
+    def __call__(
+        self,
+        vector: Vector,
+    ) -> Vector:
+        """Simplifies the layer.
+
+        Parameters:
+            vector: Vector
+
+        Returns:
+            vector: Vector
+        """
+
+
+class SimplifyProcessorConfig(pydantic.BaseModel):
+    """Configuration for the `from_config` class method of `SimplifyProcessor`
+
+    Create the configuration from a config file:
+        - Use null instead of None
+
+    Example:
+        You can create the configuration from a config file.
+
+        ``` yaml title="config.yaml"
+        package: 'aviary'
+        name: 'SimplifyProcessor'
+        config:
+          layer_name: 'my_layer'
+          threshold: 1.
+          new_layer_name: 'my_new_layer'
+        ```
+
+    Attributes:
+        layer_name: Layer name
+        threshold: Threshold (the minimum area of the triangle defined by three consecutive vertices to retain)
+            in square meters
+        new_layer_name: New layer name -
+            defaults to None
+    """
+    layer_name: str
+    threshold: float
+    new_layer_name: str | None = None
+
+
+_VectorProcessorFactory.register(
+    vector_processor_class=SimplifyProcessor,
+    config_class=SimplifyProcessorConfig,
     package=_PACKAGE,
 )

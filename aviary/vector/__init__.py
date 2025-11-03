@@ -12,6 +12,8 @@ from .vector_loader import (
     register_vector_loader,
 )
 from .vector_processor import (
+    AggregateProcessor,
+    AggregateProcessorConfig,
     ClipProcessor,
     ClipProcessorConfig,
     CopyProcessor,
@@ -30,12 +32,16 @@ from .vector_processor import (
     SequentialCompositeProcessorConfig,
     SieveProcessor,
     SieveProcessorConfig,
+    SimplifyProcessor,
+    SimplifyProcessorConfig,
     VectorProcessor,
     VectorProcessorConfig,
     register_vector_processor,
 )
 
 __all__ = [
+    'AggregateProcessor',
+    'AggregateProcessorConfig',
     'ClipProcessor',
     'ClipProcessorConfig',
     'CompositeLoader',
@@ -58,6 +64,8 @@ __all__ = [
     'SequentialCompositeProcessorConfig',
     'SieveProcessor',
     'SieveProcessorConfig',
+    'SimplifyProcessor',
+    'SimplifyProcessorConfig',
     'VectorExporter',
     'VectorExporterConfig',
     'VectorLoader',
