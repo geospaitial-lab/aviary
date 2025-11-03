@@ -78,9 +78,11 @@ nav:
           - ClipProcessor: api_reference/vector/vector_processor/clip_processor.md
           - CopyProcessor: api_reference/vector/vector_processor/copy_processor.md
           - FillProcessor: api_reference/vector/vector_processor/fill_processor.md
+          - MapFieldProcessor: api_reference/vector/vector_processor/map_field_processor.md
           - ParallelCompositeProcessor: api_reference/vector/vector_processor/parallel_composite_processor.md
           - QueryProcessor: api_reference/vector/vector_processor/query_processor.md
           - RemoveProcessor: api_reference/vector/vector_processor/remove_processor.md
+          - RenameFieldsProcessor: api_reference/vector/vector_processor/rename_fields_processor.md
           - SelectProcessor: api_reference/vector/vector_processor/select_processor.md
           - SequentialCompositeProcessor: api_reference/vector/vector_processor/sequential_composite_processor.md
           - SieveProcessor: api_reference/vector/vector_processor/sieve_processor.md
