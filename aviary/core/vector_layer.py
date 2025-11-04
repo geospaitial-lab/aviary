@@ -244,39 +244,3 @@ class VectorLayer:
             metadata=self._metadata,
             copy=True,
         )
-
-    def query(
-        self,
-        query_string: str,
-        inplace: bool = False,
-    ) -> VectorLayer:
-        """Queries the vector layer.
-
-        Parameters:
-            query_string: Query string based on the pandas query syntax
-            inplace: If True, the vector layer is queried inplace
-
-        Returns:
-            Vector layer
-        """
-        if inplace:
-            self._data.query(
-                expr=query_string,
-                inplace=True,
-            )
-            self._validate()
-            return self
-
-        data = self._data.query(
-            expr=query_string,
-            inplace=False,
-        )
-        metadata = self._metadata.copy()
-        vector_layer = VectorLayer(
-            data=data,
-            name=self._name,
-            metadata=metadata,
-            copy=False,
-        )
-        vector_layer._mark_as_copied()
-        return vector_layer
