@@ -2,10 +2,54 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
+import geopandas as gpd
+from shapely.geometry import Polygon
+
 from aviary.core.vector import Vector
 
 if TYPE_CHECKING:
     from aviary.vector import VectorProcessor
+
+
+def _process_data(
+    vector: Vector,
+    layer_name: str,
+    process_data: Callable,
+    new_layer_name: str | None = None,
+) -> Vector:
+    """Processes the data of the layer.
+
+    Parameters:
+        vector: Vector
+        layer_name: Layer name
+        process_data: Function to process the data
+        new_layer_name: New layer name
+
+    Returns:
+        Vector
+    """
+    layer = vector[layer_name]
+
+    if new_layer_name is not None:
+        layer = layer.copy()
+
+    data = layer.data
+
+    data = process_data(data=data)
+
+    layer._data = data  # noqa: SLF001
+
+    if new_layer_name is not None:
+        layer.name = new_layer_name
+        return vector.append(
+            layers=layer,
+            inplace=True,
+        )
+
+    return vector
 
 
 def aggregate_processor(
@@ -54,6 +98,43 @@ def clip_processor(
     Returns:
         Vector
     """
+    return _process_data(
+        vector=vector,
+        layer_name=layer_name,
+        process_data=lambda data: _clip_data(
+            data=data,
+            vector=vector,
+            mask_layer_name=mask_layer_name,
+        ),
+        new_layer_name=new_layer_name,
+    )
+
+
+def _clip_data(
+    data: gpd.GeoDataFrame,
+    vector: Vector,
+    mask_layer_name: str,
+) -> gpd.GeoDataFrame:
+    """Clips the data.
+
+    Parameters:
+        data: Data
+        vector: Vector
+        mask_layer_name: Mask layer name
+
+    Returns:
+        Data
+    """
+    mask = vector[mask_layer_name]
+
+    mask_data = mask.data
+
+    data = gpd.clip(
+        gdf=data,
+        mask=mask_data,
+        keep_geom_type=True,
+    )
+    return data.reset_index(drop=True)
 
 
 def copy_processor(
@@ -101,6 +182,71 @@ def fill_processor(
     Returns:
         Vector
     """
+    return _process_data(
+        vector=vector,
+        layer_name=layer_name,
+        process_data=lambda data: _fill_data(
+            data=data,
+            threshold=threshold,
+        ),
+        new_layer_name=new_layer_name,
+    )
+
+
+def _fill_data(
+    data: gpd.GeoDataFrame,
+    threshold: float,
+) -> gpd.GeoDataFrame:
+    """Fills the data.
+
+    Parameters:
+        data: Data
+        threshold: Threshold (the maximum area of the hole within a polygon to retain) in square meters
+
+    Returns:
+        Data
+    """
+    data = data.explode()
+    data.geometry = data.apply(
+        lambda row: _fill_polygon(
+            polygon=row.geometry,
+            threshold=threshold,
+        ),
+        axis=1,
+    )
+    return data
+
+
+def _fill_polygon(
+    polygon: Polygon,
+    threshold: float,
+) -> Polygon:
+    """Fills the polygon.
+
+    Parameters:
+        polygon: Polygon
+        threshold: Threshold (the maximum area of the hole within a polygon to retain) in square meters
+
+    Returns:
+        Polygon
+    """
+    if not polygon.interiors:
+        return polygon
+
+    if threshold == 0:
+        return Polygon(
+            shell=polygon.exterior.coords,
+        )
+
+    interiors = [
+        interior
+        for interior in polygon.interiors
+        if Polygon(interior).area >= threshold
+    ]
+    return Polygon(
+        shell=polygon.exterior.coords,
+        holes=interiors,
+    )
 
 
 def map_field_processor(
@@ -122,6 +268,35 @@ def map_field_processor(
     Returns:
         Vector
     """
+    return _process_data(
+        vector=vector,
+        layer_name=layer_name,
+        process_data=lambda data: _map_field_data(
+            data=data,
+            field=field,
+            mapping=mapping,
+        ),
+        new_layer_name=new_layer_name,
+    )
+
+
+def _map_field_data(
+    data: gpd.GeoDataFrame,
+    field: str,
+    mapping: dict[object, object],
+) -> gpd.GeoDataFrame:
+    """Maps the field of the data.
+
+    Parameters:
+        data: Data
+        field: Field
+        mapping: Mapping of the field names
+
+    Returns:
+        Data
+    """
+    data[field] = data[field].map(mapping)
+    return data
 
 
 def parallel_composite_processor(
@@ -221,6 +396,33 @@ def rename_fields_processor(
     Returns:
         Vector
     """
+    return _process_data(
+        vector=vector,
+        layer_name=layer_name,
+        process_data=lambda data: _rename_fields_data(
+            data=data,
+            mapping=mapping,
+        ),
+        new_layer_name=new_layer_name,
+    )
+
+
+def _rename_fields_data(
+    data: gpd.GeoDataFrame,
+    mapping: dict[object, object],
+) -> gpd.GeoDataFrame:
+    """Renames the fields of the data.
+
+    Parameters:
+        data: Data
+        mapping: Mapping of the field names
+
+    Returns:
+        Data
+    """
+    return data.rename(
+        columns=mapping,
+    )
 
 
 def select_processor(
@@ -278,6 +480,35 @@ def sieve_processor(
     Returns:
         Vector
     """
+    return _process_data(
+        vector=vector,
+        layer_name=layer_name,
+        process_data=lambda data: _sieve_data(
+            data=data,
+            threshold=threshold,
+        ),
+        new_layer_name=new_layer_name,
+    )
+
+
+def _sieve_data(
+    data: gpd.GeoDataFrame,
+    threshold: float,
+) -> gpd.GeoDataFrame:
+    """Sieves the data.
+
+    Parameters:
+        data: Data
+        threshold: Threshold (the minimum area of the polygon to retain) in square meters
+
+    Returns:
+        Data
+    """
+    if threshold == 0:
+        return data
+
+    data = data[data.geometry.area >= threshold]
+    return data.reset_index(drop=True)
 
 
 def simplify_processor(
@@ -298,3 +529,31 @@ def simplify_processor(
     Returns:
         Vector
     """
+    return _process_data(
+        vector=vector,
+        layer_name=layer_name,
+        process_data=lambda data: _simplify_data(
+            data=data,
+            threshold=threshold,
+        ),
+        new_layer_name=new_layer_name,
+    )
+
+
+def _simplify_data(
+    data: gpd.GeoDataFrame,
+    threshold: float,
+) -> gpd.GeoDataFrame:
+    """Simplifies the data.
+
+    Parameters:
+        data: Data
+        threshold: Threshold (the minimum area of the triangle defined by three consecutive vertices to retain)
+
+    Returns:
+        Data
+    """
+    data.geometry = data.geometry.simplify_coverage(
+        tolerance=threshold,
+    )
+    return data
