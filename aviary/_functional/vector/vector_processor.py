@@ -339,25 +339,31 @@ def query_processor(
     Returns:
         Vector
     """
-    layer = vector[layer_name]
-
-    if new_layer_name is None:
-        layer.query(
+    return _process_data(
+        vector=vector,
+        layer_name=layer_name,
+        process_data=lambda data: _query_data(
+            data=data,
             query_string=query_string,
-            inplace=True,
-        )
-        return vector
-
-    layer = layer.query(
-        query_string=query_string,
-        inplace=False,
+        ),
+        new_layer_name=new_layer_name,
     )
 
-    layer.name = new_layer_name
-    return vector.append(
-        layers=layer,
-        inplace=True,
-    )
+
+def _query_data(
+    data: gpd.GeoDataFrame,
+    query_string: str,
+) -> gpd.GeoDataFrame:
+    """Queries the data.
+
+    Parameters:
+        data: Data
+        query_string: Query string based on the pandas query syntax
+
+    Returns:
+        Data
+    """
+    return data.query(query_string)
 
 
 def remove_processor(
