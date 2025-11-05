@@ -7,7 +7,9 @@ if TYPE_CHECKING:
     from pathlib import Path
 
 import geopandas as gpd
+import pandas as pd
 
+from aviary.core.exceptions import AviaryUserError
 from aviary.core.vector import Vector
 from aviary.core.vector_layer import VectorLayer
 
@@ -19,7 +21,7 @@ def composite_loader(
     vector_loaders: list[VectorLoader],
     max_num_threads: int | None = None,
 ) -> Vector:
-    """Loads vector data from the sources.
+    """Loads a vector from the sources.
 
     Parameters:
         vector_loaders: Vector loaders
@@ -53,17 +55,68 @@ def composite_loader(
 def gpkg_loader(
     path: Path,
     layer_name: str,
+    max_num_threads: int | None = None,
 ) -> Vector:
-    """Loads vector data from the geopackage.
+    """Loads a vector from the geopackage or the directory containing geopackages.
 
     Parameters:
-        path: Path to the geopackage (.gpkg file)
+        path: Path to the geopackage (.gpkg file) or to the directory containing geopackages (.gpkg files)
+            exported by the `tile.VectorExporter`
         layer_name: Layer name
+        max_num_threads: Maximum number of threads
 
     Returns:
         Vector
+
+    Raises:
+        AviaryUserError: Invalid `path` (the directory contains no geopackages)
     """
-    data = gpd.read_file(path)
+    if path.is_file():
+        data = gpd.read_file(path)
+        layer = VectorLayer(
+            data=data,
+            name=layer_name,
+            copy=False,
+        )
+
+        return Vector(
+            layers=[layer],
+            copy=False,
+        )
+
+    paths = list(path.glob('*.gpkg'))
+
+    if not paths:
+        message = (
+            'Invalid path! '
+            'The directory must contain at least one geopackage.'
+        )
+        raise AviaryUserError(message)
+
+    if len(paths) == 1:
+        data = gpd.read_file(paths[0])
+        layer = VectorLayer(
+            data=data,
+            name=layer_name,
+            copy=False,
+        )
+
+        return Vector(
+            layers=[layer],
+            copy=False,
+        )
+
+    if max_num_threads == 1:
+        data = [gpd.read_file(path) for path in paths]
+    else:
+        with ThreadPoolExecutor(max_workers=max_num_threads) as executor:
+            data = list(executor.map(lambda p: gpd.read_file(p), paths))
+
+    data = pd.concat(
+        data,
+        ignore_index=True,
+        copy=False,
+    )
     layer = VectorLayer(
         data=data,
         name=layer_name,

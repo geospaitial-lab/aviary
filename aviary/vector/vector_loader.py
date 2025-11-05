@@ -31,15 +31,15 @@ _PACKAGE = 'aviary'
 class VectorLoader(Protocol):
     """Protocol for vector loaders
 
-    Vector loaders are callables that load vector data from a source.
+    Vector loaders are callables that load a vector from a source.
 
     Implemented vector loaders:
         - `CompositeLoader`: Composes multiple vector loaders
-        - `GPKGLoader`: Loads vector data from a geopackage
+        - `GPKGLoader`: Loads a vector from a geopackage or a directory containing geopackages
     """
 
     def __call__(self) -> Vector:
-        """Loads vector data from the source.
+        """Loads a vector from the source.
 
         Returns:
             Vector
@@ -241,7 +241,7 @@ class CompositeLoader:
         )
 
     def __call__(self) -> Vector:
-        """Loads vector data from the sources.
+        """Loads a vector from the sources.
 
         Returns:
             Vector
@@ -297,14 +297,18 @@ class GPKGLoader:
         self,
         path: Path,
         layer_name: str,
+        max_num_threads: int | None = None,
     ) -> None:
         """
         Parameters:
-            path: Path to the geopackage (.gpkg file)
+            path: Path to the geopackage (.gpkg file) or to the directory containing geopackages (.gpkg files)
+                exported by the `tile.VectorExporter`
             layer_name: Layer name
+            max_num_threads: Maximum number of threads
         """
         self._path = path
         self._layer_name = layer_name
+        self._max_num_threads = max_num_threads
 
     @classmethod
     def from_config(
@@ -323,7 +327,7 @@ class GPKGLoader:
         return cls(**config)
 
     def __call__(self) -> Vector:
-        """Loads vector data from the geopackage.
+        """Loads a vector from the geopackage or the directory containing geopackages.
 
         Returns:
             Vector
@@ -331,6 +335,7 @@ class GPKGLoader:
         return gpkg_loader(
             path=self._path,
             layer_name=self._layer_name,
+            max_num_threads=self._max_num_threads,
         )
 
 
@@ -346,14 +351,18 @@ class GPKGLoaderConfig(pydantic.BaseModel):
         config:
           path: 'path/to/my_gpkg.gpkg'
           layer_name: 'my_layer'
+          max_num_threads: null
         ```
 
     Attributes:
-        path: Path to the geopackage (.gpkg file)
+        path: Path to the geopackage (.gpkg file) or to the directory containing geopackages (.gpkg files)
+            exported by the `tile.VectorExporter`
         layer_name: Layer name
+        max_num_threads: Maximum number of threads
     """
     path: Path
     layer_name: str
+    max_num_threads: int | None = None
 
 
 _VectorLoaderFactory.register(

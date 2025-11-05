@@ -65,6 +65,10 @@ class VectorLayer:
         """Copies `metadata`."""
         self._metadata = self._metadata.copy()
 
+    def _mark_as_copied(self) -> None:
+        """Sets `_copy` to True if the data and metadata are copied before the initialization."""
+        self._copy = True
+
     def _register_observer_vector(
         self,
         observer_vector: Vector,

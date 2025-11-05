@@ -7,11 +7,13 @@ from aviary.core.enums import (
     InterpolationMode,
     _coerce_channel_name,
     _coerce_channel_names,
+    _coerce_layer_names,
 )
 from aviary.core.type_aliases import ChannelNameSet
 from tests.core.data.data_test_enums import (
     data_test__coerce_channel_name,
     data_test__coerce_channel_names,
+    data_test__coerce_layer_names,
 )
 
 
@@ -37,6 +39,16 @@ def test__coerce_channel_names(
     channel_names = _coerce_channel_names(channel_names=channel_names)
 
     assert channel_names == expected
+
+
+@pytest.mark.parametrize(('layer_names', 'expected'), data_test__coerce_layer_names)
+def test__coerce_layer_names(
+    layer_names: str | set[str] | bool | None,
+    expected: set[str] | bool,
+) -> None:
+    layer_names = _coerce_layer_names(layer_names=layer_names)
+
+    assert layer_names == expected
 
 
 def test_interpolation_mode_to_rio() -> None:

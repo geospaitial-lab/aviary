@@ -26,3 +26,12 @@ data_test__coerce_channel_names = [
     (True, True),
     (None, set()),
 ]
+
+data_test__coerce_layer_names = [
+    ('custom', {'custom'}),
+    ({'custom'}, {'custom'}),
+    (set(), set()),
+    (False, set()),
+    (True, True),
+    (None, set()),
+]
