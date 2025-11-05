@@ -118,15 +118,15 @@ def aggregate_processor(  # noqa: C901, PLR0912
         how='intersection',
         keep_geom_type=True,
     )
-    intersected_data[temp_prefix + 'class_area'] = intersected_data.geometry.area
+    intersected_data[temp_prefix + 'area'] = intersected_data.geometry.area
 
     grouped_data = intersected_data.groupby([temp_prefix + 'aggregation_id', field])
-    grouped_data = grouped_data[temp_prefix + 'class_area'].sum().reset_index(drop=False)
+    grouped_data = grouped_data[temp_prefix + 'area'].sum().reset_index(drop=False)
 
     pivoted_data = grouped_data.pivot_table(
         index=temp_prefix + 'aggregation_id',
         columns=field,
-        values=temp_prefix + 'class_area',
+        values=temp_prefix + 'area',
     ).reset_index(drop=False)
 
     aggregation_data = aggregation_data.merge(
