@@ -5,6 +5,7 @@ from collections.abc import (
     Iterator,
 )
 
+from aviary.core.enums import _coerce_layer_names
 from aviary.core.exceptions import AviaryUserError
 from aviary.core.vector_layer import (
     VectorLayer,
@@ -385,6 +386,8 @@ class Vector(Iterable[VectorLayer]):
         Returns:
             Vector
         """
+        layer_names = _coerce_layer_names(layer_names=layer_names)
+
         if layer_names is True:
             layer_names = self.layer_names
 
@@ -408,6 +411,8 @@ class Vector(Iterable[VectorLayer]):
         Returns:
             Vector
         """
+        layer_names = _coerce_layer_names(layer_names=layer_names)
+
         if layer_names is True:
             layer_names = self.layer_names
 
