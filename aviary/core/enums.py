@@ -111,6 +111,29 @@ def _coerce_channel_names(
     }
 
 
+def _coerce_layer_names(
+    layer_names: str | set[str] | bool | None,
+) -> set[str] | bool:
+    """Coerces `layer_names` to `set[str]`.
+
+    Parameters:
+        layer_names: Layer name, layer names, no layers (False or None), or all layers (True)
+
+    Returns:
+        Layer names or all layers (True)
+    """
+    if layer_names is True:
+        return True
+
+    if layer_names is False or layer_names is None:
+        return set()
+
+    if isinstance(layer_names, str):
+        return {layer_names}
+
+    return layer_names
+
+
 class GeospatialFilterMode(Enum):
     """
     Attributes:
