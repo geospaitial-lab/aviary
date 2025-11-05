@@ -58,6 +58,7 @@ nav:
           - VectorizeProcessor: api_reference/tile/tiles_processor/vectorize_processor.md
     - aviary.pipeline:
       - TilePipeline: api_reference/pipeline/tile_pipeline.md
+      - VectorPipeline: api_reference/pipeline/vector_pipeline.md
     - aviary.utils:
         - CoordinatesFilter:
             - CoordinatesFilter: api_reference/utils/coordinates_filter/coordinates_filter.md
