@@ -235,7 +235,7 @@ class AggregateProcessor:
         self,
         layer_name: str,
         aggregation_layer_name: str,
-        field: str = 'class',
+        field: str,
         classes: str | int | set[str | int] | bool | None = True,
         background_class: str | int | None = None,
         absolute_area_field_suffix: str = 'absolute_area',
@@ -319,7 +319,7 @@ class AggregateProcessorConfig(pydantic.BaseModel):
         config:
           layer_name: 'my_layer'
           aggregation_layer_name: 'my_aggregation_layer'
-          field: 'class'
+          field: 'prediction'
           classes: true
           background_class: null
           absolute_area_field_suffix: 'absolute_area'
@@ -330,8 +330,7 @@ class AggregateProcessorConfig(pydantic.BaseModel):
     Attributes:
         layer_name: Layer name
         aggregation_layer_name: Aggregation layer name
-        field: Field -
-            defaults to 'class'
+        field: Field
         classes: Class, classes, no classes (False or None), or all classes (True) -
             defaults to True
         background_class: Background class (if None, the background class is ignored) -
@@ -345,7 +344,7 @@ class AggregateProcessorConfig(pydantic.BaseModel):
     """
     layer_name: str
     aggregation_layer_name: str
-    field: str = 'class'
+    field: str
     classes: str | int | set[str | int] | bool | None = True
     background_class: str | int | None = None
     absolute_area_field_suffix: str = 'absolute_area'
