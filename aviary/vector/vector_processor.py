@@ -236,7 +236,7 @@ class AggregateProcessor:
         layer_name: str,
         aggregation_layer_name: str,
         field: str = 'class',
-        classes: list[str | int] | None = None,
+        classes: str | int | set[str | int] | bool | None = True,
         background_class: str | int | None = None,
         absolute_area_field_suffix: str = 'absolute_area',
         relative_area_field_suffix: str = 'relative_area',
@@ -247,7 +247,7 @@ class AggregateProcessor:
             layer_name: Layer name
             aggregation_layer_name: Aggregation layer name
             field: Field
-            classes: Classes (if None, the classes are inferred from the layer)
+            classes: Class, classes, no classes (False or None), or all classes (True)
             background_class: Background class (if None, the background class is ignored)
             absolute_area_field_suffix: Suffix of the absolute area field
             relative_area_field_suffix: Suffix of the relative area field
@@ -308,6 +308,7 @@ class AggregateProcessorConfig(pydantic.BaseModel):
 
     Create the configuration from a config file:
         - Use null instead of None
+        - Use false or true instead of False or True
 
     Example:
         You can create the configuration from a config file.
@@ -319,10 +320,7 @@ class AggregateProcessorConfig(pydantic.BaseModel):
           layer_name: 'my_layer'
           aggregation_layer_name: 'my_aggregation_layer'
           field: 'class'
-          classes:
-            - 'a'
-            - 'b'
-            - 'c'
+          classes: true
           background_class: null
           absolute_area_field_suffix: 'absolute_area'
           relative_area_field_suffix: 'relative_area'
@@ -334,8 +332,8 @@ class AggregateProcessorConfig(pydantic.BaseModel):
         aggregation_layer_name: Aggregation layer name
         field: Field -
             defaults to 'class'
-        classes: Classes (if None, the classes are inferred from the layer) -
-            defaults to None
+        classes: Class, classes, no classes (False or None), or all classes (True) -
+            defaults to True
         background_class: Background class (if None, the background class is ignored) -
             defaults to None
         absolute_area_field_suffix: Suffix of the absolute area field -
@@ -348,7 +346,7 @@ class AggregateProcessorConfig(pydantic.BaseModel):
     layer_name: str
     aggregation_layer_name: str
     field: str = 'class'
-    classes: list[str | int] | None = None
+    classes: str | int | set[str | int] | bool | None = True
     background_class: str | int | None = None
     absolute_area_field_suffix: str = 'absolute_area'
     relative_area_field_suffix: str = 'relative_area'

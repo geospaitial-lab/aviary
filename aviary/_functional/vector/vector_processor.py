@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import uuid
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -52,12 +53,12 @@ def _process_data(
     return vector
 
 
-def aggregate_processor(
+def aggregate_processor(  # noqa: C901, PLR0912
     vector: Vector,
     layer_name: str,
     aggregation_layer_name: str,
     field: str,
-    classes: list[str | int] | None = None,
+    classes: str | int | set[str | int] | bool | None = True,
     background_class: str | int | None = None,
     absolute_area_field_suffix: str = 'absolute_area',
     relative_area_field_suffix: str = 'relative_area',
@@ -70,7 +71,7 @@ def aggregate_processor(
         layer_name: Layer name
         aggregation_layer_name: Aggregation layer name
         field: Field
-        classes: Classes (if None, the classes are inferred from the layer)
+        classes: Class, classes, no classes (False or None), or all classes (True)
         background_class: Background class (if None, the background class is ignored)
         absolute_area_field_suffix: Suffix of the absolute area field
         relative_area_field_suffix: Suffix of the relative area field
@@ -79,6 +80,139 @@ def aggregate_processor(
     Returns:
         Vector
     """
+    layer = vector[layer_name]
+    aggregation_layer = vector[aggregation_layer_name]
+
+    if new_aggregation_layer_name is not None:
+        aggregation_layer = aggregation_layer.copy()
+
+    data = layer.data
+    aggregation_data = aggregation_layer.data
+
+    fields = set(data.columns).union(set(aggregation_data.columns))
+    temp_prefix = _get_temp_prefix(
+        fields=fields,
+        length=8,
+    )
+
+    if classes is True:
+        classes = set(data[field].unique())
+    elif classes is False or classes is None:
+        return vector
+    elif isinstance(classes, (str, int)):
+        classes = {str(classes)}
+    else:
+        classes = {str(class_) for class_ in classes}
+
+    if not absolute_area_field_suffix.startswith('_'):
+        absolute_area_field_suffix = '_' + absolute_area_field_suffix
+
+    if not relative_area_field_suffix.startswith('_'):
+        relative_area_field_suffix = '_' + relative_area_field_suffix
+
+    aggregation_data[temp_prefix + 'aggregation_id'] = aggregation_data.index
+
+    intersected_data = gpd.overlay(
+        df1=aggregation_data,
+        df2=data,
+        how='intersection',
+        keep_geom_type=True,
+    )
+    intersected_data[temp_prefix + 'class_area'] = intersected_data.geometry.area
+
+    grouped_data = intersected_data.groupby([temp_prefix + 'aggregation_id', field])
+    grouped_data = grouped_data[temp_prefix + 'class_area'].sum().reset_index(drop=False)
+
+    pivoted_data = grouped_data.pivot_table(
+        index=temp_prefix + 'aggregation_id',
+        columns=field,
+        values=temp_prefix + 'class_area',
+    ).reset_index(drop=False)
+
+    aggregation_data = aggregation_data.merge(
+        right=pivoted_data,
+        how='left',
+        on=temp_prefix + 'aggregation_id',
+    )
+
+    mapping = {
+        class_: class_ + absolute_area_field_suffix
+        for class_ in classes
+    }
+    aggregation_data = aggregation_data.rename(
+        columns=mapping,
+    )
+
+    for class_ in classes:
+        if class_ + absolute_area_field_suffix in aggregation_data.columns:
+            aggregation_data[class_ + absolute_area_field_suffix] = (
+                aggregation_data[class_ + absolute_area_field_suffix].fillna(0.)
+            )
+        else:
+            aggregation_data[class_ + absolute_area_field_suffix] = 0.
+
+    aggregation_data[temp_prefix + 'aggregation_area'] = aggregation_data.geometry.area
+
+    for class_ in classes:
+        aggregation_data[class_ + relative_area_field_suffix] = (
+            aggregation_data[class_ + absolute_area_field_suffix] / aggregation_data[temp_prefix + 'aggregation_area']
+        )
+
+    if background_class is not None:
+        background_class = str(background_class)
+
+        fields = [
+            class_ + absolute_area_field_suffix
+            for class_ in classes
+        ]
+        foreground_data = aggregation_data[fields].sum(axis=1)
+
+        aggregation_data[background_class + absolute_area_field_suffix] = (
+            (aggregation_data[temp_prefix + 'aggregation_area'] - foreground_data).clip(lower=0.)
+        )
+        aggregation_data[background_class + relative_area_field_suffix] = (
+            aggregation_data[background_class + absolute_area_field_suffix] /
+            aggregation_data[temp_prefix + 'aggregation_area']
+        )
+
+    aggregation_data.drop(
+        columns=[
+            temp_prefix + 'aggregation_id',
+            temp_prefix + 'aggregation_area',
+        ],
+        inplace=True,
+    )
+
+    aggregation_layer._data = aggregation_data  # noqa: SLF001
+
+    if new_aggregation_layer_name is not None:
+        aggregation_layer.name = new_aggregation_layer_name
+        return vector.append(
+            layers=aggregation_layer,
+            inplace=True,
+        )
+
+    return vector
+
+
+def _get_temp_prefix(
+    fields: set[str],
+    length: int = 8,
+) -> str:
+    """Returns a temporary prefix for the fields.
+
+    Parameters:
+        fields: Fields
+        length: Length of the prefix
+
+    Returns:
+        Temporary prefix
+    """
+    while True:
+        prefix_candidate = str(uuid.uuid4())[:length] + '_'
+
+        if not any(field.startswith(prefix_candidate) for field in fields):
+            return prefix_candidate
 
 
 def clip_processor(
