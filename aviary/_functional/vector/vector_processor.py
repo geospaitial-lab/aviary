@@ -363,7 +363,8 @@ def _query_data(
     Returns:
         Data
     """
-    return data.query(query_string)
+    data = data.query(query_string)
+    return data.reset_index(drop=True)
 
 
 def remove_processor(
