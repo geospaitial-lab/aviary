@@ -3,9 +3,15 @@ from .tile_pipeline import (
     TilePipeline,
     TilePipelineConfig,
 )
+from .vector_pipeline import (
+    VectorPipeline,
+    VectorPipelineConfig,
+)
 
 __all__ = [
     'TileLoaderConfig',
     'TilePipeline',
     'TilePipelineConfig',
+    'VectorPipeline',
+    'VectorPipelineConfig',
 ]
