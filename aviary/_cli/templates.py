@@ -1,4 +1,5 @@
 tile_pipeline_base_config = '''plugins_dir_path: null
+show_progress: true
 
 grid_config:
   ...
@@ -15,6 +16,16 @@ tiles_processor_config:
   ...
 '''
 
+vector_pipeline_base_config = '''plugins_dir_path: null
+
+vector_loader_config:
+  ...
+
+vector_processor_config:
+  ...
+'''
+
 registry = {
     ('tile_pipeline', 'base'): tile_pipeline_base_config,
+    ('vector_pipeline', 'base'): vector_pipeline_base_config,
 }
