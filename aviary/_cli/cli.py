@@ -34,6 +34,10 @@ from aviary.pipeline.tile_pipeline import (
     TilePipelineConfig,
     _TilePipelineFactory,
 )
+from aviary.pipeline.vector_pipeline import (
+    VectorPipelineConfig,
+    _VectorPipelineFactory,
+)
 
 # noinspection PyProtectedMember
 from aviary.tile.tile_fetcher import _TileFetcherFactory
@@ -78,6 +82,20 @@ app.add_typer(
     typer_instance=tile_pipeline_app,
     name='tile',
     help='Subcommands for the tile pipeline',
+    rich_help_panel='Pipeline commands',
+)
+vector_pipeline_app = typer.Typer(
+    name='vector-pipeline',
+)
+app.add_typer(
+    typer_instance=vector_pipeline_app,
+    help='Subcommands for the vector pipeline (alias: vector)',
+    rich_help_panel='Pipeline commands',
+)
+app.add_typer(
+    typer_instance=vector_pipeline_app,
+    name='vector',
+    help='Subcommands for the vector pipeline',
     rich_help_panel='Pipeline commands',
 )
 console = rich.console.Console()
@@ -633,6 +651,356 @@ def tile_pipeline_validate(
 
     tile_pipeline_config = TilePipelineConfig(**config)
     _ = _TilePipelineFactory.create(config=tile_pipeline_config)
+
+    message = (
+        f'[bold green]The config file [/][dim green]at {config_path.resolve()}[/][bold green] is valid.'
+    )
+    console.print(message)
+
+
+@vector_pipeline_app.command(
+    name='components',
+)
+@handle_exception
+def vector_pipeline_components(
+    package_options: list[str] | None = typer.Option(
+        None,
+        '--package',
+        '-p',
+        help='Package of the components',
+    ),
+    plugins_dir_path_option: Path | None = typer.Option(
+        None,
+        '--plugins-dir-path',
+        envvar='AVIARY_PLUGINS_DIR_PATH',
+        help='Path to the plugins directory',
+    ),
+) -> None:
+    """Show the components."""
+    if package_options is not None:
+        def filter_packages(package: str) -> bool:
+            return package in package_options
+    else:
+        filter_packages = None
+
+    def filter_types(type_: str) -> bool:
+        return type_ in ['vector_loader', 'vector_processor']
+
+    show_components(
+        title='Components:',
+        plugins_dir_path=plugins_dir_path_option,
+        filter_packages=filter_packages,
+        filter_types=filter_types,
+    )
+
+
+@vector_pipeline_app.command(
+    name='config',
+)
+@handle_exception
+def vector_pipeline_config(
+    component: str = typer.Argument(
+        ...,
+        help='Component',
+    ),
+    copy_option: bool = typer.Option(
+        False,  # noqa: FBT003
+        '--copy',
+        '-c',
+        help='Copy the configuration to the clipboard.',
+    ),
+    level_option: int = typer.Option(
+        0,
+        '--level',
+        '-l',
+        help='Indentation level',
+    ),
+    package_option: str = typer.Option(
+        'aviary',
+        '--package',
+        '-p',
+        help='Package of the component',
+    ),
+    plugins_dir_path: Path | None = typer.Option(
+        None,
+        '--plugins-dir-path',
+        envvar='AVIARY_PLUGINS_DIR_PATH',
+        help='Path to the plugins directory',
+    ),
+) -> None:
+    """Show the configuration for a component."""
+    if plugins_dir_path is not None:
+        discover_plugins(plugins_dir_path=plugins_dir_path)
+
+    registry = {
+        **_VectorLoaderFactory.registry,
+        **_VectorProcessorFactory.registry,
+    }
+
+    key = (package_option, component)
+    registry_entry = registry.get(key)
+
+    if registry_entry is None:
+        message = (
+            f'The component {component} from package {package_option} must be registered.'
+        )
+        raise typer.BadParameter(
+            message=message,
+            param_hint="'COMPONENT'",
+        )
+
+    _, config_class = registry_entry
+    lines: list[str] = []
+
+    for field_key, field_info in config_class.model_fields.items():
+        if field_info.is_required():
+            line = f'{field_key}: '
+            lines.append(line)
+        else:
+            default_value = field_info.get_default()
+
+            if isinstance(default_value, Enum):
+                default_value = default_value.value
+            elif isinstance(default_value, Path):
+                default_value = str(default_value)
+
+            line = yaml.dump(
+                data={field_key: default_value},
+                default_flow_style=False,
+            )
+            line = line.rstrip()
+            lines.append(line)
+
+    message = (
+        f'[bold green]Configuration for[/] {component}[bold green] from[/][green] {package_option}[/][bold green]:'
+    )
+    console.print(message)
+
+    message = (
+        f'[green]  package:[/] {package_option}'
+    )
+    console.print(message)
+    message = (
+        f'[green]  name:[/] {component}'
+    )
+    console.print(message)
+    message = (
+        '[green]  config:'
+    )
+    console.print(message)
+
+    for line in lines:
+        key, value = line.split(':', 1)
+
+        if value.strip():
+            message = (
+                f'[green]    {key}:[/][default]{value}'
+            )
+            console.print(message)
+        else:
+            message = (
+                f'[green]    {key}:'
+            )
+            console.print(message)
+
+    if copy_option:
+        indent = ' ' * (level_option * 2)
+        component_lines = [
+            f'package: {package_option}',
+            f'name: {component}',
+            'config:',
+        ]
+        lines = [f'  {line}' for line in lines]
+        lines = component_lines + lines
+        config = indent + ('\n' + indent).join(lines)
+        pyperclip.copy(config)
+
+
+@vector_pipeline_app.command(
+    name='init',
+)
+@handle_exception
+def vector_pipeline_init(
+    config_path: Path = typer.Argument(
+        ...,
+        envvar='AVIARY_CONFIG_PATH',
+        help='Path to the config file',
+    ),
+    force_option: bool = typer.Option(
+        False,  # noqa: FBT003
+        '--force',
+        '-f',
+        help='Force overwrite the config file if it already exists.',
+    ),
+    template_option: str = typer.Option(
+        'base',
+        '--template',
+        '-t',
+        click_type=click.Choice(['base']),
+        help='Template for the config file',
+    ),
+) -> None:
+    """Initialize a config file."""
+    if config_path.exists() and not force_option:
+        context = click.get_current_context()
+        quiet = context.obj['quiet']
+
+        if quiet:
+            message = (
+                'The config file already exists. '
+                "Use '--force' to overwrite it."
+            )
+            raise typer.BadParameter(
+                message=message,
+                param_hint="'--force'",
+            )
+
+        message = (
+            f'[bold yellow]The config file [/][dim yellow]at {config_path.resolve()}[/][bold yellow] already exists.'
+        )
+        console.print(message)
+        overwrite = typer.confirm('Do you want to overwrite it?')
+
+        if not overwrite:
+            raise typer.Exit(0)
+
+    pipeline = 'vector_pipeline'
+    key = (pipeline, template_option)
+    config = template_registry[key]
+
+    with config_path.open('w') as file:
+        file.write(config)
+
+    message = (
+        f'[bold green]The config file [/][dim green]at {config_path.resolve()}[/][bold green] has been initialized.'
+    )
+    console.print(message)
+
+
+@vector_pipeline_app.command(
+    name='plugins',
+)
+@handle_exception
+def vector_pipeline_plugins(
+    package_options: list[str] | None = typer.Option(
+        None,
+        '--package',
+        '-p',
+        help='Package of the components',
+    ),
+    plugins_dir_path_option: Path | None = typer.Option(
+        None,
+        '--plugins-dir-path',
+        envvar='AVIARY_PLUGINS_DIR_PATH',
+        help='Path to the plugins directory',
+    ),
+) -> None:
+    """Show the registered plugins."""
+    if package_options is not None:
+        def filter_packages(package: str) -> bool:
+            return package in package_options and package != _PACKAGE
+    else:
+        def filter_packages(package: str) -> bool:
+            return package != _PACKAGE
+
+    def filter_types(type_: str) -> bool:
+        return type_ in ['vector_loader', 'vector_processor']
+
+    show_components(
+        title='Registered plugins:',
+        plugins_dir_path=plugins_dir_path_option,
+        filter_packages=filter_packages,
+        filter_types=filter_types,
+    )
+
+
+@vector_pipeline_app.command(
+    name='run',
+)
+@handle_exception
+def vector_pipeline_run(
+    config_path: Path = typer.Argument(
+        ...,
+        envvar='AVIARY_CONFIG_PATH',
+        help='Path to the config file',
+    ),
+    set_options: list[str] | None = typer.Option(
+        None,
+        '--set',
+        '-s',
+        help='Configuration fields using key=value format',
+    ),
+    log_path_option: Path | None = typer.Option(
+        None,
+        '--log-path',
+        envvar='AVIARY_LOG_PATH',
+        help='Path to the log file',
+    ),
+) -> None:
+    """Run the vector pipeline."""
+    logger.remove()
+
+    if log_path_option is not None:
+        logger.add(
+            sink=log_path_option,
+            format='{time:YYYY-MM-DD HH:mm:ss.SSS} | {level:<8} | {message}',
+        )
+        logger.enable(name='aviary')
+
+    with logger.catch(level='CRITICAL', message='An error occurred:', reraise=True):
+        config = parse_config(
+            config_path=config_path,
+            set_options=set_options,
+        )
+
+        context = click.get_current_context()
+        quiet = context.obj['quiet']
+
+        if quiet:
+            config['show_progress'] = False
+
+        plugins_dir_path = config.get('plugins_dir_path')
+
+        if plugins_dir_path is not None:
+            plugins_dir_path = Path(plugins_dir_path)
+            discover_plugins(plugins_dir_path=plugins_dir_path)
+
+        vector_pipeline_config = VectorPipelineConfig(**config)
+        vector_pipeline = _VectorPipelineFactory.create(config=vector_pipeline_config)
+        vector_pipeline()
+
+
+@vector_pipeline_app.command(
+    name='validate',
+)
+@handle_exception
+def vector_pipeline_validate(
+    config_path: Path = typer.Argument(
+        ...,
+        envvar='AVIARY_CONFIG_PATH',
+        help='Path to the config file',
+    ),
+    set_options: list[str] | None = typer.Option(
+        None,
+        '--set',
+        '-s',
+        help='Configuration fields using key=value format',
+    ),
+) -> None:
+    """Validate the config file."""
+    config = parse_config(
+        config_path=config_path,
+        set_options=set_options,
+    )
+
+    plugins_dir_path = config.get('plugins_dir_path')
+
+    if plugins_dir_path is not None:
+        plugins_dir_path = Path(plugins_dir_path)
+        discover_plugins(plugins_dir_path=plugins_dir_path)
+
+    vector_pipeline_config = VectorPipelineConfig(**config)
+    _ = _VectorPipelineFactory.create(config=vector_pipeline_config)
 
     message = (
         f'[bold green]The config file [/][dim green]at {config_path.resolve()}[/][bold green] is valid.'
