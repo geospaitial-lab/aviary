@@ -41,6 +41,12 @@ from aviary.tile.tile_fetcher import _TileFetcherFactory
 # noinspection PyProtectedMember
 from aviary.tile.tiles_processor import _TilesProcessorFactory
 
+# noinspection PyProtectedMember
+from aviary.vector.vector_loader import _VectorLoaderFactory
+
+# noinspection PyProtectedMember
+from aviary.vector.vector_processor import _VectorProcessorFactory
+
 _PACKAGE = 'aviary'
 
 typer.rich_utils.DEFAULT_STRING = _('default: {}')
@@ -180,7 +186,14 @@ def components(
         None,
         '--type',
         '-t',
-        click_type=click.Choice(['tile_fetcher', 'tiles_processor']),  # noqa: B008
+        click_type=click.Choice(  # noqa: B008
+            choices=[
+                'tile_fetcher',
+                'tiles_processor',
+                'vector_loader',
+                'vector_processor',
+            ],
+        ),
         help='Type of the components',
     ),
 ) -> None:
@@ -244,7 +257,14 @@ def plugins(
         None,
         '--type',
         '-t',
-        click_type=click.Choice(['tile_fetcher', 'tiles_processor']),  # noqa: B008
+        click_type=click.Choice(  # noqa: B008
+            choices=[
+                'tile_fetcher',
+                'tiles_processor',
+                'vector_loader',
+                'vector_processor',
+            ],
+        ),
         help='Type of the components',
     ),
 ) -> None:
@@ -652,7 +672,7 @@ def parse_config(
     return config
 
 
-def show_components(
+def show_components(  # noqa: C901, PLR0912
     title: str,
     plugins_dir_path: Path | None = None,
     filter_packages: Callable[[str], bool] | None = None,
@@ -673,6 +693,22 @@ def show_components(
         [
             registry_entry
             for registry_entry in _TilesProcessorFactory.registry
+            if filter_packages is None or filter_packages(registry_entry[0])
+        ],
+        key=lambda registry_entry: (registry_entry[0], registry_entry[1]),
+    )
+    vector_loaders = sorted(
+        [
+            registry_entry
+            for registry_entry in _VectorLoaderFactory.registry
+            if filter_packages is None or filter_packages(registry_entry[0])
+        ],
+        key=lambda registry_entry: (registry_entry[0], registry_entry[1]),
+    )
+    vector_processors = sorted(
+        [
+            registry_entry
+            for registry_entry in _VectorProcessorFactory.registry
             if filter_packages is None or filter_packages(registry_entry[0])
         ],
         key=lambda registry_entry: (registry_entry[0], registry_entry[1]),
@@ -712,6 +748,46 @@ def show_components(
         console.print(message)
 
         for package, components in groupby(tiles_processors, key=lambda registry_entry: registry_entry[0]):
+            message = (
+                f'    [green]{package}:'
+            )
+            console.print(message)
+
+            for _, component in components:
+                message = (
+                    f'      - {component}'
+                )
+                console.print(message)
+
+    show_vector_loader = filter_types is None or filter_types('vector_loader')
+
+    if show_vector_loader:
+        message = (
+            '  [bold green]VectorLoader:'
+        )
+        console.print(message)
+
+        for package, components in groupby(vector_loaders, key=lambda registry_entry: registry_entry[0]):
+            message = (
+                f'    [green]{package}:'
+            )
+            console.print(message)
+
+            for _, component in components:
+                message = (
+                    f'      - {component}'
+                )
+                console.print(message)
+
+    show_vector_processor = filter_types is None or filter_types('vector_processor')
+
+    if show_vector_processor:
+        message = (
+            '  [bold green]VectorProcessor:'
+        )
+        console.print(message)
+
+        for package, components in groupby(vector_processors, key=lambda registry_entry: registry_entry[0]):
             message = (
                 f'    [green]{package}:'
             )
