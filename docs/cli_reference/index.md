@@ -25,6 +25,10 @@ aviary’s CLI includes the following commands:
     [**`aviary tile`**][**aviary tile-pipeline**]<br>
     Subcommands for the tile pipeline
 
+-   [**`aviary vector-pipeline`**][**aviary vector-pipeline**]<br>
+    [**`aviary vector`**][**aviary vector-pipeline**]<br>
+    Subcommands for the vector pipeline
+
 </div>
 
   [**aviary**]: aviary.md
@@ -33,3 +37,4 @@ aviary’s CLI includes the following commands:
   [**aviary github**]: aviary_github.md
   [**aviary plugins**]: aviary_plugins.md
   [**aviary tile-pipeline**]: aviary_tile_pipeline/tile_pipeline.md
+  [**aviary vector-pipeline**]: aviary_vector_pipeline/vector_pipeline.md
