@@ -38,5 +38,8 @@ aviary [OPTIONS] COMMAND [ARGS]...
 
 - [`tile-pipeline`][tile-pipeline]: Subcommands for the tile pipeline (alias: [`tile`][tile-pipeline])
 - [`tile`][tile-pipeline]: Subcommands for the tile pipeline
+- [`vector-pipeline`][vector-pipeline]: Subcommands for the vector pipeline (alias: [`vector`][vector-pipeline])
+- [`vector`][vector-pipeline]: Subcommands for the vector pipeline
 
   [tile-pipeline]: aviary_tile_pipeline/tile_pipeline.md
+  [vector-pipeline]: aviary_vector_pipeline/vector_pipeline.md
