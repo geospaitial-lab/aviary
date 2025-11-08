@@ -94,6 +94,14 @@ nav:
     - aviary components: cli_reference/aviary_components.md
     - aviary docs: cli_reference/aviary_docs.md
     - aviary github: cli_reference/aviary_github.md
+    - aviary pipeline:
+        - pipeline: cli_reference/aviary_pipeline/pipeline.md
+        - pipeline components: cli_reference/aviary_pipeline/pipeline_components.md
+        - pipeline config: cli_reference/aviary_pipeline/pipeline_config.md
+        - pipeline init: cli_reference/aviary_pipeline/pipeline_init.md
+        - pipeline plugins: cli_reference/aviary_pipeline/pipeline_plugins.md
+        - pipeline run: cli_reference/aviary_pipeline/pipeline_run.md
+        - pipeline validate: cli_reference/aviary_pipeline/pipeline_validate.md
     - aviary plugins: cli_reference/aviary_plugins.md
     - aviary tile-pipeline:
         - tile-pipeline: cli_reference/aviary_tile_pipeline/tile_pipeline.md
