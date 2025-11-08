@@ -18,6 +18,9 @@ aviary’s CLI includes the following commands:
 -   [**`aviary github`**][**aviary github**]<br>
     Open the GitHub repository in a web browser.
 
+-   [**`aviary pipeline`**][**aviary pipeline**]<br>
+    Subcommands for the pipeline
+
 -   [**`aviary plugins`**][**aviary plugins**]<br>
     Show the registered plugins.
 
@@ -35,6 +38,7 @@ aviary’s CLI includes the following commands:
   [**aviary components**]: aviary_components.md
   [**aviary docs**]: aviary_docs.md
   [**aviary github**]: aviary_github.md
+  [**aviary pipeline**]: aviary_pipeline/pipeline.md
   [**aviary plugins**]: aviary_plugins.md
   [**aviary tile-pipeline**]: aviary_tile_pipeline/tile_pipeline.md
   [**aviary vector-pipeline**]: aviary_vector_pipeline/vector_pipeline.md
