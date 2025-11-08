@@ -1,3 +1,10 @@
+pipeline_config = '''tile_pipeline_config:
+  ...
+
+vector_pipeline_config:
+  ...
+'''
+
 tile_pipeline_base_config = '''plugins_dir_path: null
 show_progress: true
 
@@ -26,6 +33,7 @@ vector_processor_config:
 '''
 
 registry = {
+    ('pipeline', 'base'): pipeline_config,
     ('tile_pipeline', 'base'): tile_pipeline_base_config,
     ('vector_pipeline', 'base'): vector_pipeline_base_config,
 }
