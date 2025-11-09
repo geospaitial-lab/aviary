@@ -74,6 +74,7 @@ class PipelineConfig(pydantic.BaseModel):
 
     Create the configuration from a config file:
         - Use null instead of None
+        - Use false or true instead of False or True
 
     Example:
         You can create the configuration from a config file.
@@ -82,10 +83,28 @@ class PipelineConfig(pydantic.BaseModel):
         plugins_dir_path: null
 
         tile_pipeline_config:
-          ...
+          show_progress: true
+
+          grid_config:
+            ...
+
+          tile_fetcher_config:
+            ...
+
+          tile_loader_config:
+            batch_size: 1
+            max_num_threads: null
+            num_prefetched_tiles: 0
+
+          tiles_processor_config:
+            ...
 
         vector_pipeline_config:
-          ...
+          vector_loader_config:
+            ...
+
+          vector_processor_config:
+            ...
         ```
 
     Attributes:
