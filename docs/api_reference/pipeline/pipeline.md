@@ -11,3 +11,7 @@
 ---
 
 ::: aviary.pipeline.PipelineConfig
+
+---
+
+::: aviary.pipeline.register_pipeline

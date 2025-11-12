@@ -6,12 +6,8 @@
 
 </div>
 
-::: aviary.pipeline.TilePipeline
+::: aviary.pipeline.CompositePipeline
 
 ---
 
-::: aviary.pipeline.TilePipelineConfig
-
----
-
-::: aviary.pipeline.TileLoaderConfig
+::: aviary.pipeline.CompositePipelineConfig
