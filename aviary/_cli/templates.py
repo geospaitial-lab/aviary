@@ -13,9 +13,18 @@
 #  You should have received a copy of the GNU General Public License along with aviary.
 #  If not, see <https://www.gnu.org/licenses/>.
 
-pipeline_config = '''plugins_dir_path: null
+composite_pipeline_config = '''package: 'aviary'
+name: 'CompositePipeline'
+config:
+  pipeline_configs:
+    - ...
+    ...
+'''
 
-tile_pipeline_config:
+tile_pipeline_base_config = '''package: 'aviary'
+name: 'TilePipeline'
+config:
+  plugins_dir_path: null
   show_progress: true
 
   grid_config:
@@ -31,8 +40,13 @@ tile_pipeline_config:
 
   tiles_processor_config:
     ...
+'''
 
-vector_pipeline_config:
+vector_pipeline_base_config = '''package: 'aviary'
+name: 'VectorPipeline'
+config:
+  plugins_dir_path: null
+
   vector_loader_config:
     ...
 
@@ -40,35 +54,8 @@ vector_pipeline_config:
     ...
 '''
 
-tile_pipeline_base_config = '''plugins_dir_path: null
-show_progress: true
-
-grid_config:
-  ...
-
-tile_fetcher_config:
-  ...
-
-tile_loader_config:
-  batch_size: 1
-  max_num_threads: null
-  num_prefetched_tiles: 0
-
-tiles_processor_config:
-  ...
-'''
-
-vector_pipeline_base_config = '''plugins_dir_path: null
-
-vector_loader_config:
-  ...
-
-vector_processor_config:
-  ...
-'''
-
 registry = {
-    ('pipeline', 'base'): pipeline_config,
+    ('composite_pipeline', 'base'): composite_pipeline_config,
     ('tile_pipeline', 'base'): tile_pipeline_base_config,
     ('vector_pipeline', 'base'): vector_pipeline_base_config,
 }
