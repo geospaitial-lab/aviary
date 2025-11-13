@@ -16,6 +16,8 @@
 composite_pipeline_base_config = '''package: 'aviary'
 name: 'CompositePipeline'
 config:
+  plugins_dir_path: null
+
   pipeline_configs:
     - ...
     ...
