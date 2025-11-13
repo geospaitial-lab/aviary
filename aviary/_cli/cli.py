@@ -44,7 +44,10 @@ from aviary import __version__
 from aviary._cli.templates import registry as template_registry
 
 # noinspection PyProtectedMember
-from aviary._utils.plugins import discover_plugins
+from aviary._utils.plugins import (
+    discover_local_plugins,
+    discover_packaged_plugins,
+)
 from aviary.pipeline.pipeline import (
     PipelineConfig,
     _PipelineFactory,
@@ -276,8 +279,10 @@ def config(  # noqa: C901, PLR0912, PLR0915
     ),
 ) -> None:
     """Show the configuration of a component."""
+    discover_packaged_plugins()
+
     if plugins_dir_path is not None:
-        discover_plugins(plugins_dir_path=plugins_dir_path)
+        discover_local_plugins(plugins_dir_path=plugins_dir_path)
 
     registries = {
         'tile_fetcher': _TileFetcherFactory.registry,
@@ -526,11 +531,13 @@ def pipeline_run(
         if quiet:
             config['show_progress'] = False
 
+        discover_packaged_plugins()
+
         plugins_dir_path = config.get('plugins_dir_path')
 
         if plugins_dir_path is not None:
             plugins_dir_path = Path(plugins_dir_path)
-            discover_plugins(plugins_dir_path=plugins_dir_path)
+            discover_local_plugins(plugins_dir_path=plugins_dir_path)
 
         pipeline_config = PipelineConfig(**config)
         pipeline = _PipelineFactory.create(config=pipeline_config)
@@ -560,11 +567,13 @@ def pipeline_validate(
         set_options=set_options,
     )
 
+    discover_packaged_plugins()
+
     plugins_dir_path = config.get('plugins_dir_path')
 
     if plugins_dir_path is not None:
         plugins_dir_path = Path(plugins_dir_path)
-        discover_plugins(plugins_dir_path=plugins_dir_path)
+        discover_local_plugins(plugins_dir_path=plugins_dir_path)
 
     pipeline_config = PipelineConfig(**config)
     _ = _PipelineFactory.create(config=pipeline_config)
@@ -667,8 +676,10 @@ def show_components(  # noqa: C901, PLR0912
     filter_packages: Callable[[str], bool] | None = None,
     filter_types: Callable[[str], bool] | None = None,
 ) -> None:
+    discover_packaged_plugins()
+
     if plugins_dir_path is not None:
-        discover_plugins(plugins_dir_path=plugins_dir_path)
+        discover_local_plugins(plugins_dir_path=plugins_dir_path)
 
     tile_fetchers = sorted(
         [

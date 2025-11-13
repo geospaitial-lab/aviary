@@ -14,14 +14,17 @@
 #  If not, see <https://www.gnu.org/licenses/>.
 
 import importlib
+import importlib.metadata
 import sys
 from pathlib import Path
 
+_ENTRY_POINT = 'aviary.plugins'
 
-def discover_plugins(
+
+def discover_local_plugins(
     plugins_dir_path: Path,
 ) -> None:
-    """Discover plugins.
+    """Discover plugins from a local plugins directory.
 
     Parameters:
         plugins_dir_path: Path to the plugins directory
@@ -32,3 +35,11 @@ def discover_plugins(
         importlib.import_module(plugins_dir_path.name)
     finally:
         sys.path.remove(str(plugins_dir_path.parent))
+
+
+def discover_packaged_plugins() -> None:
+    """Discover plugins from plugin packages."""
+    entry_points = importlib.metadata.entry_points().select(group=_ENTRY_POINT)
+
+    for entry_point in entry_points:
+        entry_point.load()
