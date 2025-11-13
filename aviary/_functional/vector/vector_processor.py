@@ -224,10 +224,10 @@ def _get_temp_prefix(
         Temporary prefix
     """
     while True:
-        prefix_candidate = str(uuid.uuid4())[:length] + '_'
+        candidate = str(uuid.uuid4())[:length] + '_'
 
-        if not any(field.startswith(prefix_candidate) for field in fields):
-            return prefix_candidate
+        if not any(field.startswith(candidate) for field in fields):
+            return candidate
 
 
 def clip_processor(
