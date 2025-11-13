@@ -2,23 +2,15 @@
   .md-sidebar--secondary { visibility: hidden }
 </style>
 
-## `aviary vector-pipeline validate`
+## `aviary pipeline validate`
 
 Validate the config file.
 
 ### **USAGE**
 
-=== "Default"
-
-    ```
-    aviary vector-pipeline validate [OPTIONS] CONFIG_PATH
-    ```
-
-=== "Alias"
-
-    ```
-    aviary vector validate [OPTIONS] CONFIG_PATH
-    ```
+```
+aviary pipeline validate [OPTIONS] CONFIG_PATH
+```
 
 ### **ARGUMENTS**
 

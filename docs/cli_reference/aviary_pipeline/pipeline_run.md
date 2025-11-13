@@ -2,23 +2,15 @@
   .md-sidebar--secondary { visibility: hidden }
 </style>
 
-## `aviary composite-pipeline validate`
+## `aviary pipeline run`
 
-Validate the config file.
+Run the pipeline.
 
 ### **USAGE**
 
-=== "Default"
-
-    ```
-    aviary composite-pipeline validate [OPTIONS] CONFIG_PATH
-    ```
-
-=== "Alias"
-
-    ```
-    aviary composite validate [OPTIONS] CONFIG_PATH
-    ```
+```
+aviary pipeline run [OPTIONS] CONFIG_PATH
+```
 
 ### **ARGUMENTS**
 
@@ -29,4 +21,7 @@ Validate the config file.
 ### **OPTIONS**
 
 - `-s, --set TEXT`: Configuration fields using key=value format
+- `--log-path PATH`: Path to the log file (env var: [`AVIARY_LOG_PATH`][AVIARY_LOG_PATH])
 - `--help`: Show this message and exit.
+
+  [AVIARY_LOG_PATH]: ../environment_variables.md#aviary_log_path

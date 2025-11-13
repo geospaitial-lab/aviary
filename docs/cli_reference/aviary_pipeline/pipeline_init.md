@@ -2,26 +2,19 @@
   .md-sidebar--secondary { visibility: hidden }
 </style>
 
-## `aviary tile-pipeline init`
+## `aviary pipeline init`
 
 Initialize a config file.
 
 ### **USAGE**
 
-=== "Default"
-
-    ```
-    aviary tile-pipeline init [OPTIONS] CONFIG_PATH
-    ```
-
-=== "Alias"
-
-    ```
-    aviary tile init [OPTIONS] CONFIG_PATH
-    ```
+```
+aviary pipeline init [OPTIONS] CONFIG_PATH
+```
 
 ### **ARGUMENTS**
 
+- `PIPELINE`: Pipeline
 - `CONFIG_PATH`: Path to the config file (env var: [`AVIARY_CONFIG_PATH`][AVIARY_CONFIG_PATH])
 
   [AVIARY_CONFIG_PATH]: ../environment_variables.md#aviary_config_path
