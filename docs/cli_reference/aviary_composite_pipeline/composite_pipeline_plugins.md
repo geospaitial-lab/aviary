@@ -2,15 +2,23 @@
   .md-sidebar--secondary { visibility: hidden }
 </style>
 
-## `aviary pipeline plugins`
+## `aviary composite-pipeline plugins`
 
 Show the registered plugins.
 
 ### **USAGE**
 
-```
-aviary pipeline plugins [OPTIONS]
-```
+=== "Default"
+
+    ```
+    aviary composite-pipeline plugins [OPTIONS]
+    ```
+
+=== "Alias"
+
+    ```
+    aviary composite plugins [OPTIONS]
+    ```
 
 ### **OPTIONS**
 

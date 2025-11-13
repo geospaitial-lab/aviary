@@ -2,15 +2,23 @@
   .md-sidebar--secondary { visibility: hidden }
 </style>
 
-## `aviary pipeline init`
+## `aviary composite-pipeline validate`
 
-Initialize a config file.
+Validate the config file.
 
 ### **USAGE**
 
-```
-aviary pipeline init [OPTIONS] CONFIG_PATH
-```
+=== "Default"
+
+    ```
+    aviary composite-pipeline validate [OPTIONS] CONFIG_PATH
+    ```
+
+=== "Alias"
+
+    ```
+    aviary composite validate [OPTIONS] CONFIG_PATH
+    ```
 
 ### **ARGUMENTS**
 
@@ -20,6 +28,5 @@ aviary pipeline init [OPTIONS] CONFIG_PATH
 
 ### **OPTIONS**
 
-- `-f, --force`: Force overwrite the config file if it already exists.
-- `-t, --template [base]`: Template for the config file - defaults to base
+- `-s, --set TEXT`: Configuration fields using key=value format
 - `--help`: Show this message and exit.

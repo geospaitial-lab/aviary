@@ -12,14 +12,15 @@ aviary’s CLI includes the following commands:
 -   [**`aviary components`**][**aviary components**]<br>
     Show the components.
 
+-   [**`aviary composite-pipeline`**][**aviary composite-pipeline**]<br>
+    [**`aviary composite`**][**aviary composite-pipeline**]<br>
+    Subcommands for the composite pipeline
+
 -   [**`aviary docs`**][**aviary docs**]<br>
     Open the documentation in a web browser.
 
 -   [**`aviary github`**][**aviary github**]<br>
     Open the GitHub repository in a web browser.
-
--   [**`aviary pipeline`**][**aviary pipeline**]<br>
-    Subcommands for the pipeline
 
 -   [**`aviary plugins`**][**aviary plugins**]<br>
     Show the registered plugins.
@@ -36,9 +37,9 @@ aviary’s CLI includes the following commands:
 
   [**aviary**]: aviary.md
   [**aviary components**]: aviary_components.md
+  [**aviary composite-pipeline**]: aviary_composite_pipeline/composite_pipeline.md
   [**aviary docs**]: aviary_docs.md
   [**aviary github**]: aviary_github.md
-  [**aviary pipeline**]: aviary_pipeline/pipeline.md
   [**aviary plugins**]: aviary_plugins.md
   [**aviary tile-pipeline**]: aviary_tile_pipeline/tile_pipeline.md
   [**aviary vector-pipeline**]: aviary_vector_pipeline/vector_pipeline.md

@@ -2,15 +2,23 @@
   .md-sidebar--secondary { visibility: hidden }
 </style>
 
-## `aviary pipeline config`
+## `aviary composite-pipeline config`
 
 Show the configuration for a component.
 
 ### **USAGE**
 
-```
-aviary pipeline config [OPTIONS] COMPONENT
-```
+=== "Default"
+
+    ```
+    aviary composite-pipeline config [OPTIONS] COMPONENT
+    ```
+
+=== "Alias"
+
+    ```
+    aviary composite config [OPTIONS] COMPONENT
+    ```
 
 ### **ARGUMENTS**
 

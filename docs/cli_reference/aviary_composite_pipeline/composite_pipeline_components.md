@@ -2,15 +2,23 @@
   .md-sidebar--secondary { visibility: hidden }
 </style>
 
-## `aviary pipeline components`
+## `aviary composite-pipeline components`
 
 Show the components.
 
 ### **USAGE**
 
-```
-aviary pipeline components [OPTIONS]
-```
+=== "Default"
+
+    ```
+    aviary composite-pipeline components [OPTIONS]
+    ```
+
+=== "Alias"
+
+    ```
+    aviary composite components [OPTIONS]
+    ```
 
 ### **OPTIONS**
 
