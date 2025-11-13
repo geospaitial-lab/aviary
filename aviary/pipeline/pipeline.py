@@ -230,6 +230,9 @@ def register_pipeline(
 class CompositePipeline:
     """Pipeline that composes multiple pipelines
 
+    Notes:
+        - Do not nest the composite pipeline inside a composite pipeline
+
     Implements the `Pipeline` protocol.
     """
 
@@ -242,6 +245,22 @@ class CompositePipeline:
             pipelines: Pipelines
         """
         self._pipelines = pipelines
+
+        self._validate()
+
+    def _validate(self) -> None:
+        """Validates the composite pipeline.
+
+        Raises:
+            AviaryUserError: Invalid `pipelines` (the pipelines contain nested composite pipelines)
+        """
+        for pipeline in self._pipelines:
+            if isinstance(pipeline, CompositePipeline):
+                message = (
+                    'Invalid config! '
+                    'The pipelines must not contain nested composite pipelines.'
+                )
+                raise AviaryUserError(message)
 
     @classmethod
     def from_config(
@@ -296,6 +315,12 @@ class CompositePipeline:
 class CompositePipelineConfig(pydantic.BaseModel):
     """Configuration for the `from_config` class method of `CompositePipeline`
 
+    Notes:
+        - Use the top level plugins_dir_path and omit the plugins_dir_path from the pipeline configurations
+
+    Create the configuration from a config file:
+        - Use null instead of None
+
     Example:
         You can create the configuration from a config file.
 
@@ -303,15 +328,36 @@ class CompositePipelineConfig(pydantic.BaseModel):
         package: 'aviary'
         name: 'CompositePipeline'
         config:
+          plugins_dir_path: null
+
           pipeline_configs:
             - ...
             ...
         ```
 
     Attributes:
+        plugins_dir_path: Path to the plugins directory -
+            defaults to None
         pipeline_configs: Configurations of the pipelines
     """
+    plugins_dir_path: Path | None = None
     pipeline_configs: list[PipelineConfig]
+
+    @pydantic.model_validator(mode='after')
+    def _validate_config(self) -> CompositePipelineConfig:
+        for pipeline_config in self.pipeline_configs:
+            config = getattr(pipeline_config, 'config', None)
+
+            plugins_dir_path = getattr(config, 'plugins_dir_path', None) if config is not None else None
+
+            if plugins_dir_path is not None:
+                message = (
+                    'Invalid config! '
+                    'The pipelines must not contain plugins_dir_path.'
+                )
+                raise ValueError(message)
+
+        return self
 
 
 _PipelineFactory.register(
