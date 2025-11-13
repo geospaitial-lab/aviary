@@ -94,33 +94,15 @@ nav:
     - CLI Reference: cli_reference/index.md
     - aviary: cli_reference/aviary.md
     - aviary components: cli_reference/aviary_components.md
-    - aviary composite-pipeline:
-        - composite-pipeline: cli_reference/aviary_composite_pipeline/composite_pipeline.md
-        - composite-pipeline components: cli_reference/aviary_composite_pipeline/composite_pipeline_components.md
-        - composite-pipeline config: cli_reference/aviary_composite_pipeline/composite_pipeline_config.md
-        - composite-pipeline init: cli_reference/aviary_composite_pipeline/composite_pipeline_init.md
-        - composite-pipeline plugins: cli_reference/aviary_composite_pipeline/composite_pipeline_plugins.md
-        - composite-pipeline run: cli_reference/aviary_composite_pipeline/composite_pipeline_run.md
-        - composite-pipeline validate: cli_reference/aviary_composite_pipeline/composite_pipeline_validate.md
+    - aviary config: cli_reference/aviary_config.md
     - aviary docs: cli_reference/aviary_docs.md
     - aviary github: cli_reference/aviary_github.md
+    - aviary pipeline:
+        - pipeline: cli_reference/aviary_pipeline/pipeline.md
+        - pipeline init: cli_reference/aviary_pipeline/pipeline_init.md
+        - pipeline run: cli_reference/aviary_pipeline/pipeline_run.md
+        - pipeline validate: cli_reference/aviary_pipeline/pipeline_validate.md
     - aviary plugins: cli_reference/aviary_plugins.md
-    - aviary tile-pipeline:
-        - tile-pipeline: cli_reference/aviary_tile_pipeline/tile_pipeline.md
-        - tile-pipeline components: cli_reference/aviary_tile_pipeline/tile_pipeline_components.md
-        - tile-pipeline config: cli_reference/aviary_tile_pipeline/tile_pipeline_config.md
-        - tile-pipeline init: cli_reference/aviary_tile_pipeline/tile_pipeline_init.md
-        - tile-pipeline plugins: cli_reference/aviary_tile_pipeline/tile_pipeline_plugins.md
-        - tile-pipeline run: cli_reference/aviary_tile_pipeline/tile_pipeline_run.md
-        - tile-pipeline validate: cli_reference/aviary_tile_pipeline/tile_pipeline_validate.md
-    - aviary vector-pipeline:
-        - vector-pipeline: cli_reference/aviary_vector_pipeline/vector_pipeline.md
-        - vector-pipeline components: cli_reference/aviary_vector_pipeline/vector_pipeline_components.md
-        - vector-pipeline config: cli_reference/aviary_vector_pipeline/vector_pipeline_config.md
-        - vector-pipeline init: cli_reference/aviary_vector_pipeline/vector_pipeline_init.md
-        - vector-pipeline plugins: cli_reference/aviary_vector_pipeline/vector_pipeline_plugins.md
-        - vector-pipeline run: cli_reference/aviary_vector_pipeline/vector_pipeline_run.md
-        - vector-pipeline validate: cli_reference/aviary_vector_pipeline/vector_pipeline_validate.md
     - Environment Variables: cli_reference/environment_variables.md
 
 not_in_nav: |

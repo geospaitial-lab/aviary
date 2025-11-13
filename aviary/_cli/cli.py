@@ -275,7 +275,7 @@ def config(  # noqa: C901, PLR0912, PLR0915
         help='Type of the component',
     ),
 ) -> None:
-    """Show the configuration for a component."""
+    """Show the configuration of a component."""
     if plugins_dir_path is not None:
         discover_plugins(plugins_dir_path=plugins_dir_path)
 
