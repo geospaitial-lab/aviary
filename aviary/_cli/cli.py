@@ -297,7 +297,7 @@ def config(  # noqa: C901, PLR0912, PLR0915
             )
             raise typer.BadParameter(
                 message=message,
-                param_hint="'component'",
+                param_hint="'COMPONENT'",
             )
     else:
         candidates = [
@@ -317,7 +317,7 @@ def config(  # noqa: C901, PLR0912, PLR0915
             )
             raise typer.BadParameter(
                 message=message,
-                param_hint="'component'",
+                param_hint="'COMPONENT'",
             )
 
         if len(candidates) > 1:
@@ -327,7 +327,7 @@ def config(  # noqa: C901, PLR0912, PLR0915
             )
             raise typer.BadParameter(
                 message=message,
-                param_hint="'component'",
+                param_hint="'COMPONENT'",
             )
 
         registry_entry = candidates[0]
