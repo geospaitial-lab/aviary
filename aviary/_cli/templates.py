@@ -13,7 +13,7 @@
 #  You should have received a copy of the GNU General Public License along with aviary.
 #  If not, see <https://www.gnu.org/licenses/>.
 
-composite_pipeline_config = '''package: 'aviary'
+composite_pipeline_base_config = '''package: 'aviary'
 name: 'CompositePipeline'
 config:
   pipeline_configs:
@@ -55,7 +55,7 @@ config:
 '''
 
 registry = {
-    ('composite_pipeline', 'base'): composite_pipeline_config,
+    ('composite_pipeline', 'base'): composite_pipeline_base_config,
     ('tile_pipeline', 'base'): tile_pipeline_base_config,
     ('vector_pipeline', 'base'): vector_pipeline_base_config,
 }
