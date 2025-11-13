@@ -231,7 +231,7 @@ def components(
     rich_help_panel='General commands',
 )
 @handle_exception
-def config(
+def config(  # noqa: C901, PLR0912, PLR0915
     component: str = typer.Argument(
         ...,
         help='Component',
@@ -260,29 +260,77 @@ def config(
         envvar='AVIARY_PLUGINS_DIR_PATH',
         help='Path to the plugins directory',
     ),
+    type_option: str | None = typer.Option(
+        None,
+        '--type',
+        '-t',
+        click_type=click.Choice(
+            choices=[
+                'tile_fetcher',
+                'tiles_processor',
+                'vector_loader',
+                'vector_processor',
+            ],
+        ),
+        help='Type of the component',
+    ),
 ) -> None:
     """Show the configuration for a component."""
     if plugins_dir_path is not None:
         discover_plugins(plugins_dir_path=plugins_dir_path)
 
-    registry = {
-        **_TileFetcherFactory.registry,
-        **_TilesProcessorFactory.registry,
-        **_VectorLoaderFactory.registry,
-        **_VectorProcessorFactory.registry,
+    registries = {
+        'tile_fetcher': _TileFetcherFactory.registry,
+        'tiles_processor': _TilesProcessorFactory.registry,
+        'vector_loader': _VectorLoaderFactory.registry,
+        'vector_processor': _VectorProcessorFactory.registry,
     }
 
     key = (package_option, component)
-    registry_entry = registry.get(key)
 
-    if registry_entry is None:
-        message = (
-            f'The component {component} from package {package_option} must be registered.'
-        )
-        raise typer.BadParameter(
-            message=message,
-            param_hint="'COMPONENT'",
-        )
+    if type_option is not None:
+        registry_entry = registries[type_option].get(key)
+
+        if registry_entry is None:
+            message = (
+                f'The component {component} from package {package_option} must be registered.'
+            )
+            raise typer.BadParameter(
+                message=message,
+                param_hint="'component'",
+            )
+    else:
+        candidates = [
+            registry_entry
+            for registry_entry in (
+                registries['tile_fetcher'].get(key),
+                registries['tiles_processor'].get(key),
+                registries['vector_loader'].get(key),
+                registries['vector_processor'].get(key),
+            )
+            if registry_entry is not None
+        ]
+
+        if not candidates:
+            message = (
+                f'The component {component} from package {package_option} must be registered.'
+            )
+            raise typer.BadParameter(
+                message=message,
+                param_hint="'component'",
+            )
+
+        if len(candidates) > 1:
+            message = (
+                'The component is ambiguous. '
+                "Use '--type' to specify the type of the component."
+            )
+            raise typer.BadParameter(
+                message=message,
+                param_hint="'component'",
+            )
+
+        registry_entry = candidates[0]
 
     _, config_class = registry_entry
     lines: list[str] = []
