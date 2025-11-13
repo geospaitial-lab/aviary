@@ -14,6 +14,7 @@ aviary pipeline init [OPTIONS] CONFIG_PATH
 
 ### **ARGUMENTS**
 
+- `PIPELINE`: Pipeline
 - `CONFIG_PATH`: Path to the config file (env var: [`AVIARY_CONFIG_PATH`][AVIARY_CONFIG_PATH])
 
   [AVIARY_CONFIG_PATH]: ../environment_variables.md#aviary_config_path

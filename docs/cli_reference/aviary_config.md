@@ -2,23 +2,15 @@
   .md-sidebar--secondary { visibility: hidden }
 </style>
 
-## `aviary vector-pipeline config`
+## `aviary config`
 
-Show the configuration for a component.
+Show the configuration of a component.
 
 ### **USAGE**
 
-=== "Default"
-
-    ```
-    aviary vector-pipeline config [OPTIONS] COMPONENT
-    ```
-
-=== "Alias"
-
-    ```
-    aviary vector config [OPTIONS] COMPONENT
-    ```
+```
+aviary config [OPTIONS] COMPONENT
+```
 
 ### **ARGUMENTS**
 
@@ -31,6 +23,7 @@ Show the configuration for a component.
 - `-p, --package TEXT`: Package of the component - defaults to aviary
 - `--plugins-dir-path PATH`: Path to the plugins directory
 (env var: [`AVIARY_PLUGINS_DIR_PATH`][AVIARY_PLUGINS_DIR_PATH])
+- `-t, --type TEXT`: Type of the component - defaults to None
 - `--help`: Show this message and exit.
 
-  [AVIARY_PLUGINS_DIR_PATH]: ../environment_variables.md#aviary_plugins_dir_path
+  [AVIARY_PLUGINS_DIR_PATH]: environment_variables.md#aviary_plugins_dir_path

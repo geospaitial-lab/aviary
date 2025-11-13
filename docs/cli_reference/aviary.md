@@ -25,11 +25,13 @@ aviary [OPTIONS] COMMAND [ARGS]...
 ### **GENERAL COMMANDS**
 
 - [`components`][components]: Show the components.
+- [`config`][config]: Show the configuration of a component.
 - [`docs`][docs]: Open the documentation in a web browser.
 - [`github`][github]: Open the GitHub repository in a web browser.
 - [`plugins`][plugins]: Show the registered plugins.
 
   [components]: aviary_components.md
+  [config]: aviary_config.md
   [docs]: aviary_docs.md
   [github]: aviary_github.md
   [plugins]: aviary_plugins.md
@@ -37,11 +39,5 @@ aviary [OPTIONS] COMMAND [ARGS]...
 ### **PIPELINE COMMANDS**
 
 - [`pipeline`][pipeline]: Subcommands for the pipeline
-- [`tile-pipeline`][tile-pipeline]: Subcommands for the tile pipeline (alias: [`tile`][tile-pipeline])
-- [`tile`][tile-pipeline]: Subcommands for the tile pipeline
-- [`vector-pipeline`][vector-pipeline]: Subcommands for the vector pipeline (alias: [`vector`][vector-pipeline])
-- [`vector`][vector-pipeline]: Subcommands for the vector pipeline
 
   [pipeline]: aviary_pipeline/pipeline.md
-  [tile-pipeline]: aviary_tile_pipeline/tile_pipeline.md
-  [vector-pipeline]: aviary_vector_pipeline/vector_pipeline.md

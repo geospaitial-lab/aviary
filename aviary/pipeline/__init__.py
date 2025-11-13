@@ -14,20 +14,21 @@
 #  If not, see <https://www.gnu.org/licenses/>.
 
 from .pipeline import (
+    CompositePipeline,
+    CompositePipelineConfig,
     Pipeline,
     PipelineConfig,
-)
-from .tile_pipeline import (
     TileLoaderConfig,
     TilePipeline,
     TilePipelineConfig,
-)
-from .vector_pipeline import (
     VectorPipeline,
     VectorPipelineConfig,
+    register_pipeline,
 )
 
 __all__ = [
+    'CompositePipeline',
+    'CompositePipelineConfig',
     'Pipeline',
     'PipelineConfig',
     'TileLoaderConfig',
@@ -35,4 +36,5 @@ __all__ = [
     'TilePipelineConfig',
     'VectorPipeline',
     'VectorPipelineConfig',
+    'register_pipeline',
 ]

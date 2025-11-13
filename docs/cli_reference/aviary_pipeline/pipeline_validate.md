@@ -8,9 +8,9 @@ Validate the config file.
 
 ### **USAGE**
 
-    ```
-    aviary pipeline validate [OPTIONS] CONFIG_PATH
-    ```
+```
+aviary pipeline validate [OPTIONS] CONFIG_PATH
+```
 
 ### **ARGUMENTS**
 
