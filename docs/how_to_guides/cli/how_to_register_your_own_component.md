@@ -135,6 +135,14 @@ plugins_dir_path: /path/to/our/plugins_dir
 
 Now you can use `MyTilesProcessor` like any other tiles processor in aviary.
 
+If you want to make your package installable, you need to add the `aviary.plugins` entry point
+to your `pyproject.toml` file.
+
+```
+[project.entry-points."aviary.plugins"]
+my_plugin_package = "my_plugin_package"
+```
+
   [register_tiles_processor]: ../../api_reference/tile/tiles_processor/tiles_processor.md#aviary.tile.register_tiles_processor
 
 ---
