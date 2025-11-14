@@ -10,16 +10,18 @@ This means that you can easily implement your own components and use them just l
 
 There are the following types of components in aviary:
 
-- [`CoordinatesFilter`][CoordinatesFilter]
 - [`TileFetcher`][TileFetcher]
 - [`TilesProcessor`][TilesProcessor]
+- [`VectorLoader`][VectorLoader]
+- [`VectorProcessor`][VectorProcessor]
 
 These are protocols that define the methods a component must have.
 Implementing them is straightforward as they only require you to implement the `__call__` method.
 
-  [CoordinatesFilter]: ../../api_reference/utils/coordinates_filter/coordinates_filter.md#aviary.utils.CoordinatesFilter
   [TileFetcher]: ../../api_reference/tile/tile_fetcher/tile_fetcher.md#aviary.tile.TileFetcher
   [TilesProcessor]: ../../api_reference/tile/tiles_processor/tiles_processor.md#aviary.tile.TilesProcessor
+  [VectorLoader]: ../../api_reference/vector/vector_loader/vector_loader.md#aviary.vector.VectorLoader
+  [VectorProcessor]: ../../api_reference/vector/vector_processor/vector_processor.md#aviary.vector.VectorProcessor
 
 ### Example
 
