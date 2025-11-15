@@ -638,7 +638,7 @@ def plugins(
     )
 
 
-def parse_config(
+def parse_config(  # noqa: C901, PLR0912
     config_path: Path,
     set_options: list[str] | None = None,
 ) -> dict:
@@ -649,7 +649,7 @@ def parse_config(
         for set_option in set_options:
             if '=' not in set_option:
                 message = (
-                    'Must be in key=value format.'
+                    'The configuration field must be in key=value format.'
                 )
                 raise typer.BadParameter(
                     message=message,
@@ -663,9 +663,63 @@ def parse_config(
             sub_keys = key.split('.')
 
             for sub_key in sub_keys[:-1]:
-                sub_config = sub_config.setdefault(sub_key, {})
+                if sub_key.isdigit():
+                    index = int(sub_key)
 
-            sub_config[sub_keys[-1]] = value
+                    if not isinstance(sub_config, list):
+                        message = (
+                            f'The key {sub_key} of the configuration field is an index, but the parent is not a list.'
+                        )
+                        raise typer.BadParameter(
+                            message=message,
+                            param_hint="'--set'",
+                        )
+
+                    while len(sub_config) <= index:
+                        sub_config.append(None)
+                    sub_config = sub_config[index]
+
+                else:
+                    if not isinstance(sub_config, dict):
+                        message = (
+                            f'The key {sub_key} of the configuration field is a key, but the parent is not a dict.'
+                        )
+                        raise typer.BadParameter(
+                            message=message,
+                            param_hint="'--set'",
+                        )
+
+                    sub_config = sub_config.setdefault(sub_key, {})
+
+            last_sub_key = sub_keys[-1]
+
+            if last_sub_key.isdigit():
+                index = int(last_sub_key)
+
+                if not isinstance(sub_config, list):
+                    message = (
+                        f'The key {last_sub_key} of the configuration field is an index, but the parent is not a list.'
+                    )
+                    raise typer.BadParameter(
+                        message=message,
+                        param_hint="'--set'",
+                    )
+
+                while len(sub_config) <= index:
+                    sub_config.append(None)
+
+                sub_config[index] = value
+            else:
+                if not isinstance(sub_config, dict):
+                    message = (
+                        f'The key {last_sub_key} of the configuration field is a key, but the parent is not a dict.'
+                    )
+                    raise typer.BadParameter(
+                        message=message,
+                        param_hint="'--set'",
+                    )
+
+                sub_config[last_sub_key] = value
 
     return config
 
