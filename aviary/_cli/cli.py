@@ -98,6 +98,40 @@ error_console = rich.console.Console(
 )
 
 
+class _QuotedStr(str):  # noqa: SLOT000
+    pass
+
+
+def _quoted_str_representer(
+    dumper: yaml.SafeDumper,
+    data: _QuotedStr,
+) -> yaml.nodes.ScalarNode:
+    return dumper.represent_scalar(
+        tag='tag:yaml.org,2002:str',
+        value=data,
+        style="'",
+    )
+
+
+yaml.add_representer(
+    data_type=_QuotedStr,
+    representer=_quoted_str_representer,
+    Dumper=yaml.SafeDumper,
+)
+
+
+def _quote_values(value: object) -> object:
+    if isinstance(value, dict):
+        return {key: _quote_values(value_) for key, value_ in value.items()}
+    if isinstance(value, list):
+        return [_quote_values(value_) for value_ in value]
+    if isinstance(value, tuple):
+        return tuple(_quote_values(value_) for value_ in value)
+    if isinstance(value, str):
+        return _QuotedStr(value)
+    return value
+
+
 def version_callback(
     value: bool,
 ) -> None:
@@ -352,9 +386,12 @@ def config(  # noqa: C901, PLR0912, PLR0915
             elif isinstance(default_value, Path):
                 default_value = str(default_value)
 
+            quoted_value = _quote_values(default_value)
             line = yaml.dump(
-                data={field_key: default_value},
+                data={field_key: quoted_value},
+                Dumper=yaml.SafeDumper,
                 default_flow_style=False,
+                sort_keys=False,
             )
             line = line.rstrip()
             lines.append(line)
@@ -365,11 +402,11 @@ def config(  # noqa: C901, PLR0912, PLR0915
     console.print(message)
 
     message = (
-        f'[green]  package:[/] {package_option}'
+        f"[green]  package:[/] '{package_option}'"
     )
     console.print(message)
     message = (
-        f'[green]  name:[/] {component}'
+        f"[green]  name:[/] '{component}'"
     )
     console.print(message)
     message = (
@@ -394,8 +431,8 @@ def config(  # noqa: C901, PLR0912, PLR0915
     if copy_option:
         indent = ' ' * (level_option * 2)
         component_lines = [
-            f'package: {package_option}',
-            f'name: {component}',
+            f"package: '{package_option}'",
+            f"name: '{component}'",
             'config:',
         ]
         lines = [f'  {line}' for line in lines]
