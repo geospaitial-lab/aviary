@@ -367,6 +367,13 @@ class AggregateProcessorConfig(pydantic.BaseModel):
     new_aggregation_layer_name: str | None = None
 
 
+_VectorProcessorFactory.register(
+    vector_processor_class=AggregateProcessor,
+    config_class=AggregateProcessorConfig,
+    package=_PACKAGE,
+)
+
+
 class ClipProcessor:
     """Vector processor that clips a layer
 
