@@ -403,7 +403,7 @@ class Grid(Iterable[Coordinates]):
         )
 
     @classmethod
-    def from_config(  # noqa: C901
+    def from_config(
         cls,
         config: GridConfig,
     ) -> Grid:
@@ -448,23 +448,15 @@ class Grid(Iterable[Coordinates]):
             message = (
                 'Invalid config! '
                 'The configuration must have exactly one of the following field combinations: '
-                'coordinates, tile_size | bounding_box_coordinates, tile_size | gpkg_path, tile_size | json_path'
+                'coordinates, tile_size | bounding_box_coordinates, tile_size | geojson_path, tile_size, epsg_code | '
+                'gpkg_path, tile_size, epsg_code | json_path'
             )
             raise AviaryUserError(message)
 
-        if config.ignore_bounding_box is not None:
-            ignore_grid = cls.from_bounding_box(
-                bounding_box=config.ignore_bounding_box,
+        if config.ignore_coordinates is not None:
+            ignore_grid = cls(
+                coordinates=config.ignore_coordinates,
                 tile_size=config.tile_size,
-                snap=config.snap,
-            )
-            grid -= ignore_grid
-
-        if config.ignore_gdf is not None:
-            ignore_grid = cls.from_gdf(
-                gdf=config.ignore_gdf,
-                tile_size=config.tile_size,
-                snap=config.snap,
             )
             grid -= ignore_grid
 
@@ -1113,7 +1105,7 @@ class GridConfig(pydantic.BaseModel):
             return None
 
         with self.json_path.open() as file:
-            return json.load(file)
+            return file.read()
 
     @property
     def ignore_json_string(self) -> str | None:
@@ -1125,7 +1117,7 @@ class GridConfig(pydantic.BaseModel):
             return None
 
         with self.ignore_json_path.open() as file:
-            return json.load(file)
+            return file.read()
 
     @pydantic.model_validator(mode='after')
     def _validate(self) -> GridConfig:
