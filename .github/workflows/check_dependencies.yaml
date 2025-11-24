@@ -47,7 +47,7 @@ jobs:
       - name: Install dependencies
         run: |
           uv pip install --upgrade pip setuptools wheel
-          uv pip install .[cli] -r dev/requirements.txt
+          uv pip install .[all] -r dev/requirements.txt
 
       - name: Check dependencies with pip-audit
         run: |

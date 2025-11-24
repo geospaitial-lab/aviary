@@ -46,7 +46,7 @@ jobs:
       - name: Install dependencies
         run: |
           uv pip install --upgrade pip setuptools wheel
-          uv pip install .[cli] -r dev/requirements/docs_requirements.txt
+          uv pip install .[all] -r dev/requirements/docs_requirements.txt
 
 #      - name: Build maps
 #        run: |
@@ -80,7 +80,7 @@ jobs:
       - name: Install dependencies
         run: |
           uv pip install --upgrade pip setuptools wheel
-          uv pip install .[cli] -r dev/requirements/docs_requirements.txt
+          uv pip install .[all] -r dev/requirements/docs_requirements.txt
 
 #      - name: Build maps
 #        run: |
