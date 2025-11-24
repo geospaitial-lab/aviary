@@ -403,7 +403,7 @@ class Grid(Iterable[Coordinates]):
         )
 
     @classmethod
-    def from_config(  # noqa: C901
+    def from_config(
         cls,
         config: GridConfig,
     ) -> Grid:
@@ -448,23 +448,15 @@ class Grid(Iterable[Coordinates]):
             message = (
                 'Invalid config! '
                 'The configuration must have exactly one of the following field combinations: '
-                'coordinates, tile_size | bounding_box_coordinates, tile_size | gpkg_path, tile_size | json_path'
+                'coordinates, tile_size | bounding_box_coordinates, tile_size | geojson_path, tile_size, epsg_code | '
+                'gpkg_path, tile_size, epsg_code | json_path'
             )
             raise AviaryUserError(message)
 
-        if config.ignore_bounding_box is not None:
-            ignore_grid = cls.from_bounding_box(
-                bounding_box=config.ignore_bounding_box,
+        if config.ignore_coordinates is not None:
+            ignore_grid = cls(
+                coordinates=config.ignore_coordinates,
                 tile_size=config.tile_size,
-                snap=config.snap,
-            )
-            grid -= ignore_grid
-
-        if config.ignore_gdf is not None:
-            ignore_grid = cls.from_gdf(
-                gdf=config.ignore_gdf,
-                tile_size=config.tile_size,
-                snap=config.snap,
             )
             grid -= ignore_grid
 
@@ -995,7 +987,8 @@ class GridConfig(pydantic.BaseModel):
     The configuration must have exactly one of the following field combinations:
         - `coordinates` and `tile_size`
         - `bounding_box_coordinates` and `tile_size`
-        - `gpkg_path` and `tile_size`
+        - `geojson_path`, `tile_size`, and `epsg_code`
+        - `gpkg_path`, `tile_size`, and `epsg_code`
         - `json_path`
 
     Create the configuration from a config file:
@@ -1012,13 +1005,13 @@ class GridConfig(pydantic.BaseModel):
           - 5715326
           - 363340
           - 5715582
+        geojson_path: null
         gpkg_path: null
         json_path: null
         ignore_coordinates: null
-        ignore_bounding_box_coordinates: null
-        ignore_gpkg_path: null
         ignore_json_path: null
         tile_size: 128
+        epsg_code: null
         snap: true
         num_chunks: null
         chunk: null
@@ -1029,19 +1022,19 @@ class GridConfig(pydantic.BaseModel):
             defaults to None
         bounding_box_coordinates: Bounding box coordinates (x_min, y_min, x_max, y_max) in meters -
             defaults to None
+        geojson_path: Path to the GeoJSON file (.geojson file) -
+            defaults to None
         gpkg_path: Path to the geopackage (.gpkg file) -
             defaults to None
         json_path: Path to the JSON file (.json file) -
             defaults to None
         ignore_coordinates: Coordinates (x_min, y_min) of each tile to ignore -
             defaults to None
-        ignore_bounding_box_coordinates: Bounding box coordinates to ignore (x_min, y_min, x_max, y_max) in meters -
-            defaults to None
-        ignore_gpkg_path: Path to the geopackage (.gpkg file) to ignore -
-            defaults to None
         ignore_json_path: Path to the JSON file (.json file) to ignore -
             defaults to None
         tile_size: Tile size in meters -
+            defaults to None
+        epsg_code: EPSG code -
             defaults to None
         snap: If True, the bounding box is snapped to `tile_size` -
             defaults to True
@@ -1052,13 +1045,13 @@ class GridConfig(pydantic.BaseModel):
     """
     coordinates: list[Coordinates] | None = None
     bounding_box_coordinates: tuple[Coordinate, Coordinate, Coordinate, Coordinate] | None = None
+    geojson_path: Path | None = None
     gpkg_path: Path | None = None
     json_path: Path | None = None
     ignore_coordinates: list[Coordinates] | None = None
-    ignore_bounding_box_coordinates: tuple[Coordinate, Coordinate, Coordinate, Coordinate] | None = None
-    ignore_gpkg_path: Path | None = None
     ignore_json_path: Path | None = None
     tile_size: TileSize | None = None
+    epsg_code: EPSGCode | None = None
     snap: bool = True
     num_chunks: int | None = None
     chunk: int | None = None
@@ -1086,10 +1079,21 @@ class GridConfig(pydantic.BaseModel):
         Returns:
             Geodataframe
         """
-        if self.gpkg_path is None:
+        if self.geojson_path is None and self.gpkg_path is None:
             return None
 
-        return gpd.read_file(self.gpkg_path)
+        if self.epsg_code is None:
+            message = (
+                'Invalid config! '
+                'The EPSG code must be specified.'
+            )
+            raise AviaryUserError(message)
+
+        path = self.geojson_path if self.geojson_path is not None else self.gpkg_path
+        gdf = gpd.read_file(path)
+        epsg_code = f'EPSG:{self.epsg_code}'
+
+        return gdf.set_crs(crs=epsg_code) if gdf.crs is None else gdf.to_crs(crs=epsg_code)
 
     @property
     def json_string(self) -> str | None:
@@ -1101,47 +1105,19 @@ class GridConfig(pydantic.BaseModel):
             return None
 
         with self.json_path.open() as file:
-            return json.load(file)
-
-    @property
-    def ignore_bounding_box(self) -> BoundingBox | None:
-        """
-        Returns:
-            Bounding box
-        """
-        if self.ignore_bounding_box_coordinates is None:
-            return None
-
-        x_min, y_min, x_max, y_max = self.ignore_bounding_box_coordinates
-        return BoundingBox(
-            x_min=x_min,
-            y_min=y_min,
-            x_max=x_max,
-            y_max=y_max,
-        )
-
-    @property
-    def ignore_gdf(self) -> gpd.GeoDataFrame | None:
-        """
-        Returns:
-            Geodataframe
-        """
-        if self.ignore_gpkg_path is None:
-            return None
-
-        return gpd.read_file(self.ignore_gpkg_path)
+            return file.read()
 
     @property
     def ignore_json_string(self) -> str | None:
         """
         Returns:
-            JSON string
+            JSON string to ignore
         """
         if self.ignore_json_path is None:
             return None
 
         with self.ignore_json_path.open() as file:
-            return json.load(file)
+            return file.read()
 
     @pydantic.model_validator(mode='after')
     def _validate(self) -> GridConfig:
@@ -1149,7 +1125,8 @@ class GridConfig(pydantic.BaseModel):
         conditions = [
             self.coordinates is not None and self.tile_size is not None,
             self.bounding_box is not None and self.tile_size is not None,
-            self.gdf is not None and self.tile_size is not None,
+            self.geojson_path is not None and self.tile_size is not None and self.epsg_code is not None,
+            self.gpkg_path is not None and self.tile_size is not None and self.epsg_code is not None,
             self.json_string is not None,
         ]
 
@@ -1157,7 +1134,8 @@ class GridConfig(pydantic.BaseModel):
             message = (
                 'Invalid config! '
                 'The configuration must have exactly one of the following field combinations: '
-                'coordinates, tile_size | bounding_box_coordinates, tile_size | gpkg_path, tile_size | json_path'
+                'coordinates, tile_size | bounding_box_coordinates, tile_size | geojson_path, tile_size, epsg_code | '
+                'gpkg_path, tile_size, epsg_code | json_path'
             )
             raise ValueError(message)
 
