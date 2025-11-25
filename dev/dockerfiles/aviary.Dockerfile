@@ -11,8 +11,7 @@ COPY . .
 RUN uv venv venv && \
     . venv/bin/activate && \
     uv pip install --upgrade pip setuptools wheel && \
-    uv pip install .[all] && \
-    uv pip install huggingface_hub onnxruntime
+    uv pip install .[all]
 
 FROM python:3.12-slim-bookworm AS runner
 

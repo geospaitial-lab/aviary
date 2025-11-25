@@ -56,9 +56,6 @@ class TilesProcessor(Protocol):
 
     Tiles processors are callables that process tiles.
 
-    Implemented models:
-        - `Adois`: Uses the adois model to detect and classify impervious surfaces
-
     Implemented tiles processors:
         - `CopyProcessor`: Copies a channel
         - `NormalizeProcessor`: Normalizes a channel
