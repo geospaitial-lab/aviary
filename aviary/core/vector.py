@@ -241,10 +241,10 @@ class Vector(Iterable[VectorLayer]):
         if not isinstance(other, Vector):
             return False
 
-        conditions = (
+        conditions = [
             self._layers == other.layers,
             self._metadata == other.metadata,
-        )
+        ]
         return all(conditions)
 
     def __len__(self) -> int:

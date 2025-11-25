@@ -347,7 +347,8 @@ def _standardize_data_item(
 def vectorize_processor(
     tiles: Tiles,
     channel_name: ChannelName | str,
-    ignore_background_class: bool = True,
+    field: str,
+    background_value: int | None = None,
     new_channel_name: ChannelName | str | None = None,
     max_num_threads: int | None = None,
 ) -> Tiles:
@@ -356,7 +357,8 @@ def vectorize_processor(
     Parameters:
         tiles: Tiles
         channel_name: Channel name
-        ignore_background_class: If True, the background class (value 0) is not vectorized
+        field: Field
+        background_value: Background value
         new_channel_name: New channel name
         max_num_threads: Maximum number of threads
 
@@ -368,7 +370,8 @@ def vectorize_processor(
         channel_name=channel_name,
         process_data_item=lambda data_item: _vectorize_data_item(
             data_item=data_item,
-            ignore_background_class=ignore_background_class,
+            field=field,
+            background_value=background_value,
         ),
         new_channel_name=new_channel_name,
         max_num_threads=max_num_threads,
@@ -410,13 +413,15 @@ def vectorize_processor(
 
 def _vectorize_data_item(
     data_item: npt.NDArray,
-    ignore_background_class: bool = True,
+    field: str,
+    background_value: int | None = None,
 ) -> npt.NDArray:
     """Vectorizes the data item.
 
     Parameters:
         data_item: Data item
-        ignore_background_class: If True, the background class (value 0) is not vectorized
+        field: Field
+        background_value: Background value
 
     Returns:
         Data item
@@ -438,7 +443,7 @@ def _vectorize_data_item(
 
     features = [
         {
-            'properties': {'class': int(value)},
+            'properties': {field: int(value)},
             'geometry': polygon,
         }
         for polygon, value
@@ -446,7 +451,7 @@ def _vectorize_data_item(
             source=data_item,
             transform=transform,
         )
-        if not ignore_background_class or int(value) != 0
+        if background_value is None or int(value) != background_value
     ]
 
     if not features:

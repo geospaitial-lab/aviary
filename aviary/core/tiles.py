@@ -574,12 +574,12 @@ class Tiles(Iterable[Channel]):
         if not isinstance(other, Tiles):
             return False
 
-        conditions = (
+        conditions = [
             self._channels == other.channels,
             np.array_equal(self._coordinates, other._coordinates),
             self._tile_size == other.tile_size,
             self._metadata == other.metadata,
-        )
+        ]
         return all(conditions)
 
     def __len__(self) -> int:
