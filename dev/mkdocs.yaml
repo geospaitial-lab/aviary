@@ -33,8 +33,6 @@ nav:
       - Vector: api_reference/core/vector.md
       - VectorLayer: api_reference/core/vector_layer.md
     - aviary.tile:
-      - Model:
-          - Adois: api_reference/tile/model/adois.md
       - TileFetcher:
           - TileFetcher: api_reference/tile/tile_fetcher/tile_fetcher.md
           - CompositeFetcher: api_reference/tile/tile_fetcher/composite_fetcher.md

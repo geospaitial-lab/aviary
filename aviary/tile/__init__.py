@@ -13,10 +13,6 @@
 #  You should have received a copy of the GNU General Public License along with aviary.
 #  If not, see <https://www.gnu.org/licenses/>.
 
-from .model import (
-    Adois,
-    AdoisConfig,
-)
 from .tile_fetcher import (
     CompositeFetcher,
     CompositeFetcherConfig,
@@ -61,8 +57,6 @@ from .tiles_processor import (
 )
 
 __all__ = [
-    'Adois',
-    'AdoisConfig',
     'CompositeFetcher',
     'CompositeFetcherConfig',
     'CopyProcessor',
