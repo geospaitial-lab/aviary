@@ -1003,19 +1003,22 @@ class VectorizeProcessor:
     def __init__(
         self,
         channel_name: ChannelName | str,
-        ignore_background_class: bool = True,
+        field: str,
+        background_value: int | None = None,
         new_channel_name: ChannelName | str | None = None,
         max_num_threads: int | None = None,
     ) -> None:
         """
         Parameters:
             channel_name: Channel name
-            ignore_background_class: If True, the background class (value 0) is not vectorized
+            field: Field
+            background_value: Background value
             new_channel_name: New channel name
             max_num_threads: Maximum number of threads
         """
         self._channel_name = channel_name
-        self._ignore_background_class = ignore_background_class
+        self._field = field
+        self._background_value = background_value
         self._new_channel_name = new_channel_name
         self._max_num_threads = max_num_threads
 
@@ -1050,7 +1053,8 @@ class VectorizeProcessor:
         return vectorize_processor(
             tiles=tiles,
             channel_name=self._channel_name,
-            ignore_background_class=self._ignore_background_class,
+            field=self._field,
+            background_value=self._background_value,
             new_channel_name=self._new_channel_name,
             max_num_threads=self._max_num_threads,
         )
@@ -1071,22 +1075,25 @@ class VectorizeProcessorConfig(pydantic.BaseModel):
         name: 'VectorizeProcessor'
         config:
           channel_name: 'my_channel'
-          ignore_background_class: true
+          field: 'my_field'
+          background_value: null
           new_channel_name: null
           max_num_threads: null
         ```
 
     Attributes:
         channel_name: Channel name
-        ignore_background_class: If True, the background class (value 0) is not vectorized -
-            defaults to True
+        field: Field
+        background_value: Background value -
+            defaults to None
         new_channel_name: New channel name -
             defaults to None
         max_num_threads: Maximum number of threads -
             defaults to None
     """
     channel_name: ChannelName | str
-    ignore_background_class: bool = True
+    field: str
+    background_value: int | None = None
     new_channel_name: ChannelName | str | None = None
     max_num_threads: int | None = None
 
