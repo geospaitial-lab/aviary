@@ -73,8 +73,8 @@ def aggregate_processor(  # noqa: C901, PLR0912
     layer_name: str,
     aggregation_layer_name: str,
     field: str,
-    classes: str | int | set[str | int] | bool | None = True,
-    background_class: str | int | None = None,
+    values: str | int | set[str | int] | bool | None = True,
+    background_value: str | int | None = None,
     absolute_area_field_suffix: str = 'absolute_area',
     relative_area_field_suffix: str = 'relative_area',
     new_aggregation_layer_name: str | None = None,
@@ -86,8 +86,8 @@ def aggregate_processor(  # noqa: C901, PLR0912
         layer_name: Layer name
         aggregation_layer_name: Aggregation layer name
         field: Field
-        classes: Class, classes, no classes (False or None), or all classes (True)
-        background_class: Background class (if None, the background class is ignored)
+        values: Value, values, no values (False or None), or all values (True)
+        background_value: Background value
         absolute_area_field_suffix: Suffix of the absolute area field
         relative_area_field_suffix: Suffix of the relative area field
         new_aggregation_layer_name: New aggregation layer name
@@ -110,14 +110,14 @@ def aggregate_processor(  # noqa: C901, PLR0912
         length=8,
     )
 
-    if classes is True:
-        classes = set(data[field].unique())
-    elif classes is False or classes is None:
+    if values is True:
+        values = set(data[field].unique())
+    elif values is False or values is None:
         return vector
-    elif isinstance(classes, (str, int)):
-        classes = {str(classes)}
+    elif isinstance(values, (str, int)):
+        values = {str(values)}
     else:
-        classes = {str(class_) for class_ in classes}
+        values = {str(value) for value in values}
 
     if not absolute_area_field_suffix.startswith('_'):
         absolute_area_field_suffix = '_' + absolute_area_field_suffix
@@ -151,42 +151,42 @@ def aggregate_processor(  # noqa: C901, PLR0912
     )
 
     mapping = {
-        class_: class_ + absolute_area_field_suffix
-        for class_ in classes
+        value: value + absolute_area_field_suffix
+        for value in values
     }
     aggregation_data = aggregation_data.rename(
         columns=mapping,
     )
 
-    for class_ in classes:
-        if class_ + absolute_area_field_suffix in aggregation_data.columns:
-            aggregation_data[class_ + absolute_area_field_suffix] = (
-                aggregation_data[class_ + absolute_area_field_suffix].fillna(0.)
+    for value in values:
+        if value + absolute_area_field_suffix in aggregation_data.columns:
+            aggregation_data[value + absolute_area_field_suffix] = (
+                aggregation_data[value + absolute_area_field_suffix].fillna(0.)
             )
         else:
-            aggregation_data[class_ + absolute_area_field_suffix] = 0.
+            aggregation_data[value + absolute_area_field_suffix] = 0.
 
     aggregation_data[temp_prefix + 'aggregation_area'] = aggregation_data.geometry.area
 
-    for class_ in classes:
-        aggregation_data[class_ + relative_area_field_suffix] = (
-            aggregation_data[class_ + absolute_area_field_suffix] / aggregation_data[temp_prefix + 'aggregation_area']
+    for value in values:
+        aggregation_data[value + relative_area_field_suffix] = (
+            aggregation_data[value + absolute_area_field_suffix] / aggregation_data[temp_prefix + 'aggregation_area']
         )
 
-    if background_class is not None:
-        background_class = str(background_class)
+    if background_value is not None:
+        background_value = str(background_value)
 
         fields = [
-            class_ + absolute_area_field_suffix
-            for class_ in classes
+            value + absolute_area_field_suffix
+            for value in values
         ]
         foreground_data = aggregation_data[fields].sum(axis=1)
 
-        aggregation_data[background_class + absolute_area_field_suffix] = (
+        aggregation_data[background_value + absolute_area_field_suffix] = (
             (aggregation_data[temp_prefix + 'aggregation_area'] - foreground_data).clip(lower=0.)
         )
-        aggregation_data[background_class + relative_area_field_suffix] = (
-            aggregation_data[background_class + absolute_area_field_suffix] /
+        aggregation_data[background_value + relative_area_field_suffix] = (
+            aggregation_data[background_value + absolute_area_field_suffix] /
             aggregation_data[temp_prefix + 'aggregation_area']
         )
 
