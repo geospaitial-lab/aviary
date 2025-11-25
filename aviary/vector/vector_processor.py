@@ -241,7 +241,7 @@ def register_vector_processor(
 class AggregateProcessor:
     """Vector processor that aggregates a layer
 
-    The polygons are aggregated by class into the aggregation layer with absolute and relative area fields.
+    The polygons are aggregated by value into the aggregation layer with absolute and relative area fields.
 
     Implements the `VectorProcessor` protocol.
     """
@@ -251,8 +251,8 @@ class AggregateProcessor:
         layer_name: str,
         aggregation_layer_name: str,
         field: str,
-        classes: str | int | set[str | int] | bool | None = True,
-        background_class: str | int | None = None,
+        values: str | int | set[str | int] | bool | None = True,
+        background_value: str | int | None = None,
         absolute_area_field_suffix: str = 'absolute_area',
         relative_area_field_suffix: str = 'relative_area',
         new_aggregation_layer_name: str | None = None,
@@ -262,8 +262,8 @@ class AggregateProcessor:
             layer_name: Layer name
             aggregation_layer_name: Aggregation layer name
             field: Field
-            classes: Class, classes, no classes (False or None), or all classes (True)
-            background_class: Background class (if None, the background class is ignored)
+            values: Value, values, no values (False or None), or all values (True)
+            background_value: Background value
             absolute_area_field_suffix: Suffix of the absolute area field
             relative_area_field_suffix: Suffix of the relative area field
             new_aggregation_layer_name: New aggregation layer name
@@ -271,8 +271,8 @@ class AggregateProcessor:
         self._layer_name = layer_name
         self._aggregation_layer_name = aggregation_layer_name
         self._field = field
-        self._classes = classes
-        self._background_class = background_class
+        self._values = values
+        self._background_value = background_value
         self._absolute_area_field_suffix = absolute_area_field_suffix
         self._relative_area_field_suffix = relative_area_field_suffix
         self._new_aggregation_layer_name = new_aggregation_layer_name
@@ -310,8 +310,8 @@ class AggregateProcessor:
             layer_name=self._layer_name,
             aggregation_layer_name=self._aggregation_layer_name,
             field=self._field,
-            classes=self._classes,
-            background_class=self._background_class,
+            values=self._values,
+            background_value=self._background_value,
             absolute_area_field_suffix=self._absolute_area_field_suffix,
             relative_area_field_suffix=self._relative_area_field_suffix,
             new_aggregation_layer_name=self._new_aggregation_layer_name,
@@ -335,8 +335,8 @@ class AggregateProcessorConfig(pydantic.BaseModel):
           layer_name: 'my_layer'
           aggregation_layer_name: 'my_aggregation_layer'
           field: 'prediction'
-          classes: true
-          background_class: null
+          values: true
+          background_value: null
           absolute_area_field_suffix: 'absolute_area'
           relative_area_field_suffix: 'relative_area'
           new_aggregation_layer_name: 'my_new_aggregation_layer'
@@ -346,9 +346,9 @@ class AggregateProcessorConfig(pydantic.BaseModel):
         layer_name: Layer name
         aggregation_layer_name: Aggregation layer name
         field: Field
-        classes: Class, classes, no classes (False or None), or all classes (True) -
+        values: Value, values, no values (False or None), or all values (True) -
             defaults to True
-        background_class: Background class (if None, the background class is ignored) -
+        background_value: Background value -
             defaults to None
         absolute_area_field_suffix: Suffix of the absolute area field -
             defaults to 'absolute_area'
@@ -360,8 +360,8 @@ class AggregateProcessorConfig(pydantic.BaseModel):
     layer_name: str
     aggregation_layer_name: str
     field: str
-    classes: str | int | set[str | int] | bool | None = True
-    background_class: str | int | None = None
+    values: str | int | set[str | int] | bool | None = True
+    background_value: str | int | None = None
     absolute_area_field_suffix: str = 'absolute_area'
     relative_area_field_suffix: str = 'relative_area'
     new_aggregation_layer_name: str | None = None
