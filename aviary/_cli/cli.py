@@ -120,6 +120,21 @@ yaml.add_representer(
 )
 
 
+def _path_join(
+    loader: yaml.SafeLoader,
+    node: yaml.nodes.Node,
+) -> Path:
+    sequence = loader.construct_sequence(node)
+    return Path(*sequence)
+
+
+yaml.add_constructor(
+    tag='!path_join',
+    constructor=_path_join,
+    Loader=yaml.SafeLoader,
+)
+
+
 def _quote_values(value: object) -> object:
     if isinstance(value, dict):
         return {key: _quote_values(value_) for key, value_ in value.items()}
