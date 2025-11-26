@@ -71,6 +71,7 @@ nav:
       - VectorExporter: api_reference/vector/vector_exporter.md
       - VectorLoader:
           - VectorLoader: api_reference/vector/vector_loader/vector_loader.md
+          - BoundingBoxLoader: api_reference/vector/vector_loader/bounding_box_loader.md
           - CompositeLoader: api_reference/vector/vector_loader/composite_loader.md
           - GPKGLoader: api_reference/vector/vector_loader/gpkg_loader.md
       - VectorProcessor:

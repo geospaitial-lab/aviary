@@ -32,10 +32,16 @@ if TYPE_CHECKING:
 
 # noinspection PyProtectedMember
 from aviary._functional.vector.vector_loader import (
+    bounding_box_loader,
     composite_loader,
     gpkg_loader,
 )
+from aviary.core.bounding_box import BoundingBox
 from aviary.core.exceptions import AviaryUserError
+from aviary.core.type_aliases import (
+    Coordinate,
+    EPSGCode,
+)
 
 if TYPE_CHECKING:
     from aviary.core.vector import Vector
@@ -50,6 +56,7 @@ class VectorLoader(Protocol):
 
     Implemented vector loaders:
         - `CompositeLoader`: Composes multiple vector loaders
+        - `BoundingBoxLoader`: Loads a vector from a bounding box
         - `GPKGLoader`: Loads a vector from a geopackage or a directory containing geopackages
     """
 
@@ -298,6 +305,110 @@ class CompositeLoaderConfig(pydantic.BaseModel):
 _VectorLoaderFactory.register(
     vector_loader_class=CompositeLoader,
     config_class=CompositeLoaderConfig,
+    package=_PACKAGE,
+)
+
+
+class BoundingBoxLoader:
+    """Vector loader for bounding boxes
+
+    Implements the `VectorLoader` protocol.
+    """
+
+    def __init__(
+        self,
+        bounding_box: BoundingBox,
+        epsg_code: EPSGCode,
+        layer_name: str,
+    ) -> None:
+        """
+        Parameters:
+            bounding_box: Bounding box
+            epsg_code: EPSG code
+            layer_name: Layer name
+        """
+        self._bounding_box = bounding_box
+        self._epsg_code = epsg_code
+        self._layer_name = layer_name
+
+    @classmethod
+    def from_config(
+        cls,
+        config: BoundingBoxLoaderConfig,
+    ) -> BoundingBoxLoader:
+        """Creates a bounding box loader from the configuration.
+
+        Parameters:
+            config: Configuration
+
+        Returns:
+            Bounding box loader
+        """
+        return cls(
+            bounding_box=config.bounding_box,
+            epsg_code=config.epsg_code,
+            layer_name=config.layer_name,
+        )
+
+    def __call__(self) -> Vector:
+        """Loads a vector from the bounding box.
+
+        Returns:
+            Vector
+        """
+        return bounding_box_loader(
+            bounding_box=self._bounding_box,
+            epsg_code=self._epsg_code,
+            layer_name=self._layer_name,
+        )
+
+
+class BoundingBoxLoaderConfig(pydantic.BaseModel):
+    """Configuration for the `from_config` class method of `BoundingBoxLoader`
+
+    Example:
+        You can create the configuration from a config file.
+
+        ``` yaml title="config.yaml"
+        package: 'aviary'
+        name: 'BoundingBoxLoader'
+        config:
+          bounding_box_coordinates:
+          - 363084
+          - 5715326
+          - 363340
+          - 5715582
+          epsg_code: 25832
+          layer_name: 'my_layer'
+        ```
+
+    Attributes:
+        bounding_box_coordinates: Bounding box coordinates (x_min, y_min, x_max, y_max) in meters
+        epsg_code: EPSG code
+        layer_name: Layer name
+    """
+    bounding_box_coordinates: tuple[Coordinate, Coordinate, Coordinate, Coordinate]
+    epsg_code: EPSGCode
+    layer_name: str
+
+    @property
+    def bounding_box(self) -> BoundingBox:
+        """
+        Returns:
+            Bounding box
+        """
+        x_min, y_min, x_max, y_max = self.bounding_box_coordinates
+        return BoundingBox(
+            x_min=x_min,
+            y_min=y_min,
+            x_max=x_max,
+            y_max=y_max,
+        )
+
+
+_VectorLoaderFactory.register(
+    vector_loader_class=BoundingBoxLoader,
+    config_class=BoundingBoxLoaderConfig,
     package=_PACKAGE,
 )
 

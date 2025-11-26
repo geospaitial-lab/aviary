@@ -23,13 +23,49 @@ if TYPE_CHECKING:
 
 import geopandas as gpd
 import pandas as pd
+from shapely.geometry import box
 
 from aviary.core.exceptions import AviaryUserError
 from aviary.core.vector import Vector
 from aviary.core.vector_layer import VectorLayer
 
 if TYPE_CHECKING:
+    from aviary.core.bounding_box import BoundingBox
+    from aviary.core.type_aliases import EPSGCode
     from aviary.vector.vector_loader import VectorLoader
+
+
+def bounding_box_loader(
+    bounding_box: BoundingBox,
+    epsg_code: EPSGCode,
+    layer_name: str,
+) -> Vector:
+    """Loads a vector from the bounding box.
+
+    Parameters:
+        bounding_box: Bounding box
+        epsg_code: EPSG code
+        layer_name: Layer name
+
+    Returns:
+        Vector
+    """
+    bounding_box = box(bounding_box.x_min, bounding_box.y_min, bounding_box.x_max, bounding_box.y_max)
+    data = gpd.GeoDataFrame(
+        geometry=[bounding_box],
+        crs=f'EPSG:{epsg_code}',
+    )
+
+    layer = VectorLayer(
+        data=data,
+        name=layer_name,
+        copy=False,
+    )
+
+    return Vector(
+        layers=[layer],
+        copy=False,
+    )
 
 
 def composite_loader(
