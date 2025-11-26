@@ -11,3 +11,6 @@
 ---
 
 ::: aviary.vector.BoundingBoxLoaderConfig
+    options:
+      filters:
+      - "!"

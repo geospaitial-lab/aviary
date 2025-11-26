@@ -18,6 +18,8 @@ from .vector_exporter import (
     VectorExporterConfig,
 )
 from .vector_loader import (
+    BoundingBoxLoader,
+    BoundingBoxLoaderConfig,
     CompositeLoader,
     CompositeLoaderConfig,
     GPKGLoader,
@@ -61,6 +63,8 @@ from .vector_processor import (
 __all__ = [
     'AggregateProcessor',
     'AggregateProcessorConfig',
+    'BoundingBoxLoader',
+    'BoundingBoxLoaderConfig',
     'ClipProcessor',
     'ClipProcessorConfig',
     'CompositeLoader',
