@@ -43,9 +43,7 @@ def composite_loader() -> CompositeLoader:
 def gpkg_loader() -> GPKGLoader:
     path = Path('test/test.gpkg')
     layer_name = 'custom'
-    max_num_threads = None
     return GPKGLoader(
         path=path,
         layer_name=layer_name,
-        max_num_threads=max_num_threads,
     )
