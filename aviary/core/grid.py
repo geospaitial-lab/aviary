@@ -1010,6 +1010,7 @@ class GridConfig(pydantic.BaseModel):
         json_path: null
         ignore_coordinates: null
         ignore_json_path: null
+        strict_ignore_json_path: true
         tile_size: 128
         epsg_code: null
         snap: true
@@ -1032,6 +1033,8 @@ class GridConfig(pydantic.BaseModel):
             defaults to None
         ignore_json_path: Path to the JSON file (.json file) to ignore -
             defaults to None
+        strict_ignore_json_path: If True, the JSON file (.json file) to ignore must exist -
+            defaults to True
         tile_size: Tile size in meters -
             defaults to None
         epsg_code: EPSG code -
@@ -1050,6 +1053,7 @@ class GridConfig(pydantic.BaseModel):
     json_path: Path | None = None
     ignore_coordinates: list[Coordinates] | None = None
     ignore_json_path: Path | None = None
+    strict_ignore_json_path: bool = True
     tile_size: TileSize | None = None
     epsg_code: EPSGCode | None = None
     snap: bool = True
@@ -1116,8 +1120,18 @@ class GridConfig(pydantic.BaseModel):
         if self.ignore_json_path is None:
             return None
 
-        with self.ignore_json_path.open() as file:
-            return file.read()
+        try:
+            with self.ignore_json_path.open() as file:
+                return file.read()
+        except FileNotFoundError as error:
+            if self.strict_ignore_json_path:
+                message = (
+                    'Invalid config! '
+                    'The JSON file (.json file) to ignore does not exist.'
+                )
+                raise ValueError(message) from error
+
+            return None
 
     @pydantic.model_validator(mode='after')
     def _validate(self) -> GridConfig:
