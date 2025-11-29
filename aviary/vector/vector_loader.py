@@ -34,6 +34,7 @@ if TYPE_CHECKING:
 from aviary._functional.vector.vector_loader import (
     bounding_box_loader,
     composite_loader,
+    geojson_loader,
     gpkg_loader,
 )
 from aviary.core.bounding_box import BoundingBox
@@ -409,6 +410,89 @@ class CompositeLoaderConfig(pydantic.BaseModel):
 _VectorLoaderFactory.register(
     vector_loader_class=CompositeLoader,
     config_class=CompositeLoaderConfig,
+    package=_PACKAGE,
+)
+
+
+class GeoJSONLoader:
+    """Vector loader for GeoJSON files
+
+    Implements the `VectorLoader` protocol.
+    """
+
+    def __init__(
+        self,
+        path: Path,
+        epsg_code: EPSGCode,
+        layer_name: str,
+    ) -> None:
+        """
+        Parameters:
+            path: Path to the GeoJSON file (.geojson file)
+            epsg_code: EPSG code
+            layer_name: Layer name
+        """
+        self._path = path
+        self._epsg_code = epsg_code
+        self._layer_name = layer_name
+
+    @classmethod
+    def from_config(
+        cls,
+        config: GeoJSONLoaderConfig,
+    ) -> GeoJSONLoader:
+        """Creates a GeoJSON loader from the configuration.
+
+        Parameters:
+            config: Configuration
+
+        Returns:
+            GeoJSON loader
+        """
+        config = config.model_dump()
+        return cls(**config)
+
+    def __call__(self) -> Vector:
+        """Loads a vector from the GeoJSON file.
+
+        Returns:
+            Vector
+        """
+        return geojson_loader(
+            path=self._path,
+            epsg_code=self._epsg_code,
+            layer_name=self._layer_name,
+        )
+
+
+class GeoJSONLoaderConfig(pydantic.BaseModel):
+    """Configuration for the `from_config` class method of `GeoJSONLoader`
+
+    Example:
+        You can create the configuration from a config file.
+
+        ``` yaml title="config.yaml"
+        package: 'aviary'
+        name: 'GeoJSONLoader'
+        config:
+          path: 'path/to/my_geojson.geojson'
+          epsg_code: 25832
+          layer_name: 'my_layer'
+        ```
+
+    Attributes:
+        path: Path to the GeoJSON file (.geojson file)
+        epsg_code: EPSG code
+        layer_name: Layer name
+    """
+    path: Path
+    epsg_code: EPSGCode
+    layer_name: str
+
+
+_VectorLoaderFactory.register(
+    vector_loader_class=GeoJSONLoader,
+    config_class=GeoJSONLoaderConfig,
     package=_PACKAGE,
 )
 
