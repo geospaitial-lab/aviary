@@ -215,100 +215,6 @@ def register_vector_loader(
     return decorator
 
 
-class CompositeLoader:
-    """Vector loader that composes multiple vector loaders
-
-    Notes:
-        - The vector loaders are called concurrently depending on the maximum number of threads
-        - If the maximum number of threads is 1, the vector loaders are composed vertically, i.e., in sequence
-        - If the maximum number of threads is greater than 1, the vector loaders are composed horizontally, i.e.,
-            in parallel
-
-    Implements the `VectorLoader` protocol.
-    """
-
-    def __init__(
-        self,
-        vector_loaders: list[VectorLoader],
-        max_num_threads: int | None = None,
-    ) -> None:
-        """
-        Parameters:
-            vector_loaders: Vector loaders
-            max_num_threads: Maximum number of threads
-        """
-        self._vector_loaders = vector_loaders
-        self._max_num_threads = max_num_threads
-
-    @classmethod
-    def from_config(
-        cls,
-        config: CompositeLoaderConfig,
-    ) -> CompositeLoader:
-        """Creates a composite loader from the configuration.
-
-        Parameters:
-            config: Configuration
-
-        Returns:
-            Composite loader
-        """
-        vector_loaders = [
-            _VectorLoaderFactory.create(config=vector_loader_config)
-            for vector_loader_config in config.vector_loader_configs
-        ]
-        return cls(
-            vector_loaders=vector_loaders,
-            max_num_threads=config.max_num_threads,
-        )
-
-    def __call__(self) -> Vector:
-        """Loads a vector from the sources.
-
-        Returns:
-            Vector
-        """
-        return composite_loader(
-            vector_loaders=self._vector_loaders,
-            max_num_threads=self._max_num_threads,
-        )
-
-
-class CompositeLoaderConfig(pydantic.BaseModel):
-    """Configuration for the `from_config` class method of `CompositeLoader`
-
-    Create the configuration from a config file:
-        - Use null instead of None
-
-    Example:
-        You can create the configuration from a config file.
-
-        ``` yaml title="config.yaml"
-        package: 'aviary'
-        name: 'CompositeLoader'
-        config:
-          vector_loader_configs:
-            - ...
-            ...
-          max_num_threads: null
-        ```
-
-    Attributes:
-        vector_loader_configs: Configurations of the vector loaders
-        max_num_threads: Maximum number of threads -
-            defaults to None
-    """
-    vector_loader_configs: list[VectorLoaderConfig]
-    max_num_threads: int | None = None
-
-
-_VectorLoaderFactory.register(
-    vector_loader_class=CompositeLoader,
-    config_class=CompositeLoaderConfig,
-    package=_PACKAGE,
-)
-
-
 class BoundingBoxLoader:
     """Vector loader for bounding boxes
 
@@ -409,6 +315,100 @@ class BoundingBoxLoaderConfig(pydantic.BaseModel):
 _VectorLoaderFactory.register(
     vector_loader_class=BoundingBoxLoader,
     config_class=BoundingBoxLoaderConfig,
+    package=_PACKAGE,
+)
+
+
+class CompositeLoader:
+    """Vector loader that composes multiple vector loaders
+
+    Notes:
+        - The vector loaders are called concurrently depending on the maximum number of threads
+        - If the maximum number of threads is 1, the vector loaders are composed vertically, i.e., in sequence
+        - If the maximum number of threads is greater than 1, the vector loaders are composed horizontally, i.e.,
+            in parallel
+
+    Implements the `VectorLoader` protocol.
+    """
+
+    def __init__(
+        self,
+        vector_loaders: list[VectorLoader],
+        max_num_threads: int | None = None,
+    ) -> None:
+        """
+        Parameters:
+            vector_loaders: Vector loaders
+            max_num_threads: Maximum number of threads
+        """
+        self._vector_loaders = vector_loaders
+        self._max_num_threads = max_num_threads
+
+    @classmethod
+    def from_config(
+        cls,
+        config: CompositeLoaderConfig,
+    ) -> CompositeLoader:
+        """Creates a composite loader from the configuration.
+
+        Parameters:
+            config: Configuration
+
+        Returns:
+            Composite loader
+        """
+        vector_loaders = [
+            _VectorLoaderFactory.create(config=vector_loader_config)
+            for vector_loader_config in config.vector_loader_configs
+        ]
+        return cls(
+            vector_loaders=vector_loaders,
+            max_num_threads=config.max_num_threads,
+        )
+
+    def __call__(self) -> Vector:
+        """Loads a vector from the sources.
+
+        Returns:
+            Vector
+        """
+        return composite_loader(
+            vector_loaders=self._vector_loaders,
+            max_num_threads=self._max_num_threads,
+        )
+
+
+class CompositeLoaderConfig(pydantic.BaseModel):
+    """Configuration for the `from_config` class method of `CompositeLoader`
+
+    Create the configuration from a config file:
+        - Use null instead of None
+
+    Example:
+        You can create the configuration from a config file.
+
+        ``` yaml title="config.yaml"
+        package: 'aviary'
+        name: 'CompositeLoader'
+        config:
+          vector_loader_configs:
+            - ...
+            ...
+          max_num_threads: null
+        ```
+
+    Attributes:
+        vector_loader_configs: Configurations of the vector loaders
+        max_num_threads: Maximum number of threads -
+            defaults to None
+    """
+    vector_loader_configs: list[VectorLoaderConfig]
+    max_num_threads: int | None = None
+
+
+_VectorLoaderFactory.register(
+    vector_loader_class=CompositeLoader,
+    config_class=CompositeLoaderConfig,
     package=_PACKAGE,
 )
 
