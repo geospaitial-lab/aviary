@@ -22,7 +22,6 @@ if TYPE_CHECKING:
     from pathlib import Path
 
 import geopandas as gpd
-from shapely.geometry import box
 
 from aviary.core.vector import Vector
 from aviary.core.vector_layer import VectorLayer
@@ -48,11 +47,7 @@ def bounding_box_loader(
     Returns:
         Vector
     """
-    bounding_box = box(bounding_box.x_min, bounding_box.y_min, bounding_box.x_max, bounding_box.y_max)
-    data = gpd.GeoDataFrame(
-        geometry=[bounding_box],
-        crs=f'EPSG:{epsg_code}',
-    )
+    data = bounding_box.to_gdf(epsg_code=epsg_code)
 
     layer = VectorLayer(
         data=data,
