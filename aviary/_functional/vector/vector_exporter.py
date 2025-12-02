@@ -29,8 +29,7 @@ if TYPE_CHECKING:
 def vector_exporter(
     vector: Vector,
     layer_name: str,
-    dir_path: Path,
-    gpkg_name: str,
+    path: Path,
     remove_layer: bool = True,
 ) -> Vector:
     """Exports the layer.
@@ -38,8 +37,7 @@ def vector_exporter(
     Parameters:
         vector: Vector
         layer_name: Layer name
-        dir_path: Path to the directory
-        gpkg_name: Name of the geopackage (.gpkg file)
+        path: Path to the geopackage (.gpkg file)
         remove_layer: If True, the layer is removed
 
     Returns:
@@ -50,10 +48,8 @@ def vector_exporter(
     gdf = layer.data
 
     if not gdf.empty:
-        gpkg_path = dir_path / gpkg_name
-
         gdf.to_file(
-            gpkg_path,
+            path,
             driver='GPKG',
             mode='w',
         )
