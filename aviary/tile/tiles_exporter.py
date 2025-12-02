@@ -128,7 +128,7 @@ class VectorExporter:
     def __init__(
         self,
         channel_name: ChannelName | str,
-        epsg_code: EPSGCode | None,
+        epsg_code: EPSGCode,
         path: Path,
         remove_channel: bool = True,
     ) -> None:
@@ -185,7 +185,6 @@ class VectorExporterConfig(pydantic.BaseModel):
     """Configuration for the `from_config` class method of `VectorExporter`
 
     Create the configuration from a config file:
-        - Use null instead of None
         - Use false or true instead of False or True
 
     Example:
@@ -209,7 +208,7 @@ class VectorExporterConfig(pydantic.BaseModel):
             defaults to True
     """
     channel_name: ChannelName | str
-    epsg_code: EPSGCode | None
+    epsg_code: EPSGCode
     path: Path
     remove_channel: bool = True
 
