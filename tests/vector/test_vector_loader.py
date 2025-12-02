@@ -77,28 +77,34 @@ def test_composite_loader_call(
 
 def test_gpkg_loader_init() -> None:
     path = Path('test/test.gpkg')
+    epsg_code = 25832
     layer_name = 'custom'
 
     gpkg_loader = GPKGLoader(
         path=path,
+        epsg_code=epsg_code,
         layer_name=layer_name,
     )
 
     assert gpkg_loader._path == path
+    assert gpkg_loader._epsg_code == epsg_code
     assert gpkg_loader._layer_name == layer_name
 
 
 def test_gpkg_loader_from_config() -> None:
     path = Path('test/test.gpkg')
+    epsg_code = 25832
     layer_name = 'custom'
     gpkg_loader_config = GPKGLoaderConfig(
         path=path,
+        epsg_code=epsg_code,
         layer_name=layer_name,
     )
 
     gpkg_loader = GPKGLoader.from_config(gpkg_loader_config)
 
     assert gpkg_loader._path == path
+    assert gpkg_loader._epsg_code == epsg_code
     assert gpkg_loader._layer_name == layer_name
 
 
@@ -115,5 +121,6 @@ def test_gpkg_loader_call(
     assert vector == expected
     mocked_gpkg_loader.assert_called_once_with(
         path=gpkg_loader._path,
+        epsg_code=gpkg_loader._epsg_code,
         layer_name=gpkg_loader._layer_name,
     )
