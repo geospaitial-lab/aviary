@@ -107,7 +107,7 @@ def vrt_fetcher(
         epsg_code: EPSG code
         channel_names: Channel name or channel names (if None, the channel is ignored)
         tile_size: Tile size in meters
-        ground_sampling_distance: Ground sampling distance in meters
+        ground_sampling_distance: Ground sampling distance in meters per pixel
         interpolation_mode: Interpolation mode (`BILINEAR` or `NEAREST`)
         buffer_size: Buffer size in meters
         fill_value: Fill value of no-data pixels
@@ -201,7 +201,7 @@ def wms_fetcher(
         response_format: Format of the response (MIME type, e.g., 'image/png')
         channel_names: Channel name or channel names (if None, the channel is ignored)
         tile_size: Tile size in meters
-        ground_sampling_distance: Ground sampling distance in meters
+        ground_sampling_distance: Ground sampling distance in meters per pixel
         style: Style
         buffer_size: Buffer size in meters
         fill_value: Fill value of no-data pixels
@@ -265,7 +265,7 @@ def _compute_tile_size_pixels(
 
     Parameters:
         tile_size: Tile size in meters
-        ground_sampling_distance: Ground sampling distance in meters
+        ground_sampling_distance: Ground sampling distance in meters per pixel
 
     Returns:
         Tile size in pixels

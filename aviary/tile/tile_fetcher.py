@@ -355,7 +355,7 @@ class VRTFetcher:
             epsg_code: EPSG code
             channel_names: Channel name or channel names (if None, the channel is ignored)
             tile_size: Tile size in meters
-            ground_sampling_distance: Ground sampling distance in meters
+            ground_sampling_distance: Ground sampling distance in meters per pixel
             interpolation_mode: Interpolation mode (`BILINEAR` or `NEAREST`)
             buffer_size: Buffer size in meters
         """
@@ -439,7 +439,7 @@ class VRTFetcherConfig(pydantic.BaseModel):
         epsg_code: EPSG code
         channel_names: Channel name or channel names (if None, the channel is ignored)
         tile_size: Tile size in meters
-        ground_sampling_distance: Ground sampling distance in meters
+        ground_sampling_distance: Ground sampling distance in meters per pixel
         interpolation_mode: Interpolation mode (`BILINEAR` or `NEAREST`) -
             defaults to `BILINEAR`
         buffer_size: Buffer size in meters (specifies the area around the tile that is additionally fetched) -
@@ -497,7 +497,7 @@ class WMSFetcher:
             response_format: Format of the response (MIME type, e.g., 'image/png')
             channel_names: Channel name or channel names (if None, the channel is ignored)
             tile_size: Tile size in meters
-            ground_sampling_distance: Ground sampling distance in meters
+            ground_sampling_distance: Ground sampling distance in meters per pixel
             style: Style
             buffer_size: Buffer size in meters
         """
@@ -593,7 +593,7 @@ class WMSFetcherConfig(pydantic.BaseModel):
         response_format: Format of the response (MIME type, e.g., 'image/png')
         channel_names: Channel name or channel names (if None, the channel is ignored)
         tile_size: Tile size in meters
-        ground_sampling_distance: Ground sampling distance in meters
+        ground_sampling_distance: Ground sampling distance in meters per pixel
         style: Style -
             defaults to None
         buffer_size: Buffer size in meters -

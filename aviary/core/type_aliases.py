@@ -42,7 +42,7 @@ FractionalBufferSize: TypeAlias = float
 """Buffer size as a fraction of the spatial extent of the data"""
 
 GroundSamplingDistance: TypeAlias = float
-"""Ground sampling distance in meters"""
+"""Ground sampling distance in meters per pixel"""
 
 TileSize: TypeAlias = int
 """Tile size in meters"""
