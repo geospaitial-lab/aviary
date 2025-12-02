@@ -42,8 +42,10 @@ def composite_loader() -> CompositeLoader:
 @pytest.fixture(scope='session')
 def gpkg_loader() -> GPKGLoader:
     path = Path('test/test.gpkg')
+    epsg_code = 25832
     layer_name = 'custom'
     return GPKGLoader(
         path=path,
+        epsg_code=epsg_code,
         layer_name=layer_name,
     )

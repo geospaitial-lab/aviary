@@ -112,7 +112,8 @@ def geojson_loader(
         Vector
     """
     data = gpd.read_file(path)
-    data = data.to_crs(f'EPSG:{epsg_code}')
+    epsg_code = f'EPSG:{epsg_code}'
+    data = data.to_crs(crs=epsg_code)
 
     layer = VectorLayer(
         data=data,
@@ -128,18 +129,23 @@ def geojson_loader(
 
 def gpkg_loader(
     path: Path,
+    epsg_code: EPSGCode,
     layer_name: str,
 ) -> Vector:
     """Loads a vector from the geopackage.
 
     Parameters:
         path: Path to the geopackage (.gpkg file)
+        epsg_code: EPSG code
         layer_name: Layer name
 
     Returns:
         Vector
     """
     data = gpd.read_file(path)
+    epsg_code = f'EPSG:{epsg_code}'
+    data = data.to_crs(crs=epsg_code)
+
     layer = VectorLayer(
         data=data,
         name=layer_name,

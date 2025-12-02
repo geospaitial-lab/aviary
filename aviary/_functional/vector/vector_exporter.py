@@ -22,6 +22,7 @@ if TYPE_CHECKING:
 
 
 if TYPE_CHECKING:
+    from aviary.core.type_aliases import EPSGCode
     from aviary.core.vector import Vector
     from aviary.core.vector_layer import VectorLayer
 
@@ -29,6 +30,7 @@ if TYPE_CHECKING:
 def vector_exporter(
     vector: Vector,
     layer_name: str,
+    epsg_code: EPSGCode,
     path: Path,
     remove_layer: bool = True,
 ) -> Vector:
@@ -37,6 +39,7 @@ def vector_exporter(
     Parameters:
         vector: Vector
         layer_name: Layer name
+        epsg_code: EPSG code
         path: Path to the geopackage (.gpkg file)
         remove_layer: If True, the layer is removed
 
@@ -45,9 +48,12 @@ def vector_exporter(
     """
     layer: VectorLayer = vector[layer_name]
 
+    epsg_code = f'EPSG:{epsg_code}'
     gdf = layer.data
 
     if not gdf.empty:
+        gdf = gdf.to_crs(crs=epsg_code)
+
         gdf.to_file(
             path,
             driver='GPKG',
