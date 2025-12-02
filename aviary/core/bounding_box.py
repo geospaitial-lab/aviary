@@ -448,7 +448,7 @@ class BoundingBox(Iterable[Coordinate]):
 
     def to_gdf(
         self,
-        epsg_code: EPSGCode | None,
+        epsg_code: EPSGCode,
     ) -> gpd.GeoDataFrame:
         """Converts the bounding box to a geodataframe.
 
@@ -461,7 +461,7 @@ class BoundingBox(Iterable[Coordinate]):
         geometry = [
             box(self._x_min, self._y_min, self._x_max, self._y_max),
         ]
-        epsg_code = f'EPSG:{epsg_code}' if epsg_code is not None else None
+        epsg_code = f'EPSG:{epsg_code}'
         return gpd.GeoDataFrame(
             geometry=geometry,
             crs=epsg_code,

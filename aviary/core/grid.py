@@ -945,7 +945,7 @@ class Grid(Iterable[Coordinates]):
 
     def to_gdf(
         self,
-        epsg_code: EPSGCode | None,
+        epsg_code: EPSGCode,
     ) -> gpd.GeoDataFrame:
         """Converts the grid to a geodataframe.
 
@@ -959,7 +959,7 @@ class Grid(Iterable[Coordinates]):
             box(x_min, y_min, x_min + self._tile_size, y_min + self._tile_size)
             for x_min, y_min in self
         ]
-        epsg_code = f'EPSG:{epsg_code}' if epsg_code is not None else None
+        epsg_code = f'EPSG:{epsg_code}'
         return gpd.GeoDataFrame(
             geometry=geometry,
             crs=epsg_code,
