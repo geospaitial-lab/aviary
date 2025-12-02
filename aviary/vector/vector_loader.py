@@ -34,6 +34,7 @@ if TYPE_CHECKING:
 from aviary._functional.vector.vector_loader import (
     bounding_box_loader,
     composite_loader,
+    geojson_loader,
     gpkg_loader,
 )
 from aviary.core.bounding_box import BoundingBox
@@ -55,8 +56,9 @@ class VectorLoader(Protocol):
     Vector loaders are callables that load a vector from a source.
 
     Implemented vector loaders:
-        - `CompositeLoader`: Composes multiple vector loaders
         - `BoundingBoxLoader`: Loads a vector from a bounding box
+        - `CompositeLoader`: Composes multiple vector loaders
+        - `GeoJSONLoader`: Loads a vector from a GeoJSON file
         - `GPKGLoader`: Loads a vector from a geopackage
     """
 
@@ -215,100 +217,6 @@ def register_vector_loader(
     return decorator
 
 
-class CompositeLoader:
-    """Vector loader that composes multiple vector loaders
-
-    Notes:
-        - The vector loaders are called concurrently depending on the maximum number of threads
-        - If the maximum number of threads is 1, the vector loaders are composed vertically, i.e., in sequence
-        - If the maximum number of threads is greater than 1, the vector loaders are composed horizontally, i.e.,
-            in parallel
-
-    Implements the `VectorLoader` protocol.
-    """
-
-    def __init__(
-        self,
-        vector_loaders: list[VectorLoader],
-        max_num_threads: int | None = None,
-    ) -> None:
-        """
-        Parameters:
-            vector_loaders: Vector loaders
-            max_num_threads: Maximum number of threads
-        """
-        self._vector_loaders = vector_loaders
-        self._max_num_threads = max_num_threads
-
-    @classmethod
-    def from_config(
-        cls,
-        config: CompositeLoaderConfig,
-    ) -> CompositeLoader:
-        """Creates a composite loader from the configuration.
-
-        Parameters:
-            config: Configuration
-
-        Returns:
-            Composite loader
-        """
-        vector_loaders = [
-            _VectorLoaderFactory.create(config=vector_loader_config)
-            for vector_loader_config in config.vector_loader_configs
-        ]
-        return cls(
-            vector_loaders=vector_loaders,
-            max_num_threads=config.max_num_threads,
-        )
-
-    def __call__(self) -> Vector:
-        """Loads a vector from the sources.
-
-        Returns:
-            Vector
-        """
-        return composite_loader(
-            vector_loaders=self._vector_loaders,
-            max_num_threads=self._max_num_threads,
-        )
-
-
-class CompositeLoaderConfig(pydantic.BaseModel):
-    """Configuration for the `from_config` class method of `CompositeLoader`
-
-    Create the configuration from a config file:
-        - Use null instead of None
-
-    Example:
-        You can create the configuration from a config file.
-
-        ``` yaml title="config.yaml"
-        package: 'aviary'
-        name: 'CompositeLoader'
-        config:
-          vector_loader_configs:
-            - ...
-            ...
-          max_num_threads: null
-        ```
-
-    Attributes:
-        vector_loader_configs: Configurations of the vector loaders
-        max_num_threads: Maximum number of threads -
-            defaults to None
-    """
-    vector_loader_configs: list[VectorLoaderConfig]
-    max_num_threads: int | None = None
-
-
-_VectorLoaderFactory.register(
-    vector_loader_class=CompositeLoader,
-    config_class=CompositeLoaderConfig,
-    package=_PACKAGE,
-)
-
-
 class BoundingBoxLoader:
     """Vector loader for bounding boxes
 
@@ -409,6 +317,183 @@ class BoundingBoxLoaderConfig(pydantic.BaseModel):
 _VectorLoaderFactory.register(
     vector_loader_class=BoundingBoxLoader,
     config_class=BoundingBoxLoaderConfig,
+    package=_PACKAGE,
+)
+
+
+class CompositeLoader:
+    """Vector loader that composes multiple vector loaders
+
+    Notes:
+        - The vector loaders are called concurrently depending on the maximum number of threads
+        - If the maximum number of threads is 1, the vector loaders are composed vertically, i.e., in sequence
+        - If the maximum number of threads is greater than 1, the vector loaders are composed horizontally, i.e.,
+            in parallel
+
+    Implements the `VectorLoader` protocol.
+    """
+
+    def __init__(
+        self,
+        vector_loaders: list[VectorLoader],
+        max_num_threads: int | None = None,
+    ) -> None:
+        """
+        Parameters:
+            vector_loaders: Vector loaders
+            max_num_threads: Maximum number of threads
+        """
+        self._vector_loaders = vector_loaders
+        self._max_num_threads = max_num_threads
+
+    @classmethod
+    def from_config(
+        cls,
+        config: CompositeLoaderConfig,
+    ) -> CompositeLoader:
+        """Creates a composite loader from the configuration.
+
+        Parameters:
+            config: Configuration
+
+        Returns:
+            Composite loader
+        """
+        vector_loaders = [
+            _VectorLoaderFactory.create(config=vector_loader_config)
+            for vector_loader_config in config.vector_loader_configs
+        ]
+        return cls(
+            vector_loaders=vector_loaders,
+            max_num_threads=config.max_num_threads,
+        )
+
+    def __call__(self) -> Vector:
+        """Loads a vector from the sources.
+
+        Returns:
+            Vector
+        """
+        return composite_loader(
+            vector_loaders=self._vector_loaders,
+            max_num_threads=self._max_num_threads,
+        )
+
+
+class CompositeLoaderConfig(pydantic.BaseModel):
+    """Configuration for the `from_config` class method of `CompositeLoader`
+
+    Create the configuration from a config file:
+        - Use null instead of None
+
+    Example:
+        You can create the configuration from a config file.
+
+        ``` yaml title="config.yaml"
+        package: 'aviary'
+        name: 'CompositeLoader'
+        config:
+          vector_loader_configs:
+            - ...
+            ...
+          max_num_threads: null
+        ```
+
+    Attributes:
+        vector_loader_configs: Configurations of the vector loaders
+        max_num_threads: Maximum number of threads -
+            defaults to None
+    """
+    vector_loader_configs: list[VectorLoaderConfig]
+    max_num_threads: int | None = None
+
+
+_VectorLoaderFactory.register(
+    vector_loader_class=CompositeLoader,
+    config_class=CompositeLoaderConfig,
+    package=_PACKAGE,
+)
+
+
+class GeoJSONLoader:
+    """Vector loader for GeoJSON files
+
+    Implements the `VectorLoader` protocol.
+    """
+
+    def __init__(
+        self,
+        path: Path,
+        epsg_code: EPSGCode,
+        layer_name: str,
+    ) -> None:
+        """
+        Parameters:
+            path: Path to the GeoJSON file (.geojson file)
+            epsg_code: EPSG code
+            layer_name: Layer name
+        """
+        self._path = path
+        self._epsg_code = epsg_code
+        self._layer_name = layer_name
+
+    @classmethod
+    def from_config(
+        cls,
+        config: GeoJSONLoaderConfig,
+    ) -> GeoJSONLoader:
+        """Creates a GeoJSON loader from the configuration.
+
+        Parameters:
+            config: Configuration
+
+        Returns:
+            GeoJSON loader
+        """
+        config = config.model_dump()
+        return cls(**config)
+
+    def __call__(self) -> Vector:
+        """Loads a vector from the GeoJSON file.
+
+        Returns:
+            Vector
+        """
+        return geojson_loader(
+            path=self._path,
+            epsg_code=self._epsg_code,
+            layer_name=self._layer_name,
+        )
+
+
+class GeoJSONLoaderConfig(pydantic.BaseModel):
+    """Configuration for the `from_config` class method of `GeoJSONLoader`
+
+    Example:
+        You can create the configuration from a config file.
+
+        ``` yaml title="config.yaml"
+        package: 'aviary'
+        name: 'GeoJSONLoader'
+        config:
+          path: 'path/to/my_geojson.geojson'
+          epsg_code: 25832
+          layer_name: 'my_layer'
+        ```
+
+    Attributes:
+        path: Path to the GeoJSON file (.geojson file)
+        epsg_code: EPSG code
+        layer_name: Layer name
+    """
+    path: Path
+    epsg_code: EPSGCode
+    layer_name: str
+
+
+_VectorLoaderFactory.register(
+    vector_loader_class=GeoJSONLoader,
+    config_class=GeoJSONLoaderConfig,
     package=_PACKAGE,
 )
 
