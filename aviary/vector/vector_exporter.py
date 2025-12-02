@@ -40,20 +40,17 @@ class VectorExporter:
     def __init__(
         self,
         layer_name: str,
-        dir_path: Path,
-        gpkg_name: str,
+        path: Path,
         remove_layer: bool = True,
     ) -> None:
         """
         Parameters:
             layer_name: Layer name
-            dir_path: Path to the directory
-            gpkg_name: Name of the geopackage (.gpkg file)
+            path: Path to the geopackage (.gpkg file)
             remove_layer: If True, the layer is removed
         """
         self._layer_name = layer_name
-        self._dir_path = dir_path
-        self._gpkg_name = gpkg_name
+        self._path = path
         self._remove_layer = remove_layer
 
     @classmethod
@@ -87,8 +84,7 @@ class VectorExporter:
         return vector_exporter(
             vector=vector,
             layer_name=self._layer_name,
-            dir_path=self._dir_path,
-            gpkg_name=self._gpkg_name,
+            path=self._path,
             remove_layer=self._remove_layer,
         )
 
@@ -108,21 +104,18 @@ class VectorExporterConfig(pydantic.BaseModel):
         name: 'VectorExporter'
         config:
           layer_name: 'my_layer'
-          dir_path: 'path/to/my/directory'
-          gpkg_name: 'my_layer.gpkg'
+          path: 'path/to/my_layer.gpkg'
           remove_layer: true
         ```
 
     Attributes:
         layer_name: Layer name
-        dir_path: Path to the directory
-        gpkg_name: Name of the geopackage (.gpkg file)
+        path: Path to the geopackage (.gpkg file)
         remove_layer: If True, the layer is removed -
             defaults to True
     """
     layer_name: str
-    dir_path: Path
-    gpkg_name: str
+    path: Path
     remove_layer: bool = True
 
 
