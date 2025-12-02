@@ -33,10 +33,7 @@ import geopandas as gpd
 import numpy as np
 import numpy.typing as npt
 
-# noinspection PyProtectedMember
 from aviary._functional.utils.coordinates_filter import duplicates_filter
-
-# noinspection PyProtectedMember
 from aviary._utils.validators import validate_name
 from aviary.core.enums import (
     ChannelName,
@@ -202,7 +199,6 @@ class Channel(ABC, Iterable[object]):
         if observer_tiles is None:
             return
 
-        # noinspection PyProtectedMember
         observer_tiles._validate()  # noqa: SLF001
 
     @property

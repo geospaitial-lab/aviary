@@ -21,7 +21,6 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     import geopandas as gpd
 
-# noinspection PyProtectedMember
 from aviary._utils.validators import validate_name
 
 if TYPE_CHECKING:
@@ -139,7 +138,6 @@ class VectorLayer:
         if observer_vector is None:
             return
 
-        # noinspection PyProtectedMember
         observer_vector._validate()  # noqa: SLF001
 
     @property

@@ -20,7 +20,6 @@ from typing import TYPE_CHECKING
 
 import pydantic
 
-# noinspection PyProtectedMember
 from aviary._functional.tile.tiles_exporter import (
     grid_exporter,
     vector_exporter,

@@ -29,7 +29,6 @@ import pydantic
 if TYPE_CHECKING:
     from pydantic_core.core_schema import ValidationInfo
 
-# noinspection PyProtectedMember
 from aviary._functional.vector.vector_processor import (
     aggregate_processor,
     clip_processor,

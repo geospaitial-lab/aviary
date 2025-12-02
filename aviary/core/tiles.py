@@ -29,7 +29,6 @@ import numpy as np
 if TYPE_CHECKING:
     import numpy.typing as npt
 
-# noinspection PyProtectedMember
 from aviary._functional.utils.coordinates_filter import duplicates_filter
 from aviary.core.channel import (
     Channel,
@@ -97,7 +96,6 @@ class Tiles(Iterable[Channel]):
             self._copy_metadata()
 
         for channel in self:
-            # noinspection PyProtectedMember
             channel._register_observer_tiles(observer_tiles=self)  # noqa: SLF001
 
     def _validate(self) -> None:
@@ -556,7 +554,6 @@ class Tiles(Iterable[Channel]):
         self.__dict__ = state
 
         for channel in self:
-            # noinspection PyProtectedMember
             channel._register_observer_tiles(observer_tiles=self)  # noqa: SLF001
 
     def __eq__(
@@ -753,7 +750,6 @@ class Tiles(Iterable[Channel]):
             self._validate()
 
             for channel in channels:
-                # noinspection PyProtectedMember
                 channel._register_observer_tiles(observer_tiles=self)  # noqa: SLF001
 
             return self
@@ -880,7 +876,6 @@ class Tiles(Iterable[Channel]):
             self._validate()
 
             for channel in removed_channels:
-                # noinspection PyProtectedMember
                 channel._unregister_observer_tiles()  # noqa: SLF001
 
             return self

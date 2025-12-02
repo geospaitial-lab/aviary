@@ -31,7 +31,6 @@ import numpy as np
 import pydantic
 from shapely.geometry import box
 
-# noinspection PyProtectedMember
 from aviary._functional.utils.coordinates_filter import (
     duplicates_filter,
     geospatial_filter,

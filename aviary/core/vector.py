@@ -61,7 +61,6 @@ class Vector(Iterable[VectorLayer]):
             self._copy_metadata()
 
         for layer in self:
-            # noinspection PyProtectedMember
             layer._register_observer_vector(observer_vector=self)  # noqa: SLF001
 
     def _validate(self) -> None:
@@ -223,7 +222,6 @@ class Vector(Iterable[VectorLayer]):
         self.__dict__ = state
 
         for layer in self:
-            # noinspection PyProtectedMember
             layer._register_observer_vector(observer_vector=self)  # noqa: SLF001
 
     def __eq__(
@@ -363,7 +361,6 @@ class Vector(Iterable[VectorLayer]):
             self._validate()
 
             for layer in layers:
-                # noinspection PyProtectedMember
                 layer._register_observer_vector(observer_vector=self)  # noqa: SLF001
 
             return self
@@ -438,7 +435,6 @@ class Vector(Iterable[VectorLayer]):
             self._validate()
 
             for layer in removed_layers:
-                # noinspection PyProtectedMember
                 layer._unregister_observer_vector()  # noqa: SLF001
 
             return self
