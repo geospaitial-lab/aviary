@@ -56,8 +56,9 @@ class VectorLoader(Protocol):
     Vector loaders are callables that load a vector from a source.
 
     Implemented vector loaders:
-        - `CompositeLoader`: Composes multiple vector loaders
         - `BoundingBoxLoader`: Loads a vector from a bounding box
+        - `CompositeLoader`: Composes multiple vector loaders
+        - `GeoJSONLoader`: Loads a vector from a GeoJSON file
         - `GPKGLoader`: Loads a vector from a geopackage
     """
 
