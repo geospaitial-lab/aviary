@@ -96,6 +96,36 @@ def composite_loader(
     )
 
 
+def geojson_loader(
+    path: Path,
+    epsg_code: EPSGCode,
+    layer_name: str,
+) -> Vector:
+    """Loads a vector from the GeoJSON file.
+
+    Parameters:
+        path: Path to the GeoJSON file (.geojson file)
+        epsg_code: EPSG code
+        layer_name: Layer name
+
+    Returns:
+        Vector
+    """
+    data = gpd.read_file(path)
+    data = data.to_crs(f'EPSG:{epsg_code}')
+
+    layer = VectorLayer(
+        data=data,
+        name=layer_name,
+        copy=False,
+    )
+
+    return Vector(
+        layers=[layer],
+        copy=False,
+    )
+
+
 def gpkg_loader(
     path: Path,
     layer_name: str,
