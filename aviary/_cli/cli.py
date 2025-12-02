@@ -39,11 +39,7 @@ except ImportError as error:
     raise ImportError(message) from error
 
 from aviary import __version__
-
-# noinspection PyProtectedMember
 from aviary._cli.templates import registry as template_registry
-
-# noinspection PyProtectedMember
 from aviary._utils.plugins import (
     discover_local_plugins,
     discover_packaged_plugins,
@@ -52,17 +48,9 @@ from aviary.pipeline.pipeline import (
     PipelineConfig,
     _PipelineFactory,
 )
-
-# noinspection PyProtectedMember
 from aviary.tile.tile_fetcher import _TileFetcherFactory
-
-# noinspection PyProtectedMember
 from aviary.tile.tiles_processor import _TilesProcessorFactory
-
-# noinspection PyProtectedMember
 from aviary.vector.vector_loader import _VectorLoaderFactory
-
-# noinspection PyProtectedMember
 from aviary.vector.vector_processor import _VectorProcessorFactory
 
 _PACKAGE = 'aviary'

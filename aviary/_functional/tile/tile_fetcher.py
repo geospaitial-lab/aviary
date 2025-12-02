@@ -29,8 +29,6 @@ import rasterio.windows
 import requests
 
 from aviary.core.bounding_box import BoundingBox
-
-# noinspection PyProtectedMember
 from aviary.core.enums import (
     ChannelName,
     InterpolationMode,
