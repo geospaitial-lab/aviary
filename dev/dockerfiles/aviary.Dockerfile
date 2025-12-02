@@ -24,7 +24,7 @@ ARG VERSION
 
 LABEL org.opencontainers.image.authors="Marius Maryniak (marius.maryniak@w-hs.de)" \
     org.opencontainers.image.created=$CREATED \
-    org.opencontainers.image.description="Python Framework for tile-based processing of geospatial data" \
+    org.opencontainers.image.description="Pythonic framework for AI inference on geospatial data" \
     org.opencontainers.image.documentation="https://geospaitial-lab.github.io/aviary" \
     org.opencontainers.image.licenses="GPL-3.0" \
     org.opencontainers.image.source="https://www.github.com/geospaitial-lab/aviary" \

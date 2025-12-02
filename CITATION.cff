@@ -8,8 +8,7 @@ authors:
   - name: geospaitial lab
 repository-code: 'https://www.github.com/geospaitial-lab/aviary'
 abstract: >-
-  Composable inference and postprocessing pipeline for
-  remote sensing data
+  Pythonic framework for AI inference on geospatial data
 keywords:
   - python
   - artificial-intelligence
