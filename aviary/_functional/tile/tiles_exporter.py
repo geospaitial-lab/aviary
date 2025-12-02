@@ -34,15 +34,13 @@ if TYPE_CHECKING:
 
 def grid_exporter(
     tiles: Tiles,
-    dir_path: Path,
-    json_name: str,
+    path: Path,
 ) -> Tiles:
     """Exports the grid of the tiles.
 
     Parameters:
         tiles: Tiles
-        dir_path: Path to the directory
-        json_name: Name of the JSON file (.json file)
+        path: Path to the JSON file (.json file)
 
     Returns:
         Tiles
@@ -50,10 +48,8 @@ def grid_exporter(
     coordinates = tiles.coordinates
     tile_size = tiles.tile_size
 
-    json_path = dir_path / json_name
-
     try:
-        with json_path.open() as file:
+        with path.open() as file:
             json_string = file.read()
 
         grid = Grid.from_json(json_string=json_string)
@@ -66,7 +62,7 @@ def grid_exporter(
     grid = grid.append(coordinates=coordinates)
     json_string = grid.to_json()
 
-    with json_path.open('w') as file:
+    with path.open('w') as file:
         file.write(json_string)
 
     return tiles
@@ -76,8 +72,7 @@ def vector_exporter(
     tiles: Tiles,
     channel_name: ChannelName | str,
     epsg_code: EPSGCode | None,
-    dir_path: Path,
-    gpkg_name: str,
+    path: Path,
     remove_channel: bool = True,
 ) -> Tiles:
     """Exports the vector channel.
@@ -86,8 +81,7 @@ def vector_exporter(
         tiles: Tiles
         channel_name: Channel name
         epsg_code: EPSG code
-        dir_path: Path to the directory
-        gpkg_name: Name of the geopackage (.gpkg file)
+        path: Path to the geopackage (.gpkg file)
         remove_channel: If True, the channel is removed
 
     Returns:
@@ -115,10 +109,8 @@ def vector_exporter(
             inplace=True,
         )
 
-        gpkg_path = dir_path / gpkg_name
-
         gdf.to_file(
-            gpkg_path,
+            path,
             driver='GPKG',
             mode='a',
         )
