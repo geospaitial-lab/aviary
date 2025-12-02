@@ -46,16 +46,13 @@ class GridExporter:
 
     def __init__(
         self,
-        dir_path: Path,
-        json_name: str,
+        path: Path,
     ) -> None:
         """
         Parameters:
-            dir_path: Path to the directory
-            json_name: Name of the JSON file (.json file)
+            path: Path to the JSON file (.json file)
         """
-        self._dir_path = dir_path
-        self._json_name = json_name
+        self._path = path
 
     @classmethod
     def from_config(
@@ -87,8 +84,7 @@ class GridExporter:
         """
         return grid_exporter(
             tiles=tiles,
-            dir_path=self._dir_path,
-            json_name=self._json_name,
+            path=self._path,
         )
 
 
@@ -102,16 +98,13 @@ class GridExporterConfig(pydantic.BaseModel):
         package: 'aviary'
         name: 'GridExporter'
         config:
-          dir_path: 'path/to/my/directory'
-          json_name: 'processed_grid.json'
+          path: 'path/to/my_processed_grid.json'
         ```
 
     Attributes:
-        dir_path: Path to the directory
-        json_name: Name of the JSON file (.json file)
+        path: Path to the JSON file (.json file)
     """
-    dir_path: Path
-    json_name: str
+    path: Path
 
 
 _TilesProcessorFactory.register(
@@ -136,22 +129,19 @@ class VectorExporter:
         self,
         channel_name: ChannelName | str,
         epsg_code: EPSGCode | None,
-        dir_path: Path,
-        gpkg_name: str,
+        path: Path,
         remove_channel: bool = True,
     ) -> None:
         """
         Parameters:
             channel_name: Channel name
             epsg_code: EPSG code
-            dir_path: Path to the directory
-            gpkg_name: Name of the geopackage (.gpkg file)
+            path: Path to the geopackage (.gpkg file)
             remove_channel: If True, the channel is removed
         """
         self._channel_name = channel_name
         self._epsg_code = epsg_code
-        self._dir_path = dir_path
-        self._gpkg_name = gpkg_name
+        self._path = path
         self._remove_channel = remove_channel
 
     @classmethod
@@ -186,8 +176,7 @@ class VectorExporter:
             tiles=tiles,
             channel_name=self._channel_name,
             epsg_code=self._epsg_code,
-            dir_path=self._dir_path,
-            gpkg_name=self._gpkg_name,
+            path=self._path,
             remove_channel=self._remove_channel,
         )
 
@@ -208,23 +197,20 @@ class VectorExporterConfig(pydantic.BaseModel):
         config:
           channel_name: 'my_channel'
           epsg_code: 25832
-          dir_path: 'path/to/my/directory'
-          gpkg_name: 'my_channel.gpkg'
+          path: 'path/to/my_channel.gpkg'
           remove_channel: true
         ```
 
     Attributes:
         channel_name: Channel name
         epsg_code: EPSG code
-        dir_path: Path to the directory
-        gpkg_name: Name of the geopackage (.gpkg file)
+        path: Path to the geopackage (.gpkg file)
         remove_channel: If True, the channel is removed -
             defaults to True
     """
     channel_name: ChannelName | str
     epsg_code: EPSGCode | None
-    dir_path: Path
-    gpkg_name: str
+    path: Path
     remove_channel: bool = True
 
 
