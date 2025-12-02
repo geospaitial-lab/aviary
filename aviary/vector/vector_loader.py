@@ -507,14 +507,17 @@ class GPKGLoader:
     def __init__(
         self,
         path: Path,
+        epsg_code: EPSGCode,
         layer_name: str,
     ) -> None:
         """
         Parameters:
             path: Path to the geopackage (.gpkg file)
+            epsg_code: EPSG code
             layer_name: Layer name
         """
         self._path = path
+        self._epsg_code = epsg_code
         self._layer_name = layer_name
 
     @classmethod
@@ -541,6 +544,7 @@ class GPKGLoader:
         """
         return gpkg_loader(
             path=self._path,
+            epsg_code=self._epsg_code,
             layer_name=self._layer_name,
         )
 
@@ -556,14 +560,17 @@ class GPKGLoaderConfig(pydantic.BaseModel):
         name: 'GPKGLoader'
         config:
           path: 'path/to/my_gpkg.gpkg'
+          epsg_code: 25832
           layer_name: 'my_layer'
         ```
 
     Attributes:
         path: Path to the geopackage (.gpkg file)
+        epsg_code: EPSG code
         layer_name: Layer name
     """
     path: Path
+    epsg_code: EPSGCode
     layer_name: str
 
 

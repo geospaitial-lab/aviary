@@ -21,6 +21,7 @@ from typing import TYPE_CHECKING
 import pydantic
 
 from aviary._functional.vector.vector_exporter import vector_exporter
+from aviary.core.type_aliases import EPSGCode
 from aviary.vector.vector_processor import _VectorProcessorFactory
 
 if TYPE_CHECKING:
@@ -40,16 +41,19 @@ class VectorExporter:
     def __init__(
         self,
         layer_name: str,
+        epsg_code: EPSGCode,
         path: Path,
         remove_layer: bool = True,
     ) -> None:
         """
         Parameters:
             layer_name: Layer name
+            epsg_code: EPSG code
             path: Path to the geopackage (.gpkg file)
             remove_layer: If True, the layer is removed
         """
         self._layer_name = layer_name
+        self._epsg_code = epsg_code
         self._path = path
         self._remove_layer = remove_layer
 
@@ -84,6 +88,7 @@ class VectorExporter:
         return vector_exporter(
             vector=vector,
             layer_name=self._layer_name,
+            epsg_code=self._epsg_code,
             path=self._path,
             remove_layer=self._remove_layer,
         )
@@ -93,7 +98,6 @@ class VectorExporterConfig(pydantic.BaseModel):
     """Configuration for the `from_config` class method of `VectorExporter`
 
     Create the configuration from a config file:
-        - Use null instead of None
         - Use false or true instead of False or True
 
     Example:
@@ -104,17 +108,20 @@ class VectorExporterConfig(pydantic.BaseModel):
         name: 'VectorExporter'
         config:
           layer_name: 'my_layer'
+          epsg_code: 25832
           path: 'path/to/my_layer.gpkg'
           remove_layer: true
         ```
 
     Attributes:
         layer_name: Layer name
+        epsg_code: EPSG code
         path: Path to the geopackage (.gpkg file)
         remove_layer: If True, the layer is removed -
             defaults to True
     """
     layer_name: str
+    epsg_code: EPSGCode
     path: Path
     remove_layer: bool = True
 
