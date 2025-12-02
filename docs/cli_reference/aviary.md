@@ -4,7 +4,7 @@
 
 ## `aviary`
 
-Python Framework for tile-based processing of geospatial data
+Pythonic framework for AI inference on geospatial data
 
 ### **USAGE**
 
