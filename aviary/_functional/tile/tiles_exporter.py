@@ -71,7 +71,7 @@ def grid_exporter(
 def vector_exporter(
     tiles: Tiles,
     channel_name: ChannelName | str,
-    epsg_code: EPSGCode | None,
+    epsg_code: EPSGCode,
     path: Path,
     remove_channel: bool = True,
 ) -> Tiles:
@@ -100,7 +100,7 @@ def vector_exporter(
         ignore_index=True,
         copy=False,
     )
-    epsg_code = f'EPSG:{epsg_code}' if epsg_code is not None else None
+    epsg_code = f'EPSG:{epsg_code}'
     gdf = gpd.GeoDataFrame(data=data)
 
     if not gdf.empty:
