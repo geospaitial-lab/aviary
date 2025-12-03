@@ -40,49 +40,31 @@
   [Chat Badge]: https://img.shields.io/matrix/geospaitial-lab-aviary%3Amatrix.org?color=black&label=Chat&logo=matrix
   [Chat]: https://matrix.to/#/#geospaitial-lab-aviary:matrix.org
 
-aviary provides composable components for tile-based processing of geospatial data.
-This enables you to easily run models on large datasets, export the predictions in a
-georeferenced file format and postprocess them for further downstream tasks.<br />
-Besides the pipelines, aviary also provides task-specific models for remote sensing applications.
-
-aviary is designed upon the following concepts:
+aviary is the pythonic way to run your AI models on geospatial data
+with minimal boilerplate – from quick prototyping to production-grade pipelines.
 
 - **High-level Python API**<br />
-  Abstract components for building pipelines without boilerplate code
+  Define and run pipelines from composable components instead of writing ad‑hoc scripts
 
-- **Command-line interface (CLI)**<br />
-  Run the pre-built pipelines easily without writing any code
+- **Config‑driven CLI**<br />
+  Define and run the same pipelines with the command-line interface using a simple declarative config file
 
-- **Customizable pipelines**<br />
-  Compose your own pipelines with the provided components
+- **Extensible by design**<br />
+  Add custom components via a plugin registry and distribute them as a plugin package
 
-- **Extensible components**<br />
-  Add your own components to the pipeline
+- **AI framework-agnostic**<br />
+  Use models from PyTorch, TensorFlow, ONNX, or scikit‑learn
 
-- **Support for large datasets**<br />
-  Tile-based processing for large datasets (local, remote or web services)
-
-- **Support for geospatial data**<br />
-  Export predictions as geodata, ready for downstream tasks
-
-- **Task-agnostic**<br />
-  Process geospatial data with a range of machine learning tasks
-
-- **ML-framework agnostic**<br />
-  Use your favorite machine learning framework
+---
 
 ## Installation
-
-You can choose between two installation methods, whether you need access to the Python API or
-the command-line interface (CLI) only.
-If you just want to use the pre-built pipelines with the command-line interface, you can use the Docker image.
-
-### Installation with pip
 
 ⚠️ **Note**: aviary is currently released as a pre-release version.
 To install the latest version, you need to add the `--pre` flag.
 
-```
+### Installation with pip
+
+```bash
 pip install geospaitial-lab-aviary
 ```
 
@@ -94,7 +76,7 @@ Have a look at the [installation guide][installation guide pip] for further info
 
 ### Installation with uv
 
-```
+```bash
 uv pip install geospaitial-lab-aviary
 ```
 
@@ -106,13 +88,15 @@ Have a look at the [installation guide][installation guide uv] for further infor
 
 ### Installation with Docker
 
-```
+```bash
 docker pull ghcr.io/geospaitial-lab/aviary
 ```
 
 Have a look at the [installation guide][installation guide docker] for further information.
 
   [installation guide docker]: https://geospaitial-lab.github.io/aviary/how_to_guides/installation/how_to_install_aviary_with_docker
+
+---
 
 ## Next steps
 
