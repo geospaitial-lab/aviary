@@ -120,17 +120,18 @@ Have a look at the [how-to guides] to get started.
 
   [how-to guides]: https://geospaitial-lab.github.io/aviary/how_to_guides
 
+---
+
 ## Documentation
 
-The full documentation is available at [geospaitial-lab.github.io/aviary].
+The documentation is available at [geospaitial-lab.github.io/aviary].
 
   [geospaitial-lab.github.io/aviary]: https://geospaitial-lab.github.io/aviary
 
-## About
+---
 
-aviary is developed by the [geospaitial lab]
-at the [Westfälische Hochschule - Westphalian University of Applied Sciences]
-in Gelsenkirchen, Germany.
+## License
 
-  [geospaitial lab]: https://www.github.com/geospaitial-lab
-  [Westfälische Hochschule - Westphalian University of Applied Sciences]: https://www.w-hs.de
+aviary is licensed under the [GPL-3.0 license].
+
+  [GPL-3.0 license]: LICENSE.md
