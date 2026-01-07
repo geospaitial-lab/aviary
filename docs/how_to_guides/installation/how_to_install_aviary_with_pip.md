@@ -51,16 +51,6 @@ Once activated, you should see its name – in this case, `venv` – in your ter
 
 Install aviary using pip.
 
-!!! warning
-    aviary is currently released as a pre-release version.<br>
-    To install the latest version, you need to explicitly specify its [version]:
-
-    ```
-    pip install geospaitial-lab-aviary==VERSION
-    ```
-
-  [version]: https://github.com/geospaitial-lab/aviary/releases
-
 === "Default"
 
     ```

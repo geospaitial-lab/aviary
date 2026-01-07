@@ -62,16 +62,6 @@ Once activated, you should see its name – in this case, `venv` – in your ter
 
 Install aviary using uv pip.
 
-!!! warning
-    aviary is currently released as a pre-release version.<br>
-    To install the latest version, you need to explicitly specify its [version]:
-
-    ```
-    uv pip install geospaitial-lab-aviary==VERSION
-    ```
-
-  [version]: https://github.com/geospaitial-lab/aviary/releases
-
 === "Default"
 
     ```
@@ -101,16 +91,6 @@ Note that there are optional dependency groups:
 
 In case you only need the CLI, aviary can be installed globally as a tool.
 
-!!! warning
-    aviary is currently released as a pre-release version.<br>
-    To install the latest version, you need to explicitly specify its [version]:
-
-    ```
-    uv tool install geospaitial-lab-aviary==VERSION
-    ```
-
-  [version]: https://github.com/geospaitial-lab/aviary/releases
-
 ```
 uv tool install geospaitial-lab-aviary[cli]
 ```
@@ -125,16 +105,6 @@ For more information, you can refer to the
 #### Install aviary using uv add
 
 If you already use an uv-managed project, you can simply add aviary.
-
-!!! warning
-    aviary is currently released as a pre-release version.<br>
-    To install the latest version, you need to explicitly specify its [version]:
-
-    ```
-    uv add geospaitial-lab-aviary==VERSION
-    ```
-
-  [version]: https://github.com/geospaitial-lab/aviary/releases
 
 === "Default"
 

@@ -26,16 +26,6 @@ If you need help, you can refer to the
 
 Install aviary using Docker.
 
-!!! warning
-    aviary is currently released as a pre-release version.<br>
-    To install the latest version, you need to explicitly specify its [sha tag]:
-
-    ```
-    docker pull ghcr.io/geospaitial-lab/aviary:SHA_TAG
-    ```
-
-  [sha tag]: https://github.com/geospaitial-lab/aviary/pkgs/container/aviary
-
 ```
 docker pull ghcr.io/geospaitial-lab/aviary
 ```
