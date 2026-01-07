@@ -28,9 +28,6 @@ with minimal boilerplate – from quick prototyping to production-grade pipeline
 
 ## Installation
 
-⚠️ **Note**: aviary is currently released as a pre-release version.
-To install the latest version, you need to add the `--pre` flag.
-
 === "pip"
 
     ```
