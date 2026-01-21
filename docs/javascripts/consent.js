@@ -4,9 +4,9 @@ const maps = [
   { path: '../../../how_to_guides/api/maps/bounding_box_from_gdf_districts.html', containerId: 'bounding-box-from-gdf-districts' },
   { path: '../../../how_to_guides/api/maps/bounding_box_and.html', containerId: 'bounding-box-and' },
   { path: '../../../how_to_guides/api/maps/bounding_box_or.html', containerId: 'bounding-box-or' },
-  { path: '../../../how_to_guides/api/maps/bounding_box_buffer_positive.html', containerId: 'bounding-box-buffer-1' },
-  { path: '../../../how_to_guides/api/maps/bounding_box_buffer_negative.html', containerId: 'bounding-box-buffer-2' },
-  { path: '../../../how_to_guides/api/maps/bounding_box_quantize.html', containerId: 'bounding-box-snap' },
+  { path: '../../../how_to_guides/api/maps/bounding_box_buffer_1.html', containerId: 'bounding-box-buffer-1' },
+  { path: '../../../how_to_guides/api/maps/bounding_box_buffer_2.html', containerId: 'bounding-box-buffer-2' },
+  { path: '../../../how_to_guides/api/maps/bounding_box_snap.html', containerId: 'bounding-box-snap' },
 ];
 
 const showMap = (path, containerId) => {

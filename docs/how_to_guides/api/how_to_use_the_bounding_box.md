@@ -303,3 +303,167 @@ BoundingBox(
 ```
 
 <div id="bounding-box-or"></div>
+
+### Buffer the bounding box
+
+You can expand the bounding box using the [`buffer`][buffer] method.
+
+  [buffer]: ../../api_reference/core/bounding_box.md#aviary.BoundingBox.buffer
+
+``` python
+bounding_box = aviary.BoundingBox(
+    x_min=363084,
+    y_min=5715326,
+    x_max=363340,
+    y_max=5715582,
+)
+
+print(bounding_box)
+```
+
+``` title="Output"
+BoundingBox(
+    x_min=363084,
+    y_min=5715326,
+    x_max=363340,
+    y_max=5715582,
+)
+```
+
+``` python
+buffered_bounding_box = bounding_box.buffer(buffer_size=64)
+
+print(buffered_bounding_box)
+```
+
+``` title="Output"
+BoundingBox(
+    x_min=363020,
+    y_min=5715262,
+    x_max=363404,
+    y_max=5715646,
+)
+```
+
+<div id="bounding-box-buffer-1"></div>
+
+You can also shrink the bounding box using the [`buffer`][buffer] method.
+
+  [buffer]: ../../api_reference/core/bounding_box.md#aviary.BoundingBox.buffer
+
+``` python
+bounding_box = aviary.BoundingBox(
+    x_min=363084,
+    y_min=5715326,
+    x_max=363340,
+    y_max=5715582,
+)
+
+print(bounding_box)
+```
+
+``` title="Output"
+BoundingBox(
+    x_min=363084,
+    y_min=5715326,
+    x_max=363340,
+    y_max=5715582,
+)
+```
+
+``` python
+buffered_bounding_box = bounding_box.buffer(buffer_size=-64)
+
+print(buffered_bounding_box)
+```
+
+``` title="Output"
+BoundingBox(
+    x_min=363148,
+    y_min=5715390,
+    x_max=363276,
+    y_max=5715518,
+)
+```
+
+<div id="bounding-box-buffer-2"></div>
+
+### Snap the bounding box
+
+You can align the bounding box to a grid with the [`snap`][snap] method.
+
+  [snap]: ../../api_reference/core/bounding_box.md#aviary.BoundingBox.snap
+
+``` python
+bounding_box = aviary.BoundingBox(
+    x_min=363084,
+    y_min=5715326,
+    x_max=363340,
+    y_max=5715582,
+)
+
+print(bounding_box)
+```
+
+``` title="Output"
+BoundingBox(
+    x_min=363084,
+    y_min=5715326,
+    x_max=363340,
+    y_max=5715582,
+)
+```
+
+``` python
+snapped_bounding_box = bounding_box.snap(value=128)
+
+print(snapped_bounding_box)
+```
+
+``` title="Output"
+BoundingBox(
+    x_min=363008,
+    y_min=5715200,
+    x_max=363392,
+    y_max=5715584,
+)
+```
+
+<div id="bounding-box-snap"></div>
+
+### Convert the bounding box to a geodataframe
+
+You can convert the bounding box to a geodataframe using the [`to_gdf`][to_gdf] method.
+
+  [to_gdf]: ../../api_reference/core/bounding_box.md#aviary.BoundingBox.to_gdf
+
+``` python
+bounding_box = aviary.BoundingBox(
+    x_min=363084,
+    y_min=5715326,
+    x_max=363340,
+    y_max=5715582,
+)
+
+print(bounding_box)
+```
+
+``` title="Output"
+BoundingBox(
+    x_min=363084,
+    y_min=5715326,
+    x_max=363340,
+    y_max=5715582,
+)
+```
+
+``` python
+gdf = bounding_box.to_gdf(epsg_code=25832)
+
+print(gdf)
+```
+
+``` title="Output"
+                                            geometry
+0  POLYGON ((363340 5715326, 363340 5715582, 3630...
+```
