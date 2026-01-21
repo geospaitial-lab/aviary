@@ -195,3 +195,111 @@ BoundingBox(
 ```
 
 <div id="bounding-box-from-gdf-districts"></div>
+
+### Intersect bounding boxes
+
+You can intersect two bounding boxes using the `&` operator.
+
+``` python
+bounding_box_1 = aviary.BoundingBox(
+    x_min=363084,
+    y_min=5715326,
+    x_max=363340,
+    y_max=5715582,
+)
+bounding_box_2 = aviary.BoundingBox(
+    x_min=363212,
+    y_min=5715454,
+    x_max=363468,
+    y_max=5715710,
+)
+
+print(bounding_box_1)
+print(bounding_box_2)
+```
+
+``` title="Output"
+BoundingBox(
+    x_min=363084,
+    y_min=5715326,
+    x_max=363340,
+    y_max=5715582,
+)
+BoundingBox(
+    x_min=363212,
+    y_min=5715454,
+    x_max=363468,
+    y_max=5715710,
+)
+```
+
+``` python
+bounding_box = bounding_box_1 & bounding_box_2
+
+print(bounding_box)
+```
+
+``` title="Output"
+BoundingBox(
+    x_min=363212,
+    y_min=5715454,
+    x_max=363340,
+    y_max=5715582,
+)
+```
+
+<div id="bounding-box-and"></div>
+
+### Unite bounding boxes
+
+You can unite two bounding boxes using the `|` operator.
+
+``` python
+bounding_box_1 = aviary.BoundingBox(
+    x_min=363084,
+    y_min=5715326,
+    x_max=363340,
+    y_max=5715582,
+)
+bounding_box_2 = aviary.BoundingBox(
+    x_min=363212,
+    y_min=5715454,
+    x_max=363468,
+    y_max=5715710,
+)
+
+print(bounding_box_1)
+print(bounding_box_2)
+```
+
+``` title="Output"
+BoundingBox(
+    x_min=363084,
+    y_min=5715326,
+    x_max=363340,
+    y_max=5715582,
+)
+BoundingBox(
+    x_min=363212,
+    y_min=5715454,
+    x_max=363468,
+    y_max=5715710,
+)
+```
+
+``` python
+bounding_box = bounding_box_1 | bounding_box_2
+
+print(bounding_box)
+```
+
+``` title="Output"
+BoundingBox(
+    x_min=363084,
+    y_min=5715326,
+    x_max=363468,
+    y_max=5715710,
+)
+```
+
+<div id="bounding-box-or"></div>
