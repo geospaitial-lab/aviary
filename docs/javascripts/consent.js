@@ -1,25 +1,12 @@
 const maps = [
   { path: '../../../how_to_guides/api/maps/bounding_box.html', containerId: 'bounding-box' },
-  { path: '../../../how_to_guides/api/maps/bounding_box_setter.html', containerId: 'bounding-box-setter' },
   { path: '../../../how_to_guides/api/maps/bounding_box_from_gdf.html', containerId: 'bounding-box-from-gdf' },
   { path: '../../../how_to_guides/api/maps/bounding_box_from_gdf_districts.html', containerId: 'bounding-box-from-gdf-districts' },
+  { path: '../../../how_to_guides/api/maps/bounding_box_from_gdf_districts.html', containerId: 'bounding-box-intersection' },
+  { path: '../../../how_to_guides/api/maps/bounding_box_from_gdf_districts.html', containerId: 'bounding-box-union' },
   { path: '../../../how_to_guides/api/maps/bounding_box_buffer_positive.html', containerId: 'bounding-box-buffer-1' },
   { path: '../../../how_to_guides/api/maps/bounding_box_buffer_negative.html', containerId: 'bounding-box-buffer-2' },
-  { path: '../../../how_to_guides/api/maps/bounding_box_quantize.html', containerId: 'bounding-box-quantize' },
-  { path: '../../../how_to_guides/api/maps/process_area.html', containerId: 'process-area' },
-  { path: '../../../how_to_guides/api/maps/process_area_setter_coordinates.html', containerId: 'process-area-setter-coordinates' },
-  { path: '../../../how_to_guides/api/maps/process_area_setter_tile_size.html', containerId: 'process-area-setter-tile-size' },
-  { path: '../../../how_to_guides/api/maps/process_area_from_bounding_box.html', containerId: 'process-area-from-bounding-box' },
-  { path: '../../../how_to_guides/api/maps/process_area_from_bounding_box_tile_size.html', containerId: 'process-area-from-bounding-box-tile-size' },
-  { path: '../../../how_to_guides/api/maps/process_area_from_bounding_box_quantize.html', containerId: 'process-area-from-bounding-box-quantize' },
-  { path: '../../../how_to_guides/api/maps/process_area_from_gdf.html', containerId: 'process-area-from-gdf' },
-  { path: '../../../how_to_guides/api/maps/process_area_from_gdf_districts.html', containerId: 'process-area-from-gdf-districts' },
-  { path: '../../../how_to_guides/api/maps/process_area_add.html', containerId: 'process-area-add' },
-  { path: '../../../how_to_guides/api/maps/process_area_sub.html', containerId: 'process-area-sub' },
-  { path: '../../../how_to_guides/api/maps/process_area_and.html', containerId: 'process-area-and' },
-  { path: '../../../how_to_guides/api/maps/process_area_append.html', containerId: 'process-area-append' },
-  { path: '../../../how_to_guides/api/maps/process_area_filter_difference.html', containerId: 'process-area-filter-difference' },
-  { path: '../../../how_to_guides/api/maps/process_area_filter_intersection.html', containerId: 'process-area-filter-intersection' },
+  { path: '../../../how_to_guides/api/maps/bounding_box_quantize.html', containerId: 'bounding-box-snap' },
 ];
 
 const showMap = (path, containerId) => {

@@ -5,6 +5,7 @@ from pathlib import Path
 
 import folium
 import geopandas as gpd
+from shapely.geometry import box
 
 import aviary
 
@@ -12,6 +13,8 @@ import aviary
 def build_maps() -> None:
     """Builds the maps for the docs."""
     build_bounding_box_map()
+    build_bounding_box_from_gdf_map()
+    build_bounding_box_from_gdf_districts_map()
 
 
 def build_bounding_box_map() -> None:
@@ -41,6 +44,84 @@ def build_bounding_box_map() -> None:
     build_map(
         layers=layers,
         path=path,
+    )
+
+
+def build_bounding_box_from_gdf_map() -> None:
+    """Builds the bounding_box_from_gdf map."""
+    gdf = gpd.GeoDataFrame(
+        geometry=[box(363084, 5715326, 363340, 5715582)],
+        crs='EPSG:25832',
+    )
+
+    bounding_box = aviary.BoundingBox.from_gdf(gdf=gdf)
+
+    bounding_box_gdf = bounding_box.to_gdf(epsg_code=25832)
+    bounding_box_style = {
+        'fillOpacity': .2,
+        'color': 'black',
+        'weight': 2,
+    }
+    bounding_box_layer = Layer(
+        gdf=bounding_box_gdf,
+        style=bounding_box_style,
+    )
+
+    gdf_style = {
+        'fillOpacity': 0.,
+        'color': '#E7000B',
+        'weight': 2,
+    }
+    gdf_layer = Layer(
+        gdf=gdf,
+        style=gdf_style,
+    )
+
+    layers = [bounding_box_layer, gdf_layer]
+    dir_path = Path(__file__).parents[1] / 'how_to_guides' / 'api' / 'maps'
+    path = dir_path / 'bounding_box_from_gdf.html'
+
+    build_map(
+        layers=layers,
+        path=path,
+    )
+
+
+def build_bounding_box_from_gdf_districts_map() -> None:
+    """Builds the bounding_box_from_gdf_districts map."""
+    gdf = gpd.read_file('docs/how_to_guides/api/data/districts.geojson')
+
+    bounding_box = aviary.BoundingBox.from_gdf(gdf=gdf)
+
+    bounding_box_gdf = bounding_box.to_gdf(epsg_code=25832)
+    bounding_box_style = {
+        'fillOpacity': .2,
+        'color': 'black',
+        'weight': 2,
+    }
+    bounding_box_layer = Layer(
+        gdf=bounding_box_gdf,
+        style=bounding_box_style,
+    )
+
+    gdf_style = {
+        'fillOpacity': 0.,
+        'color': '#E7000B',
+        'weight': 2,
+    }
+    gdf_layer = Layer(
+        gdf=gdf,
+        style=gdf_style,
+    )
+
+    layers = [bounding_box_layer, gdf_layer]
+    dir_path = Path(__file__).parents[1] / 'how_to_guides' / 'api' / 'maps'
+    path = dir_path / 'bounding_box_from_gdf_districts.html'
+
+    build_map(
+        layers=layers,
+        path=path,
+        zoom_start=10,
     )
 
 
