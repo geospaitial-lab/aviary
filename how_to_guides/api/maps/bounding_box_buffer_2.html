@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_8b769326a73418cb0852195d95770ef9 {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+
+            <style>html, body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            </style>
+
+            <style>#map {
+                position:absolute;
+                top:0;
+                bottom:0;
+                right:0;
+                left:0;
+                }
+            </style>
+
+            <script>
+                L_NO_TOUCH = false;
+                L_DISABLE_3D = false;
+            </script>
+
+        
+</head>
+<body>
+    
+    
+            <div class="folium-map" id="map_8b769326a73418cb0852195d95770ef9" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_8b769326a73418cb0852195d95770ef9 = L.map(
+                "map_8b769326a73418cb0852195d95770ef9",
+                {
+                    center: [51.573539260600036, 7.026086355470164],
+                    crs: L.CRS.EPSG3857,
+                    ...{
+  "zoom": 16,
+  "zoomControl": true,
+  "preferCanvas": false,
+}
+
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_ac172dd9b2217a549a9a7678eb1a97c8 = L.tileLayer(
+                "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                {
+  "minZoom": 0,
+  "maxZoom": 19,
+  "maxNativeZoom": 19,
+  "noWrap": false,
+  "attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors",
+  "subdomains": "abc",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_ac172dd9b2217a549a9a7678eb1a97c8.addTo(map_8b769326a73418cb0852195d95770ef9);
+        
+    
+        function geo_json_3fcb7326a208d12652f06923b13a2320_styler(feature) {
+            switch(feature.id) {
+                default:
+                    return {"color": "black", "fillOpacity": 0.2, "weight": 2};
+            }
+        }
+
+        function geo_json_3fcb7326a208d12652f06923b13a2320_onEachFeature(feature, layer) {
+
+            layer.on({
+            });
+        };
+        var geo_json_3fcb7326a208d12652f06923b13a2320 = L.geoJson(null, {
+                onEachFeature: geo_json_3fcb7326a208d12652f06923b13a2320_onEachFeature,
+            
+                style: geo_json_3fcb7326a208d12652f06923b13a2320_styler,
+            ...{
+}
+        });
+
+        function geo_json_3fcb7326a208d12652f06923b13a2320_add (data) {
+            geo_json_3fcb7326a208d12652f06923b13a2320
+                .addData(data);
+        }
+            geo_json_3fcb7326a208d12652f06923b13a2320_add({"bbox": [7.025138464424288, 51.572948607418816, 7.02703422324884, 51.57412990709759], "features": [{"bbox": [7.025138464424288, 51.572948607418816, 7.02703422324884, 51.57412990709759], "geometry": {"coordinates": [[[7.02703422324884, 51.57297966343839], [7.026984406555689, 51.57412990709759], [7.025138464424288, 51.57409884980566], [7.025188327651836, 51.572948607418816], [7.02703422324884, 51.57297966343839]]], "type": "Polygon"}, "id": "0", "properties": {}, "type": "Feature"}], "type": "FeatureCollection"});
+
+        
+    
+            geo_json_3fcb7326a208d12652f06923b13a2320.addTo(map_8b769326a73418cb0852195d95770ef9);
+        
+    
+        function geo_json_efc505af8c33544af2f627b8147144a9_styler(feature) {
+            switch(feature.id) {
+                default:
+                    return {"color": "#E7000B", "fillOpacity": 0.0, "weight": 2};
+            }
+        }
+
+        function geo_json_efc505af8c33544af2f627b8147144a9_onEachFeature(feature, layer) {
+
+            layer.on({
+            });
+        };
+        var geo_json_efc505af8c33544af2f627b8147144a9 = L.geoJson(null, {
+                onEachFeature: geo_json_efc505af8c33544af2f627b8147144a9_onEachFeature,
+            
+                style: geo_json_efc505af8c33544af2f627b8147144a9_styler,
+            ...{
+}
+        });
+
+        function geo_json_efc505af8c33544af2f627b8147144a9_add (data) {
+            geo_json_efc505af8c33544af2f627b8147144a9
+                .addData(data);
+        }
+            geo_json_efc505af8c33544af2f627b8147144a9_add({"bbox": [7.024190550110513, 51.572357947554366, 7.027982067761017, 51.57472054691106], "features": [{"bbox": [7.024190550110513, 51.572357947554366, 7.027982067761017, 51.57472054691106], "geometry": {"coordinates": [[[7.027982067761017, 51.57242005832117], [7.027882480909258, 51.57472054691106], [7.024190550110513, 51.57465843105481], [7.024290323099866, 51.572357947554366], [7.027982067761017, 51.57242005832117]]], "type": "Polygon"}, "id": "0", "properties": {}, "type": "Feature"}], "type": "FeatureCollection"});
+
+        
+    
+            geo_json_efc505af8c33544af2f627b8147144a9.addTo(map_8b769326a73418cb0852195d95770ef9);
+        
+</script>
+</html>
