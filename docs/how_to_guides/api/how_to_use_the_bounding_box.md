@@ -19,3 +19,33 @@ View [API reference]
   [notebook colab]: https://www.githubtocolab.com/geospaitial-lab/aviary/blob/main/docs/how_to_guides/api/notebooks/how_to_use_the_bounding_box.ipynb
   [Google Colab]: https://colab.google
   [notebook github]: https://www.github.com/geospaitial-lab/aviary/blob/main/docs/how_to_guides/api/notebooks/how_to_use_the_bounding_box.ipynb
+
+### Create a bounding box
+
+You can pass the coordinates to the initializer of the bounding box.
+
+``` python
+import aviary
+
+bounding_box = aviary.BoundingBox(
+    x_min=363084,
+    y_min=5715326,
+    x_max=363340,
+    y_max=5715582,
+)
+
+print(bounding_box)
+```
+
+``` title="Output"
+BoundingBox(
+    x_min=363084,
+    y_min=5715326,
+    x_max=363340,
+    y_max=5715582,
+)
+```
+
+We can visualize the bounding box.
+
+<div id="bounding-box"></div>
