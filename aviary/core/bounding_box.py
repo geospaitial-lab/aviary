@@ -281,7 +281,7 @@ class BoundingBox(Iterable[Coordinate]):
         self,
         other: BoundingBox,
     ) -> BoundingBox:
-        """Unions the bounding boxes.
+        """Unites the bounding boxes.
 
         Parameters:
             other: Other bounding box

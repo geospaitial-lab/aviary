@@ -720,7 +720,7 @@ class Grid(Iterable[Coordinates]):
         self,
         other: Grid,
     ) -> Grid:
-        """Unions the grids.
+        """Unites the grids.
 
         Parameters:
             other: Other grid
