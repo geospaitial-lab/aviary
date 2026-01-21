@@ -48,9 +48,9 @@ jobs:
           uv pip install --upgrade pip setuptools wheel
           uv pip install .[all] -r dev/requirements/docs_requirements.txt
 
-#      - name: Build maps
-#        run: |
-#          python -m docs.scripts.build_maps
+      - name: Build maps
+        run: |
+          python -m docs.scripts.build_maps
 
       - name: Build docs
         run: |
@@ -82,9 +82,9 @@ jobs:
           uv pip install --upgrade pip setuptools wheel
           uv pip install .[all] -r dev/requirements/docs_requirements.txt
 
-#      - name: Build maps
-#        run: |
-#          python -m docs.scripts.build_maps
+      - name: Build maps
+        run: |
+          python -m docs.scripts.build_maps
 
       - name: Build and deploy docs
         run: |
