@@ -206,7 +206,6 @@ extra:
         for repository information
       maps: |
         <a href="https://www.openstreetmap.org" target="_blank" rel="noopener noreferrer">OpenStreetMap</a>
-        and <a href="https://www.bezreg-koeln.nrw.de/geobasis-nrw" target="_blank" rel="noopener noreferrer">Geobasis NRW</a>
         for interactive maps
     actions:
       - accept

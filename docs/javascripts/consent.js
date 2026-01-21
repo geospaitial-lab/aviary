@@ -41,12 +41,6 @@ const showMap = (path, containerId) => {
           openStreetMapAttribution.setAttribute('rel', 'noopener noreferrer');
         }
 
-        const geobasisNRWAttribution = iframe.contentDocument.querySelector(".leaflet-control-attribution a[href='https://www.bezreg-koeln.nrw.de/geobasis-nrw']");
-        if (geobasisNRWAttribution) {
-          geobasisNRWAttribution.setAttribute('target', '_blank');
-          geobasisNRWAttribution.setAttribute('rel', 'noopener noreferrer');
-        }
-
         const leafletAttribution = iframe.contentDocument.querySelector(".leaflet-control-attribution a[href='https://leafletjs.com']");
         if (leafletAttribution) {
           leafletAttribution.setAttribute('href', 'https://www.leafletjs.com');
