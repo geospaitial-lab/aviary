@@ -17,6 +17,9 @@ def build_maps() -> None:
     build_bounding_box_from_gdf_districts_map()
     build_bounding_box_and_map()
     build_bounding_box_or_map()
+    build_bounding_box_buffer_1_map()
+    build_bounding_box_buffer_2_map()
+    build_bounding_box_snap_map()
 
 
 def build_bounding_box_map() -> None:
@@ -256,6 +259,144 @@ def build_bounding_box_or_map() -> None:
     ]
     dir_path = Path(__file__).parents[1] / 'how_to_guides' / 'api' / 'maps'
     path = dir_path / 'bounding_box_or.html'
+
+    build_map(
+        layers=layers,
+        path=path,
+    )
+
+
+def build_bounding_box_buffer_1_map() -> None:
+    """Builds the bounding_box_buffer_1 map."""
+    bounding_box = aviary.BoundingBox(
+        x_min=363084,
+        y_min=5715326,
+        x_max=363340,
+        y_max=5715582,
+    )
+
+    bounding_box_gdf = bounding_box.to_gdf(epsg_code=25832)
+    bounding_box_style = {
+        'fillOpacity': 0.,
+        'color': '#E7000B',
+        'weight': 2,
+    }
+    bounding_box_layer = Layer(
+        gdf=bounding_box_gdf,
+        style=bounding_box_style,
+    )
+
+    buffered_bounding_box = bounding_box.buffer(buffer_size=64)
+
+    buffered_bounding_box_gdf = buffered_bounding_box.to_gdf(epsg_code=25832)
+    buffered_bounding_box_style = {
+        'fillOpacity': .2,
+        'color': 'black',
+        'weight': 2,
+    }
+    buffered_bounding_box_layer = Layer(
+        gdf=buffered_bounding_box_gdf,
+        style=buffered_bounding_box_style,
+    )
+
+    layers = [
+        buffered_bounding_box_layer,
+        bounding_box_layer,
+    ]
+    dir_path = Path(__file__).parents[1] / 'how_to_guides' / 'api' / 'maps'
+    path = dir_path / 'bounding_box_buffer_1.html'
+
+    build_map(
+        layers=layers,
+        path=path,
+    )
+
+
+def build_bounding_box_buffer_2_map() -> None:
+    """Builds the bounding_box_buffer_2 map."""
+    bounding_box = aviary.BoundingBox(
+        x_min=363084,
+        y_min=5715326,
+        x_max=363340,
+        y_max=5715582,
+    )
+
+    bounding_box_gdf = bounding_box.to_gdf(epsg_code=25832)
+    bounding_box_style = {
+        'fillOpacity': 0.,
+        'color': '#E7000B',
+        'weight': 2,
+    }
+    bounding_box_layer = Layer(
+        gdf=bounding_box_gdf,
+        style=bounding_box_style,
+    )
+
+    buffered_bounding_box = bounding_box.buffer(buffer_size=-64)
+
+    buffered_bounding_box_gdf = buffered_bounding_box.to_gdf(epsg_code=25832)
+    buffered_bounding_box_style = {
+        'fillOpacity': .2,
+        'color': 'black',
+        'weight': 2,
+    }
+    buffered_bounding_box_layer = Layer(
+        gdf=buffered_bounding_box_gdf,
+        style=buffered_bounding_box_style,
+    )
+
+    layers = [
+        buffered_bounding_box_layer,
+        bounding_box_layer,
+    ]
+    dir_path = Path(__file__).parents[1] / 'how_to_guides' / 'api' / 'maps'
+    path = dir_path / 'bounding_box_buffer_2.html'
+
+    build_map(
+        layers=layers,
+        path=path,
+    )
+
+
+def build_bounding_box_snap_map() -> None:
+    """Builds the bounding_box_snap map."""
+    bounding_box = aviary.BoundingBox(
+        x_min=363084,
+        y_min=5715326,
+        x_max=363340,
+        y_max=5715582,
+    )
+
+    bounding_box_gdf = bounding_box.to_gdf(epsg_code=25832)
+    bounding_box_style = {
+        'fillOpacity': 0.,
+        'color': '#E7000B',
+        'weight': 2,
+    }
+    bounding_box_layer = Layer(
+        gdf=bounding_box_gdf,
+        style=bounding_box_style,
+    )
+
+    snapped_bounding_box = bounding_box.snap(value=128)
+
+    snapped_bounding_box_gdf = snapped_bounding_box.to_gdf(epsg_code=25832)
+    snapped_bounding_box_style = {
+        'fillOpacity': .2,
+        'color': 'black',
+        'weight': 2,
+    }
+    snapped_bounding_box_layer = Layer(
+        gdf=snapped_bounding_box_gdf,
+        style=snapped_bounding_box_style,
+    )
+
+    layers = [
+        snapped_bounding_box_layer,
+        bounding_box_layer,
+    ]
+    dir_path = Path(__file__).parents[1] / 'how_to_guides' / 'api' / 'maps'
+    path = dir_path / 'bounding_box_snap.html'
 
     build_map(
         layers=layers,
