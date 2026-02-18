@@ -1,8 +1,7 @@
 import argparse
 from datetime import datetime
 from pathlib import Path
-
-import pytz
+from zoneinfo import ZoneInfo
 
 from .get_version import get_version
 
@@ -71,7 +70,7 @@ def bump_citation_version(
     Args:
         bumped_version: bumped version
     """
-    berlin_tz = pytz.timezone('Europe/Berlin')
+    berlin_tz = ZoneInfo('Europe/Berlin')
     release_date = datetime.now(berlin_tz).strftime('%Y-%m-%d')
 
     citation_path = Path(__file__).parents[2] / 'CITATION.cff'
