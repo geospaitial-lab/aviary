@@ -37,7 +37,6 @@ jobs:
       - name: Install dependencies
         run: |
           uv pip install --upgrade pip setuptools wheel
-          uv pip install -r dev/requirements/bump_version_requirements.txt
 
       - name: Bump version
         run: |
