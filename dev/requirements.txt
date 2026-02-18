@@ -1,4 +1,3 @@
--r requirements/bump_version_requirements.txt
 -r requirements/check_dependencies_requirements.txt
 -r requirements/check_links_requirements.txt
 -r requirements/ci_requirements.txt
