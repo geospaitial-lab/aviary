@@ -10,7 +10,7 @@ The most common and convenient way to install aviary is using pip – Python’s
 
 ### Install Python
 
-First, make sure Python 3.10, 3.11, or 3.12 is installed on your system.
+First, make sure Python 3.10, 3.11, 3.12, or 3.13 is installed on your system.
 
 Download Python from the
 [official Python website :material-arrow-top-right:][official Python website].

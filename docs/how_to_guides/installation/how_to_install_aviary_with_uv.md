@@ -39,7 +39,7 @@ This keeps your project dependencies isolated.
 Navigate to the directory where you want to install aviary and create a virtual environment.
 
 ```
-uv venv venv --python 3.12
+uv venv venv --python 3.13
 ```
 
 Next, activate the virtual environment.
