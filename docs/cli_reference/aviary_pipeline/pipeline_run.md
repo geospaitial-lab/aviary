@@ -20,7 +20,7 @@ aviary pipeline run [OPTIONS] CONFIG_PATH
 
 ### **OPTIONS**
 
-- `-s, --set TEXT`: Configuration fields using key=value format
+- `-s, --set [TEXT]`: Configuration fields using key=value format
 - `--log-path PATH`: Path to the log file (env var: [`AVIARY_LOG_PATH`][AVIARY_LOG_PATH])
 - `--help`: Show this message and exit.
 

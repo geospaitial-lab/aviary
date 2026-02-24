@@ -20,5 +20,5 @@ aviary pipeline validate [OPTIONS] CONFIG_PATH
 
 ### **OPTIONS**
 
-- `-s, --set TEXT`: Configuration fields using key=value format
+- `-s, --set [TEXT]`: Configuration fields using key=value format
 - `--help`: Show this message and exit.
