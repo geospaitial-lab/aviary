@@ -22,5 +22,5 @@ aviary pipeline init [OPTIONS] CONFIG_PATH
 ### **OPTIONS**
 
 - `-f, --force`: Force overwrite the config file if it already exists.
-- `-t, --template [base]`: Template for the config file - defaults to base
+- `-t, --template base`: Template for the config file - defaults to base
 - `--help`: Show this message and exit.
