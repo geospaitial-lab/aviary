@@ -4,7 +4,7 @@
 
 ## `aviary`
 
-Pythonic framework for AI inference on geospatial data
+Pythonic Framework for AI Inference on Geospatial Data
 
 ### **USAGE**
 

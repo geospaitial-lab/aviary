@@ -7,7 +7,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "geospaitial-lab-aviary"
-description = "Pythonic framework for AI inference on geospatial data"
+description = "Pythonic Framework for AI Inference on Geospatial Data"
 readme = "README.md"
 authors = [
     {name = "Marius Maryniak", email = "marius.maryniak@w-hs.de"},
