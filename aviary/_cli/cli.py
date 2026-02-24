@@ -67,7 +67,7 @@ typer.rich_utils.STYLE_USAGE = 'bold green'
 
 app = typer.Typer(
     add_completion=False,
-    help='Pythonic framework for AI inference on geospatial data',
+    help='Pythonic Framework for AI Inference on Geospatial Data',
     epilog='geosp[bold green]ai[/]tial lab',
     rich_markup_mode='rich',
     pretty_exceptions_show_locals=False,

@@ -8,7 +8,7 @@ authors:
   - name: geospaitial lab
 repository-code: 'https://www.github.com/geospaitial-lab/aviary'
 abstract: >-
-  Pythonic framework for AI inference on geospatial data
+  Pythonic Framework for AI Inference on Geospatial Data
 keywords:
   - python
   - artificial-intelligence
