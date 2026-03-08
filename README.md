@@ -44,16 +44,16 @@ aviary is the pythonic way to run your AI models on geospatial data
 with minimal boilerplate – from quick prototyping to production-grade pipelines.
 
 - **High-level Python API**<br />
-  Define and run pipelines from composable components instead of writing ad‑hoc scripts
+  Define and run pipelines from composable components instead of writing ad hoc scripts
 
-- **Config‑driven CLI**<br />
+- **Config-driven CLI**<br />
   Define and run the same pipelines with the command-line interface using a simple declarative config file
 
 - **Extensible by design**<br />
   Add custom components via a plugin registry and distribute them as a plugin package
 
 - **AI framework-agnostic**<br />
-  Use models from PyTorch, TensorFlow, ONNX, or scikit‑learn
+  Use models from PyTorch, TensorFlow, ONNX, or scikit-learn
 
 ---
 
