@@ -1,0 +1,61 @@
+html {
+  overflow-y: scroll;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+.md-header, .md-tabs {
+  box-shadow: none;
+}
+
+[data-md-color-scheme=default] .md-header,
+[data-md-color-scheme=default] .md-tabs {
+  background-color: oklch(100% 0 0);
+}
+
+[data-md-color-scheme=slate] .md-header,
+[data-md-color-scheme=slate] .md-tabs {
+  background-color: oklch(14.5% 0 0);
+}
+
+#logo_light_mode {
+  display: var(--md-logo-light-mode);
+}
+
+#logo_dark_mode {
+  display: var(--md-logo-dark-mode);
+}
+
+[data-md-color-scheme=default] {
+  --md-logo-light-mode: block;
+  --md-logo-dark-mode: none;
+}
+
+[data-md-color-scheme=slate] {
+  --md-logo-light-mode: none;
+  --md-logo-dark-mode: block;
+}
+
+.md-typeset h2:first-of-type {
+  margin-top: 0;
+}
+
+.toclink {
+  color: unset !important;
+}
+
+.toclink:hover {
+  color: var(--md-accent-fg-color) !important;
+}
+
+.md-main {
+  padding-bottom: 6rem;
+}
+
+.aviary-skill-level {
+    color: var(--md-default-fg-color--light);
+}
