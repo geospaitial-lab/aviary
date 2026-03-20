@@ -29,6 +29,7 @@ from typing import (
 import geopandas as gpd
 import numpy as np
 import pydantic
+import requests
 from shapely.geometry import box
 
 from aviary._functional.utils.coordinates_filter import (
@@ -39,6 +40,7 @@ from aviary._functional.utils.coordinates_filter import (
 from aviary.core.bounding_box import BoundingBox
 from aviary.core.enums import (
     GeospatialFilterMode,
+    OSMType,
     SetFilterMode,
 )
 from aviary.core.exceptions import AviaryUserError
@@ -359,6 +361,66 @@ class Grid(Iterable[Coordinates]):
         return cls(
             coordinates=coordinates,
             tile_size=tile_size,
+        )
+
+    @classmethod
+    def from_osm(
+        cls,
+        tile_size: TileSize,
+        epsg_code: EPSGCode,
+        snap: bool = True,
+        osm_type: OSMType | None = None,
+        osm_id: int | None = None,
+        query_string: str | None = None,
+        url: str = 'https://overpass-api.de/api/interpreter',
+    ) -> Grid:
+        """Creates a grid from OpenStreetMap data.
+
+        Parameters:
+            tile_size: Tile size in meters
+            epsg_code: EPSG code
+            snap: If True, the bounding box is snapped to `tile_size`
+            osm_type: OSM type
+            osm_id: OSM ID
+            query_string: Query string based on the Overpass API query syntax
+            url: URL of the Overpass API instance
+
+        Returns:
+            Grid
+        """
+        try:
+            import osm2geojson  # noqa: PLC0415
+        except ImportError as error:
+            message = (
+                'Missing dependencies! '
+                'To use from_osm(), you need to install the '
+                'osm dependency group (pip install geospaitial-lab-aviary[osm]).'
+            )
+            raise ImportError(message) from error
+
+        if query_string is None:
+            query_string = f'[out:json];{osm_type.value}({osm_id});out geom;'
+
+        response = requests.post(
+            url=url,
+            data=query_string,
+            timeout=30,
+        )
+        response.raise_for_status()
+
+        geojson = osm2geojson.json2geojson(response.json())
+
+        geojson_epsg_code = 'EPSG:4326'
+        gdf = gpd.GeoDataFrame.from_features(
+            features=geojson,
+            crs=geojson_epsg_code,
+        )
+        gdf = gdf.to_crs(epsg=epsg_code)
+
+        return cls.from_gdf(
+            gdf=gdf,
+            tile_size=tile_size,
+            snap=snap,
         )
 
     @classmethod
