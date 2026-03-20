@@ -393,6 +393,8 @@ class Grid(Iterable[Coordinates]):
         """
         try:
             import osm2geojson  # noqa: PLC0415
+
+            from aviary import __version__  # noqa: PLC0415
         except ImportError as error:
             message = (
                 'Missing dependencies! '
@@ -405,7 +407,7 @@ class Grid(Iterable[Coordinates]):
             query_string = f'[out:json];{osm_type.value}({osm_id});out geom;'
 
         headers = {
-            'User-Agent': 'aviary (https://github.com/geospaitial-lab/aviary)',
+            'User-Agent': f'aviary/{__version__} (https://github.com/geospaitial-lab/aviary)',
         }
 
         response = requests.post(
