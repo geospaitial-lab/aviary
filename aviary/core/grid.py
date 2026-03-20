@@ -376,6 +376,9 @@ class Grid(Iterable[Coordinates]):
     ) -> Grid:
         """Creates a grid from OpenStreetMap data.
 
+        Additional dependencies:
+            `from_osm` requires the `osm` dependency group.
+
         Parameters:
             tile_size: Tile size in meters
             epsg_code: EPSG code
@@ -393,7 +396,7 @@ class Grid(Iterable[Coordinates]):
         except ImportError as error:
             message = (
                 'Missing dependencies! '
-                'To use from_osm(), you need to install the '
+                'To use from_osm, you need to install the '
                 'osm dependency group (pip install geospaitial-lab-aviary[osm]).'
             )
             raise ImportError(message) from error
