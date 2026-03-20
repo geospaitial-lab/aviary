@@ -21,6 +21,10 @@
 
 ---
 
+::: aviary.OSMType
+
+---
+
 ::: aviary.SetFilterMode
 
 ---
