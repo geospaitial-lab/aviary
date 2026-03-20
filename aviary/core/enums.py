@@ -181,6 +181,18 @@ class InterpolationMode(Enum):
         return mapping[self]
 
 
+class OSMType(Enum):
+    """
+    Attributes:
+        NODE: node type
+        WAY: way type
+        RELATION: relation type
+    """
+    NODE = 'node'
+    WAY = 'way'
+    RELATION = 'relation'
+
+
 class SetFilterMode(Enum):
     """
     Attributes:
