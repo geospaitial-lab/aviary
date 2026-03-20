@@ -404,9 +404,14 @@ class Grid(Iterable[Coordinates]):
         if query_string is None:
             query_string = f'[out:json];{osm_type.value}({osm_id});out geom;'
 
+        headers = {
+            'User-Agent': 'aviary (https://github.com/geospaitial-lab/aviary)',
+        }
+
         response = requests.post(
             url=url,
             data=query_string,
+            headers=headers,
             timeout=30,
         )
         response.raise_for_status()
