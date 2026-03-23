@@ -370,7 +370,7 @@ class Grid(Iterable[Coordinates]):
         epsg_code: EPSGCode,
         snap: bool = True,
         osm_type: OSMType | None = None,
-        osm_id: int | None = None,
+        osm_ids: int | list[int] | None = None,
         query_string: str | None = None,
         url: str = 'https://overpass-api.de/api/interpreter',
     ) -> Grid:
@@ -384,7 +384,7 @@ class Grid(Iterable[Coordinates]):
             epsg_code: EPSG code
             snap: If True, the bounding box is snapped to `tile_size`
             osm_type: OSM type
-            osm_id: OSM ID
+            osm_ids: OSM IDs
             query_string: Query string based on the Overpass API query syntax
             url: URL of the Overpass API instance
 
@@ -403,8 +403,12 @@ class Grid(Iterable[Coordinates]):
             )
             raise ImportError(message) from error
 
+        if isinstance(osm_ids, int):
+            osm_ids = [osm_ids]
+
         if query_string is None:
-            query_string = f'[out:json];{osm_type.value}({osm_id});out geom;'
+            _osm_ids = ','.join(map(str, osm_ids))
+            query_string = f'[out:json];{osm_type.value}(id:{_osm_ids});out geom;'
 
         headers = {
             'User-Agent': f'aviary/{__version__} (https://github.com/geospaitial-lab/aviary)',
@@ -422,7 +426,7 @@ class Grid(Iterable[Coordinates]):
 
         geojson_epsg_code = 'EPSG:4326'
         gdf = gpd.GeoDataFrame.from_features(
-            features=geojson,
+            features=geojson['features'],
             crs=geojson_epsg_code,
         )
         gdf = gdf.to_crs(epsg=epsg_code)
