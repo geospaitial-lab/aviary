@@ -46,7 +46,7 @@ def _get_message(
     if module is not None and module != '__main__':  # noqa: SIM108
         name = f'{module}.{qualname}'
     else:
-        name = f'{qualname}'
+        name = qualname
 
     since = f' since {since}' if since is not None else ''
     description = f' {description}' if description is not None else ''
@@ -54,7 +54,7 @@ def _get_message(
     if message_type == 'experimental':
         base = f'{name} is experimental{since} and may change without notice.'
     elif message_type == 'deprecated':
-        until = f' and will be removed until {removal}' if removal else ''
+        until = f' and will be removed in {removal}' if removal else ''
         base = f'{name} is deprecated{since}{until}.'
     else:
         message = 'Invalid message type!'
