@@ -311,7 +311,7 @@ class BoundingBox(Iterable[Coordinate]):
             - A positive buffer size expands the bounding box
             - A negative buffer size shrinks the bounding box
 
-        Example:
+        Usage:
             Assume the area of interest is specified by `x_min`=363084, `y_min`=5715326, `x_max`=363340, and
             `y_max`=5715582.
 
@@ -386,7 +386,7 @@ class BoundingBox(Iterable[Coordinate]):
     ) -> BoundingBox:
         """Snaps the bounding box.
 
-        Example:
+        Usage:
             Assume the area of interest is specified by `x_min`=363084, `y_min`=5715326, `x_max`=363340, and
             `y_max`=5715582.
 

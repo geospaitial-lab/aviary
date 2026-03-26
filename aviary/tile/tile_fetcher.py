@@ -1,4 +1,4 @@
-#  Copyright (C) 2024-2025 Marius Maryniak
+#  Copyright (C) 2024-2026 Marius Maryniak
 #
 #  This file is part of aviary.
 #
@@ -88,7 +88,7 @@ class TileFetcherConfig(pydantic.BaseModel):
     Create the configuration from a config file:
         - Use null instead of None
 
-    Example:
+    Usage:
         You can create the configuration from a config file.
 
         ``` yaml title="config.yaml"
@@ -300,7 +300,7 @@ class CompositeFetcherConfig(pydantic.BaseModel):
     Create the configuration from a config file:
         - Use null instead of None
 
-    Example:
+    Usage:
         You can create the configuration from a config file.
 
         ``` yaml title="config.yaml"
@@ -415,7 +415,7 @@ class VRTFetcherConfig(pydantic.BaseModel):
         - Use 'bilinear' or 'nearest' instead of `InterpolationMode.BILINEAR` or `InterpolationMode.NEAREST`
         - Use null instead of None
 
-    Example:
+    Usage:
         You can create the configuration from a config file.
 
         ``` yaml title="config.yaml"
@@ -563,7 +563,7 @@ class WMSFetcherConfig(pydantic.BaseModel):
         - Use '1.1.1' or '1.3.0' instead of `WMSVersion.V1_1_1` or `WMSVersion.V1_3_0`
         - Use null instead of None
 
-    Example:
+    Usage:
         You can create the configuration from a config file.
 
         ``` yaml title="config.yaml"

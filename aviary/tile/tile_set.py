@@ -1,4 +1,4 @@
-#  Copyright (C) 2024-2025 Marius Maryniak
+#  Copyright (C) 2024-2026 Marius Maryniak
 #
 #  This file is part of aviary.
 #
@@ -26,7 +26,7 @@ from aviary.tile.tile_fetcher import TileFetcher
 class TileSet(Iterable[Tile]):
     """A tile set is an iterable that yields a tile for each coordinates in the grid by calling the tile fetcher.
 
-    Example:
+    Usage:
         Assume the grid and the tile fetcher are already created.
 
         You can create a tile set and iterate over the tiles.

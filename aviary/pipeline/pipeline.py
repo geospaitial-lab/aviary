@@ -1,4 +1,4 @@
-#  Copyright (C) 2024-2025 Marius Maryniak
+#  Copyright (C) 2024-2026 Marius Maryniak
 #
 #  This file is part of aviary.
 #
@@ -87,7 +87,7 @@ class PipelineConfig(pydantic.BaseModel):
     Create the configuration from a config file:
         - Use null instead of None
 
-    Example:
+    Usage:
         You can create the configuration from a config file.
 
         ``` yaml title="config.yaml"
@@ -321,7 +321,7 @@ class CompositePipelineConfig(pydantic.BaseModel):
     Create the configuration from a config file:
         - Use null instead of None
 
-    Example:
+    Usage:
         You can create the configuration from a config file.
 
         ``` yaml title="config.yaml"
@@ -495,7 +495,7 @@ class TileLoaderConfig(pydantic.BaseModel):
     Create the configuration from a config file:
         - Use null instead of None
 
-    Example:
+    Usage:
         You can create the configuration from a config file.
 
         ``` yaml title="config.yaml"
@@ -524,7 +524,7 @@ class TilePipelineConfig(pydantic.BaseModel):
         - Use null instead of None
         - Use false or true instead of False or True
 
-    Example:
+    Usage:
         You can create the configuration from a config file.
 
         ``` yaml title="config.yaml"
@@ -635,7 +635,7 @@ class VectorPipelineConfig(pydantic.BaseModel):
     Create the configuration from a config file:
         - Use null instead of None
 
-    Example:
+    Usage:
         You can create the configuration from a config file.
 
         ``` yaml title="config.yaml"

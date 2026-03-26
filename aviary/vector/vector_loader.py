@@ -1,4 +1,4 @@
-#  Copyright (C) 2024-2025 Marius Maryniak
+#  Copyright (C) 2024-2026 Marius Maryniak
 #
 #  This file is part of aviary.
 #
@@ -76,7 +76,7 @@ class VectorLoaderConfig(pydantic.BaseModel):
     Create the configuration from a config file:
         - Use null instead of None
 
-    Example:
+    Usage:
         You can create the configuration from a config file.
 
         ``` yaml title="config.yaml"
@@ -273,7 +273,7 @@ class BoundingBoxLoader:
 class BoundingBoxLoaderConfig(pydantic.BaseModel):
     """Configuration for the `from_config` class method of `BoundingBoxLoader`
 
-    Example:
+    Usage:
         You can create the configuration from a config file.
 
         ``` yaml title="config.yaml"
@@ -385,7 +385,7 @@ class CompositeLoaderConfig(pydantic.BaseModel):
     Create the configuration from a config file:
         - Use null instead of None
 
-    Example:
+    Usage:
         You can create the configuration from a config file.
 
         ``` yaml title="config.yaml"
@@ -468,7 +468,7 @@ class GeoJSONLoader:
 class GeoJSONLoaderConfig(pydantic.BaseModel):
     """Configuration for the `from_config` class method of `GeoJSONLoader`
 
-    Example:
+    Usage:
         You can create the configuration from a config file.
 
         ``` yaml title="config.yaml"
@@ -551,7 +551,7 @@ class GPKGLoader:
 class GPKGLoaderConfig(pydantic.BaseModel):
     """Configuration for the `from_config` class method of `GPKGLoader`
 
-    Example:
+    Usage:
         You can create the configuration from a config file.
 
         ``` yaml title="config.yaml"

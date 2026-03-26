@@ -1,4 +1,4 @@
-#  Copyright (C) 2024-2025 Marius Maryniak
+#  Copyright (C) 2024-2026 Marius Maryniak
 #
 #  This file is part of aviary.
 #
@@ -28,7 +28,7 @@ from aviary.tile.tile_set import TileSet
 class TileLoader(Iterable[Tiles]):
     """A tile loader is an iterable that yields tiles from the tile set.
 
-    Example:
+    Usage:
         Assume the tile set is already created.
 
         You can create a tile loader and iterate over the tiles.

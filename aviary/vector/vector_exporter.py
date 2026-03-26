@@ -1,4 +1,4 @@
-#  Copyright (C) 2024-2025 Marius Maryniak
+#  Copyright (C) 2024-2026 Marius Maryniak
 #
 #  This file is part of aviary.
 #
@@ -100,7 +100,7 @@ class VectorExporterConfig(pydantic.BaseModel):
     Create the configuration from a config file:
         - Use false or true instead of False or True
 
-    Example:
+    Usage:
         You can create the configuration from a config file.
 
         ``` yaml title="config.yaml"
