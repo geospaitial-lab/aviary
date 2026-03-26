@@ -84,16 +84,16 @@
 }
 
 [data-md-color-scheme=default] {
-  .md-typeset .admonition.example,
-  .md-typeset details.example {
+  .md-typeset .admonition.usage,
+  .md-typeset details.usage {
     border-color: oklch(64.8% 0.2 131.684);
   }
-  .md-typeset .example > .admonition-title,
-  .md-typeset .example > summary {
+  .md-typeset .usage > .admonition-title,
+  .md-typeset .usage > summary {
     background-color: oklch(64.8% 0.2 131.684 / 20%);
   }
-  .md-typeset .example > .admonition-title::before,
-  .md-typeset .example > summary::before {
+  .md-typeset .usage > .admonition-title::before,
+  .md-typeset .usage > summary::before {
     background-color: oklch(64.8% 0.2 131.684);
   }
 }
@@ -202,16 +202,16 @@
 }
 
 [data-md-color-scheme=slate] {
-  .md-typeset .admonition.example,
-  .md-typeset details.example {
+  .md-typeset .admonition.usage,
+  .md-typeset details.usage {
     border-color: oklch(84.1% 0.238 128.85);
   }
-  .md-typeset .example > .admonition-title,
-  .md-typeset .example > summary {
+  .md-typeset .usage > .admonition-title,
+  .md-typeset .usage > summary {
     background-color: oklch(84.1% 0.238 128.85 / 20%);
   }
-  .md-typeset .example > .admonition-title::before,
-  .md-typeset .example > summary::before {
+  .md-typeset .usage > .admonition-title::before,
+  .md-typeset .usage > summary::before {
     background-color: oklch(84.1% 0.238 128.85);
   }
 }
