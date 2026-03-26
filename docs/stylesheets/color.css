@@ -1,3 +1,7 @@
+:root {
+  --md-admonition-icon--experimental: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 14h-2V9h2m0 9h-2v-2h2M1 21h22L12 2z"/></svg>')
+}
+
 [data-md-color-scheme=default] {
   --md-default-fg-color: oklch(14.5% 0 0);
   --md-default-fg-color--light: oklch(14.5% 0 0 / 50%);
@@ -91,6 +95,23 @@
   .md-typeset .example > .admonition-title::before,
   .md-typeset .example > summary::before {
     background-color: oklch(64.8% 0.2 131.684);
+  }
+}
+
+[data-md-color-scheme=default] {
+  .md-typeset .admonition.experimental,
+  .md-typeset details.experimental {
+    border-color: oklch(66.6% 0.179 58.318);
+  }
+  .md-typeset .experimental > .admonition-title,
+  .md-typeset .experimental > summary {
+    background-color: oklch(66.6% 0.179 58.318 / 20%);
+  }
+  .md-typeset .experimental > .admonition-title::before,
+  .md-typeset .experimental > summary::before {
+    background-color: oklch(66.6% 0.179 58.318);
+    -webkit-mask-image: var(--md-admonition-icon--experimental);
+            mask-image: var(--md-admonition-icon--experimental);
   }
 }
 
@@ -192,5 +213,22 @@
   .md-typeset .example > .admonition-title::before,
   .md-typeset .example > summary::before {
     background-color: oklch(84.1% 0.238 128.85);
+  }
+}
+
+[data-md-color-scheme=slate] {
+  .md-typeset .admonition.experimental,
+  .md-typeset details.experimental {
+    border-color: oklch(82.8% 0.189 84.429);
+  }
+  .md-typeset .experimental > .admonition-title,
+  .md-typeset .experimental > summary {
+    background-color: oklch(82.8% 0.189 84.429 / 20%);
+  }
+  .md-typeset .experimental > .admonition-title::before,
+  .md-typeset .experimental > summary::before {
+    background-color: oklch(82.8% 0.189 84.429);
+    -webkit-mask-image: var(--md-admonition-icon--experimental);
+            mask-image: var(--md-admonition-icon--experimental);
   }
 }
