@@ -381,7 +381,7 @@ class Grid(Iterable[Coordinates]):
         """Creates a grid from OpenStreetMap data.
 
         Experimental:
-            This method is experimental since 1.3.0 and may change without notice.
+            `from_osm` is experimental since `1.3.0` and may change without notice.
 
         Additional dependencies:
             `from_osm` requires the `osm` dependency group.
