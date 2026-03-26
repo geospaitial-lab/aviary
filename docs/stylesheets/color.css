@@ -79,6 +79,21 @@
   }
 }
 
+[data-md-color-scheme=default] {
+  .md-typeset .admonition.example,
+  .md-typeset details.example {
+    border-color: oklch(64.8% 0.2 131.684);
+  }
+  .md-typeset .example > .admonition-title,
+  .md-typeset .example > summary {
+    background-color: oklch(64.8% 0.2 131.684 / 20%);
+  }
+  .md-typeset .example > .admonition-title::before,
+  .md-typeset .example > summary::before {
+    background-color: oklch(64.8% 0.2 131.684);
+  }
+}
+
 [data-md-color-scheme=slate] {
   --md-default-fg-color: oklch(98.5% 0 0);
   --md-default-fg-color--light: oklch(98.5% 0 0 / 50%);
@@ -162,5 +177,20 @@
   .md-typeset .abstract > .admonition-title::before,
   .md-typeset .abstract > summary::before {
     background-color: oklch(70.7% 0.165 254.624);
+  }
+}
+
+[data-md-color-scheme=slate] {
+  .md-typeset .admonition.example,
+  .md-typeset details.example {
+    border-color: oklch(84.1% 0.238 128.85);
+  }
+  .md-typeset .example > .admonition-title,
+  .md-typeset .example > summary {
+    background-color: oklch(84.1% 0.238 128.85 / 20%);
+  }
+  .md-typeset .example > .admonition-title::before,
+  .md-typeset .example > summary::before {
+    background-color: oklch(84.1% 0.238 128.85);
   }
 }
