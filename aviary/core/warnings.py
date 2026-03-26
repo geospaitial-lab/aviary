@@ -1,4 +1,4 @@
-#  Copyright (C) 2024-2026 Marius Maryniak
+#  Copyright (C) 2026 Marius Maryniak
 #
 #  This file is part of aviary.
 #
@@ -13,5 +13,13 @@
 #  You should have received a copy of the GNU General Public License along with aviary.
 #  If not, see <https://www.gnu.org/licenses/>.
 
-class AviaryUserError(ValueError):
+class AviaryUserWarning(Warning):
+    ...
+
+
+class AviaryDeprecationWarning(DeprecationWarning, AviaryUserWarning):
+    ...
+
+
+class AviaryExperimentalWarning(AviaryUserWarning):
     ...

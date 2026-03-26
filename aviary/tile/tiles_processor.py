@@ -1,4 +1,4 @@
-#  Copyright (C) 2024-2025 Marius Maryniak
+#  Copyright (C) 2024-2026 Marius Maryniak
 #
 #  This file is part of aviary.
 #
@@ -92,7 +92,7 @@ class TilesProcessorConfig(pydantic.BaseModel):
     Create the configuration from a config file:
         - Use null instead of None
 
-    Example:
+    Usage:
         You can create the configuration from a config file.
 
         ``` yaml title="config.yaml"
@@ -292,7 +292,7 @@ class CopyProcessorConfig(pydantic.BaseModel):
     Create the configuration from a config file:
         - Use null instead of None
 
-    Example:
+    Usage:
         You can create the configuration from a config file.
 
         ``` yaml title="config.yaml"
@@ -394,7 +394,7 @@ class NormalizeProcessorConfig(pydantic.BaseModel):
     Create the configuration from a config file:
         - Use null instead of None
 
-    Example:
+    Usage:
         You can create the configuration from a config file.
 
         ``` yaml title="config.yaml"
@@ -494,7 +494,7 @@ class ParallelCompositeProcessor:
 class ParallelCompositeProcessorConfig(pydantic.BaseModel):
     """Configuration for the `from_config` class method of `ParallelCompositeProcessor`
 
-    Example:
+    Usage:
         You can create the configuration from a config file.
 
         ``` yaml title="config.yaml"
@@ -580,7 +580,7 @@ class RemoveBufferProcessorConfig(pydantic.BaseModel):
         - Use null instead of None
         - Use false or true instead of False or True
 
-    Example:
+    Usage:
         You can create the configuration from a config file.
 
         ``` yaml title="config.yaml"
@@ -670,7 +670,7 @@ class RemoveProcessorConfig(pydantic.BaseModel):
         - Use null instead of None
         - Use false or true instead of False or True
 
-    Example:
+    Usage:
         You can create the configuration from a config file.
 
         ``` yaml title="config.yaml"
@@ -760,7 +760,7 @@ class SelectProcessorConfig(pydantic.BaseModel):
         - Use null instead of None
         - Use false or true instead of False or True
 
-    Example:
+    Usage:
         You can create the configuration from a config file.
 
         ``` yaml title="config.yaml"
@@ -850,7 +850,7 @@ class SequentialCompositeProcessor:
 class SequentialCompositeProcessorConfig(pydantic.BaseModel):
     """Configuration for the `from_config` class method of `SequentialCompositeProcessor`
 
-    Example:
+    Usage:
         You can create the configuration from a config file.
 
         ``` yaml title="config.yaml"
@@ -950,7 +950,7 @@ class StandardizeProcessorConfig(pydantic.BaseModel):
     Create the configuration from a config file:
         - Use null instead of None
 
-    Example:
+    Usage:
         You can create the configuration from a config file.
 
         ``` yaml title="config.yaml"
@@ -1063,7 +1063,7 @@ class VectorizeProcessorConfig(pydantic.BaseModel):
         - Use null instead of None
         - Use false or true instead of False or True
 
-    Example:
+    Usage:
         You can create the configuration from a config file.
 
         ``` yaml title="config.yaml"

@@ -28,10 +28,7 @@ from .core.enums import (
     SetFilterMode,
     WMSVersion,
 )
-from .core.exceptions import (
-    AviaryUserError,
-    AviaryUserWarning,
-)
+from .core.exceptions import AviaryUserError
 from .core.grid import (
     Grid,
     GridConfig,
@@ -53,8 +50,15 @@ from .core.type_aliases import (
 )
 from .core.vector import Vector
 from .core.vector_layer import VectorLayer
+from .core.warnings import (
+    AviaryDeprecationWarning,
+    AviaryExperimentalWarning,
+    AviaryUserWarning,
+)
 
 __all__ = [
+    'AviaryDeprecationWarning',
+    'AviaryExperimentalWarning',
     'AviaryUserError',
     'AviaryUserWarning',
     'BoundingBox',

@@ -1,3 +1,8 @@
+:root {
+  --md-admonition-icon--usage: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 9h-2V7h2m0 10h-2v-6h2m-1-9A10 10 0 0 0 2 12a10 10 0 0 0 10 10 10 10 0 0 0 10-10A10 10 0 0 0 12 2"/></svg>');
+  --md-admonition-icon--experimental: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 14h-2V9h2m0 9h-2v-2h2M1 21h22L12 2z"/></svg>');
+}
+
 [data-md-color-scheme=default] {
   --md-default-fg-color: oklch(14.5% 0 0);
   --md-default-fg-color--light: oklch(14.5% 0 0 / 50%);
@@ -50,17 +55,66 @@
 }
 
 [data-md-color-scheme=default] {
-  .md-typeset .admonition,
-  .md-typeset details {
+  .md-typeset .admonition.note,
+  .md-typeset details.note {
     border-color: oklch(54.6% 0.245 262.881);
   }
-  .md-typeset .admonition > .admonition-title,
-  .md-typeset details > summary {
+  .md-typeset .note > .admonition-title,
+  .md-typeset .note > summary {
     background-color: oklch(54.6% 0.245 262.881 / 20%);
   }
-  .md-typeset .admonition > .admonition-title::before,
-  .md-typeset details > summary::before {
+  .md-typeset .note > .admonition-title::before,
+  .md-typeset .note > summary::before {
     background-color: oklch(54.6% 0.245 262.881);
+  }
+}
+
+[data-md-color-scheme=default] {
+  .md-typeset .admonition.abstract,
+  .md-typeset details.abstract {
+    border-color: oklch(54.6% 0.245 262.881);
+  }
+  .md-typeset .abstract > .admonition-title,
+  .md-typeset .abstract > summary {
+    background-color: oklch(54.6% 0.245 262.881 / 20%);
+  }
+  .md-typeset .abstract > .admonition-title::before,
+  .md-typeset .abstract > summary::before {
+    background-color: oklch(54.6% 0.245 262.881);
+  }
+}
+
+[data-md-color-scheme=default] {
+  .md-typeset .admonition.usage,
+  .md-typeset details.usage {
+    border-color: oklch(64.8% 0.2 131.684);
+  }
+  .md-typeset .usage > .admonition-title,
+  .md-typeset .usage > summary {
+    background-color: oklch(64.8% 0.2 131.684 / 20%);
+  }
+  .md-typeset .usage > .admonition-title::before,
+  .md-typeset .usage > summary::before {
+    background-color: oklch(64.8% 0.2 131.684);
+    -webkit-mask-image: var(--md-admonition-icon--usage);
+            mask-image: var(--md-admonition-icon--usage);
+  }
+}
+
+[data-md-color-scheme=default] {
+  .md-typeset .admonition.experimental,
+  .md-typeset details.experimental {
+    border-color: oklch(66.6% 0.179 58.318);
+  }
+  .md-typeset .experimental > .admonition-title,
+  .md-typeset .experimental > summary {
+    background-color: oklch(66.6% 0.179 58.318 / 20%);
+  }
+  .md-typeset .experimental > .admonition-title::before,
+  .md-typeset .experimental > summary::before {
+    background-color: oklch(66.6% 0.179 58.318);
+    -webkit-mask-image: var(--md-admonition-icon--experimental);
+            mask-image: var(--md-admonition-icon--experimental);
   }
 }
 
@@ -121,16 +175,65 @@
 }
 
 [data-md-color-scheme=slate] {
-  .md-typeset .admonition,
-  .md-typeset details {
+  .md-typeset .admonition.note,
+  .md-typeset details.note {
     border-color: oklch(70.7% 0.165 254.624);
   }
-  .md-typeset .admonition > .admonition-title,
-  .md-typeset details > summary {
+  .md-typeset .note > .admonition-title,
+  .md-typeset .note > summary {
     background-color: oklch(70.7% 0.165 254.624 / 20%);
   }
-  .md-typeset .admonition > .admonition-title::before,
-  .md-typeset details > summary::before {
+  .md-typeset .note > .admonition-title::before,
+  .md-typeset .note > summary::before {
     background-color: oklch(70.7% 0.165 254.624);
+  }
+}
+
+[data-md-color-scheme=slate] {
+  .md-typeset .admonition.abstract,
+  .md-typeset details.abstract {
+    border-color: oklch(70.7% 0.165 254.624);
+  }
+  .md-typeset .abstract > .admonition-title,
+  .md-typeset .abstract > summary {
+    background-color: oklch(70.7% 0.165 254.624 / 20%);
+  }
+  .md-typeset .abstract > .admonition-title::before,
+  .md-typeset .abstract > summary::before {
+    background-color: oklch(70.7% 0.165 254.624);
+  }
+}
+
+[data-md-color-scheme=slate] {
+  .md-typeset .admonition.usage,
+  .md-typeset details.usage {
+    border-color: oklch(84.1% 0.238 128.85);
+  }
+  .md-typeset .usage > .admonition-title,
+  .md-typeset .usage > summary {
+    background-color: oklch(84.1% 0.238 128.85 / 20%);
+  }
+  .md-typeset .usage > .admonition-title::before,
+  .md-typeset .usage > summary::before {
+    background-color: oklch(84.1% 0.238 128.85);
+    -webkit-mask-image: var(--md-admonition-icon--usage);
+            mask-image: var(--md-admonition-icon--usage);
+  }
+}
+
+[data-md-color-scheme=slate] {
+  .md-typeset .admonition.experimental,
+  .md-typeset details.experimental {
+    border-color: oklch(82.8% 0.189 84.429);
+  }
+  .md-typeset .experimental > .admonition-title,
+  .md-typeset .experimental > summary {
+    background-color: oklch(82.8% 0.189 84.429 / 20%);
+  }
+  .md-typeset .experimental > .admonition-title::before,
+  .md-typeset .experimental > summary::before {
+    background-color: oklch(82.8% 0.189 84.429);
+    -webkit-mask-image: var(--md-admonition-icon--experimental);
+            mask-image: var(--md-admonition-icon--experimental);
   }
 }

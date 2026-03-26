@@ -316,7 +316,7 @@ class Grid(Iterable[Coordinates]):
         Notes:
             - The JSON string contains a list of coordinates (x_min, y_min) of each tile and the tile size
 
-        Example:
+        Usage:
             Assume the JSON string is '{"coordinates":
             [[363084, 5715326], [363212, 5715326], [363084, 5715454], [363212, 5715454]],
             "tile_size": 128}'.
@@ -994,7 +994,7 @@ class GridConfig(pydantic.BaseModel):
         - Use null instead of None
         - Use false or true instead of False or True
 
-    Example:
+    Usage:
         You can create the configuration from a config file.
 
         ``` yaml title="config.yaml"
