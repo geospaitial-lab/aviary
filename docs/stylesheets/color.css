@@ -50,16 +50,31 @@
 }
 
 [data-md-color-scheme=default] {
-  .md-typeset .admonition,
-  .md-typeset details {
+  .md-typeset .admonition.note,
+  .md-typeset details.note {
     border-color: oklch(54.6% 0.245 262.881);
   }
-  .md-typeset .admonition > .admonition-title,
-  .md-typeset details > summary {
+  .md-typeset .note > .admonition-title,
+  .md-typeset .note > summary {
     background-color: oklch(54.6% 0.245 262.881 / 20%);
   }
-  .md-typeset .admonition > .admonition-title::before,
-  .md-typeset details > summary::before {
+  .md-typeset .note > .admonition-title::before,
+  .md-typeset .note > summary::before {
+    background-color: oklch(54.6% 0.245 262.881);
+  }
+}
+
+[data-md-color-scheme=default] {
+  .md-typeset .admonition.abstract,
+  .md-typeset details.abstract {
+    border-color: oklch(54.6% 0.245 262.881);
+  }
+  .md-typeset .abstract > .admonition-title,
+  .md-typeset .abstract > summary {
+    background-color: oklch(54.6% 0.245 262.881 / 20%);
+  }
+  .md-typeset .abstract > .admonition-title::before,
+  .md-typeset .abstract > summary::before {
     background-color: oklch(54.6% 0.245 262.881);
   }
 }
@@ -121,16 +136,31 @@
 }
 
 [data-md-color-scheme=slate] {
-  .md-typeset .admonition,
-  .md-typeset details {
+  .md-typeset .admonition.note,
+  .md-typeset details.note {
     border-color: oklch(70.7% 0.165 254.624);
   }
-  .md-typeset .admonition > .admonition-title,
-  .md-typeset details > summary {
+  .md-typeset .note > .admonition-title,
+  .md-typeset .note > summary {
     background-color: oklch(70.7% 0.165 254.624 / 20%);
   }
-  .md-typeset .admonition > .admonition-title::before,
-  .md-typeset details > summary::before {
+  .md-typeset .note > .admonition-title::before,
+  .md-typeset .note > summary::before {
+    background-color: oklch(70.7% 0.165 254.624);
+  }
+}
+
+[data-md-color-scheme=slate] {
+  .md-typeset .admonition.abstract,
+  .md-typeset details.abstract {
+    border-color: oklch(70.7% 0.165 254.624);
+  }
+  .md-typeset .abstract > .admonition-title,
+  .md-typeset .abstract > summary {
+    background-color: oklch(70.7% 0.165 254.624 / 20%);
+  }
+  .md-typeset .abstract > .admonition-title::before,
+  .md-typeset .abstract > summary::before {
     background-color: oklch(70.7% 0.165 254.624);
   }
 }
