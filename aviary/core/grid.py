@@ -37,6 +37,7 @@ from aviary._functional.utils.coordinates_filter import (
     geospatial_filter,
     set_filter,
 )
+from aviary._utils.lifecycle import experimental
 from aviary.core.bounding_box import BoundingBox
 from aviary.core.enums import (
     GeospatialFilterMode,
@@ -364,6 +365,9 @@ class Grid(Iterable[Coordinates]):
         )
 
     @classmethod
+    @experimental(
+        since='1.3.0',
+    )
     def from_osm(
         cls,
         tile_size: TileSize,
@@ -375,6 +379,9 @@ class Grid(Iterable[Coordinates]):
         url: str = 'https://overpass-api.de/api/interpreter',
     ) -> Grid:
         """Creates a grid from OpenStreetMap data.
+
+        Experimental:
+            This method is experimental since 1.3.0 and may change without notice.
 
         Additional dependencies:
             `from_osm` requires the `osm` dependency group.
