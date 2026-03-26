@@ -105,6 +105,16 @@ def deprecated(
     removal: str | None = None,
     description: str | None = None,
 ) -> Callable:
+    """Marks an object as deprecated.
+
+    Parameters:
+        since: Version since which the object is deprecated
+        removal: Version when the object will be removed
+        description: Description
+
+    Returns:
+        Decorator
+    """
     def decorator(
         obj: object,
     ) -> object:
@@ -131,6 +141,15 @@ def experimental(
     since: str | None = None,
     description: str | None = None,
 ) -> Callable:
+    """Marks an object as experimental.
+
+    Parameters:
+        since: Version since which the object is experimental
+        description: Description
+
+    Returns:
+        Decorator
+    """
     def decorator(
         obj: object,
     ) -> object:
