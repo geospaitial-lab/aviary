@@ -74,6 +74,12 @@ Install aviary using uv pip.
     uv pip install geospaitial-lab-aviary[cli]
     ```
 
+=== "+ OSM"
+
+    ```
+    uv pip install geospaitial-lab-aviary[osm]
+    ```
+
 === "+ All"
 
     ```
@@ -83,7 +89,8 @@ Install aviary using uv pip.
 Note that there are optional dependency groups:
 
 - `cli`: Required for aviary’s CLI
-- `all`: Includes optional dependencies, such as `cli`
+- `osm`: Required for aviary’s OSM support
+- `all`: Includes optional dependencies, such as `cli` and `osm`
 
 ---
 
@@ -118,6 +125,12 @@ If you already use an uv-managed project, you can simply add aviary.
     uv add geospaitial-lab-aviary[cli]
     ```
 
+=== "+ OSM"
+
+    ```
+    uv add geospaitial-lab-aviary[osm]
+    ```
+
 === "+ All"
 
     ```
@@ -127,7 +140,8 @@ If you already use an uv-managed project, you can simply add aviary.
 Note that there are optional dependency groups:
 
 - `cli`: Required for aviary’s CLI
-- `all`: Includes optional dependencies, such as `cli`
+- `osm`: Required for aviary’s OSM support
+- `all`: Includes optional dependencies, such as `cli` and `osm`
 
 For more information, you can refer to the
 [official uv projects documentation :material-arrow-top-right:][official uv projects documentation].

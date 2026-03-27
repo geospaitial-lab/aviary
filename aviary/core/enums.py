@@ -1,4 +1,4 @@
-#  Copyright (C) 2024-2025 Marius Maryniak
+#  Copyright (C) 2024-2026 Marius Maryniak
 #
 #  This file is part of aviary.
 #
@@ -179,6 +179,18 @@ class InterpolationMode(Enum):
             InterpolationMode.NEAREST: rio.enums.Resampling.nearest,
         }
         return mapping[self]
+
+
+class OSMType(Enum):
+    """
+    Attributes:
+        NODE: node type
+        WAY: way type
+        RELATION: relation type
+    """
+    NODE = 'node'
+    WAY = 'way'
+    RELATION = 'relation'
 
 
 class SetFilterMode(Enum):

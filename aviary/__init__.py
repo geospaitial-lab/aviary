@@ -25,6 +25,7 @@ from .core.enums import (
     ChannelName,
     GeospatialFilterMode,
     InterpolationMode,
+    OSMType,
     SetFilterMode,
     WMSVersion,
 )
@@ -76,6 +77,7 @@ __all__ = [
     'GridConfig',
     'GroundSamplingDistance',
     'InterpolationMode',
+    'OSMType',
     'RasterChannel',
     'SetFilterMode',
     'Tile',
