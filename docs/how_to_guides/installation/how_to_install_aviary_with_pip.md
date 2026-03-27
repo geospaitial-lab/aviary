@@ -63,6 +63,12 @@ Install aviary using pip.
     pip install geospaitial-lab-aviary[cli]
     ```
 
+=== "+ OSM"
+
+    ```
+    pip install geospaitial-lab-aviary[osm]
+    ```
+
 === "+ All"
 
     ```
@@ -72,7 +78,8 @@ Install aviary using pip.
 Note that there are optional dependency groups:
 
 - `cli`: Required for aviary’s CLI
-- `all`: Includes optional dependencies, such as `cli`
+- `osm`: Required for aviary’s OSM support
+- `all`: Includes optional dependencies, such as `cli` and `osm`
 
 ### Verify the installation
 
