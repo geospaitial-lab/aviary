@@ -34,6 +34,7 @@ from .core.grid import (
     Grid,
     GridConfig,
 )
+from .core.mixins import IDMixin
 from .core.tiles import (
     Tile,
     Tiles,
@@ -76,6 +77,7 @@ __all__ = [
     'Grid',
     'GridConfig',
     'GroundSamplingDistance',
+    'IDMixin',
     'InterpolationMode',
     'OSMType',
     'RasterChannel',
