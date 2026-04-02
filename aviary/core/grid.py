@@ -45,6 +45,7 @@ from aviary.core.enums import (
     SetFilterMode,
 )
 from aviary.core.exceptions import AviaryUserError
+from aviary.core.mixins import IDMixin
 from aviary.core.type_aliases import (
     Coordinate,
     Coordinates,
@@ -57,7 +58,10 @@ if TYPE_CHECKING:
     from aviary.utils.coordinates_filter import CoordinatesFilter
 
 
-class Grid(Iterable[Coordinates]):
+class Grid(
+    Iterable[Coordinates],
+    IDMixin,
+):
     """A grid specifies the spatial extent of an area of interest by a set of coordinates
     of the bottom left corner of each tile and the tile size.
 
@@ -83,6 +87,8 @@ class Grid(Iterable[Coordinates]):
         self._tile_size = tile_size
 
         self._validate()
+
+        super().__init__()
 
     def _validate(self) -> None:
         """Validates the grid."""
