@@ -230,6 +230,14 @@ def test_raster_channel_batch_size(
     assert raster_channel.batch_size == expected
 
 
+def test_raster_channel_ground_sampling_distance_defaults(
+    raster_channel: RasterChannel,
+) -> None:
+    expected = None
+
+    assert raster_channel.ground_sampling_distance is expected
+
+
 @pytest.mark.parametrize(('channels', 'copy', 'expected'), data_test_raster_channel_from_channels)
 def test_raster_channel_from_channels(
     channels: list[RasterChannel],
