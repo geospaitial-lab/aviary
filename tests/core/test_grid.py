@@ -1,4 +1,4 @@
-#  Copyright (C) 2024-2025 Marius Maryniak
+#  Copyright (C) 2024-2026 Marius Maryniak
 #
 #  This file is part of aviary.
 #
@@ -146,6 +146,7 @@ def test_grid_serializability(
     deserialized_grid = pickle.loads(serialized_grid)  # noqa: S301
 
     assert grid == deserialized_grid
+    assert grid.id == deserialized_grid.id
 
 
 @pytest.mark.parametrize(('grid', 'expected'), data_test_grid_area)

@@ -1,4 +1,4 @@
-#  Copyright (C) 2024-2025 Marius Maryniak
+#  Copyright (C) 2024-2026 Marius Maryniak
 #
 #  This file is part of aviary.
 #
@@ -130,6 +130,7 @@ def test_vector_layer_serializability(
     deserialized_vector_layer = pickle.loads(serialized_vector_layer)  # noqa: S301
 
     assert vector_layer == deserialized_vector_layer
+    assert vector_layer.id == deserialized_vector_layer.id
 
 
 @pytest.mark.parametrize(('other', 'expected'), data_test_vector_layer_eq)

@@ -1,4 +1,4 @@
-#  Copyright (C) 2024-2025 Marius Maryniak
+#  Copyright (C) 2024-2026 Marius Maryniak
 #
 #  This file is part of aviary.
 #
@@ -110,6 +110,7 @@ def test_bounding_box_serializability(
     deserialized_bounding_box = pickle.loads(serialized_bounding_box)  # noqa: S301
 
     assert bounding_box == deserialized_bounding_box
+    assert bounding_box.id == deserialized_bounding_box.id
 
 
 @pytest.mark.parametrize(('bounding_box', 'expected'), data_test_bounding_box_area)

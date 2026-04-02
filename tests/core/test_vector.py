@@ -1,4 +1,4 @@
-#  Copyright (C) 2024-2025 Marius Maryniak
+#  Copyright (C) 2024-2026 Marius Maryniak
 #
 #  This file is part of aviary.
 #
@@ -149,6 +149,7 @@ def test_vector_serializability(
     deserialized_vector = pickle.loads(serialized_vector)  # noqa: S301
 
     assert vector == deserialized_vector
+    assert vector.id == deserialized_vector.id
 
 
 def test_vector_layer_names(

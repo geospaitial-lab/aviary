@@ -221,6 +221,7 @@ def test_raster_channel_serializability(
     deserialized_raster_channel = pickle.loads(serialized_raster_channel)  # noqa: S301
 
     assert raster_channel == deserialized_raster_channel
+    assert raster_channel.id == deserialized_raster_channel.id
 
 
 def test_raster_channel_batch_size(
@@ -652,6 +653,7 @@ def test_vector_channel_serializability(
     deserialized_vector_channel = pickle.loads(serialized_vector_channel)  # noqa: S301
 
     assert vector_channel == deserialized_vector_channel
+    assert vector_channel.id == deserialized_vector_channel.id
 
 
 def test_vector_channel_batch_size(

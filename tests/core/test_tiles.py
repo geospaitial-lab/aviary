@@ -1,4 +1,4 @@
-#  Copyright (C) 2024-2025 Marius Maryniak
+#  Copyright (C) 2024-2026 Marius Maryniak
 #
 #  This file is part of aviary.
 #
@@ -205,6 +205,7 @@ def test_tiles_serializability(
     deserialized_tiles = pickle.loads(serialized_tiles)  # noqa: S301
 
     assert tiles == deserialized_tiles
+    assert tiles.id == deserialized_tiles.id
 
 
 def test_tiles_area(
