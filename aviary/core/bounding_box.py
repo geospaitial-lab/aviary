@@ -28,6 +28,7 @@ import geopandas as gpd
 from shapely.geometry import box
 
 from aviary.core.exceptions import AviaryUserError
+from aviary.core.mixins import IDMixin
 from aviary.core.type_aliases import (
     BufferSize,
     Coordinate,
@@ -35,7 +36,10 @@ from aviary.core.type_aliases import (
 )
 
 
-class BoundingBox(Iterable[Coordinate]):
+class BoundingBox(
+    Iterable[Coordinate],
+    IDMixin,
+):
     """A bounding box specifies the spatial extent of an area of interest."""
     _COORDINATES = (
         'x_min',
@@ -66,6 +70,8 @@ class BoundingBox(Iterable[Coordinate]):
         self._y_max = y_max
 
         self._validate()
+
+        super().__init__()
 
     def _validate(self) -> None:
         """Validates the bounding box.
