@@ -48,6 +48,7 @@ if TYPE_CHECKING:
         Coordinates,
         CoordinatesSet,
         FractionalBufferSize,
+        GroundSamplingDistance,
         TileSize,
     )
 
@@ -606,7 +607,7 @@ class RasterChannel(Channel, Iterable[npt.NDArray]):
             AviaryUserError: Invalid `buffer_size` (the buffer size does not match the spatial extent of the data,
                 resulting in a fractional number of pixels)
         """
-        buffer_size_pixels = self._buffer_size * self[0].shape[0] / (1. + 2. * self._buffer_size)
+        buffer_size_pixels = self._buffer_size * (self[0].shape[0] / (1. + 2. * self._buffer_size))
 
         if not buffer_size_pixels.is_integer():
             message = (
@@ -625,6 +626,26 @@ class RasterChannel(Channel, Iterable[npt.NDArray]):
             Data
         """
         return self._data
+
+    @property
+    def ground_sampling_distance(self) -> GroundSamplingDistance | None:
+        """
+        Returns:
+            Ground sampling distance
+        """
+        if self._observer_tiles is None:
+            return None
+
+        observer_tiles = self._observer_tiles()
+
+        if observer_tiles is None:
+            return None
+
+        tile_size = observer_tiles.tile_size
+        size_pixels = self[0].shape[0] - 2 * self._buffer_size_pixels
+
+        ground_sampling_distance = tile_size / size_pixels
+        return ground_sampling_distance
 
     @classmethod
     def from_channels(
