@@ -1,4 +1,4 @@
-#  Copyright (C) 2024-2025 Marius Maryniak
+#  Copyright (C) 2024-2026 Marius Maryniak
 #
 #  This file is part of aviary.
 #
@@ -29,6 +29,7 @@ from aviary.core.channel import (
 )
 from aviary.core.enums import ChannelName
 from aviary.core.exceptions import AviaryUserError
+from aviary.core.tiles import Tiles
 from aviary.core.type_aliases import (
     BufferSize,
     CoordinatesSet,
@@ -228,6 +229,23 @@ def test_raster_channel_batch_size(
     expected = 2
 
     assert raster_channel.batch_size == expected
+
+
+def test_raster_channel_ground_sampling_distance(
+    raster_channel: RasterChannel,
+) -> None:
+    expected = None
+
+    assert raster_channel.ground_sampling_distance is expected
+
+
+def test_raster_channel_ground_sampling_distance_in_tiles(
+    tiles: Tiles,
+) -> None:
+    raster_channel = tiles[ChannelName.R]
+    expected = .2
+
+    assert raster_channel.ground_sampling_distance == expected
 
 
 @pytest.mark.parametrize(('channels', 'copy', 'expected'), data_test_raster_channel_from_channels)

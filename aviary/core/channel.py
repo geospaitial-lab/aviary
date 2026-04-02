@@ -1,4 +1,5 @@
-#  Copyright (C) 2024-2025 Marius Maryniak
+#  Copyright (C) 2024-2026 Marius Maryniak
+#  Copyright (C) 2026 Alexander Roß
 #
 #  This file is part of aviary.
 #
@@ -48,6 +49,7 @@ if TYPE_CHECKING:
         Coordinates,
         CoordinatesSet,
         FractionalBufferSize,
+        GroundSamplingDistance,
         TileSize,
     )
 
@@ -539,6 +541,7 @@ class RasterChannel(Channel, Iterable[npt.NDArray]):
         )
 
         self._buffer_size_pixels = self._compute_buffer_size_pixels()
+        self._tile_size_pixels = self._compute_tile_size_pixels()
 
     def _validate_data(self) -> None:
         """Validates `data`.
@@ -606,7 +609,7 @@ class RasterChannel(Channel, Iterable[npt.NDArray]):
             AviaryUserError: Invalid `buffer_size` (the buffer size does not match the spatial extent of the data,
                 resulting in a fractional number of pixels)
         """
-        buffer_size_pixels = self._buffer_size * self[0].shape[0] / (1. + 2. * self._buffer_size)
+        buffer_size_pixels = self._buffer_size * (self[0].shape[0] / (1. + 2. * self._buffer_size))
 
         if not buffer_size_pixels.is_integer():
             message = (
@@ -618,6 +621,14 @@ class RasterChannel(Channel, Iterable[npt.NDArray]):
 
         return int(buffer_size_pixels)
 
+    def _compute_tile_size_pixels(self) -> TileSize:
+        """Computes the tile size in pixels.
+
+        Returns:
+            Tile size in pixels
+        """
+        return self[0].shape[0] - 2 * self._buffer_size_pixels
+
     @property
     def data(self) -> list[npt.NDArray]:
         """
@@ -625,6 +636,25 @@ class RasterChannel(Channel, Iterable[npt.NDArray]):
             Data
         """
         return self._data
+
+    @property
+    def ground_sampling_distance(self) -> GroundSamplingDistance | None:
+        """
+        Returns:
+            Ground sampling distance in meters per pixel
+        """
+        if self._observer_tiles is None:
+            return None
+
+        observer_tiles = self._observer_tiles()
+
+        if observer_tiles is None:
+            return None
+
+        tile_size = observer_tiles.tile_size
+        tile_size_pixels = self._tile_size_pixels
+
+        return tile_size / tile_size_pixels
 
     @classmethod
     def from_channels(
@@ -818,6 +848,7 @@ class RasterChannel(Channel, Iterable[npt.NDArray]):
             self._buffer_size = 0.
             self._validate()
             self._buffer_size_pixels = self._compute_buffer_size_pixels()
+            self._tile_size_pixels = self._compute_tile_size_pixels()
             return self
 
         data = [
