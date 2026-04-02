@@ -18,7 +18,7 @@ from typing import Any
 
 
 class IDMixin:
-    """Mixin that adds an id to component instances."""
+    """Mixin that adds an ID to instances."""
 
     def __init__(
         self,
