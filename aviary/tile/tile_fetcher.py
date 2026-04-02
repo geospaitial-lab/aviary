@@ -41,6 +41,7 @@ from aviary.core.enums import (
     WMSVersion,
 )
 from aviary.core.exceptions import AviaryUserError
+from aviary.core.mixins import IDMixin
 from aviary.core.type_aliases import (
     BufferSize,
     Coordinates,
@@ -228,7 +229,7 @@ def register_tile_fetcher(
     return decorator
 
 
-class CompositeFetcher:
+class CompositeFetcher(IDMixin):
     """Tile fetcher that composes multiple tile fetchers
 
     Notes:
@@ -252,6 +253,8 @@ class CompositeFetcher:
         """
         self._tile_fetchers = tile_fetchers
         self._max_num_threads = max_num_threads
+
+        super().__init__()
 
     @classmethod
     def from_config(
@@ -329,7 +332,7 @@ _TileFetcherFactory.register(
 )
 
 
-class VRTFetcher:
+class VRTFetcher(IDMixin):
     """Tile fetcher for virtual rasters
 
     Implements the `TileFetcher` protocol.
@@ -366,6 +369,8 @@ class VRTFetcher:
         self._ground_sampling_distance = ground_sampling_distance
         self._interpolation_mode = interpolation_mode
         self._buffer_size = buffer_size
+
+        super().__init__()
 
     @classmethod
     def from_config(
@@ -465,7 +470,7 @@ _TileFetcherFactory.register(
 )
 
 
-class WMSFetcher:
+class WMSFetcher(IDMixin):
     """Tile fetcher for web map services
 
     Implements the `TileFetcher` protocol.
@@ -511,6 +516,8 @@ class WMSFetcher:
         self._ground_sampling_distance = ground_sampling_distance
         self._style = style
         self._buffer_size = buffer_size
+
+        super().__init__()
 
     @classmethod
     def from_config(

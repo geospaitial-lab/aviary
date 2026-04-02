@@ -7,6 +7,8 @@
 </div>
 
 ::: aviary.tile.VRTFetcher
+    options:
+      inherited_members: true
 
 ---
 

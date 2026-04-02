@@ -7,6 +7,8 @@
 </div>
 
 ::: aviary.tile.CompositeFetcher
+    options:
+      inherited_members: true
 
 ---
 
