@@ -41,6 +41,7 @@ from aviary.core.enums import (
     _coerce_channel_name,
 )
 from aviary.core.exceptions import AviaryUserError
+from aviary.core.mixins import IDMixin
 
 if TYPE_CHECKING:
     from aviary.core.tiles import Tiles
@@ -54,7 +55,11 @@ if TYPE_CHECKING:
     )
 
 
-class Channel(ABC, Iterable[object]):
+class Channel(
+    ABC,
+    Iterable[object],
+    IDMixin,
+):
     """Abstract class for channels
 
     Notes:
@@ -99,6 +104,8 @@ class Channel(ABC, Iterable[object]):
             self._copy_metadata()
 
         self._observer_tiles = None
+
+        super().__init__()
 
     def _validate(self) -> None:
         """Validates the channel."""
