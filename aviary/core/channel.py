@@ -1,4 +1,4 @@
-#  Copyright (C) 2024-2025 Marius Maryniak
+#  Copyright (C) 2024-2026 Marius Maryniak
 #  Copyright (C) 2026 Alexander Roß
 #
 #  This file is part of aviary.
@@ -541,6 +541,7 @@ class RasterChannel(Channel, Iterable[npt.NDArray]):
         )
 
         self._buffer_size_pixels = self._compute_buffer_size_pixels()
+        self._tile_size_pixels = self._compute_tile_size_pixels()
 
     def _validate_data(self) -> None:
         """Validates `data`.
@@ -620,6 +621,14 @@ class RasterChannel(Channel, Iterable[npt.NDArray]):
 
         return int(buffer_size_pixels)
 
+    def _compute_tile_size_pixels(self) -> TileSize:
+        """Computes the tile size in pixels.
+
+        Returns:
+            Tile size in pixels
+        """
+        return self[0].shape[0] - 2 * self._buffer_size_pixels
+
     @property
     def data(self) -> list[npt.NDArray]:
         """
@@ -632,7 +641,7 @@ class RasterChannel(Channel, Iterable[npt.NDArray]):
     def ground_sampling_distance(self) -> GroundSamplingDistance | None:
         """
         Returns:
-            Ground sampling distance
+            Ground sampling distance in meters per pixel
         """
         if self._observer_tiles is None:
             return None
@@ -643,10 +652,9 @@ class RasterChannel(Channel, Iterable[npt.NDArray]):
             return None
 
         tile_size = observer_tiles.tile_size
-        size_pixels = self[0].shape[0] - 2 * self._buffer_size_pixels
+        tile_size_pixels = self._tile_size_pixels
 
-        ground_sampling_distance = tile_size / size_pixels
-        return ground_sampling_distance
+        return tile_size / tile_size_pixels
 
     @classmethod
     def from_channels(
@@ -840,6 +848,7 @@ class RasterChannel(Channel, Iterable[npt.NDArray]):
             self._buffer_size = 0.
             self._validate()
             self._buffer_size_pixels = self._compute_buffer_size_pixels()
+            self._tile_size_pixels = self._compute_tile_size_pixels()
             return self
 
         data = [
