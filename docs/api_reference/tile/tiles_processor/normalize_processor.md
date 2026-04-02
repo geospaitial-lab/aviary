@@ -7,6 +7,8 @@
 </div>
 
 ::: aviary.tile.NormalizeProcessor
+    options:
+      inherited_members: true
 
 ---
 

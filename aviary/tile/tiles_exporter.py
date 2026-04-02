@@ -25,6 +25,7 @@ from aviary._functional.tile.tiles_exporter import (
     vector_exporter,
 )
 from aviary.core.enums import ChannelName
+from aviary.core.mixins import IDMixin
 from aviary.core.type_aliases import EPSGCode
 from aviary.tile.tiles_processor import _TilesProcessorFactory
 
@@ -34,7 +35,7 @@ if TYPE_CHECKING:
 _PACKAGE = 'aviary'
 
 
-class GridExporter:
+class GridExporter(IDMixin):
     """Tiles processor that exports the grid of the tiles
 
     The grid is exported to a JSON file. The JSON string contains a list of coordinates (x_min, y_min)
@@ -52,6 +53,8 @@ class GridExporter:
             path: Path to the JSON file (.json file)
         """
         self._path = path
+
+        super().__init__()
 
     @classmethod
     def from_config(
@@ -113,7 +116,7 @@ _TilesProcessorFactory.register(
 )
 
 
-class VectorExporter:
+class VectorExporter(IDMixin):
     """Tiles processor that exports a vector channel
 
     The vector data is exported to a geopackage.
@@ -142,6 +145,8 @@ class VectorExporter:
         self._epsg_code = epsg_code
         self._path = path
         self._remove_channel = remove_channel
+
+        super().__init__()
 
     @classmethod
     def from_config(

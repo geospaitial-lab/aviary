@@ -42,6 +42,7 @@ from aviary._functional.tile.tiles_processor import (
 )
 from aviary.core.enums import ChannelName
 from aviary.core.exceptions import AviaryUserError
+from aviary.core.mixins import IDMixin
 from aviary.core.type_aliases import ChannelNameSet
 
 if TYPE_CHECKING:
@@ -232,7 +233,7 @@ def register_tiles_processor(
     return decorator
 
 
-class CopyProcessor:
+class CopyProcessor(IDMixin):
     """Tiles processor that copies a channel
 
     Implements the `TilesProcessor` protocol.
@@ -250,6 +251,8 @@ class CopyProcessor:
         """
         self._channel_name = channel_name
         self._new_channel_name = new_channel_name
+
+        super().__init__()
 
     @classmethod
     def from_config(
@@ -319,7 +322,7 @@ _TilesProcessorFactory.register(
 )
 
 
-class NormalizeProcessor:
+class NormalizeProcessor(IDMixin):
     """Tiles processor that normalizes a channel
 
     Notes:
@@ -349,6 +352,8 @@ class NormalizeProcessor:
         self._max_value = max_value
         self._new_channel_name = new_channel_name
         self._max_num_threads = max_num_threads
+
+        super().__init__()
 
     @classmethod
     def from_config(
@@ -431,7 +436,7 @@ _TilesProcessorFactory.register(
 )
 
 
-class ParallelCompositeProcessor:
+class ParallelCompositeProcessor(IDMixin):
     """Tiles processor that composes multiple tiles processors in parallel
 
     Notes:
@@ -451,6 +456,8 @@ class ParallelCompositeProcessor:
             tiles_processors: Tiles processors
         """
         self._tiles_processors = tiles_processors
+
+        super().__init__()
 
     @classmethod
     def from_config(
@@ -519,7 +526,7 @@ _TilesProcessorFactory.register(
 )
 
 
-class RemoveBufferProcessor:
+class RemoveBufferProcessor(IDMixin):
     """Tiles processor that removes the buffer of channels
 
     Implements the `TilesProcessor` protocol.
@@ -538,6 +545,8 @@ class RemoveBufferProcessor:
             channel_names: Channel name, channel names, no channels (False or None), or all channels (True)
         """
         self._channel_names = channel_names
+
+        super().__init__()
 
     @classmethod
     def from_config(
@@ -609,7 +618,7 @@ _TilesProcessorFactory.register(
 )
 
 
-class RemoveProcessor:
+class RemoveProcessor(IDMixin):
     """Tiles processor that removes channels
 
     Implements the `TilesProcessor` protocol.
@@ -628,6 +637,8 @@ class RemoveProcessor:
             channel_names: Channel name, channel names, no channels (False or None), or all channels (True)
         """
         self._channel_names = channel_names
+
+        super().__init__()
 
     @classmethod
     def from_config(
@@ -699,7 +710,7 @@ _TilesProcessorFactory.register(
 )
 
 
-class SelectProcessor:
+class SelectProcessor(IDMixin):
     """Tiles processor that selects channels
 
     Implements the `TilesProcessor` protocol.
@@ -718,6 +729,8 @@ class SelectProcessor:
             channel_names: Channel name, channel names, no channels (False or None), or all channels (True)
         """
         self._channel_names = channel_names
+
+        super().__init__()
 
     @classmethod
     def from_config(
@@ -789,7 +802,7 @@ _TilesProcessorFactory.register(
 )
 
 
-class SequentialCompositeProcessor:
+class SequentialCompositeProcessor(IDMixin):
     """Tiles processor that composes multiple tiles processors in sequence
 
     Notes:
@@ -807,6 +820,8 @@ class SequentialCompositeProcessor:
             tiles_processors: Tiles processors
         """
         self._tiles_processors = tiles_processors
+
+        super().__init__()
 
     @classmethod
     def from_config(
@@ -875,7 +890,7 @@ _TilesProcessorFactory.register(
 )
 
 
-class StandardizeProcessor:
+class StandardizeProcessor(IDMixin):
     """Tiles processor that standardizes a channel
 
     Notes:
@@ -905,6 +920,8 @@ class StandardizeProcessor:
         self._std_value = std_value
         self._new_channel_name = new_channel_name
         self._max_num_threads = max_num_threads
+
+        super().__init__()
 
     @classmethod
     def from_config(
@@ -987,7 +1004,7 @@ _TilesProcessorFactory.register(
 )
 
 
-class VectorizeProcessor:
+class VectorizeProcessor(IDMixin):
     """Tiles processor that vectorizes a channel
 
     Notes:
@@ -1017,6 +1034,8 @@ class VectorizeProcessor:
         self._background_value = background_value
         self._new_channel_name = new_channel_name
         self._max_num_threads = max_num_threads
+
+        super().__init__()
 
     @classmethod
     def from_config(

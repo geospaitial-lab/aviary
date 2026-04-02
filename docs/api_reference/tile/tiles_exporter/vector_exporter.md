@@ -7,6 +7,8 @@
 </div>
 
 ::: aviary.tile.VectorExporter
+    options:
+      inherited_members: true
 
 ---
 
