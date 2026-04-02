@@ -1,4 +1,5 @@
 #  Copyright (C) 2024-2025 Marius Maryniak
+#  Copyright (C) 2026 Alexander Roß
 #
 #  This file is part of aviary.
 #
