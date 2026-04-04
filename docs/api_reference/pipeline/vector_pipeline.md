@@ -7,6 +7,8 @@
 </div>
 
 ::: aviary.pipeline.VectorPipeline
+    options:
+      inherited_members: true
 
 ---
 

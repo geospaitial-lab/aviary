@@ -39,6 +39,7 @@ from aviary.core.grid import (
     GridConfig,
     _GridFactory,
 )
+from aviary.core.mixins import IDMixin
 from aviary.tile.tile_fetcher import (
     TileFetcher,
     TileFetcherConfig,
@@ -227,7 +228,7 @@ def register_pipeline(
     return decorator
 
 
-class CompositePipeline:
+class CompositePipeline(IDMixin):
     """Pipeline that composes multiple pipelines
 
     Notes:
@@ -245,6 +246,8 @@ class CompositePipeline:
             pipelines: Pipelines
         """
         self._pipelines = pipelines
+
+        super().__init__()
 
         self._validate()
 
@@ -367,7 +370,7 @@ _PipelineFactory.register(
 )
 
 
-class TilePipeline:
+class TilePipeline(IDMixin):
     """Pipeline that fetches and processes tiles
 
     Implements the `Pipeline` protocol.
@@ -400,6 +403,8 @@ class TilePipeline:
         self._tile_loader_max_num_threads = tile_loader_max_num_threads
         self._tile_loader_num_prefetched_tiles = tile_loader_num_prefetched_tiles
         self._show_progress = show_progress
+
+        super().__init__()
 
     @classmethod
     def from_config(
@@ -575,7 +580,7 @@ _PipelineFactory.register(
 )
 
 
-class VectorPipeline:
+class VectorPipeline(IDMixin):
     """Pipeline that loads and processes vectors
 
     Implements the `Pipeline` protocol.
@@ -593,6 +598,8 @@ class VectorPipeline:
         """
         self._vector_loader = vector_loader
         self._vector_processor = vector_processor
+
+        super().__init__()
 
     @classmethod
     def from_config(
