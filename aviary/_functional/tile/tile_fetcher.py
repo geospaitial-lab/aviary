@@ -260,7 +260,7 @@ def _compute_tile_size_pixels(
     tile_size: TileSize,
     buffer_size: BufferSize,
     ground_sampling_distance: GroundSamplingDistance,
-) -> TileSize:
+) -> int:
     """Computes the tile size in pixels.
 
     Parameters:
