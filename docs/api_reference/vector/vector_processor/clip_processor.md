@@ -7,6 +7,8 @@
 </div>
 
 ::: aviary.vector.ClipProcessor
+    options:
+      inherited_members: true
 
 ---
 

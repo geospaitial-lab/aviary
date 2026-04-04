@@ -7,6 +7,8 @@
 </div>
 
 ::: aviary.vector.CompositeLoader
+    options:
+      inherited_members: true
 
 ---
 

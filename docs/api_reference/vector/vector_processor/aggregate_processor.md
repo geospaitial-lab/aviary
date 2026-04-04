@@ -7,6 +7,8 @@
 </div>
 
 ::: aviary.vector.AggregateProcessor
+    options:
+      inherited_members: true
 
 ---
 

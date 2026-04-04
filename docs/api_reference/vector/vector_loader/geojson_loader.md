@@ -7,6 +7,8 @@
 </div>
 
 ::: aviary.vector.GeoJSONLoader
+    options:
+      inherited_members: true
 
 ---
 

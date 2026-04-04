@@ -21,6 +21,7 @@ from typing import TYPE_CHECKING
 import pydantic
 
 from aviary._functional.vector.vector_exporter import vector_exporter
+from aviary.core.mixins import IDMixin
 from aviary.core.type_aliases import EPSGCode
 from aviary.vector.vector_processor import _VectorProcessorFactory
 
@@ -30,7 +31,7 @@ if TYPE_CHECKING:
 _PACKAGE = 'aviary'
 
 
-class VectorExporter:
+class VectorExporter(IDMixin):
     """Vector processor that exports a layer
 
     The vector data is exported to a geopackage.
@@ -56,6 +57,8 @@ class VectorExporter:
         self._epsg_code = epsg_code
         self._path = path
         self._remove_layer = remove_layer
+
+        super().__init__()
 
     @classmethod
     def from_config(

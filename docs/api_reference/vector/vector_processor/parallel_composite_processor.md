@@ -7,6 +7,8 @@
 </div>
 
 ::: aviary.vector.ParallelCompositeProcessor
+    options:
+      inherited_members: true
 
 ---
 

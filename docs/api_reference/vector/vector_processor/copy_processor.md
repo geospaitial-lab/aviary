@@ -7,6 +7,8 @@
 </div>
 
 ::: aviary.vector.CopyProcessor
+    options:
+      inherited_members: true
 
 ---
 

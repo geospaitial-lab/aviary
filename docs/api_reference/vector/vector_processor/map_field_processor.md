@@ -7,6 +7,8 @@
 </div>
 
 ::: aviary.vector.MapFieldProcessor
+    options:
+      inherited_members: true
 
 ---
 

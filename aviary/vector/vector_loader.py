@@ -38,6 +38,7 @@ from aviary._functional.vector.vector_loader import (
 )
 from aviary.core.bounding_box import BoundingBox
 from aviary.core.exceptions import AviaryUserError
+from aviary.core.mixins import IDMixin
 from aviary.core.type_aliases import (
     Coordinate,
     EPSGCode,
@@ -216,7 +217,7 @@ def register_vector_loader(
     return decorator
 
 
-class BoundingBoxLoader:
+class BoundingBoxLoader(IDMixin):
     """Vector loader for bounding boxes
 
     Implements the `VectorLoader` protocol.
@@ -237,6 +238,8 @@ class BoundingBoxLoader:
         self._bounding_box = bounding_box
         self._epsg_code = epsg_code
         self._layer_name = layer_name
+
+        super().__init__()
 
     @classmethod
     def from_config(
@@ -320,7 +323,7 @@ _VectorLoaderFactory.register(
 )
 
 
-class CompositeLoader:
+class CompositeLoader(IDMixin):
     """Vector loader that composes multiple vector loaders
 
     Notes:
@@ -344,6 +347,8 @@ class CompositeLoader:
         """
         self._vector_loaders = vector_loaders
         self._max_num_threads = max_num_threads
+
+        super().__init__()
 
     @classmethod
     def from_config(
@@ -414,7 +419,7 @@ _VectorLoaderFactory.register(
 )
 
 
-class GeoJSONLoader:
+class GeoJSONLoader(IDMixin):
     """Vector loader for GeoJSON files
 
     Implements the `VectorLoader` protocol.
@@ -435,6 +440,8 @@ class GeoJSONLoader:
         self._path = path
         self._epsg_code = epsg_code
         self._layer_name = layer_name
+
+        super().__init__()
 
     @classmethod
     def from_config(
@@ -497,7 +504,7 @@ _VectorLoaderFactory.register(
 )
 
 
-class GPKGLoader:
+class GPKGLoader(IDMixin):
     """Vector loader for geopackages
 
     Implements the `VectorLoader` protocol.
@@ -518,6 +525,8 @@ class GPKGLoader:
         self._path = path
         self._epsg_code = epsg_code
         self._layer_name = layer_name
+
+        super().__init__()
 
     @classmethod
     def from_config(
