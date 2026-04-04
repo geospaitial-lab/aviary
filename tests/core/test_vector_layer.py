@@ -26,6 +26,8 @@ from tests.core.data.data_test_vector_layer import (
     data_test_vector_layer_init,
 )
 
+_UUID_VERSION = 4
+
 
 @pytest.mark.parametrize(
     (
@@ -61,6 +63,8 @@ def test_vector_layer_init(
     assert vector_layer.name == expected_name
     assert vector_layer.metadata == expected_metadata
     assert vector_layer.is_copied is expected_copy
+
+    assert vector_layer.id.version == _UUID_VERSION
 
 
 def test_vector_layer_init_defaults() -> None:

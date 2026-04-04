@@ -42,6 +42,8 @@ from tests.core.data.data_test_tiles import (
     data_test_tiles_init_exceptions,
 )
 
+_UUID_VERSION = 4
+
 
 def test_tiles_type_alias() -> None:
     assert Tile is Tiles
@@ -92,6 +94,8 @@ def test_tiles_init(
     assert tiles.tile_size == expected_tile_size
     assert tiles.metadata == expected_metadata
     assert tiles.is_copied is expected_copy
+
+    assert tiles.id.version == _UUID_VERSION
 
 
 @pytest.mark.parametrize(('channels', 'coordinates', 'tile_size', 'message'), data_test_tiles_init_exceptions)

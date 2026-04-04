@@ -75,6 +75,8 @@ from tests.core.data.data_test_grid import (
     data_test_grid_to_gdf,
 )
 
+_UUID_VERSION = 4
+
 
 @pytest.mark.parametrize(
     (
@@ -98,6 +100,8 @@ def test_grid_init(
 
     np.testing.assert_array_equal(grid.coordinates, expected_coordinates)
     assert grid.tile_size == expected_tile_size
+
+    assert grid.id.version == _UUID_VERSION
 
 
 @pytest.mark.parametrize(('coordinates', 'tile_size', 'message'), data_test_grid_init_exceptions)

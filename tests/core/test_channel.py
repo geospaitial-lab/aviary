@@ -70,6 +70,8 @@ from tests.core.data.data_test_channel import (
     data_test_vector_channel_remove_buffer_inplace_return,
 )
 
+_UUID_VERSION = 4
+
 
 @pytest.mark.parametrize(
     (
@@ -113,6 +115,8 @@ def test_raster_channel_init(
     assert raster_channel.buffer_size == expected_buffer_size
     assert raster_channel.metadata == expected_metadata
     assert raster_channel.is_copied is expected_copy
+
+    assert raster_channel.id.version == _UUID_VERSION
 
 
 @pytest.mark.parametrize(('data', 'buffer_size', 'message'), data_test_raster_channel_init_exceptions)
@@ -545,6 +549,8 @@ def test_vector_channel_init(
     assert vector_channel.buffer_size == expected_buffer_size
     assert vector_channel.metadata == expected_metadata
     assert vector_channel.is_copied is expected_copy
+
+    assert vector_channel.id.version == _UUID_VERSION
 
 
 @pytest.mark.parametrize(('data', 'buffer_size', 'message'), data_test_vector_channel_init_exceptions)
