@@ -19,11 +19,15 @@ from collections.abc import (
 )
 
 from aviary.core.grid import Grid
+from aviary.core.mixins import IDMixin
 from aviary.core.tiles import Tile
 from aviary.tile.tile_fetcher import TileFetcher
 
 
-class TileSet(Iterable[Tile]):
+class TileSet(
+    Iterable[Tile],
+    IDMixin,
+):
     """A tile set is an iterable that yields a tile for each coordinates in the grid by calling the tile fetcher.
 
     Usage:
@@ -54,6 +58,8 @@ class TileSet(Iterable[Tile]):
         """
         self._grid = grid
         self._tile_fetcher = tile_fetcher
+
+        super().__init__()
 
     def __len__(self) -> int:
         """Computes the number of tiles.
