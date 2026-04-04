@@ -1,4 +1,4 @@
-#  Copyright (C) 2024-2025 Marius Maryniak
+#  Copyright (C) 2024-2026 Marius Maryniak
 #
 #  This file is part of aviary.
 #
@@ -68,7 +68,7 @@ def test__compute_tile_size_pixels(
     tile_size: TileSize,
     buffer_size: BufferSize,
     ground_sampling_distance: GroundSamplingDistance,
-    expected: TileSize,
+    expected: int,
 ) -> None:
     tile_size_pixels = _compute_tile_size_pixels(
         tile_size=tile_size,

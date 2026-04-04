@@ -1,4 +1,4 @@
-#  Copyright (C) 2024-2025 Marius Maryniak
+#  Copyright (C) 2024-2026 Marius Maryniak
 #
 #  This file is part of aviary.
 #
@@ -260,7 +260,7 @@ def _compute_tile_size_pixels(
     tile_size: TileSize,
     buffer_size: BufferSize,
     ground_sampling_distance: GroundSamplingDistance,
-) -> TileSize:
+) -> int:
     """Computes the tile size in pixels.
 
     Parameters:

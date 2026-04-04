@@ -599,7 +599,7 @@ class RasterChannel(Channel, Iterable[npt.NDArray]):
         """Copies `data`."""
         self._data = [data_item.copy() for data_item in self]
 
-    def _compute_buffer_size_pixels(self) -> BufferSize:
+    def _compute_buffer_size_pixels(self) -> int:
         """Computes the buffer size in pixels.
 
         Returns:
@@ -621,7 +621,7 @@ class RasterChannel(Channel, Iterable[npt.NDArray]):
 
         return int(buffer_size_pixels)
 
-    def _compute_tile_size_pixels(self) -> TileSize:
+    def _compute_tile_size_pixels(self) -> int:
         """Computes the tile size in pixels.
 
         Returns:
