@@ -11,3 +11,4 @@
       filters:
       - "!^_"
       - "^__"
+      inherited_members: true
