@@ -7,3 +7,5 @@
 </div>
 
 ::: aviary.utils.SetFilter
+    options:
+      inherited_members: true

@@ -7,3 +7,5 @@
 </div>
 
 ::: aviary.utils.DuplicatesFilter
+    options:
+      inherited_members: true

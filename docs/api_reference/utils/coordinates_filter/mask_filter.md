@@ -7,3 +7,5 @@
 </div>
 
 ::: aviary.utils.MaskFilter
+    options:
+      inherited_members: true
