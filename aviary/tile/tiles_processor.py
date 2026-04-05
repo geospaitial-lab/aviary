@@ -348,8 +348,8 @@ class ExpressionProcessor(IDMixin):
     ) -> None:
         """
         Parameters:
-            new_channel_name: New channel name
             expression_string: Expression string based on the numexpr expression syntax
+            new_channel_name: New channel name
             max_num_threads: Maximum number of threads
         """
         self._expression_string = expression_string
