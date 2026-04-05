@@ -35,6 +35,8 @@ from .tiles_exporter import (
 from .tiles_processor import (
     CopyProcessor,
     CopyProcessorConfig,
+    ExpressionProcessor,
+    ExpressionProcessorConfig,
     NormalizeProcessor,
     NormalizeProcessorConfig,
     ParallelCompositeProcessor,
@@ -61,6 +63,8 @@ __all__ = [
     'CompositeFetcherConfig',
     'CopyProcessor',
     'CopyProcessorConfig',
+    'ExpressionProcessor',
+    'ExpressionProcessorConfig',
     'GridExporter',
     'GridExporterConfig',
     'NormalizeProcessor',
