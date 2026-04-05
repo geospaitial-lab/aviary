@@ -407,8 +407,8 @@ class ExpressionProcessorConfig(pydantic.BaseModel):
         package: 'aviary'
         name: 'ExpressionProcessor'
         config:
-          expression_string: '(NIR - R) / (NIR + R)'
-          new_channel_name: 'NDVI'
+          expression_string: '(nir - r) / (nir + r)'
+          new_channel_name: 'ndvi'
           max_num_threads: null
         ```
 
