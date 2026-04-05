@@ -1,4 +1,4 @@
-#  Copyright (C) 2024-2025 Marius Maryniak
+#  Copyright (C) 2024-2026 Marius Maryniak
 #
 #  This file is part of aviary.
 #
@@ -22,12 +22,16 @@ from collections.abc import (
 
 from aviary.core.enums import _coerce_layer_names
 from aviary.core.exceptions import AviaryUserError
+from aviary.core.mixins import IDMixin
 from aviary.core.vector_layer import (
     VectorLayer,
 )
 
 
-class Vector(Iterable[VectorLayer]):
+class Vector(
+    Iterable[VectorLayer],
+    IDMixin,
+):
     """The vector specifies the layers.
 
     Notes:
@@ -62,6 +66,8 @@ class Vector(Iterable[VectorLayer]):
 
         for layer in self:
             layer._register_observer_vector(observer_vector=self)  # noqa: SLF001
+
+        super().__init__()
 
     def _validate(self) -> None:
         """Validates the vector."""

@@ -7,3 +7,5 @@
 </div>
 
 ::: aviary.utils.GeospatialFilter
+    options:
+      inherited_members: true

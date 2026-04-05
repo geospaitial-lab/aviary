@@ -1,4 +1,4 @@
-#  Copyright (C) 2024-2025 Marius Maryniak
+#  Copyright (C) 2024-2026 Marius Maryniak
 #
 #  This file is part of aviary.
 #
@@ -46,6 +46,8 @@ from tests.core.data.data_test_bounding_box import (
     data_test_bounding_box_to_gdf,
 )
 
+_UUID_VERSION = 4
+
 
 def test_bounding_box_init() -> None:
     x_min = -128
@@ -64,6 +66,8 @@ def test_bounding_box_init() -> None:
     assert bounding_box.y_min == y_min
     assert bounding_box.x_max == x_max
     assert bounding_box.y_max == y_max
+
+    assert bounding_box.id.version == _UUID_VERSION
 
 
 @pytest.mark.parametrize(('x_min', 'y_min', 'x_max', 'y_max', 'message'), data_test_bounding_box_init_exceptions)
@@ -110,6 +114,7 @@ def test_bounding_box_serializability(
     deserialized_bounding_box = pickle.loads(serialized_bounding_box)  # noqa: S301
 
     assert bounding_box == deserialized_bounding_box
+    assert bounding_box.id == deserialized_bounding_box.id
 
 
 @pytest.mark.parametrize(('bounding_box', 'expected'), data_test_bounding_box_area)

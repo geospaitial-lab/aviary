@@ -14,3 +14,4 @@
       - "!__repr__"
       - "!__getstate__"
       - "!__setstate__"
+      inherited_members: true

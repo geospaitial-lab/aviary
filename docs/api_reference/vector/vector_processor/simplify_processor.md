@@ -7,6 +7,8 @@
 </div>
 
 ::: aviary.vector.SimplifyProcessor
+    options:
+      inherited_members: true
 
 ---
 

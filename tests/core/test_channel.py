@@ -70,6 +70,8 @@ from tests.core.data.data_test_channel import (
     data_test_vector_channel_remove_buffer_inplace_return,
 )
 
+_UUID_VERSION = 4
+
 
 @pytest.mark.parametrize(
     (
@@ -113,6 +115,8 @@ def test_raster_channel_init(
     assert raster_channel.buffer_size == expected_buffer_size
     assert raster_channel.metadata == expected_metadata
     assert raster_channel.is_copied is expected_copy
+
+    assert raster_channel.id.version == _UUID_VERSION
 
 
 @pytest.mark.parametrize(('data', 'buffer_size', 'message'), data_test_raster_channel_init_exceptions)
@@ -221,6 +225,7 @@ def test_raster_channel_serializability(
     deserialized_raster_channel = pickle.loads(serialized_raster_channel)  # noqa: S301
 
     assert raster_channel == deserialized_raster_channel
+    assert raster_channel.id == deserialized_raster_channel.id
 
 
 def test_raster_channel_batch_size(
@@ -545,6 +550,8 @@ def test_vector_channel_init(
     assert vector_channel.metadata == expected_metadata
     assert vector_channel.is_copied is expected_copy
 
+    assert vector_channel.id.version == _UUID_VERSION
+
 
 @pytest.mark.parametrize(('data', 'buffer_size', 'message'), data_test_vector_channel_init_exceptions)
 def test_vector_channel_init_exceptions(
@@ -652,6 +659,7 @@ def test_vector_channel_serializability(
     deserialized_vector_channel = pickle.loads(serialized_vector_channel)  # noqa: S301
 
     assert vector_channel == deserialized_vector_channel
+    assert vector_channel.id == deserialized_vector_channel.id
 
 
 def test_vector_channel_batch_size(

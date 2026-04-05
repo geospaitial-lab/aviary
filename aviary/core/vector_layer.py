@@ -1,4 +1,4 @@
-#  Copyright (C) 2024-2025 Marius Maryniak
+#  Copyright (C) 2024-2026 Marius Maryniak
 #
 #  This file is part of aviary.
 #
@@ -22,12 +22,13 @@ if TYPE_CHECKING:
     import geopandas as gpd
 
 from aviary._utils.validators import validate_name
+from aviary.core.mixins import IDMixin
 
 if TYPE_CHECKING:
     from aviary.core.vector import Vector
 
 
-class VectorLayer:
+class VectorLayer(IDMixin):
     """Layer that contains vector data
 
     Notes:
@@ -62,6 +63,8 @@ class VectorLayer:
             self._copy_metadata()
 
         self._observer_vector = None
+
+        super().__init__()
 
     def _validate(self) -> None:
         """Validates the layer."""

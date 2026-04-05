@@ -7,6 +7,8 @@
 </div>
 
 ::: aviary.vector.SieveProcessor
+    options:
+      inherited_members: true
 
 ---
 

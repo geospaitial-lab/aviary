@@ -1,4 +1,4 @@
-#  Copyright (C) 2024-2025 Marius Maryniak
+#  Copyright (C) 2024-2026 Marius Maryniak
 #
 #  This file is part of aviary.
 #
@@ -40,6 +40,7 @@ from aviary.core.enums import (
 )
 from aviary.core.exceptions import AviaryUserError
 from aviary.core.grid import Grid
+from aviary.core.mixins import IDMixin
 
 if TYPE_CHECKING:
     from aviary.core.enums import ChannelName
@@ -52,7 +53,10 @@ if TYPE_CHECKING:
     )
 
 
-class Tiles(Iterable[Channel]):
+class Tiles(
+    Iterable[Channel],
+    IDMixin,
+):
     """The tiles specify the channels and their spatial extent.
 
     Notes:
@@ -97,6 +101,8 @@ class Tiles(Iterable[Channel]):
 
         for channel in self:
             channel._register_observer_tiles(observer_tiles=self)  # noqa: SLF001
+
+        super().__init__()
 
     def _validate(self) -> None:
         """Validates the tiles."""

@@ -7,6 +7,8 @@
 </div>
 
 ::: aviary.vector.BoundingBoxLoader
+    options:
+      inherited_members: true
 
 ---
 

@@ -7,6 +7,8 @@
 </div>
 
 ::: aviary.vector.GPKGLoader
+    options:
+      inherited_members: true
 
 ---
 

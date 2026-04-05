@@ -7,6 +7,8 @@
 </div>
 
 ::: aviary.tile.GridExporter
+    options:
+      inherited_members: true
 
 ---
 

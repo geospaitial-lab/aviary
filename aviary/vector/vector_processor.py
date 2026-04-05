@@ -45,6 +45,7 @@ from aviary._functional.vector.vector_processor import (
     simplify_processor,
 )
 from aviary.core.exceptions import AviaryUserError
+from aviary.core.mixins import IDMixin
 
 if TYPE_CHECKING:
     from aviary.core.vector import Vector
@@ -237,7 +238,7 @@ def register_vector_processor(
     return decorator
 
 
-class AggregateProcessor:
+class AggregateProcessor(IDMixin):
     """Vector processor that aggregates a layer
 
     The polygons are aggregated by value into the aggregation layer with absolute and relative area fields.
@@ -275,6 +276,8 @@ class AggregateProcessor:
         self._absolute_area_field_suffix = absolute_area_field_suffix
         self._relative_area_field_suffix = relative_area_field_suffix
         self._new_aggregation_layer_name = new_aggregation_layer_name
+
+        super().__init__()
 
     @classmethod
     def from_config(
@@ -373,7 +376,7 @@ _VectorProcessorFactory.register(
 )
 
 
-class ClipProcessor:
+class ClipProcessor(IDMixin):
     """Vector processor that clips a layer
 
     Implements the `VectorProcessor` protocol.
@@ -394,6 +397,8 @@ class ClipProcessor:
         self._layer_name = layer_name
         self._mask_layer_name = mask_layer_name
         self._new_layer_name = new_layer_name
+
+        super().__init__()
 
     @classmethod
     def from_config(
@@ -467,7 +472,7 @@ _VectorProcessorFactory.register(
 )
 
 
-class CopyProcessor:
+class CopyProcessor(IDMixin):
     """Vector processor that copies a layer
 
     Implements the `VectorProcessor` protocol.
@@ -485,6 +490,8 @@ class CopyProcessor:
         """
         self._layer_name = layer_name
         self._new_layer_name = new_layer_name
+
+        super().__init__()
 
     @classmethod
     def from_config(
@@ -554,7 +561,7 @@ _VectorProcessorFactory.register(
 )
 
 
-class FillProcessor:
+class FillProcessor(IDMixin):
     """Vector processor that fills a layer
 
     Implements the `VectorProcessor` protocol.
@@ -575,6 +582,8 @@ class FillProcessor:
         self._layer_name = layer_name
         self._threshold = threshold
         self._new_layer_name = new_layer_name
+
+        super().__init__()
 
     @classmethod
     def from_config(
@@ -648,7 +657,7 @@ _VectorProcessorFactory.register(
 )
 
 
-class MapFieldProcessor:
+class MapFieldProcessor(IDMixin):
     """Vector processor that maps a field of a layer
 
     Implements the `VectorProcessor` protocol.
@@ -672,6 +681,8 @@ class MapFieldProcessor:
         self._field = field
         self._mapping = mapping
         self._new_layer_name = new_layer_name
+
+        super().__init__()
 
     @classmethod
     def from_config(
@@ -750,7 +761,7 @@ _VectorProcessorFactory.register(
 )
 
 
-class ParallelCompositeProcessor:
+class ParallelCompositeProcessor(IDMixin):
     """Vector processor that composes multiple vector processors in parallel
 
     Notes:
@@ -770,6 +781,8 @@ class ParallelCompositeProcessor:
             vector_processors: Vector processors
         """
         self._vector_processors = vector_processors
+
+        super().__init__()
 
     @classmethod
     def from_config(
@@ -838,7 +851,7 @@ _VectorProcessorFactory.register(
 )
 
 
-class QueryProcessor:
+class QueryProcessor(IDMixin):
     """Vector processor that queries a layer
 
     Implements the `VectorProcessor` protocol.
@@ -859,6 +872,8 @@ class QueryProcessor:
         self._layer_name = layer_name
         self._query_string = query_string
         self._new_layer_name = new_layer_name
+
+        super().__init__()
 
     @classmethod
     def from_config(
@@ -932,7 +947,7 @@ _VectorProcessorFactory.register(
 )
 
 
-class RemoveProcessor:
+class RemoveProcessor(IDMixin):
     """Vector processor that removes layers
 
     Implements the `VectorProcessor` protocol.
@@ -947,6 +962,8 @@ class RemoveProcessor:
             layer_names: Layer name, layer names, no layers (False or None), or all layers (True)
         """
         self._layer_names = layer_names
+
+        super().__init__()
 
     @classmethod
     def from_config(
@@ -1013,7 +1030,7 @@ _VectorProcessorFactory.register(
 )
 
 
-class RenameFieldsProcessor:
+class RenameFieldsProcessor(IDMixin):
     """Vector processor that renames fields of a layer
 
     Implements the `VectorProcessor` protocol.
@@ -1034,6 +1051,8 @@ class RenameFieldsProcessor:
         self._layer_name = layer_name
         self._mapping = mapping
         self._new_layer_name = new_layer_name
+
+        super().__init__()
 
     @classmethod
     def from_config(
@@ -1108,7 +1127,7 @@ _VectorProcessorFactory.register(
 )
 
 
-class SelectProcessor:
+class SelectProcessor(IDMixin):
     """Vector processor that selects layers
 
     Implements the `VectorProcessor` protocol.
@@ -1123,6 +1142,8 @@ class SelectProcessor:
             layer_names: Layer name, layer names, no layers (False or None), or all layers (True)
         """
         self._layer_names = layer_names
+
+        super().__init__()
 
     @classmethod
     def from_config(
@@ -1189,7 +1210,7 @@ _VectorProcessorFactory.register(
 )
 
 
-class SequentialCompositeProcessor:
+class SequentialCompositeProcessor(IDMixin):
     """Vector processor that composes multiple vector processors in sequence
 
     Notes:
@@ -1207,6 +1228,8 @@ class SequentialCompositeProcessor:
             vector_processors: Vector processors
         """
         self._vector_processors = vector_processors
+
+        super().__init__()
 
     @classmethod
     def from_config(
@@ -1275,7 +1298,7 @@ _VectorProcessorFactory.register(
 )
 
 
-class SieveProcessor:
+class SieveProcessor(IDMixin):
     """Vector processor that sieves a layer
 
     Implements the `VectorProcessor` protocol.
@@ -1296,6 +1319,8 @@ class SieveProcessor:
         self._layer_name = layer_name
         self._threshold = threshold
         self._new_layer_name = new_layer_name
+
+        super().__init__()
 
     @classmethod
     def from_config(
@@ -1369,7 +1394,7 @@ _VectorProcessorFactory.register(
 )
 
 
-class SimplifyProcessor:
+class SimplifyProcessor(IDMixin):
     """Vector processor that simplifies a layer
 
     The polygons are simplified using a topology-preserving Visvalingam-Whyatt algorithm.
@@ -1393,6 +1418,8 @@ class SimplifyProcessor:
         self._layer_name = layer_name
         self._threshold = threshold
         self._new_layer_name = new_layer_name
+
+        super().__init__()
 
     @classmethod
     def from_config(

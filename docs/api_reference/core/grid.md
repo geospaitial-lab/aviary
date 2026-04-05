@@ -12,6 +12,7 @@
       - "!^_"
       - "^__"
       - "!__repr__"
+      inherited_members: true
 
 ---
 

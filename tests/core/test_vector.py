@@ -1,4 +1,4 @@
-#  Copyright (C) 2024-2025 Marius Maryniak
+#  Copyright (C) 2024-2026 Marius Maryniak
 #
 #  This file is part of aviary.
 #
@@ -31,6 +31,8 @@ from tests.core.data.data_test_vector import (
     data_test_vector_init_exceptions,
 )
 
+_UUID_VERSION = 4
+
 
 @pytest.mark.parametrize(
     (
@@ -60,6 +62,8 @@ def test_vector_init(
     assert vector.layers == expected_layers
     assert vector.metadata == expected_metadata
     assert vector.is_copied is expected_copy
+
+    assert vector.id.version == _UUID_VERSION
 
 
 @pytest.mark.parametrize(('layers', 'message'), data_test_vector_init_exceptions)
@@ -149,6 +153,7 @@ def test_vector_serializability(
     deserialized_vector = pickle.loads(serialized_vector)  # noqa: S301
 
     assert vector == deserialized_vector
+    assert vector.id == deserialized_vector.id
 
 
 def test_vector_layer_names(

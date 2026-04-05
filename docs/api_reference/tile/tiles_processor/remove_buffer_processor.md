@@ -7,6 +7,8 @@
 </div>
 
 ::: aviary.tile.RemoveBufferProcessor
+    options:
+      inherited_members: true
 
 ---
 

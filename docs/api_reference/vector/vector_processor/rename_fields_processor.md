@@ -7,6 +7,8 @@
 </div>
 
 ::: aviary.vector.RenameFieldsProcessor
+    options:
+      inherited_members: true
 
 ---
 

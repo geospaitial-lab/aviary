@@ -7,6 +7,8 @@
 </div>
 
 ::: aviary.tile.WMSFetcher
+    options:
+      inherited_members: true
 
 ---
 

@@ -7,3 +7,5 @@
 </div>
 
 ::: aviary.tile.TileSet
+    options:
+      inherited_members: true

@@ -1,4 +1,4 @@
-#  Copyright (C) 2024-2025 Marius Maryniak
+#  Copyright (C) 2024-2026 Marius Maryniak
 #
 #  This file is part of aviary.
 #
@@ -30,6 +30,7 @@ from aviary.core.enums import (
     GeospatialFilterMode,
     SetFilterMode,
 )
+from aviary.core.mixins import IDMixin
 from aviary.core.type_aliases import (
     CoordinatesSet,
     TileSize,
@@ -64,7 +65,7 @@ class CoordinatesFilter(Protocol):
         ...
 
 
-class CompositeFilter:
+class CompositeFilter(IDMixin):
     """Coordinates filter that composes multiple coordinates filters
 
     Notes:
@@ -82,6 +83,8 @@ class CompositeFilter:
             coordinates_filters: Coordinates filters
         """
         self._coordinates_filters = coordinates_filters
+
+        super().__init__()
 
     def __call__(
         self,
@@ -101,11 +104,14 @@ class CompositeFilter:
         )
 
 
-class DuplicatesFilter:
+class DuplicatesFilter(IDMixin):
     """Coordinates filter that removes duplicate coordinates
 
     Implements the `CoordinatesFilter` protocol.
     """
+
+    def __init__(self) -> None:  # noqa: D107
+        super().__init__()
 
     def __call__(
         self,
@@ -124,7 +130,7 @@ class DuplicatesFilter:
         )
 
 
-class GeospatialFilter:
+class GeospatialFilter(IDMixin):
     """Coordinates filter that filters based on geospatial data
 
     Available modes:
@@ -150,6 +156,8 @@ class GeospatialFilter:
         self._gdf = gdf
         self._mode = mode
 
+        super().__init__()
+
     def __call__(
         self,
         coordinates: CoordinatesSet,
@@ -170,7 +178,7 @@ class GeospatialFilter:
         )
 
 
-class MaskFilter:
+class MaskFilter(IDMixin):
     """Coordinates filter that filters based on a boolean mask
 
     Implements the `CoordinatesFilter` protocol.
@@ -185,6 +193,8 @@ class MaskFilter:
             mask: Boolean mask
         """
         self._mask = mask
+
+        super().__init__()
 
     def __call__(
         self,
@@ -204,7 +214,7 @@ class MaskFilter:
         )
 
 
-class SetFilter:
+class SetFilter(IDMixin):
     """Coordinates filter that filters based on other coordinates
 
     Available modes:
@@ -227,6 +237,8 @@ class SetFilter:
         """
         self._other = other
         self._mode = mode
+
+        super().__init__()
 
     def __call__(
         self,

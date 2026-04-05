@@ -1,4 +1,4 @@
-#  Copyright (C) 2024-2025 Marius Maryniak
+#  Copyright (C) 2024-2026 Marius Maryniak
 #
 #  This file is part of aviary.
 #
@@ -41,6 +41,8 @@ from tests.core.data.data_test_tiles import (
     data_test_tiles_init,
     data_test_tiles_init_exceptions,
 )
+
+_UUID_VERSION = 4
 
 
 def test_tiles_type_alias() -> None:
@@ -92,6 +94,8 @@ def test_tiles_init(
     assert tiles.tile_size == expected_tile_size
     assert tiles.metadata == expected_metadata
     assert tiles.is_copied is expected_copy
+
+    assert tiles.id.version == _UUID_VERSION
 
 
 @pytest.mark.parametrize(('channels', 'coordinates', 'tile_size', 'message'), data_test_tiles_init_exceptions)
@@ -205,6 +209,7 @@ def test_tiles_serializability(
     deserialized_tiles = pickle.loads(serialized_tiles)  # noqa: S301
 
     assert tiles == deserialized_tiles
+    assert tiles.id == deserialized_tiles.id
 
 
 def test_tiles_area(

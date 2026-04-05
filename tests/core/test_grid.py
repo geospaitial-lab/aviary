@@ -1,4 +1,4 @@
-#  Copyright (C) 2024-2025 Marius Maryniak
+#  Copyright (C) 2024-2026 Marius Maryniak
 #
 #  This file is part of aviary.
 #
@@ -75,6 +75,8 @@ from tests.core.data.data_test_grid import (
     data_test_grid_to_gdf,
 )
 
+_UUID_VERSION = 4
+
 
 @pytest.mark.parametrize(
     (
@@ -98,6 +100,8 @@ def test_grid_init(
 
     np.testing.assert_array_equal(grid.coordinates, expected_coordinates)
     assert grid.tile_size == expected_tile_size
+
+    assert grid.id.version == _UUID_VERSION
 
 
 @pytest.mark.parametrize(('coordinates', 'tile_size', 'message'), data_test_grid_init_exceptions)
@@ -146,6 +150,7 @@ def test_grid_serializability(
     deserialized_grid = pickle.loads(serialized_grid)  # noqa: S301
 
     assert grid == deserialized_grid
+    assert grid.id == deserialized_grid.id
 
 
 @pytest.mark.parametrize(('grid', 'expected'), data_test_grid_area)

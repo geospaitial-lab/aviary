@@ -7,6 +7,8 @@
 </div>
 
 ::: aviary.vector.FillProcessor
+    options:
+      inherited_members: true
 
 ---
 

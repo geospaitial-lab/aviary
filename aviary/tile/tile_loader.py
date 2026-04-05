@@ -21,11 +21,15 @@ from concurrent.futures import ThreadPoolExecutor
 from queue import Queue
 from threading import Thread
 
+from aviary.core.mixins import IDMixin
 from aviary.core.tiles import Tiles
 from aviary.tile.tile_set import TileSet
 
 
-class TileLoader(Iterable[Tiles]):
+class TileLoader(
+    Iterable[Tiles],
+    IDMixin,
+):
     """A tile loader is an iterable that yields tiles from the tile set.
 
     Usage:
@@ -76,6 +80,8 @@ class TileLoader(Iterable[Tiles]):
             self._prefetch_thread.start()
         else:
             self._prefetch_queue = None
+
+        super().__init__()
 
     def _prefetch_tiles(self) -> None:
         """Prefetches the tiles and puts them into the queue."""

@@ -7,6 +7,8 @@
 </div>
 
 ::: aviary.vector.RemoveProcessor
+    options:
+      inherited_members: true
 
 ---
 

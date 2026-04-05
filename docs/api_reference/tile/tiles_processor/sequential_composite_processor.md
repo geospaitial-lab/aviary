@@ -7,6 +7,8 @@
 </div>
 
 ::: aviary.tile.SequentialCompositeProcessor
+    options:
+      inherited_members: true
 
 ---
 
