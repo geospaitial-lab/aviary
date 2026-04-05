@@ -49,6 +49,7 @@ nav:
       - TilesProcessor:
           - TilesProcessor: api_reference/tile/tiles_processor/tiles_processor.md
           - CopyProcessor: api_reference/tile/tiles_processor/copy_processor.md
+          - ExpressionProcessor: api_reference/tile/tiles_processor/expression_processor.md
           - NormalizeProcessor: api_reference/tile/tiles_processor/normalize_processor.md
           - ParallelCompositeProcessor: api_reference/tile/tiles_processor/parallel_composite_processor.md
           - RemoveBufferProcessor: api_reference/tile/tiles_processor/remove_buffer_processor.md
