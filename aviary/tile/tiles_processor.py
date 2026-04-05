@@ -31,6 +31,7 @@ if TYPE_CHECKING:
 
 from aviary._functional.tile.tiles_processor import (
     copy_processor,
+    expression_processor,
     normalize_processor,
     parallel_composite_processor,
     remove_buffer_processor,
@@ -40,6 +41,7 @@ from aviary._functional.tile.tiles_processor import (
     standardize_processor,
     vectorize_processor,
 )
+from aviary._utils.lifecycle import experimental
 from aviary.core.enums import ChannelName
 from aviary.core.exceptions import AviaryUserError
 from aviary.core.mixins import IDMixin
@@ -58,6 +60,7 @@ class TilesProcessor(Protocol):
 
     Implemented tiles processors:
         - `CopyProcessor`: Copies a channel
+        - `ExpressionProcessor`: Computes a new channel from an expression
         - `NormalizeProcessor`: Normalizes a channel
         - `ParallelCompositeProcessor`: Composes multiple tiles processors in parallel
         - `RemoveBufferProcessor`: Removes the buffer of channels
@@ -318,6 +321,111 @@ class CopyProcessorConfig(pydantic.BaseModel):
 _TilesProcessorFactory.register(
     tiles_processor_class=CopyProcessor,
     config_class=CopyProcessorConfig,
+    package=_PACKAGE,
+)
+
+
+@experimental(
+    since='1.3.0',
+)
+class ExpressionProcessor(IDMixin):
+    """Tiles processor that computes a new channel from an expression
+
+    Experimental:
+        `ExpressionProcessor` is experimental since `1.3.0` and may change without notice.
+
+    Notes:
+        - Requires raster channels
+
+    Implements the `TilesProcessor` protocol.
+    """
+
+    def __init__(
+        self,
+        expression_string: str,
+        new_channel_name: ChannelName | str,
+        max_num_threads: int | None = None,
+    ) -> None:
+        """
+        Parameters:
+            new_channel_name: New channel name
+            expression_string: Expression string based on the numexpr expression syntax
+            max_num_threads: Maximum number of threads
+        """
+        self._expression_string = expression_string
+        self._new_channel_name = new_channel_name
+        self._max_num_threads = max_num_threads
+
+        super().__init__()
+
+    @classmethod
+    def from_config(
+        cls,
+        config: ExpressionProcessorConfig,
+    ) -> ExpressionProcessor:
+        """Creates an expression processor from the configuration.
+
+        Parameters:
+            config: Configuration
+
+        Returns:
+            Expression processor
+        """
+        config = config.model_dump()
+        return cls(**config)
+
+    def __call__(
+        self,
+        tiles: Tiles,
+    ) -> Tiles:
+        """Computes the new channel from the expression.
+
+        Parameters:
+            tiles: Tiles
+
+        Returns:
+            Tiles
+        """
+        return expression_processor(
+            tiles=tiles,
+            expression_string=self._expression_string,
+            new_channel_name=self._new_channel_name,
+            max_num_threads=self._max_num_threads,
+        )
+
+
+class ExpressionProcessorConfig(pydantic.BaseModel):
+    """Configuration for the `from_config` class method of `ExpressionProcessor`
+
+    Create the configuration from a config file:
+        - Use null instead of None
+
+    Usage:
+        You can create the configuration from a config file.
+
+        ``` yaml title="config.yaml"
+        package: 'aviary'
+        name: 'ExpressionProcessor'
+        config:
+          expression_string: '(NIR - R) / (NIR + R)'
+          new_channel_name: 'NDVI'
+          max_num_threads: null
+        ```
+
+    Attributes:
+        expression_string: Expression string based on the numexpr expression syntax
+        new_channel_name: New channel name
+        max_num_threads: Maximum number of threads -
+            defaults to None
+    """
+    expression_string: str
+    new_channel_name: ChannelName | str
+    max_num_threads: int | None = None
+
+
+_TilesProcessorFactory.register(
+    tiles_processor_class=ExpressionProcessor,
+    config_class=ExpressionProcessorConfig,
     package=_PACKAGE,
 )
 
