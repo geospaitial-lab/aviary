@@ -334,6 +334,9 @@ class ExpressionProcessor(IDMixin):
     Experimental:
         `ExpressionProcessor` is experimental since `1.3.0` and may change without notice.
 
+    Additional dependencies:
+        `ExpressionProcessor` requires the `expression` dependency group.
+
     Notes:
         - Requires raster channels
 
