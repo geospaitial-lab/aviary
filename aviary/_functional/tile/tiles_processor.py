@@ -443,7 +443,7 @@ def _standardize_data_item(
     data_item = (data_item - mean_value) / std_value
 
     if data_item.dtype != np.float32:
-        data_item.astype(np.float32)
+        data_item = data_item.astype(np.float32)
 
     return data_item
 
