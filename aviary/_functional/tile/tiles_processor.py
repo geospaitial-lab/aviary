@@ -189,7 +189,7 @@ def expression_processor(
         data_item = compiled(*args)
 
         if data_item.dtype != np.float32:
-            data_item.astype(np.float32)
+            data_item = data_item.astype(np.float32)
 
         return data_item
 
