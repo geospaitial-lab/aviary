@@ -174,14 +174,15 @@ def expression_processor(
     batch_size = tiles.batch_size
 
     def _eval_index(index: int) -> npt.NDArray:
-        local_dict = {
+        channels_dict = {
             channel_name: tiles[_coerce_channel_name(channel_name=channel_name)][index]
             for channel_name in channel_names
         }
-        return ne.evaluate(
-            ex=expression_string,
-            local_dict=local_dict,
-        )
+        args = [
+            channels_dict[channel_name]
+            for channel_name in channel_names
+        ]
+        return compiled(*args)
 
     data: list[npt.NDArray] = []
 
