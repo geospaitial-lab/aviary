@@ -280,7 +280,7 @@ class Channel(
             Channel
 
         Raises:
-            AviaryUserError: Invalid channels (the channels must contain at least one channel)
+            AviaryUserError: Invalid channels (the channels contain no channels)
             AviaryUserError: Invalid channels (the names of the channels are not equal)
             AviaryUserError: Invalid channels (the buffer sizes of the channels are not equal)
         """

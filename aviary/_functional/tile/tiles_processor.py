@@ -1,4 +1,4 @@
-#  Copyright (C) 2024-2025 Marius Maryniak
+#  Copyright (C) 2024-2026 Marius Maryniak
 #
 #  This file is part of aviary.
 #
@@ -27,8 +27,12 @@ import numpy.typing as npt
 import rasterio as rio
 import rasterio.features
 
-from aviary.core.channel import VectorChannel
+from aviary.core.channel import (
+    RasterChannel,
+    VectorChannel,
+)
 from aviary.core.enums import _coerce_channel_name
+from aviary.core.exceptions import AviaryUserError
 from aviary.core.tiles import Tiles
 
 if TYPE_CHECKING:
@@ -113,6 +117,106 @@ def copy_processor(
     channel = channel.copy()
 
     channel.name = new_channel_name
+    return tiles.append(
+        channels=channel,
+        inplace=True,
+    )
+
+
+_NUMEXPR_CACHE: dict[str, object] = {}
+
+
+def expression_processor(
+    tiles: Tiles,
+    expression_string: str,
+    new_channel_name: ChannelName | str,
+    max_num_threads: int | None = None,
+) -> Tiles:
+    """Computes the new channel from the expression.
+
+    Parameters:
+        tiles: Tiles
+        expression_string: Expression string based on the numexpr expression syntax
+        new_channel_name: New channel name
+        max_num_threads: Maximum number of threads
+
+    Returns:
+        Tiles
+
+    Raises:
+        AviaryUserError: Invalid `expression_string` (the expression string contains no channel names)
+    """
+    try:
+        import numexpr as ne  # noqa: PLC0415
+    except ImportError as error:
+        message = (
+            'Missing dependencies! '
+            'To use ExpressionProcessor, you need to install the '
+            'expression dependency group (pip install geospaitial-lab-aviary[expression]).'
+        )
+        raise ImportError(message) from error
+
+    new_channel_name = _coerce_channel_name(channel_name=new_channel_name)
+
+    expression_string = expression_string.strip()
+    compiled = _NUMEXPR_CACHE.get(expression_string)
+
+    if compiled is None:
+        compiled = ne.NumExpr(expression_string)
+        _NUMEXPR_CACHE[expression_string] = compiled
+
+    channel_names = list(compiled.input_names)
+
+    if not channel_names:
+        message = (
+            'Invalid expression_string! '
+            'The expression string must contain at least one channel name.'
+        )
+        raise AviaryUserError(message)
+
+    batch_size = tiles.batch_size
+
+    def _compute_data_item(index: int) -> npt.NDArray:
+        channels_dict = {
+            channel_name: tiles[_coerce_channel_name(channel_name=channel_name)][index]
+            for channel_name in channel_names
+        }
+        args = [
+            channels_dict[channel_name]
+            for channel_name in channel_names
+        ]
+
+        data_item = compiled(*args)
+
+        if data_item.dtype != np.float32:
+            data_item = data_item.astype(np.float32)
+
+        return data_item
+
+    data: list[npt.NDArray] = []
+
+    if batch_size == 1:
+        max_num_threads = 1
+
+    if max_num_threads == 1:
+        data = [
+            _compute_data_item(index)
+            for index in range(batch_size)
+        ]
+    else:
+        with ThreadPoolExecutor(max_workers=max_num_threads) as executor:
+            data = list(executor.map(_compute_data_item, range(batch_size)))
+
+    first_channel = tiles[_coerce_channel_name(channel_name=channel_names[0])]
+    buffer_size = first_channel.buffer_size
+
+    channel = RasterChannel(
+        data=data,
+        name=new_channel_name,
+        buffer_size=buffer_size,
+        copy=False,
+    )
+
     return tiles.append(
         channels=channel,
         inplace=True,
