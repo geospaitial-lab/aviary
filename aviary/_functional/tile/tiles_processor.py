@@ -185,7 +185,13 @@ def expression_processor(
             channels_dict[channel_name]
             for channel_name in channel_names
         ]
-        return compiled(*args)
+
+        data_item = compiled(*args)
+
+        if data_item.dtype != np.float32:
+            data_item.astype(np.float32)
+
+        return data_item
 
     data: list[npt.NDArray] = []
 
