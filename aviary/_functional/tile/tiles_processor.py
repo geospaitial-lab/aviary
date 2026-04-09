@@ -142,6 +142,9 @@ def expression_processor(
 
     Returns:
         Tiles
+
+    Raises:
+        AviaryUserError: Invalid `expression_string` (the expression string contains no channel names)
     """
     try:
         import numexpr as ne  # noqa: PLC0415
