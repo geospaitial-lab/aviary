@@ -22,6 +22,7 @@ import pydantic
 
 from aviary._functional.tile.tiles_exporter import (
     grid_exporter,
+    raster_exporter,
     vector_exporter,
 )
 from aviary.core.enums import ChannelName
@@ -114,6 +115,61 @@ _TilesProcessorFactory.register(
     config_class=GridExporterConfig,
     package=_PACKAGE,
 )
+
+
+class RasterExporter(IDMixin):
+    """Tiles processor that exports raster channels
+
+    The raster data is exported to a geotiff.
+
+    Notes:
+        - Requires raster channels
+
+    Implements the `TilesProcessor` protocol.
+    """
+
+    def __init__(
+        self,
+        channel_names:
+            ChannelName | str |
+            list[ChannelName | str],
+        epsg_code: EPSGCode,
+        path: Path,
+        remove_channels: bool = True,
+    ) -> None:
+        """
+        Parameters:
+            channel_names: Channel name or channel names
+            epsg_code: EPSG code
+            path: Path to the directory
+            remove_channels: If True, the channels are removed
+        """
+        self._channel_names = channel_names
+        self._epsg_code = epsg_code
+        self._path = path
+        self._remove_channels = remove_channels
+
+        super().__init__()
+
+    def __call__(
+        self,
+        tiles: Tiles,
+    ) -> Tiles:
+        """Exports the raster channels.
+
+        Parameters:
+            tiles: Tiles
+
+        Returns:
+            Tiles
+        """
+        return raster_exporter(
+            tiles=tiles,
+            channel_names=self._channel_names,
+            epsg_code=self._epsg_code,
+            path=self._path,
+            remove_channels=self._remove_channels,
+        )
 
 
 class VectorExporter(IDMixin):
