@@ -25,6 +25,7 @@ from aviary._functional.tile.tiles_exporter import (
     raster_exporter,
     vector_exporter,
 )
+from aviary._utils.lifecycle import experimental
 from aviary.core.enums import ChannelName
 from aviary.core.mixins import IDMixin
 from aviary.core.type_aliases import EPSGCode
@@ -117,6 +118,9 @@ _TilesProcessorFactory.register(
 )
 
 
+@experimental(
+    since='1.3.0',
+)
 class RasterExporter(IDMixin):
     """Tiles processor that exports raster channels
 
