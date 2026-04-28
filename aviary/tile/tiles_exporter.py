@@ -140,6 +140,7 @@ class RasterExporter(IDMixin):
         epsg_code: EPSGCode,
         path: Path,
         remove_channels: bool = True,
+        max_num_threads: int | None = None,
     ) -> None:
         """
         Parameters:
@@ -147,11 +148,13 @@ class RasterExporter(IDMixin):
             epsg_code: EPSG code
             path: Path to the directory
             remove_channels: If True, the channels are removed
+            max_num_threads: Maximum number of threads
         """
         self._channel_names = channel_names
         self._epsg_code = epsg_code
         self._path = path
         self._remove_channels = remove_channels
+        self._max_num_threads = max_num_threads
 
         super().__init__()
 
@@ -189,6 +192,7 @@ class RasterExporter(IDMixin):
             epsg_code=self._epsg_code,
             path=self._path,
             remove_channels=self._remove_channels,
+            max_num_threads=self._max_num_threads,
         )
 
 
@@ -196,6 +200,7 @@ class RasterExporterConfig(pydantic.BaseModel):
     """Configuration for the `from_config` class method of `RasterExporter`
 
     Create the configuration from a config file:
+        - Use null instead of None
         - Use false or true instead of False or True
 
     Usage:
@@ -212,6 +217,7 @@ class RasterExporterConfig(pydantic.BaseModel):
           epsg_code: 25832
           path: 'path/to/my_directory'
           remove_channels: true
+          max_num_threads: null
         ```
 
     Attributes:
@@ -220,6 +226,8 @@ class RasterExporterConfig(pydantic.BaseModel):
         path: Path to the directory
         remove_channels: If True, the channels are removed -
             defaults to True
+        max_num_threads: Maximum number of threads -
+            defaults to None
     """
     channel_names: (
         ChannelName | str |
@@ -228,6 +236,7 @@ class RasterExporterConfig(pydantic.BaseModel):
     epsg_code: EPSGCode
     path: Path
     remove_channels: bool = True
+    max_num_threads: int | None = None
 
 
 _TilesProcessorFactory.register(
