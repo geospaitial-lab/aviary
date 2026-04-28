@@ -126,6 +126,9 @@ class RasterExporter(IDMixin):
 
     The raster data is exported to a geotiff.
 
+    Experimental:
+        `RasterExporter` is experimental since `1.3.0` and may change without notice.
+
     Notes:
         - Requires raster channels
 
