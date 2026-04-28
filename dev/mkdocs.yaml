@@ -45,6 +45,7 @@ nav:
       - TileSet: api_reference/tile/tile_set.md
       - TilesExporter:
           - GridExporter: api_reference/tile/tiles_exporter/grid_exporter.md
+          - RasterExporter: api_reference/tile/tiles_exporter/raster_exporter.md
           - VectorExporter: api_reference/tile/tiles_exporter/vector_exporter.md
       - TilesProcessor:
           - TilesProcessor: api_reference/tile/tiles_processor/tiles_processor.md
