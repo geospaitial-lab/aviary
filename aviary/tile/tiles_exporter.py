@@ -155,6 +155,22 @@ class RasterExporter(IDMixin):
 
         super().__init__()
 
+    @classmethod
+    def from_config(
+        cls,
+        config: RasterExporterConfig,
+    ) -> RasterExporter:
+        """Creates a raster exporter from the configuration.
+
+        Parameters:
+            config: Configuration
+
+        Returns:
+            Raster exporter
+        """
+        config = config.model_dump()
+        return cls(**config)
+
     def __call__(
         self,
         tiles: Tiles,
@@ -174,6 +190,51 @@ class RasterExporter(IDMixin):
             path=self._path,
             remove_channels=self._remove_channels,
         )
+
+
+class RasterExporterConfig(pydantic.BaseModel):
+    """Configuration for the `from_config` class method of `RasterExporter`
+
+    Create the configuration from a config file:
+        - Use false or true instead of False or True
+
+    Usage:
+        You can create the configuration from a config file.
+
+        ``` yaml title="config.yaml"
+        package: 'aviary'
+        name: 'RasterExporter'
+        config:
+          channel_names:
+            - 'r'
+            - 'g'
+            - 'b'
+          epsg_code: 25832
+          path: 'path/to/my_directory'
+          remove_channels: true
+        ```
+
+    Attributes:
+        channel_names: Channel name or channel names
+        epsg_code: EPSG code
+        path: Path to the directory
+        remove_channels: If True, the channels are removed -
+            defaults to True
+    """
+    channel_names: (
+        ChannelName | str |
+        list[ChannelName | str]
+    )
+    epsg_code: EPSGCode
+    path: Path
+    remove_channels: bool = True
+
+
+_TilesProcessorFactory.register(
+    tiles_processor_class=RasterExporter,
+    config_class=RasterExporterConfig,
+    package=_PACKAGE,
+)
 
 
 class VectorExporter(IDMixin):
