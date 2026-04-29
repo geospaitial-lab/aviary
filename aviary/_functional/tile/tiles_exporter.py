@@ -1,4 +1,4 @@
-#  Copyright (C) 2024-2025 Marius Maryniak
+#  Copyright (C) 2024-2026 Marius Maryniak
 #
 #  This file is part of aviary.
 #
@@ -15,13 +15,16 @@
 
 from __future__ import annotations
 
+from concurrent.futures import ThreadPoolExecutor
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from pathlib import Path
 
 import geopandas as gpd
+import numpy as np
 import pandas as pd
+import rasterio as rio
 
 from aviary.core.grid import Grid
 
@@ -64,6 +67,102 @@ def grid_exporter(
 
     with path.open('w') as file:
         file.write(json_string)
+
+    return tiles
+
+
+def raster_exporter(
+    tiles: Tiles,
+    channel_names:
+        ChannelName | str |
+        list[ChannelName | str],
+    epsg_code: EPSGCode,
+    path: Path,
+    remove_channels: bool = True,
+    max_num_threads: int | None = None,
+) -> Tiles:
+    """Exports the raster channels.
+
+    Parameters:
+        tiles: Tiles
+        channel_names: Channel name or channel names
+        epsg_code: EPSG code
+        path: Path to the directory
+        remove_channels: If True, the channels are removed
+        max_num_threads: Maximum number of threads
+
+    Returns:
+        Tiles
+    """
+    data = tiles.to_composite_raster(
+        channel_names=channel_names,
+    )
+
+    path.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
+
+    if not isinstance(channel_names, list):
+        channel_names = [channel_names]
+
+    channel_names_repr = '_'.join(str(name) for name in channel_names)
+
+    batch_size = tiles.batch_size
+    tile_size = tiles.tile_size
+
+    epsg_code = f'EPSG:{epsg_code}'
+
+    def _write_data_item(index: int) -> None:
+        x_min, y_min = tiles.coordinates[index]
+        data_item = data[index]
+        h, w, c = data_item.shape
+
+        resolution = tile_size / w
+        transform = rio.transform.from_origin(
+            west=x_min,
+            north=y_min + h * resolution,
+            xsize=resolution,
+            ysize=resolution,
+        )
+
+        profile = {
+            'driver': 'GTiff',
+            'height': h,
+            'width': w,
+            'count': c,
+            'dtype': data_item.dtype,
+            'crs': epsg_code,
+            'transform': transform,
+            'tiled': True,
+            'blockxsize': 256,
+            'blockysize': 256,
+            'compress': 'deflate',
+            'bigtiff': 'IF_SAFER',
+        }
+
+        filename = f'{channel_names_repr}_{x_min}_{y_min}.tiff'
+        out_path = path / filename
+
+        with rio.open(out_path, mode='w', **profile) as dst:
+            data_item = np.transpose(data_item, (2, 0, 1))
+            dst.write(data_item)
+
+    if batch_size == 1:
+        max_num_threads = 1
+
+    if max_num_threads == 1:
+        for index in range(batch_size):
+            _write_data_item(index)
+    else:
+        with ThreadPoolExecutor(max_workers=max_num_threads) as executor:
+            list(executor.map(_write_data_item, range(batch_size)))
+
+    if remove_channels:
+        tiles = tiles.remove(
+            channel_names=channel_names,
+            inplace=True,
+        )
 
     return tiles
 
