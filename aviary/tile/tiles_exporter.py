@@ -124,7 +124,7 @@ _TilesProcessorFactory.register(
 class RasterExporter(IDMixin):
     """Tiles processor that exports raster channels
 
-    The raster data is exported to a geotiff.
+    The raster data is exported to a geotiff for each tile.
 
     Experimental:
         `RasterExporter` is experimental since `1.3.0` and may change without notice.
