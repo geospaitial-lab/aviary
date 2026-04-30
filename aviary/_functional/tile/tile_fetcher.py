@@ -374,9 +374,16 @@ def _request_wms(
         AviaryUserError: Invalid request (the response is not an image)
         AviaryUserError: Invalid request (the response is not in shape (n, n, 3) and data type uint8)
     """
+    from aviary import __version__  # noqa: PLC0415
+
+    headers = {
+        'User-Agent': f'aviary/{__version__} (https://github.com/geospaitial-lab/aviary)',
+    }
+
     response = requests.get(
         url=url,
         params=params,
+        headers=headers,
         timeout=30,
     )
     response.raise_for_status()
