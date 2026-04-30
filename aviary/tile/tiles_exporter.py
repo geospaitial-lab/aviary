@@ -22,8 +22,10 @@ import pydantic
 
 from aviary._functional.tile.tiles_exporter import (
     grid_exporter,
+    raster_exporter,
     vector_exporter,
 )
+from aviary._utils.lifecycle import experimental
 from aviary.core.enums import ChannelName
 from aviary.core.mixins import IDMixin
 from aviary.core.type_aliases import EPSGCode
@@ -112,6 +114,137 @@ class GridExporterConfig(pydantic.BaseModel):
 _TilesProcessorFactory.register(
     tiles_processor_class=GridExporter,
     config_class=GridExporterConfig,
+    package=_PACKAGE,
+)
+
+
+@experimental(
+    since='1.3.0',
+)
+class RasterExporter(IDMixin):
+    """Tiles processor that exports raster channels
+
+    The raster data is exported to a geotiff for each tile.
+
+    Experimental:
+        `RasterExporter` is experimental since `1.3.0` and may change without notice.
+
+    Notes:
+        - Requires raster channels
+
+    Implements the `TilesProcessor` protocol.
+    """
+
+    def __init__(
+        self,
+        channel_names:
+            ChannelName | str |
+            list[ChannelName | str],
+        epsg_code: EPSGCode,
+        path: Path,
+        remove_channels: bool = True,
+        max_num_threads: int | None = None,
+    ) -> None:
+        """
+        Parameters:
+            channel_names: Channel name or channel names
+            epsg_code: EPSG code
+            path: Path to the directory
+            remove_channels: If True, the channels are removed
+            max_num_threads: Maximum number of threads
+        """
+        self._channel_names = channel_names
+        self._epsg_code = epsg_code
+        self._path = path
+        self._remove_channels = remove_channels
+        self._max_num_threads = max_num_threads
+
+        super().__init__()
+
+    @classmethod
+    def from_config(
+        cls,
+        config: RasterExporterConfig,
+    ) -> RasterExporter:
+        """Creates a raster exporter from the configuration.
+
+        Parameters:
+            config: Configuration
+
+        Returns:
+            Raster exporter
+        """
+        config = config.model_dump()
+        return cls(**config)
+
+    def __call__(
+        self,
+        tiles: Tiles,
+    ) -> Tiles:
+        """Exports the raster channels.
+
+        Parameters:
+            tiles: Tiles
+
+        Returns:
+            Tiles
+        """
+        return raster_exporter(
+            tiles=tiles,
+            channel_names=self._channel_names,
+            epsg_code=self._epsg_code,
+            path=self._path,
+            remove_channels=self._remove_channels,
+            max_num_threads=self._max_num_threads,
+        )
+
+
+class RasterExporterConfig(pydantic.BaseModel):
+    """Configuration for the `from_config` class method of `RasterExporter`
+
+    Create the configuration from a config file:
+        - Use null instead of None
+        - Use false or true instead of False or True
+
+    Usage:
+        You can create the configuration from a config file.
+
+        ``` yaml title="config.yaml"
+        package: 'aviary'
+        name: 'RasterExporter'
+        config:
+          channel_names:
+            - 'r'
+            - 'g'
+            - 'b'
+          epsg_code: 25832
+          path: 'path/to/my_directory'
+          remove_channels: true
+          max_num_threads: null
+        ```
+
+    Attributes:
+        channel_names: Channel name or channel names
+        epsg_code: EPSG code
+        path: Path to the directory
+        remove_channels: If True, the channels are removed -
+            defaults to True
+        max_num_threads: Maximum number of threads -
+            defaults to None
+    """
+    channel_names: (
+        ChannelName | str |
+        list[ChannelName | str]
+    )
+    epsg_code: EPSGCode
+    path: Path
+    remove_channels: bool = True
+    max_num_threads: int | None = None
+
+
+_TilesProcessorFactory.register(
+    tiles_processor_class=RasterExporter,
+    config_class=RasterExporterConfig,
     package=_PACKAGE,
 )
 
