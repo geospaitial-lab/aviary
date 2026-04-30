@@ -103,34 +103,28 @@ def raster_exporter(
         exist_ok=True,
     )
 
-    if not isinstance(channel_names, list):
-        channel_names = [channel_names]
-
-    channel_names_repr = '_'.join(str(name) for name in channel_names)
-
     batch_size = tiles.batch_size
     tile_size = tiles.tile_size
-
     epsg_code = f'EPSG:{epsg_code}'
 
-    def _write_data_item(index: int) -> None:
-        x_min, y_min = tiles.coordinates[index]
+    def _export_data_item(index: int) -> None:
         data_item = data[index]
-        h, w, c = data_item.shape
 
-        resolution = tile_size / w
+        x_min, y_min = tiles.coordinates[index]
+        tile_size_pixels = data_item.shape[0]
+        ground_sampling_distance = tile_size / tile_size_pixels
         transform = rio.transform.from_origin(
             west=x_min,
-            north=y_min + h * resolution,
-            xsize=resolution,
-            ysize=resolution,
+            north=y_min + tile_size,
+            xsize=ground_sampling_distance,
+            ysize=ground_sampling_distance,
         )
 
         profile = {
             'driver': 'GTiff',
-            'height': h,
-            'width': w,
-            'count': c,
+            'height': tile_size_pixels,
+            'width': tile_size_pixels,
+            'count': data_item.shape[-1],
             'dtype': data_item.dtype,
             'crs': epsg_code,
             'transform': transform,
@@ -141,10 +135,9 @@ def raster_exporter(
             'bigtiff': 'IF_SAFER',
         }
 
-        filename = f'{channel_names_repr}_{x_min}_{y_min}.tiff'
-        out_path = path / filename
+        path_ = path / f'{x_min}_{y_min}.tiff'
 
-        with rio.open(out_path, mode='w', **profile) as dst:
+        with rio.open(path_, mode='w', **profile) as dst:
             data_item = np.transpose(data_item, (2, 0, 1))
             dst.write(data_item)
 
@@ -153,10 +146,10 @@ def raster_exporter(
 
     if max_num_threads == 1:
         for index in range(batch_size):
-            _write_data_item(index)
+            _export_data_item(index)
     else:
         with ThreadPoolExecutor(max_workers=max_num_threads) as executor:
-            list(executor.map(_write_data_item, range(batch_size)))
+            list(executor.map(_export_data_item, range(batch_size)))
 
     if remove_channels:
         tiles = tiles.remove(
