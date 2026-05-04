@@ -1,4 +1,5 @@
 #  Copyright (C) 2024-2026 Marius Maryniak
+#  Copyright (C) 2026 Alexander Roß
 #
 #  This file is part of aviary.
 #
@@ -35,10 +36,14 @@ from .tiles_exporter import (
     VectorExporterConfig,
 )
 from .tiles_processor import (
+    AspectProcessor,
+    AspectProcessorConfig,
     CopyProcessor,
     CopyProcessorConfig,
     ExpressionProcessor,
     ExpressionProcessorConfig,
+    HillshadeProcessor,
+    HillshadeProcessorConfig,
     NormalizeProcessor,
     NormalizeProcessorConfig,
     ParallelCompositeProcessor,
@@ -51,6 +56,8 @@ from .tiles_processor import (
     SelectProcessorConfig,
     SequentialCompositeProcessor,
     SequentialCompositeProcessorConfig,
+    SlopeProcessor,
+    SlopeProcessorConfig,
     StandardizeProcessor,
     StandardizeProcessorConfig,
     TilesProcessor,
@@ -61,12 +68,16 @@ from .tiles_processor import (
 )
 
 __all__ = [
+    'AspectProcessor',
+    'AspectProcessorConfig',
     'CompositeFetcher',
     'CompositeFetcherConfig',
     'CopyProcessor',
     'CopyProcessorConfig',
     'ExpressionProcessor',
     'ExpressionProcessorConfig',
+    'HillshadeProcessor',
+    'HillshadeProcessorConfig',
     'GridExporter',
     'GridExporterConfig',
     'NormalizeProcessor',
@@ -83,6 +94,8 @@ __all__ = [
     'SelectProcessorConfig',
     'SequentialCompositeProcessor',
     'SequentialCompositeProcessorConfig',
+    'SlopeProcessor',
+    'SlopeProcessorConfig',
     'StandardizeProcessor',
     'StandardizeProcessorConfig',
     'TileFetcher',

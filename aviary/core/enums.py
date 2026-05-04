@@ -1,4 +1,5 @@
 #  Copyright (C) 2024-2026 Marius Maryniak
+#  Copyright (C) 2026 Alexander Roß
 #
 #  This file is part of aviary.
 #
@@ -41,15 +42,23 @@ class Enum(BaseEnum):  # noqa: D101
 class ChannelName(Enum):
     """
     Attributes:
+        ASPECT: Aspect channel
         B: Blue channel
+        DEM: Digital elevation model channel
         G: Green channel
+        HILLSHADE: Hillshade channel
         NIR: Near-infrared channel
         R: Red channel
+        SLOPE: Slope channel
     """
+    ASPECT = 'aspect'
     B = 'b'
+    DEM = 'dem'
     G = 'g'
+    HILLSHADE = 'hillshade'
     NIR = 'nir'
     R = 'r'
+    SLOPE = 'slope'
 
 
 _built_in_channel_names = frozenset(channel_name.value for channel_name in ChannelName)
