@@ -33,8 +33,8 @@ if TYPE_CHECKING:
 from aviary._functional.tile.tiles_processor import (
     aspect_processor,
     copy_processor,
-    hillshade_processor,
     expression_processor,
+    hillshade_processor,
     normalize_processor,
     parallel_composite_processor,
     remove_buffer_processor,
@@ -63,14 +63,17 @@ class TilesProcessor(Protocol):
     Tiles processors are callables that process tiles.
 
     Implemented tiles processors:
+        - `AspectProcessor`: Computes the aspect of a channel
         - `CopyProcessor`: Copies a channel
         - `ExpressionProcessor`: Computes a new channel from an expression
+        - `HillshadeProcessor`: Computes the hillshade of a channel
         - `NormalizeProcessor`: Normalizes a channel
         - `ParallelCompositeProcessor`: Composes multiple tiles processors in parallel
         - `RemoveBufferProcessor`: Removes the buffer of channels
         - `RemoveProcessor`: Removes channels
         - `SelectProcessor`: Selects channels
         - `SequentialCompositeProcessor`: Composes multiple tiles processors in sequence
+        - `SlopeProcessor`: Computes the slope of a channel
         - `StandardizeProcessor`: Standardizes a channel
         - `VectorizeProcessor`: Vectorizes a channel
 
@@ -245,11 +248,14 @@ def register_tiles_processor(
 class AspectProcessor(IDMixin):
     """Tiles processor that computes the aspect for a channel with elevations
 
-        Notes:
-            - Requires a raster channel
+    Experimental:
+        `AspectProcessor` is experimental since `1.3.0` and may change without notice.
 
-        Implements the `TilesProcessor` protocol.
-        """
+    Notes:
+        - Requires a raster channel
+
+    Implements the `TilesProcessor` protocol.
+    """
 
     def __init__(
             self,
@@ -543,6 +549,9 @@ _TilesProcessorFactory.register(
 @experimental(since='1.3.0')
 class HillshadeProcessor(IDMixin):
     """Tiles processor that computes the hillshade for a channel with elevations or for slope and aspect channels
+
+    Experimental:
+        `HillshadeProcessor` is experimental since `1.3.0` and may change without notice.
 
     Notes:
         - Requires a raster channel
@@ -1242,6 +1251,9 @@ _TilesProcessorFactory.register(
 @experimental(since='1.3.0')
 class SlopeProcessor(IDMixin):
     """Tiles processor that computes the slope for a channel with elevations
+
+    Experimental:
+        `SlopeProcessor` is experimental since `1.3.0` and may change without notice.
 
     Notes:
         - Requires a raster channel
