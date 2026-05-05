@@ -609,18 +609,18 @@ def sequential_composite_processor(
 
 
 def slope_processor(
-        tiles: Tiles,
-        channel_name: ChannelName | str = ChannelName.DEM,
-        degrees: bool = True,
-        new_channel_name: ChannelName | str = ChannelName.SLOPE,
-        max_num_threads: int | None = None,
+    tiles: Tiles,
+    channel_name: ChannelName | str = ChannelName.DEM,
+    unit: SlopeUnit = SlopeUnit.DEGREES,
+    new_channel_name: ChannelName | str = ChannelName.SLOPE,
+    max_num_threads: int | None = None,
 ) -> Tiles:
-    """Computes the slope for a channel with elevations.
+    """Computes the slope from the channel.
 
     Parameters:
         tiles: Tiles
         channel_name: Channel name
-        degrees: Whether to compute slope in degrees (True) or percent (False)
+        unit: Unit of the slope (`DEGREES` or `PERCENT`)
         new_channel_name: New channel name
         max_num_threads: Maximum number of threads
 
@@ -633,7 +633,7 @@ def slope_processor(
         process_data_item=lambda data_item: _slope_for_data_item(
             data_item=data_item,
             ground_sampling_distance=tiles[channel_name].ground_sampling_distance,
-            degrees=degrees,
+            unit=unit,
         ),
         new_channel_name=new_channel_name,
         max_num_threads=max_num_threads,
@@ -641,25 +641,28 @@ def slope_processor(
 
 
 def _slope_for_data_item(
-        data_item: npt.NDArray,
-        ground_sampling_distance: GroundSamplingDistance,
-        degrees: bool = True,
+    data_item: npt.NDArray,
+    ground_sampling_distance: GroundSamplingDistance,
+    unit: SlopeUnit = SlopeUnit.DEGREES,
 ) -> npt.NDArray:
-    """Computes the slope for the data item.
+    """Computes the slope of the data item.
 
     Parameters:
         data_item: Data item
-        ground_sampling_distance: Ground sampling distance
-        degrees: Whether to compute slope in degrees (True) or percent (False)
+        ground_sampling_distance: Ground sampling distance in meters per pixel
+        unit: Unit of the slope (`DEGREES` or `PERCENT`)
 
     Returns:
         Data item
     """
-    dz_dx, dz_dy = _compute_dem_gradients(data_item, ground_sampling_distance)
+    dz_dx, dz_dy = _compute_dem_gradients(
+        digital_elevation_model=data_item,
+        ground_sampling_distance=ground_sampling_distance,
+    )
 
     slope = np.sqrt(dz_dx**2 + dz_dy**2)
 
-    if degrees:
+    if unit == SlopeUnit.PERCENT:
         slope = np.rad2deg(np.arctan(slope))
 
     return slope
