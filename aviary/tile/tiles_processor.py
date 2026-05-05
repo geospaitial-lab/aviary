@@ -1279,7 +1279,7 @@ class SlopeProcessor(IDMixin):
         """
         Parameters:
             channel_name: Channel name
-            unit: Unit (`DEGREES` or `PERCENT`)
+            unit: Unit of the slope (`DEGREES` or `PERCENT`)
             new_channel_name: New channel name
             max_num_threads: Maximum number of threads
         """
@@ -1350,7 +1350,7 @@ class SlopeProcessorConfig(pydantic.BaseModel):
     Attributes:
         channel_name: Channel name -
             defaults to 'dem'
-        unit: Unit (`DEGREES` or `PERCENT`) -
+        unit: Unit of the slope (`DEGREES` or `PERCENT`) -
             defaults to `DEGREES`
         new_channel_name: New channel name -
             defaults to 'slope'
