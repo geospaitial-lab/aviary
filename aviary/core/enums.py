@@ -214,6 +214,16 @@ class SetFilterMode(Enum):
     UNION = 'union'
 
 
+class SlopeUnit(Enum):
+    """
+    Attributes:
+        DEGREES: Degrees
+        PERCENT: Percent
+    """
+    DEGREES = 'degrees'
+    PERCENT = 'percent'
+
+
 class WMSVersion(Enum):
     """
     Attributes:
