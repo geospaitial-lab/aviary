@@ -34,8 +34,8 @@ from aviary.core.channel import (
     VectorChannel,
 )
 from aviary.core.enums import (
-    _coerce_channel_name,
     ChannelName,
+    _coerce_channel_name,
 )
 from aviary.core.exceptions import AviaryUserError
 from aviary.core.tiles import Tiles
