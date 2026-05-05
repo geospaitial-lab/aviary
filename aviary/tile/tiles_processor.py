@@ -63,17 +63,17 @@ class TilesProcessor(Protocol):
     Tiles processors are callables that process tiles.
 
     Implemented tiles processors:
-        - `AspectProcessor`: Computes the aspect of a channel
+        - `AspectProcessor`: Computes the aspect from a channel
         - `CopyProcessor`: Copies a channel
         - `ExpressionProcessor`: Computes a new channel from an expression
-        - `HillshadeProcessor`: Computes the hillshade of a channel
+        - `HillshadeProcessor`: Computes the hillshade from a channel
         - `NormalizeProcessor`: Normalizes a channel
         - `ParallelCompositeProcessor`: Composes multiple tiles processors in parallel
         - `RemoveBufferProcessor`: Removes the buffer of channels
         - `RemoveProcessor`: Removes channels
         - `SelectProcessor`: Selects channels
         - `SequentialCompositeProcessor`: Composes multiple tiles processors in sequence
-        - `SlopeProcessor`: Computes the slope of a channel
+        - `SlopeProcessor`: Computes the slope from a channel
         - `StandardizeProcessor`: Standardizes a channel
         - `VectorizeProcessor`: Vectorizes a channel
 
@@ -244,9 +244,11 @@ def register_tiles_processor(
     return decorator
 
 
-@experimental(since='1.3.0')
+@experimental(
+    since='1.3.0',
+)
 class AspectProcessor(IDMixin):
-    """Tiles processor that computes the aspect for a channel with elevations
+    """Tiles processor that computes the aspect from a channel
 
     Experimental:
         `AspectProcessor` is experimental since `1.3.0` and may change without notice.
@@ -258,10 +260,10 @@ class AspectProcessor(IDMixin):
     """
 
     def __init__(
-            self,
-            channel_name: ChannelName | str = ChannelName.DEM,
-            new_channel_name: ChannelName | str = ChannelName.ASPECT,
-            max_num_threads: int | None = None,
+        self,
+        channel_name: ChannelName | str = ChannelName.DEM,
+        new_channel_name: ChannelName | str = ChannelName.ASPECT,
+        max_num_threads: int | None = None,
     ) -> None:
         """
         Parameters:
@@ -277,8 +279,8 @@ class AspectProcessor(IDMixin):
 
     @classmethod
     def from_config(
-          cls,
-          config: AspectProcessorConfig,
+        cls,
+        config: AspectProcessorConfig,
     ) -> AspectProcessor:
         """Creates an aspect processor from the configuration.
 
@@ -286,16 +288,16 @@ class AspectProcessor(IDMixin):
             config: Configuration
 
         Returns:
-            AspectProcessor
+            Aspect processor
         """
         config = config.model_dump()
         return cls(**config)
 
     def __call__(
-            self,
-            tiles: Tiles,
+        self,
+        tiles: Tiles,
     ) -> Tiles:
-        """Computes aspect for the channel.
+        """Computes the aspect from the channel.
 
         Parameters:
             tiles: Tiles
@@ -324,7 +326,7 @@ class AspectProcessorConfig(pydantic.BaseModel):
         package: 'aviary'
         name: 'AspectProcessor'
         config:
-          channel_name: 'my_channel'
+          channel_name: 'dem'
           new_channel_name: 'aspect'
           max_num_threads: null
         ```
@@ -546,7 +548,9 @@ _TilesProcessorFactory.register(
 )
 
 
-@experimental(since='1.3.0')
+@experimental(
+    since='1.3.0',
+)
 class HillshadeProcessor(IDMixin):
     """Tiles processor that computes the hillshade for a channel with elevations or for slope and aspect channels
 
@@ -1248,9 +1252,11 @@ _TilesProcessorFactory.register(
 )
 
 
-@experimental(since='1.3.0')
+@experimental(
+    since='1.3.0',
+)
 class SlopeProcessor(IDMixin):
-    """Tiles processor that computes the slope for a channel with elevations
+    """Tiles processor that computes the slope from a channel
 
     Experimental:
         `SlopeProcessor` is experimental since `1.3.0` and may change without notice.
@@ -1261,11 +1267,11 @@ class SlopeProcessor(IDMixin):
     Implements the `TilesProcessor` protocol.
     """
     def __init__(
-            self,
-            channel_name: ChannelName | str = ChannelName.DEM,
-            degrees: bool = True,
-            new_channel_name: ChannelName | str = ChannelName.SLOPE,
-            max_num_threads: int | None = None,
+        self,
+        channel_name: ChannelName | str = ChannelName.DEM,
+        degrees: bool = True,
+        new_channel_name: ChannelName | str = ChannelName.SLOPE,
+        max_num_threads: int | None = None,
     ) -> None:
         """
         Parameters:
@@ -1283,8 +1289,8 @@ class SlopeProcessor(IDMixin):
 
     @classmethod
     def from_config(
-          cls,
-          config: SlopeProcessorConfig,
+        cls,
+        config: SlopeProcessorConfig,
     ) -> SlopeProcessor:
         """Creates a slope processor from the configuration.
 
@@ -1292,16 +1298,16 @@ class SlopeProcessor(IDMixin):
             config: Configuration
 
         Returns:
-            SlopeProcessor
+            Slope processor
         """
         config = config.model_dump()
         return cls(**config)
 
     def __call__(
-            self,
-            tiles: Tiles,
+        self,
+        tiles: Tiles,
     ) -> Tiles:
-        """Computes slope for the channel.
+        """Computes the slope from the channel.
 
         Parameters:
             tiles: Tiles
