@@ -35,6 +35,7 @@ from aviary.core.channel import (
 )
 from aviary.core.enums import (
     ChannelName,
+    SlopeUnit,
     _coerce_channel_name,
 )
 from aviary.core.exceptions import AviaryUserError
@@ -101,12 +102,12 @@ def _process_data(
 
 
 def aspect_processor(
-        tiles: Tiles,
-        channel_name: ChannelName | str = ChannelName.DEM,
-        new_channel_name: ChannelName | str = ChannelName.ASPECT,
-        max_num_threads: int | None = None,
+    tiles: Tiles,
+    channel_name: ChannelName | str = ChannelName.DEM,
+    new_channel_name: ChannelName | str = ChannelName.ASPECT,
+    max_num_threads: int | None = None,
 ) -> Tiles:
-    """Computes the aspect for a channel with elevations.
+    """Computes the aspect from the channel.
 
     Parameters:
         tiles: Tiles
@@ -130,23 +131,24 @@ def aspect_processor(
 
 
 def _aspect_for_data_item(
-        data_item: npt.NDArray,
-        ground_sampling_distance: GroundSamplingDistance,
+    data_item: npt.NDArray,
+    ground_sampling_distance: GroundSamplingDistance,
 ) -> npt.NDArray:
     """Computes the aspect for the data item.
 
     Parameters:
         data_item: Data item
-        ground_sampling_distance: Ground sampling distance
+        ground_sampling_distance: Ground sampling distance in meters per pixel
 
     Returns:
         Data item
     """
-    dz_dx, dz_dy = _compute_dem_gradients(data_item, ground_sampling_distance)
+    dz_dx, dz_dy = _compute_dem_gradients(
+        digital_elevation_model=data_item,
+        ground_sampling_distance=ground_sampling_distance,
+    )
 
-    aspect = np.rad2deg(-(np.atan2(dz_dy, dz_dx) + (np.pi / 2)) % (2 * np.pi))
-
-    return aspect
+    return np.rad2deg(-(np.atan2(dz_dy, dz_dx) + (np.pi / 2)) % (2 * np.pi))
 
 
 def _compute_dem_gradients(
