@@ -46,7 +46,10 @@ from aviary._functional.tile.tiles_processor import (
     vectorize_processor,
 )
 from aviary._utils.lifecycle import experimental
-from aviary.core.enums import ChannelName
+from aviary.core.enums import (
+    ChannelName,
+    SlopeUnit,
+)
 from aviary.core.exceptions import AviaryUserError
 from aviary.core.mixins import IDMixin
 from aviary.core.type_aliases import ChannelNameSet
@@ -1269,19 +1272,19 @@ class SlopeProcessor(IDMixin):
     def __init__(
         self,
         channel_name: ChannelName | str = ChannelName.DEM,
-        degrees: bool = True,
+        unit: SlopeUnit = SlopeUnit.DEGREES,
         new_channel_name: ChannelName | str = ChannelName.SLOPE,
         max_num_threads: int | None = None,
     ) -> None:
         """
         Parameters:
             channel_name: Channel name
-            degrees: Whether to compute slope in degrees (True) or percent (False)
+            unit: Unit (`DEGREES` or `PERCENT`)
             new_channel_name: New channel name
             max_num_threads: Maximum number of threads
         """
         self._channel_name = channel_name
-        self._degrees = degrees
+        self._unit = unit
         self._new_channel_name = new_channel_name
         self._max_num_threads = max_num_threads
 
@@ -1318,7 +1321,7 @@ class SlopeProcessor(IDMixin):
         return slope_processor(
             tiles=tiles,
             channel_name=self._channel_name,
-            degrees=self._degrees,
+            unit=self._unit,
             new_channel_name=self._new_channel_name,
             max_num_threads=self._max_num_threads,
         )
@@ -1328,6 +1331,7 @@ class SlopeProcessorConfig(pydantic.BaseModel):
     """Configuration for the `from_config` class method of `SlopeProcessor`
 
     Create the configuration from a config file:
+        - Use 'degrees' or 'percent' instead of `SlopeUnit.DEGREES` or `SlopeUnit.PERCENT`
         - Use null instead of None
 
     Usage:
@@ -1338,7 +1342,7 @@ class SlopeProcessorConfig(pydantic.BaseModel):
         name: 'SlopeProcessor'
         config:
           channel_name: 'dem'
-          degrees: true
+          unit: 'degrees'
           new_channel_name: 'slope'
           max_num_threads: null
         ```
@@ -1346,15 +1350,15 @@ class SlopeProcessorConfig(pydantic.BaseModel):
     Attributes:
         channel_name: Channel name -
             defaults to 'dem'
-        degrees: Whether to compute slope in degrees (True) or percent (False) -
-            defaults to True
+        unit: Unit (`DEGREES` or `PERCENT`) -
+            defaults to `DEGREES`
         new_channel_name: New channel name -
             defaults to 'slope'
         max_num_threads: Maximum number of threads -
             defaults to None
     """
     channel_name: ChannelName | str = ChannelName.DEM
-    degrees: bool = True
+    unit: SlopeUnit = SlopeUnit.DEGREES
     new_channel_name: ChannelName | str = ChannelName.SLOPE
     max_num_threads: int | None = None
 
