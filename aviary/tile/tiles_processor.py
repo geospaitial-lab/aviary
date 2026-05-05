@@ -66,7 +66,7 @@ class TilesProcessor(Protocol):
         - `AspectProcessor`: Computes the aspect from a channel
         - `CopyProcessor`: Copies a channel
         - `ExpressionProcessor`: Computes a new channel from an expression
-        - `HillshadeProcessor`: Computes the hillshade from a channel
+        - `HillshadeProcessor`: Computes the hillshade from a channel or channels
         - `NormalizeProcessor`: Normalizes a channel
         - `ParallelCompositeProcessor`: Composes multiple tiles processors in parallel
         - `RemoveBufferProcessor`: Removes the buffer of channels
@@ -552,7 +552,7 @@ _TilesProcessorFactory.register(
     since='1.3.0',
 )
 class HillshadeProcessor(IDMixin):
-    """Tiles processor that computes the hillshade for a channel with elevations or for slope and aspect channels
+    """Tiles processor that computes the hillshade from a channel or channels
 
     Experimental:
         `HillshadeProcessor` is experimental since `1.3.0` and may change without notice.
@@ -563,22 +563,22 @@ class HillshadeProcessor(IDMixin):
     Implements the `TilesProcessor` protocol.
     """
     def __init__(
-            self,
-            channel_name: ChannelName | str = ChannelName.DEM,
-            slope_channel_name: ChannelName | str | None = None,
-            aspect_channel_name: ChannelName | str | None = None,
-            azimuth: float = 315.,
-            altitude: float = 45.,
-            new_channel_name: ChannelName | str = ChannelName.HILLSHADE,
-            max_num_threads: int | None = None,
+        self,
+        channel_name: ChannelName | str = ChannelName.DEM,
+        slope_channel_name: ChannelName | str | None = None,
+        aspect_channel_name: ChannelName | str | None = None,
+        azimuth: float = 315.,
+        altitude: float = 45.,
+        new_channel_name: ChannelName | str = ChannelName.HILLSHADE,
+        max_num_threads: int | None = None,
     ) -> None:
         """
         Parameters:
             channel_name: Channel name
-            slope_channel_name: Optional channel name for precomputed slope angles.
-            aspect_channel_name: Optional channel name for precomputed aspect angles.
-            azimuth: Angle to north of the light source in degrees.
-            altitude: Angle to the horizontal plane of the light source in degrees.
+            slope_channel_name: Channel name of the slope channel
+            aspect_channel_name: Channel name of the aspect channel
+            azimuth: Angle to north of the light source in degrees
+            altitude: Angle to the horizontal plane of the light source in degrees
             new_channel_name: New channel name
             max_num_threads: Maximum number of threads
         """
@@ -603,16 +603,16 @@ class HillshadeProcessor(IDMixin):
             config: Configuration
 
         Returns:
-            HillshadeProcessor
+            Hillshade processor
         """
         config = config.model_dump()
         return cls(**config)
 
     def __call__(
-            self,
-            tiles: Tiles,
+        self,
+        tiles: Tiles,
     ) -> Tiles:
-        """Computes hillshade for a channel or channels.
+        """Computes the hillshade from the channel or channels.
 
         Parameters:
             tiles: Tiles
@@ -655,16 +655,16 @@ class HillshadeProcessorConfig(pydantic.BaseModel):
     Attributes:
         channel_name: Channel name -
             defaults to 'dem'
-        slope_channel_name: Optional channel name for precomputed slope angles. -
+        slope_channel_name: Channel name of the slope channel -
             defaults to None
-        aspect_channel_name: Optional channel name for precomputed aspect angles. -
+        aspect_channel_name: Channel name of the aspect channel -
             defaults to None
-        azimuth: Angle to north of the light source in degrees. -
+        azimuth: Angle to north of the light source in degrees -
             defaults to 315.
-        altitude: Angle to north of the light source in degrees. -
+        altitude: Angle to the horizontal plane of the light source in degrees -
             defaults to 45.
         new_channel_name: New channel name -
-            defaults to 'slope'
+            defaults to 'hillshade'
         max_num_threads: Maximum number of threads -
             defaults to None
     """
