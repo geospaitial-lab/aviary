@@ -134,7 +134,7 @@ def _aspect_for_data_item(
     data_item: npt.NDArray,
     ground_sampling_distance: GroundSamplingDistance,
 ) -> npt.NDArray:
-    """Computes the aspect for the data item.
+    """Computes the aspect from the data item.
 
     Parameters:
         data_item: Data item
@@ -148,18 +148,21 @@ def _aspect_for_data_item(
         ground_sampling_distance=ground_sampling_distance,
     )
 
-    return np.rad2deg(-(np.atan2(dz_dy, dz_dx) + (np.pi / 2)) % (2 * np.pi))
+    return np.rad2deg(-(np.arctan2(dz_dy, dz_dx) + (np.pi / 2)) % (2 * np.pi))
 
 
 def _compute_dem_gradients(
-        digital_elevation_model: npt.NDArray,
-        ground_sampling_distance: GroundSamplingDistance
+    digital_elevation_model: npt.NDArray,
+    ground_sampling_distance: GroundSamplingDistance,
 ) -> tuple[npt.NDArray, npt.NDArray]:
-    """Computes the DEMs gradients according to the algorithm by Horn 1981 (https://ieeexplore.ieee.org/document/1456186).
+    """Computes the digital elevation model gradients.
+
+    References:
+        - https://ieeexplore.ieee.org/document/1456186
 
     Parameters:
         digital_elevation_model: Digital elevation model
-        ground_sampling_distance: Ground sampling distance
+        ground_sampling_distance: Ground sampling distance in meters per pixel
 
     Returns:
         Gradients
@@ -173,8 +176,14 @@ def _compute_dem_gradients(
     z_west = digital_elevation_model[1:-1, :-2]
     z_north_west = digital_elevation_model[:-2, :-2]
 
-    dz_dx = ((z_north_east + 2 * z_east + z_south_east) - (z_north_west + 2 * z_west + z_south_west)) / (8 * ground_sampling_distance)
-    dz_dy = ((z_north_east + 2 * z_north + z_north_west) - (z_south_east + 2 * z_south + z_south_west)) / (8 * ground_sampling_distance)
+    dz_dx = (
+        ((z_north_east + 2 * z_east + z_south_east) - (z_north_west + 2 * z_west + z_south_west)) /
+        (8 * ground_sampling_distance)
+    )
+    dz_dy = (
+        ((z_north_east + 2 * z_north + z_north_west) - (z_south_east + 2 * z_south + z_south_west)) /
+        (8 * ground_sampling_distance)
+    )
 
     dz_dx = np.pad(dz_dx, ((1, 1), (1, 1)), mode='edge')
     dz_dy = np.pad(dz_dy, ((1, 1), (1, 1)), mode='edge')
