@@ -322,24 +322,24 @@ def expression_processor(
 
 
 def hillshade_processor(
-        tiles: Tiles,
-        channel_name: ChannelName | str | None = ChannelName.DEM,
-        slope_channel_name: ChannelName | str | None = None,
-        aspect_channel_name: ChannelName | str | None = None,
-        azimuth: float = 315.,
-        altitude: float = 45.,
-        new_channel_name: ChannelName | str = ChannelName.HILLSHADE,
-        max_num_threads: int | None = None,
+    tiles: Tiles,
+    channel_name: ChannelName | str | None = ChannelName.DEM,
+    slope_channel_name: ChannelName | str | None = None,
+    aspect_channel_name: ChannelName | str | None = None,
+    azimuth: float = 315.,
+    altitude: float = 45.,
+    new_channel_name: ChannelName | str = ChannelName.HILLSHADE,
+    max_num_threads: int | None = None,
 ) -> Tiles:
-    """Computes the hillshade map for a channel with elevations or slope and aspect.
+    """Computes the hillshade from the channel or channels.
 
     Parameters:
         tiles: Tiles
         channel_name: Channel name
-        slope_channel_name: Optional channel name for precomputed slope angles.
-        aspect_channel_name: Optional channel name for precomputed aspect angles.
-        azimuth: Angle to north of the light source in degrees.
-        altitude: Angle to the horizontal plane of the light source in degrees.
+        slope_channel_name: Channel name of the slope channel
+        aspect_channel_name: Channel name of the aspect channel
+        azimuth: Angle to north of the light source in degrees
+        altitude: Angle to the horizontal plane of the light source in degrees
         new_channel_name: New channel name
         max_num_threads: Maximum number of threads
 
@@ -350,8 +350,8 @@ def hillshade_processor(
         return _process_data(
             tiles=tiles,
             channel_name=channel_name,
-            process_data_item=lambda data_item: _hillshade_for_dem_item(
-                dem_item=data_item,
+            process_data_item=lambda data_item: _hillshade_dem_data_item(
+                data_item=data_item,
                 ground_sampling_distance=tiles[channel_name].ground_sampling_distance,
                 azimuth=azimuth,
                 altitude=altitude,
@@ -359,7 +359,8 @@ def hillshade_processor(
             new_channel_name=new_channel_name,
             max_num_threads=max_num_threads,
         )
-    elif slope_channel_name is not None and aspect_channel_name is not None:
+
+    if slope_channel_name is not None and aspect_channel_name is not None:
         new_channel_name = _coerce_channel_name(channel_name=new_channel_name)
         channel = tiles[slope_channel_name].copy()
 
