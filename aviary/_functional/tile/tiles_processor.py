@@ -397,38 +397,43 @@ def hillshade_processor(
                               "Either channel_name or slope_channel_name and aspect_channel_name must be specified.")
 
 
-def _hillshade_for_slope_and_aspect_item(
-        slope_item: npt.NDArray,
-        aspect_item: npt.NDArray,
-        azimuth: float = 315,
-        altitude: float = 45,
+
+def _hillshade_slope_aspect_data_item(
+    slope_data_item: npt.NDArray,
+    aspect_data_item: npt.NDArray,
+    azimuth: float = 315.,
+    altitude: float = 45.,
 ) -> npt.NDArray:
-    """Computes the hillshade for a slope and aspect.
+    """Computes the hillshade from the slope and aspect data items.
 
     Parameters:
-        slope_item: Slope item
-        aspect_item: Aspect item
-        azimuth: Angular direction of the sun, measured clockwise from north. 90 is east.
-        altitude: Angle of the sun above the horizon. 0 is the horizon and 90 is overhead.
+        slope_data_item: Slope data item
+        aspect_data_item: Aspect data item
+        azimuth: Angle to north of the light source in degrees
+        altitude: Angle to the horizontal plane of the light source in degrees
 
     Returns:
-        Hillshade item
+        Data item
     """
-    slope_rad = np.deg2rad(slope_item)
-    aspect_rad = np.deg2rad(aspect_item)
+    slope_rad = np.deg2rad(slope_data_item)
+    aspect_rad = np.deg2rad(aspect_data_item)
     azimuth_rad = np.deg2rad(azimuth)
     zenith_rad = np.deg2rad(90 - altitude)
 
-    hillshade = 255 * (np.cos(zenith_rad) * np.cos(slope_rad) + np.sin(zenith_rad) * np.sin(slope_rad) * np.cos(azimuth_rad - aspect_rad))
+    illumination = (
+        np.cos(zenith_rad) * np.cos(slope_rad) +
+        np.sin(zenith_rad) * np.sin(slope_rad) * np.cos(azimuth_rad - aspect_rad)
+    )
+    hillshade = 255 * illumination
 
-    return hillshade
+    return np.clip(hillshade, 0.0, 255.0).astype(np.uint8)
 
 
 def _hillshade_dem_data_item(
     data_item: npt.NDArray,
     ground_sampling_distance: GroundSamplingDistance,
-    azimuth: float = 315,
-    altitude: float = 45,
+    azimuth: float = 315.,
+    altitude: float = 45.,
 ) -> npt.NDArray:
     """Computes the hillshade from the digital elevation model data item.
 
