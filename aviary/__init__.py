@@ -27,6 +27,7 @@ from .core.enums import (
     InterpolationMode,
     OSMType,
     SetFilterMode,
+    SlopeUnit,
     WMSVersion,
 )
 from .core.exceptions import AviaryUserError
@@ -82,6 +83,7 @@ __all__ = [
     'OSMType',
     'RasterChannel',
     'SetFilterMode',
+    'SlopeUnit',
     'Tile',
     'TileSize',
     'Tiles',

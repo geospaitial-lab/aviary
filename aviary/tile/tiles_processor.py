@@ -1,4 +1,5 @@
 #  Copyright (C) 2024-2026 Marius Maryniak
+#  Copyright (C) 2026 Alexander Roß
 #
 #  This file is part of aviary.
 #
@@ -30,19 +31,25 @@ if TYPE_CHECKING:
     from pydantic_core.core_schema import ValidationInfo
 
 from aviary._functional.tile.tiles_processor import (
+    aspect_processor,
     copy_processor,
     expression_processor,
+    hillshade_processor,
     normalize_processor,
     parallel_composite_processor,
     remove_buffer_processor,
     remove_processor,
     select_processor,
     sequential_composite_processor,
+    slope_processor,
     standardize_processor,
     vectorize_processor,
 )
 from aviary._utils.lifecycle import experimental
-from aviary.core.enums import ChannelName
+from aviary.core.enums import (
+    ChannelName,
+    SlopeUnit,
+)
 from aviary.core.exceptions import AviaryUserError
 from aviary.core.mixins import IDMixin
 from aviary.core.type_aliases import ChannelNameSet
@@ -59,14 +66,17 @@ class TilesProcessor(Protocol):
     Tiles processors are callables that process tiles.
 
     Implemented tiles processors:
+        - `AspectProcessor`: Computes the aspect from a channel
         - `CopyProcessor`: Copies a channel
         - `ExpressionProcessor`: Computes a new channel from an expression
+        - `HillshadeProcessor`: Computes the hillshade from a channel or channels
         - `NormalizeProcessor`: Normalizes a channel
         - `ParallelCompositeProcessor`: Composes multiple tiles processors in parallel
         - `RemoveBufferProcessor`: Removes the buffer of channels
         - `RemoveProcessor`: Removes channels
         - `SelectProcessor`: Selects channels
         - `SequentialCompositeProcessor`: Composes multiple tiles processors in sequence
+        - `SlopeProcessor`: Computes the slope from a channel
         - `StandardizeProcessor`: Standardizes a channel
         - `VectorizeProcessor`: Vectorizes a channel
 
@@ -235,6 +245,113 @@ def register_tiles_processor(
         )
         return cls
     return decorator
+
+
+@experimental(
+    since='1.3.0',
+)
+class AspectProcessor(IDMixin):
+    """Tiles processor that computes the aspect from a channel
+
+    Experimental:
+        `AspectProcessor` is experimental since `1.3.0` and may change without notice.
+
+    Notes:
+        - Requires a raster channel
+
+    Implements the `TilesProcessor` protocol.
+    """
+
+    def __init__(
+        self,
+        channel_name: ChannelName | str = ChannelName.DEM,
+        new_channel_name: ChannelName | str = ChannelName.ASPECT,
+        max_num_threads: int | None = None,
+    ) -> None:
+        """
+        Parameters:
+            channel_name: Channel name
+            new_channel_name: New channel name
+            max_num_threads: Maximum number of threads
+        """
+        self._channel_name = channel_name
+        self._new_channel_name = new_channel_name
+        self._max_num_threads = max_num_threads
+
+        super().__init__()
+
+    @classmethod
+    def from_config(
+        cls,
+        config: AspectProcessorConfig,
+    ) -> AspectProcessor:
+        """Creates an aspect processor from the configuration.
+
+        Parameters:
+            config: Configuration
+
+        Returns:
+            Aspect processor
+        """
+        config = config.model_dump()
+        return cls(**config)
+
+    def __call__(
+        self,
+        tiles: Tiles,
+    ) -> Tiles:
+        """Computes the aspect from the channel.
+
+        Parameters:
+            tiles: Tiles
+
+        Returns:
+            Tiles
+        """
+        return aspect_processor(
+            tiles=tiles,
+            channel_name=self._channel_name,
+            new_channel_name=self._new_channel_name,
+            max_num_threads=self._max_num_threads,
+        )
+
+
+class AspectProcessorConfig(pydantic.BaseModel):
+    """Configuration for the `from_config` class method of `AspectProcessor`
+
+    Create the configuration from a config file:
+        - Use null instead of None
+
+    Usage:
+        You can create the configuration from a config file.
+
+        ``` yaml title="config.yaml"
+        package: 'aviary'
+        name: 'AspectProcessor'
+        config:
+          channel_name: 'dem'
+          new_channel_name: 'aspect'
+          max_num_threads: null
+        ```
+
+    Attributes:
+        channel_name: Channel name -
+            defaults to 'dem'
+        new_channel_name: New channel name -
+            defaults to 'aspect'
+        max_num_threads: Maximum number of threads -
+            defaults to None
+    """
+    channel_name: ChannelName | str = ChannelName.DEM
+    new_channel_name: ChannelName | str = ChannelName.ASPECT
+    max_num_threads: int | None = None
+
+
+_TilesProcessorFactory.register(
+    tiles_processor_class=AspectProcessor,
+    config_class=AspectProcessorConfig,
+    package=_PACKAGE,
+)
 
 
 class CopyProcessor(IDMixin):
@@ -430,6 +547,142 @@ class ExpressionProcessorConfig(pydantic.BaseModel):
 _TilesProcessorFactory.register(
     tiles_processor_class=ExpressionProcessor,
     config_class=ExpressionProcessorConfig,
+    package=_PACKAGE,
+)
+
+
+@experimental(
+    since='1.3.0',
+)
+class HillshadeProcessor(IDMixin):
+    """Tiles processor that computes the hillshade from a channel or channels
+
+    Experimental:
+        `HillshadeProcessor` is experimental since `1.3.0` and may change without notice.
+
+    Notes:
+        - Requires a raster channel
+
+    Implements the `TilesProcessor` protocol.
+    """
+    def __init__(
+        self,
+        channel_name: ChannelName | str = ChannelName.DEM,
+        slope_channel_name: ChannelName | str | None = None,
+        aspect_channel_name: ChannelName | str | None = None,
+        azimuth: float = 315.,
+        altitude: float = 45.,
+        new_channel_name: ChannelName | str = ChannelName.HILLSHADE,
+        max_num_threads: int | None = None,
+    ) -> None:
+        """
+        Parameters:
+            channel_name: Channel name
+            slope_channel_name: Channel name of the slope channel
+            aspect_channel_name: Channel name of the aspect channel
+            azimuth: Angle to north of the light source in degrees
+            altitude: Angle to the horizontal plane of the light source in degrees
+            new_channel_name: New channel name
+            max_num_threads: Maximum number of threads
+        """
+        self._channel_name = channel_name
+        self._slope_channel_name = slope_channel_name
+        self._aspect_channel_name = aspect_channel_name
+        self._azimuth = azimuth
+        self._altitude = altitude
+        self._new_channel_name = new_channel_name
+        self._max_num_threads = max_num_threads
+
+        super().__init__()
+
+    @classmethod
+    def from_config(
+        cls,
+        config: HillshadeProcessorConfig,
+    ) -> HillshadeProcessor:
+        """Creates a hillshade processor from the configuration.
+
+        Parameters:
+            config: Configuration
+
+        Returns:
+            Hillshade processor
+        """
+        config = config.model_dump()
+        return cls(**config)
+
+    def __call__(
+        self,
+        tiles: Tiles,
+    ) -> Tiles:
+        """Computes the hillshade from the channel or channels.
+
+        Parameters:
+            tiles: Tiles
+
+        Returns:
+            Tiles
+        """
+        return hillshade_processor(
+            tiles=tiles,
+            channel_name=self._channel_name,
+            slope_channel_name=self._slope_channel_name,
+            aspect_channel_name=self._aspect_channel_name,
+            azimuth=self._azimuth,
+            altitude=self._altitude,
+            new_channel_name=self._new_channel_name,
+            max_num_threads=self._max_num_threads,
+        )
+
+
+class HillshadeProcessorConfig(pydantic.BaseModel):
+    """Configuration for the `from_config` class method of `HillshadeProcessor`
+
+    Create the configuration from a config file:
+        - Use null instead of None
+
+    Usage:
+        You can create the configuration from a config file.
+
+        ``` yaml title="config.yaml"
+        package: 'aviary'
+        name: 'HillshadeProcessor'
+        config:
+          channel_name: 'dem'
+          azimuth: 315.
+          altitude: 45.
+          new_channel_name: 'hillshade'
+          max_num_threads: null
+        ```
+
+    Attributes:
+        channel_name: Channel name -
+            defaults to 'dem'
+        slope_channel_name: Channel name of the slope channel -
+            defaults to None
+        aspect_channel_name: Channel name of the aspect channel -
+            defaults to None
+        azimuth: Angle to north of the light source in degrees -
+            defaults to 315.
+        altitude: Angle to the horizontal plane of the light source in degrees -
+            defaults to 45.
+        new_channel_name: New channel name -
+            defaults to 'hillshade'
+        max_num_threads: Maximum number of threads -
+            defaults to None
+    """
+    channel_name: ChannelName | str = ChannelName.DEM
+    slope_channel_name: ChannelName | str | None = None
+    aspect_channel_name: ChannelName | str | None = None
+    azimuth: float = 315.
+    altitude: float = 45.
+    new_channel_name: ChannelName | str = ChannelName.HILLSHADE
+    max_num_threads: int | None = None
+
+
+_TilesProcessorFactory.register(
+    tiles_processor_class=HillshadeProcessor,
+    config_class=HillshadeProcessorConfig,
     package=_PACKAGE,
 )
 
@@ -998,6 +1251,121 @@ class SequentialCompositeProcessorConfig(pydantic.BaseModel):
 _TilesProcessorFactory.register(
     tiles_processor_class=SequentialCompositeProcessor,
     config_class=SequentialCompositeProcessorConfig,
+    package=_PACKAGE,
+)
+
+
+@experimental(
+    since='1.3.0',
+)
+class SlopeProcessor(IDMixin):
+    """Tiles processor that computes the slope from a channel
+
+    Experimental:
+        `SlopeProcessor` is experimental since `1.3.0` and may change without notice.
+
+    Notes:
+        - Requires a raster channel
+
+    Implements the `TilesProcessor` protocol.
+    """
+    def __init__(
+        self,
+        channel_name: ChannelName | str = ChannelName.DEM,
+        unit: SlopeUnit = SlopeUnit.DEGREES,
+        new_channel_name: ChannelName | str = ChannelName.SLOPE,
+        max_num_threads: int | None = None,
+    ) -> None:
+        """
+        Parameters:
+            channel_name: Channel name
+            unit: Unit of the slope (`DEGREES` or `PERCENT`)
+            new_channel_name: New channel name
+            max_num_threads: Maximum number of threads
+        """
+        self._channel_name = channel_name
+        self._unit = unit
+        self._new_channel_name = new_channel_name
+        self._max_num_threads = max_num_threads
+
+        super().__init__()
+
+    @classmethod
+    def from_config(
+        cls,
+        config: SlopeProcessorConfig,
+    ) -> SlopeProcessor:
+        """Creates a slope processor from the configuration.
+
+        Parameters:
+            config: Configuration
+
+        Returns:
+            Slope processor
+        """
+        config = config.model_dump()
+        return cls(**config)
+
+    def __call__(
+        self,
+        tiles: Tiles,
+    ) -> Tiles:
+        """Computes the slope from the channel.
+
+        Parameters:
+            tiles: Tiles
+
+        Returns:
+            Tiles
+        """
+        return slope_processor(
+            tiles=tiles,
+            channel_name=self._channel_name,
+            unit=self._unit,
+            new_channel_name=self._new_channel_name,
+            max_num_threads=self._max_num_threads,
+        )
+
+
+class SlopeProcessorConfig(pydantic.BaseModel):
+    """Configuration for the `from_config` class method of `SlopeProcessor`
+
+    Create the configuration from a config file:
+        - Use 'degrees' or 'percent' instead of `SlopeUnit.DEGREES` or `SlopeUnit.PERCENT`
+        - Use null instead of None
+
+    Usage:
+        You can create the configuration from a config file.
+
+        ``` yaml title="config.yaml"
+        package: 'aviary'
+        name: 'SlopeProcessor'
+        config:
+          channel_name: 'dem'
+          unit: 'degrees'
+          new_channel_name: 'slope'
+          max_num_threads: null
+        ```
+
+    Attributes:
+        channel_name: Channel name -
+            defaults to 'dem'
+        unit: Unit of the slope (`DEGREES` or `PERCENT`) -
+            defaults to `DEGREES`
+        new_channel_name: New channel name -
+            defaults to 'slope'
+        max_num_threads: Maximum number of threads -
+            defaults to None
+    """
+    channel_name: ChannelName | str = ChannelName.DEM
+    unit: SlopeUnit = SlopeUnit.DEGREES
+    new_channel_name: ChannelName | str = ChannelName.SLOPE
+    max_num_threads: int | None = None
+
+
+_TilesProcessorFactory.register(
+    tiles_processor_class=SlopeProcessor,
+    config_class=SlopeProcessorConfig,
     package=_PACKAGE,
 )
 

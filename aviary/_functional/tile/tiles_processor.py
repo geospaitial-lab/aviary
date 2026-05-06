@@ -1,4 +1,5 @@
 #  Copyright (C) 2024-2026 Marius Maryniak
+#  Copyright (C) 2026 Alexander Roß
 #
 #  This file is part of aviary.
 #
@@ -16,6 +17,7 @@
 from __future__ import annotations
 
 from concurrent.futures import ThreadPoolExecutor
+from itertools import repeat
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -31,13 +33,19 @@ from aviary.core.channel import (
     RasterChannel,
     VectorChannel,
 )
-from aviary.core.enums import _coerce_channel_name
+from aviary.core.enums import (
+    ChannelName,
+    SlopeUnit,
+    _coerce_channel_name,
+)
 from aviary.core.exceptions import AviaryUserError
 from aviary.core.tiles import Tiles
 
 if TYPE_CHECKING:
-    from aviary.core.enums import ChannelName
-    from aviary.core.type_aliases import ChannelNameSet
+    from aviary.core.type_aliases import (
+        ChannelNameSet,
+        GroundSamplingDistance,
+    )
     from aviary.tile.tiles_processor import TilesProcessor
 
 
@@ -91,6 +99,96 @@ def _process_data(
         )
 
     return tiles
+
+
+def _compute_dem_gradients(
+    digital_elevation_model: npt.NDArray,
+    ground_sampling_distance: GroundSamplingDistance,
+) -> tuple[npt.NDArray, npt.NDArray]:
+    """Computes the digital elevation model gradients.
+
+    References:
+        - https://ieeexplore.ieee.org/document/1456186
+
+    Parameters:
+        digital_elevation_model: Digital elevation model
+        ground_sampling_distance: Ground sampling distance in meters per pixel
+
+    Returns:
+        Gradients
+    """
+    z_north = digital_elevation_model[:-2, 1:-1]
+    z_north_east = digital_elevation_model[:-2, 2:]
+    z_east = digital_elevation_model[1:-1, 2:]
+    z_south_east = digital_elevation_model[2:, 2:]
+    z_south = digital_elevation_model[2:, 1:-1]
+    z_south_west = digital_elevation_model[2:, :-2]
+    z_west = digital_elevation_model[1:-1, :-2]
+    z_north_west = digital_elevation_model[:-2, :-2]
+
+    dz_dx = (
+        ((z_north_east + 2 * z_east + z_south_east) - (z_north_west + 2 * z_west + z_south_west)) /
+        (8 * ground_sampling_distance)
+    )
+    dz_dy = (
+        ((z_north_east + 2 * z_north + z_north_west) - (z_south_east + 2 * z_south + z_south_west)) /
+        (8 * ground_sampling_distance)
+    )
+
+    dz_dx = np.pad(dz_dx, ((1, 1), (1, 1)), mode='edge')
+    dz_dy = np.pad(dz_dy, ((1, 1), (1, 1)), mode='edge')
+
+    return dz_dx, dz_dy
+
+
+def aspect_processor(
+    tiles: Tiles,
+    channel_name: ChannelName | str = ChannelName.DEM,
+    new_channel_name: ChannelName | str = ChannelName.ASPECT,
+    max_num_threads: int | None = None,
+) -> Tiles:
+    """Computes the aspect from the channel.
+
+    Parameters:
+        tiles: Tiles
+        channel_name: Channel name
+        new_channel_name: New channel name
+        max_num_threads: Maximum number of threads
+
+    Returns:
+        Tiles
+    """
+    return _process_data(
+        tiles=tiles,
+        channel_name=channel_name,
+        process_data_item=lambda data_item: _aspect_data_item(
+            data_item=data_item,
+            ground_sampling_distance=tiles[channel_name].ground_sampling_distance,
+        ),
+        new_channel_name=new_channel_name,
+        max_num_threads=max_num_threads,
+    )
+
+
+def _aspect_data_item(
+    data_item: npt.NDArray,
+    ground_sampling_distance: GroundSamplingDistance,
+) -> npt.NDArray:
+    """Computes the aspect from the data item.
+
+    Parameters:
+        data_item: Data item
+        ground_sampling_distance: Ground sampling distance in meters per pixel
+
+    Returns:
+        Data item
+    """
+    dz_dx, dz_dy = _compute_dem_gradients(
+        digital_elevation_model=data_item,
+        ground_sampling_distance=ground_sampling_distance,
+    )
+
+    return np.rad2deg(-(np.arctan2(dz_dy, dz_dx) + (np.pi / 2)) % (2 * np.pi))
 
 
 def copy_processor(
@@ -220,6 +318,156 @@ def expression_processor(
     return tiles.append(
         channels=channel,
         inplace=True,
+    )
+
+
+def hillshade_processor(
+    tiles: Tiles,
+    channel_name: ChannelName | str | None = ChannelName.DEM,
+    slope_channel_name: ChannelName | str | None = None,
+    aspect_channel_name: ChannelName | str | None = None,
+    azimuth: float = 315.,
+    altitude: float = 45.,
+    new_channel_name: ChannelName | str = ChannelName.HILLSHADE,
+    max_num_threads: int | None = None,
+) -> Tiles:
+    """Computes the hillshade from the channel or channels.
+
+    Parameters:
+        tiles: Tiles
+        channel_name: Channel name
+        slope_channel_name: Channel name of the slope channel
+        aspect_channel_name: Channel name of the aspect channel
+        azimuth: Angle to north of the light source in degrees
+        altitude: Angle to the horizontal plane of the light source in degrees
+        new_channel_name: New channel name
+        max_num_threads: Maximum number of threads
+
+    Returns:
+        Tiles
+
+    Raises:
+        AviaryUserError: Invalid `channel_name` (neither the channel name nor
+            the slope channel name and aspect channel name are specified)
+    """
+    if channel_name is not None:
+        return _process_data(
+            tiles=tiles,
+            channel_name=channel_name,
+            process_data_item=lambda data_item: _hillshade_dem_data_item(
+                data_item=data_item,
+                ground_sampling_distance=tiles[channel_name].ground_sampling_distance,
+                azimuth=azimuth,
+                altitude=altitude,
+            ),
+            new_channel_name=new_channel_name,
+            max_num_threads=max_num_threads,
+        )
+
+    if slope_channel_name is not None and aspect_channel_name is not None:
+        new_channel_name = _coerce_channel_name(channel_name=new_channel_name)
+
+        channel = tiles[slope_channel_name].copy()
+
+        slope_data = tiles[slope_channel_name].data
+        aspect_data = tiles[aspect_channel_name].data
+
+        if len(channel) == 1:
+            max_num_threads = 1
+
+        if max_num_threads == 1:
+            data = [
+                _hillshade_slope_aspect_data_item(
+                    slope_data_item=slope_data_item,
+                    aspect_data_item=aspect_data_item,
+                    azimuth=azimuth,
+                    altitude=altitude,
+                )
+                for slope_data_item, aspect_data_item in zip(slope_data, aspect_data, strict=False)
+            ]
+        else:
+            with ThreadPoolExecutor(max_workers=max_num_threads) as executor:
+                data = list(executor.map(
+                    _hillshade_slope_aspect_data_item,
+                    slope_data,
+                    aspect_data,
+                    repeat(azimuth),
+                    repeat(altitude),
+                ))
+
+        channel._data = data  # noqa: SLF001
+        channel.name = new_channel_name
+
+        return tiles.append(
+            channels=channel,
+            inplace=True,
+        )
+
+    message = (
+        'Invalid channel_name! '
+        'Either the channel name or the slope channel name and aspect channel name must be specified.'
+    )
+    raise AviaryUserError(message)
+
+
+def _hillshade_slope_aspect_data_item(
+    slope_data_item: npt.NDArray,
+    aspect_data_item: npt.NDArray,
+    azimuth: float = 315.,
+    altitude: float = 45.,
+) -> npt.NDArray:
+    """Computes the hillshade from the slope and aspect data items.
+
+    Parameters:
+        slope_data_item: Slope data item
+        aspect_data_item: Aspect data item
+        azimuth: Angle to north of the light source in degrees
+        altitude: Angle to the horizontal plane of the light source in degrees
+
+    Returns:
+        Data item
+    """
+    slope_rad = np.deg2rad(slope_data_item)
+    aspect_rad = np.deg2rad(aspect_data_item)
+    azimuth_rad = np.deg2rad(azimuth)
+    zenith_rad = np.deg2rad(90 - altitude)
+
+    illumination = (
+        np.cos(zenith_rad) * np.cos(slope_rad) +
+        np.sin(zenith_rad) * np.sin(slope_rad) * np.cos(azimuth_rad - aspect_rad)
+    )
+    hillshade = 255 * illumination
+
+    return np.clip(hillshade, 0.0, 255.0).astype(np.uint8)
+
+
+def _hillshade_dem_data_item(
+    data_item: npt.NDArray,
+    ground_sampling_distance: GroundSamplingDistance,
+    azimuth: float = 315.,
+    altitude: float = 45.,
+) -> npt.NDArray:
+    """Computes the hillshade from the digital elevation model data item.
+
+    Parameters:
+        data_item: Data item
+        ground_sampling_distance: Ground sampling distance in meters per pixel
+        azimuth: Angle to north of the light source in degrees
+        altitude: Angle to the horizontal plane of the light source in degrees
+
+    Returns:
+        Data item
+    """
+    dz_dx, dz_dy = _compute_dem_gradients(data_item, ground_sampling_distance)
+    slope_data_item = np.sqrt(dz_dx ** 2 + dz_dy ** 2)
+    slope_data_item = np.rad2deg(np.arctan(slope_data_item))
+    aspect_data_item = np.rad2deg(-(np.arctan2(dz_dy, dz_dx) + (np.pi / 2)) % (2 * np.pi))
+
+    return _hillshade_slope_aspect_data_item(
+        slope_data_item=slope_data_item,
+        aspect_data_item=aspect_data_item,
+        azimuth=azimuth,
+        altitude=altitude,
     )
 
 
@@ -389,6 +637,73 @@ def sequential_composite_processor(
         tiles = tiles_processor(tiles=tiles)
 
     return tiles
+
+
+def slope_processor(
+    tiles: Tiles,
+    channel_name: ChannelName | str = ChannelName.DEM,
+    unit: SlopeUnit = SlopeUnit.DEGREES,
+    new_channel_name: ChannelName | str = ChannelName.SLOPE,
+    max_num_threads: int | None = None,
+) -> Tiles:
+    """Computes the slope from the channel.
+
+    Parameters:
+        tiles: Tiles
+        channel_name: Channel name
+        unit: Unit of the slope (`DEGREES` or `PERCENT`)
+        new_channel_name: New channel name
+        max_num_threads: Maximum number of threads
+
+    Returns:
+        Tiles
+    """
+    return _process_data(
+        tiles=tiles,
+        channel_name=channel_name,
+        process_data_item=lambda data_item: _slope_data_item(
+            data_item=data_item,
+            ground_sampling_distance=tiles[channel_name].ground_sampling_distance,
+            unit=unit,
+        ),
+        new_channel_name=new_channel_name,
+        max_num_threads=max_num_threads,
+    )
+
+
+def _slope_data_item(
+    data_item: npt.NDArray,
+    ground_sampling_distance: GroundSamplingDistance,
+    unit: SlopeUnit = SlopeUnit.DEGREES,
+) -> npt.NDArray:
+    """Computes the slope from the data item.
+
+    Parameters:
+        data_item: Data item
+        ground_sampling_distance: Ground sampling distance in meters per pixel
+        unit: Unit of the slope (`DEGREES` or `PERCENT`)
+
+    Returns:
+        Data item
+
+    Raises:
+        AviaryUserError: Invalid `unit`
+    """
+    dz_dx, dz_dy = _compute_dem_gradients(
+        digital_elevation_model=data_item,
+        ground_sampling_distance=ground_sampling_distance,
+    )
+
+    data_item = np.sqrt(dz_dx ** 2 + dz_dy ** 2)
+
+    if unit == SlopeUnit.DEGREES:
+        return np.rad2deg(np.arctan(data_item))
+
+    if unit == SlopeUnit.PERCENT:
+        return 100. * data_item
+
+    message = 'Invalid unit!'
+    raise AviaryUserError(message)
 
 
 def standardize_processor(

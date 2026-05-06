@@ -29,4 +29,8 @@
 
 ---
 
+::: aviary.SlopeUnit
+
+---
+
 ::: aviary.WMSVersion
