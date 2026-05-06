@@ -101,6 +101,46 @@ def _process_data(
     return tiles
 
 
+def _compute_dem_gradients(
+    digital_elevation_model: npt.NDArray,
+    ground_sampling_distance: GroundSamplingDistance,
+) -> tuple[npt.NDArray, npt.NDArray]:
+    """Computes the digital elevation model gradients.
+
+    References:
+        - https://ieeexplore.ieee.org/document/1456186
+
+    Parameters:
+        digital_elevation_model: Digital elevation model
+        ground_sampling_distance: Ground sampling distance in meters per pixel
+
+    Returns:
+        Gradients
+    """
+    z_north = digital_elevation_model[:-2, 1:-1]
+    z_north_east = digital_elevation_model[:-2, 2:]
+    z_east = digital_elevation_model[1:-1, 2:]
+    z_south_east = digital_elevation_model[2:, 2:]
+    z_south = digital_elevation_model[2:, 1:-1]
+    z_south_west = digital_elevation_model[2:, :-2]
+    z_west = digital_elevation_model[1:-1, :-2]
+    z_north_west = digital_elevation_model[:-2, :-2]
+
+    dz_dx = (
+        ((z_north_east + 2 * z_east + z_south_east) - (z_north_west + 2 * z_west + z_south_west)) /
+        (8 * ground_sampling_distance)
+    )
+    dz_dy = (
+        ((z_north_east + 2 * z_north + z_north_west) - (z_south_east + 2 * z_south + z_south_west)) /
+        (8 * ground_sampling_distance)
+    )
+
+    dz_dx = np.pad(dz_dx, ((1, 1), (1, 1)), mode='edge')
+    dz_dy = np.pad(dz_dy, ((1, 1), (1, 1)), mode='edge')
+
+    return dz_dx, dz_dy
+
+
 def aspect_processor(
     tiles: Tiles,
     channel_name: ChannelName | str = ChannelName.DEM,
@@ -149,46 +189,6 @@ def _aspect_for_data_item(
     )
 
     return np.rad2deg(-(np.arctan2(dz_dy, dz_dx) + (np.pi / 2)) % (2 * np.pi))
-
-
-def _compute_dem_gradients(
-    digital_elevation_model: npt.NDArray,
-    ground_sampling_distance: GroundSamplingDistance,
-) -> tuple[npt.NDArray, npt.NDArray]:
-    """Computes the digital elevation model gradients.
-
-    References:
-        - https://ieeexplore.ieee.org/document/1456186
-
-    Parameters:
-        digital_elevation_model: Digital elevation model
-        ground_sampling_distance: Ground sampling distance in meters per pixel
-
-    Returns:
-        Gradients
-    """
-    z_north = digital_elevation_model[:-2, 1:-1]
-    z_north_east = digital_elevation_model[:-2, 2:]
-    z_east = digital_elevation_model[1:-1, 2:]
-    z_south_east = digital_elevation_model[2:, 2:]
-    z_south = digital_elevation_model[2:, 1:-1]
-    z_south_west = digital_elevation_model[2:, :-2]
-    z_west = digital_elevation_model[1:-1, :-2]
-    z_north_west = digital_elevation_model[:-2, :-2]
-
-    dz_dx = (
-        ((z_north_east + 2 * z_east + z_south_east) - (z_north_west + 2 * z_west + z_south_west)) /
-        (8 * ground_sampling_distance)
-    )
-    dz_dy = (
-        ((z_north_east + 2 * z_north + z_north_west) - (z_south_east + 2 * z_south + z_south_west)) /
-        (8 * ground_sampling_distance)
-    )
-
-    dz_dx = np.pad(dz_dx, ((1, 1), (1, 1)), mode='edge')
-    dz_dy = np.pad(dz_dy, ((1, 1), (1, 1)), mode='edge')
-
-    return dz_dx, dz_dy
 
 
 def copy_processor(
