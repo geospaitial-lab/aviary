@@ -641,7 +641,7 @@ def slope_processor(
     return _process_data(
         tiles=tiles,
         channel_name=channel_name,
-        process_data_item=lambda data_item: _slope_for_data_item(
+        process_data_item=lambda data_item: _slope_data_item(
             data_item=data_item,
             ground_sampling_distance=tiles[channel_name].ground_sampling_distance,
             unit=unit,
@@ -651,12 +651,12 @@ def slope_processor(
     )
 
 
-def _slope_for_data_item(
+def _slope_data_item(
     data_item: npt.NDArray,
     ground_sampling_distance: GroundSamplingDistance,
     unit: SlopeUnit = SlopeUnit.DEGREES,
 ) -> npt.NDArray:
-    """Computes the slope of the data item.
+    """Computes the slope from the data item.
 
     Parameters:
         data_item: Data item
