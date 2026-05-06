@@ -345,6 +345,10 @@ def hillshade_processor(
 
     Returns:
         Tiles
+
+    Raises:
+        AviaryUserError: Invalid `channel_name` (neither the channel name nor
+            the slope channel name and aspect channel name are specified)
     """
     if channel_name is not None:
         return _process_data(
@@ -399,6 +403,11 @@ def hillshade_processor(
             inplace=True,
         )
 
+    message = (
+        'Invalid channel_name! '
+        'Either the channel name or the slope channel name and aspect channel name must be specified.'
+    )
+    raise AviaryUserError(message)
 
 
 def _hillshade_slope_aspect_data_item(
