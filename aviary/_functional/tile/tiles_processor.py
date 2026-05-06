@@ -161,7 +161,7 @@ def aspect_processor(
     return _process_data(
         tiles=tiles,
         channel_name=channel_name,
-        process_data_item=lambda data_item: _aspect_for_data_item(
+        process_data_item=lambda data_item: _aspect_data_item(
             data_item=data_item,
             ground_sampling_distance=tiles[channel_name].ground_sampling_distance,
         ),
@@ -170,7 +170,7 @@ def aspect_processor(
     )
 
 
-def _aspect_for_data_item(
+def _aspect_data_item(
     data_item: npt.NDArray,
     ground_sampling_distance: GroundSamplingDistance,
 ) -> npt.NDArray:
