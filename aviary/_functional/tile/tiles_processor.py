@@ -362,40 +362,42 @@ def hillshade_processor(
 
     if slope_channel_name is not None and aspect_channel_name is not None:
         new_channel_name = _coerce_channel_name(channel_name=new_channel_name)
+
         channel = tiles[slope_channel_name].copy()
+
+        slope_data = tiles[slope_channel_name].data
+        aspect_data = tiles[aspect_channel_name].data
 
         if len(channel) == 1:
             max_num_threads = 1
 
-        slope = tiles[slope_channel_name].data
-        aspect = tiles[aspect_channel_name].data
-
         if max_num_threads == 1:
-            hillshade = [
-                _hillshade_for_slope_and_aspect_item(slope_item=slope_item,
-                                                     aspect_item=aspect_item,
-                                                     azimuth=azimuth,
-                                                     altitude=altitude)
-                for slope_item, aspect_item in zip(slope, aspect)
+            data = [
+                _hillshade_slope_aspect_data_item(
+                    slope_data_item=slope_data_item,
+                    aspect_data_item=aspect_data_item,
+                    azimuth=azimuth,
+                    altitude=altitude,
+                )
+                for slope_data_item, aspect_data_item in zip(slope_data, aspect_data, strict=False)
             ]
         else:
             with ThreadPoolExecutor(max_workers=max_num_threads) as executor:
-                hillshade = list(
-                    executor.map(_hillshade_for_slope_and_aspect_item,
-                                 slope,
-                                 aspect,
-                                 repeat(azimuth),
-                                 repeat(altitude),
-                                 )
-                )
+                data = list(executor.map(
+                    _hillshade_slope_aspect_data_item,
+                    slope_data,
+                    aspect_data,
+                    repeat(azimuth),
+                    repeat(altitude),
+                ))
 
-        channel._data = hillshade
+        channel._data = data  # noqa: SLF001
         channel.name = new_channel_name
 
-        return tiles.append(channels=channel, inplace=True)
-    else:
-        raise AviaryUserError("Invalid channel names. "
-                              "Either channel_name or slope_channel_name and aspect_channel_name must be specified.")
+        return tiles.append(
+            channels=channel,
+            inplace=True,
+        )
 
 
 
