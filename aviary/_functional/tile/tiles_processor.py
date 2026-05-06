@@ -674,6 +674,9 @@ def _slope_data_item(
 
     Returns:
         Data item
+
+    Raises:
+        AviaryUserError: Invalid `unit`
     """
     dz_dx, dz_dy = _compute_dem_gradients(
         digital_elevation_model=data_item,
