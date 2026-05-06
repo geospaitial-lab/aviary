@@ -424,28 +424,31 @@ def _hillshade_for_slope_and_aspect_item(
     return hillshade
 
 
-def _hillshade_for_dem_item(
-        dem_item: npt.NDArray,
-        ground_sampling_distance: GroundSamplingDistance,
-        azimuth: float = 315,
-        altitude: float = 45,
+def _hillshade_dem_data_item(
+    data_item: npt.NDArray,
+    ground_sampling_distance: GroundSamplingDistance,
+    azimuth: float = 315,
+    altitude: float = 45,
 ) -> npt.NDArray:
-    """Computes the hillshade for a dem.
+    """Computes the hillshade from the digital elevation model data item.
 
     Parameters:
-        dem_item: Dem item
-        ground_sampling_distance: GroundSamplingDistance
-        azimuth: Angular direction of the sun, measured clockwise from north. 90 is east.
-        altitude: Angle of the sun above the horizon. 0 is the horizon and 90 is overhead.
-    """
-    dz_dx, dz_dy = _compute_dem_gradients(dem_item, ground_sampling_distance)
-    slope_item = np.sqrt(dz_dx ** 2 + dz_dy ** 2)
-    slope_item = np.rad2deg(np.arctan(slope_item))
-    aspect_item = np.rad2deg(-(np.atan2(dz_dy, dz_dx) + (np.pi / 2)) % (2 * np.pi))
+        data_item: Data item
+        ground_sampling_distance: Ground sampling distance in meters per pixel
+        azimuth: Angle to north of the light source in degrees
+        altitude: Angle to the horizontal plane of the light source in degrees
 
-    return _hillshade_for_slope_and_aspect_item(
-        slope_item=slope_item,
-        aspect_item=aspect_item,
+    Returns:
+        Data item
+    """
+    dz_dx, dz_dy = _compute_dem_gradients(data_item, ground_sampling_distance)
+    slope_data_item = np.sqrt(dz_dx ** 2 + dz_dy ** 2)
+    slope_data_item = np.rad2deg(np.arctan(slope_data_item))
+    aspect_data_item = np.rad2deg(-(np.arctan2(dz_dy, dz_dx) + (np.pi / 2)) % (2 * np.pi))
+
+    return _hillshade_slope_aspect_data_item(
+        slope_data_item=slope_data_item,
+        aspect_data_item=aspect_data_item,
         azimuth=azimuth,
         altitude=altitude,
     )
