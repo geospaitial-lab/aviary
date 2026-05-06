@@ -679,13 +679,13 @@ def _slope_data_item(
         ground_sampling_distance=ground_sampling_distance,
     )
 
-    slope = np.sqrt(dz_dx**2 + dz_dy**2)
+    data_item = np.sqrt(dz_dx ** 2 + dz_dy ** 2)
 
     if unit == SlopeUnit.DEGREES:
-        return np.rad2deg(np.arctan(slope))
+        return np.rad2deg(np.arctan(data_item))
 
     if unit == SlopeUnit.PERCENT:
-        return 100. * slope
+        return 100. * data_item
 
     message = 'Invalid unit!'
     raise AviaryUserError(message)
