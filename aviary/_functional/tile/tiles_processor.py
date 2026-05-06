@@ -673,10 +673,14 @@ def _slope_data_item(
 
     slope = np.sqrt(dz_dx**2 + dz_dy**2)
 
-    if unit == SlopeUnit.PERCENT:
-        slope = np.rad2deg(np.arctan(slope))
+    if unit == SlopeUnit.DEGREES:
+        return np.rad2deg(np.arctan(slope))
 
-    return slope
+    if unit == SlopeUnit.PERCENT:
+        return 100. * slope
+
+    message = 'Invalid unit!'
+    raise AviaryUserError(message)
 
 
 def standardize_processor(
