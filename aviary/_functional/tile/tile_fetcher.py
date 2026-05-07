@@ -460,11 +460,11 @@ def gpkg_fetcher(
         inplace=False,
     )
 
+    mask_data = bounding_box.to_gdf(epsg_code=epsg_code)
+
     data = gpd.read_file(path, bbox=(bounding_box.x_min, bounding_box.y_min, bounding_box.x_max, bounding_box.y_max))
     epsg_code = f'EPSG:{epsg_code}'
     data = data.to_crs(crs=epsg_code)
-
-    mask_data = bounding_box.to_gdf(epsg_code=epsg_code)
 
     data = gpd.clip(
         gdf=data,
