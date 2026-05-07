@@ -53,7 +53,10 @@ from aviary.core.enums import (
 )
 from aviary.core.exceptions import AviaryUserError
 from aviary.core.mixins import IDMixin
-from aviary.core.type_aliases import ChannelNameSet
+from aviary.core.type_aliases import (
+    ChannelNameSet,
+    GroundSamplingDistance,
+)
 
 if TYPE_CHECKING:
     from aviary.core.tiles import Tiles
@@ -912,6 +915,7 @@ class RasterizeProcessor(IDMixin):
         self,
         channel_name: ChannelName | str,
         field: str,
+        ground_sampling_distance: GroundSamplingDistance,
         mapping: dict[object, int] | None = None,
         background_value: int | None = None,
         new_channel_name: ChannelName | str | None = None,
@@ -921,6 +925,7 @@ class RasterizeProcessor(IDMixin):
         Parameters:
             channel_name: Channel name
             field: Field
+            ground_sampling_distance: Ground sampling distance in meters per pixel
             mapping: Mapping of the values
             background_value: Background value
             new_channel_name: New channel name
@@ -928,6 +933,7 @@ class RasterizeProcessor(IDMixin):
         """
         self._channel_name = channel_name
         self._field = field
+        self._ground_sampling_distance = ground_sampling_distance
         self._mapping = mapping
         self._background_value = background_value
         self._new_channel_name = new_channel_name
@@ -967,6 +973,7 @@ class RasterizeProcessor(IDMixin):
             tiles=tiles,
             channel_name=self._channel_name,
             field=self._field,
+            ground_sampling_distance=self._ground_sampling_distance,
             mapping=self._mapping,
             background_value=self._background_value,
             new_channel_name=self._new_channel_name,
@@ -989,6 +996,7 @@ class RasterizeProcessorConfig(pydantic.BaseModel):
         config:
           channel_name: 'my_channel'
           field: 'my_field'
+          ground_sampling_distance: .2
           mapping:
             'value': 1
           background_value: null
@@ -999,6 +1007,7 @@ class RasterizeProcessorConfig(pydantic.BaseModel):
     Attributes:
         channel_name: Channel name
         field: Field
+        ground_sampling_distance: Ground sampling distance in meters per pixel
         mapping: Mapping of the values -
             defaults to None
         background_value: Background value -
@@ -1010,6 +1019,7 @@ class RasterizeProcessorConfig(pydantic.BaseModel):
     """
     channel_name: ChannelName | str
     field: str
+    ground_sampling_distance: GroundSamplingDistance
     mapping: dict[object, int] | None = None
     background_value: int | None = None
     new_channel_name: ChannelName | str | None = None
