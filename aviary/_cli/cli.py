@@ -764,7 +764,7 @@ def parse_config(  # noqa: C901, PLR0912
     return config
 
 
-def show_components(  # noqa: C901, PLR0912
+def show_components(  # noqa: C901, PLR0912, PLR0915
     title: str,
     plugins_dir_path: Path | None = None,
     filter_packages: Callable[[str], bool] | None = None,
@@ -777,33 +777,33 @@ def show_components(  # noqa: C901, PLR0912
 
     tile_fetchers = sorted(
         [
-            registry_entry
-            for registry_entry in _TileFetcherFactory.registry
-            if filter_packages is None or filter_packages(registry_entry[0])
+            (package, component, _TileFetcherFactory.registry[(package, component)][0])
+            for package, component in _TileFetcherFactory.registry
+            if filter_packages is None or filter_packages(package)
         ],
         key=lambda registry_entry: (registry_entry[0], registry_entry[1]),
     )
     tiles_processors = sorted(
         [
-            registry_entry
-            for registry_entry in _TilesProcessorFactory.registry
-            if filter_packages is None or filter_packages(registry_entry[0])
+            (package, component, _TilesProcessorFactory.registry[(package, component)][0])
+            for package, component in _TilesProcessorFactory.registry
+            if filter_packages is None or filter_packages(package)
         ],
         key=lambda registry_entry: (registry_entry[0], registry_entry[1]),
     )
     vector_loaders = sorted(
         [
-            registry_entry
-            for registry_entry in _VectorLoaderFactory.registry
-            if filter_packages is None or filter_packages(registry_entry[0])
+            (package, component, _VectorLoaderFactory.registry[(package, component)][0])
+            for package, component in _VectorLoaderFactory.registry
+            if filter_packages is None or filter_packages(package)
         ],
         key=lambda registry_entry: (registry_entry[0], registry_entry[1]),
     )
     vector_processors = sorted(
         [
-            registry_entry
-            for registry_entry in _VectorProcessorFactory.registry
-            if filter_packages is None or filter_packages(registry_entry[0])
+            (package, component, _VectorProcessorFactory.registry[(package, component)][0])
+            for package, component in _VectorProcessorFactory.registry
+            if filter_packages is None or filter_packages(package)
         ],
         key=lambda registry_entry: (registry_entry[0], registry_entry[1]),
     )
@@ -827,9 +827,16 @@ def show_components(  # noqa: C901, PLR0912
             )
             console.print(message)
 
-            for _, component in components:
+            for _, component, component_class in components:
+                suffix = ''
+
+                if getattr(component_class, '_deprecated', False):
+                    suffix = ' [yellow](Deprecated)[/]'
+                elif getattr(component_class, '_experimental', False):
+                    suffix = ' [yellow](Experimental)[/]'
+
                 message = (
-                    f'      - {component}'
+                    f'      - {component}{suffix}'
                 )
                 console.print(message)
 
@@ -847,9 +854,16 @@ def show_components(  # noqa: C901, PLR0912
             )
             console.print(message)
 
-            for _, component in components:
+            for _, component, component_class in components:
+                suffix = ''
+
+                if getattr(component_class, '_deprecated', False):
+                    suffix = ' [yellow](Deprecated)[/]'
+                elif getattr(component_class, '_experimental', False):
+                    suffix = ' [yellow](Experimental)[/]'
+
                 message = (
-                    f'      - {component}'
+                    f'      - {component}{suffix}'
                 )
                 console.print(message)
 
@@ -867,9 +881,16 @@ def show_components(  # noqa: C901, PLR0912
             )
             console.print(message)
 
-            for _, component in components:
+            for _, component, component_class in components:
+                suffix = ''
+
+                if getattr(component_class, '_deprecated', False):
+                    suffix = ' [yellow](Deprecated)[/]'
+                elif getattr(component_class, '_experimental', False):
+                    suffix = ' [yellow](Experimental)[/]'
+
                 message = (
-                    f'      - {component}'
+                    f'      - {component}{suffix}'
                 )
                 console.print(message)
 
@@ -887,9 +908,16 @@ def show_components(  # noqa: C901, PLR0912
             )
             console.print(message)
 
-            for _, component in components:
+            for _, component, component_class in components:
+                suffix = ''
+
+                if getattr(component_class, '_deprecated', False):
+                    suffix = ' [yellow](Deprecated)[/]'
+                elif getattr(component_class, '_experimental', False):
+                    suffix = ' [yellow](Experimental)[/]'
+
                 message = (
-                    f'      - {component}'
+                    f'      - {component}{suffix}'
                 )
                 console.print(message)
 
