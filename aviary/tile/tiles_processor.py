@@ -921,7 +921,7 @@ class RasterizeProcessor(IDMixin):
         Parameters:
             channel_name: Channel name
             field: Field
-            mapping: Mapping from field values (e.g., strings) to integer raster values
+            mapping: Mapping of the values
             background_value: Background value
             new_channel_name: New channel name
             max_num_threads: Maximum number of threads
@@ -1000,7 +1000,7 @@ class RasterizeProcessorConfig(pydantic.BaseModel):
     Attributes:
         channel_name: Channel name
         field: Field
-        mapping: Mapping from field values (e.g., strings) to integer raster values -
+        mapping: Mapping of the values -
             defaults to None
         background_value: Background value -
             defaults to None
