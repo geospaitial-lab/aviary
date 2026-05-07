@@ -87,6 +87,71 @@ def composite_fetcher(
     )
 
 
+def gpkg_fetcher(
+    coordinates: Coordinates,
+    path: Path,
+    epsg_code: EPSGCode,
+    channel_name: ChannelName | str | None,
+    tile_size: TileSize,
+    buffer_size: BufferSize = 0,
+) -> Tile:
+    """Fetches a tile from the geopackage.
+
+    Parameters:
+        coordinates: Coordinates (x_min, y_min) of the tile in meters
+        path: Path to the geopackage (.gpkg file)
+        epsg_code: EPSG code
+        channel_name: Channel name (if None, the channel is ignored)
+        tile_size: Tile size in meters
+        buffer_size: Buffer size in meters
+
+    Returns:
+        Tile
+    """
+    x_min, y_min = coordinates
+    x_max = x_min + tile_size
+    y_max = y_min + tile_size
+    bounding_box = BoundingBox(
+        x_min=x_min,
+        y_min=y_min,
+        x_max=x_max,
+        y_max=y_max,
+    )
+    bounding_box = bounding_box.buffer(
+        buffer_size=buffer_size,
+        inplace=False,
+    )
+
+    mask_data = bounding_box.to_gdf(epsg_code=epsg_code)
+
+    data = gpd.read_file(path)
+    epsg_code = f'EPSG:{epsg_code}'
+    data = data.set_crs(crs=epsg_code) if data.crs is None else data.to_crs(crs=epsg_code)
+
+    data = gpd.clip(
+        gdf=data,
+        mask=mask_data,
+        keep_geom_type=True,
+    )
+    data = data.reset_index(drop=True)
+
+    channel = VectorChannel.from_unnormalized_data(
+        data=data,
+        name=channel_name,
+        coordinates=coordinates,
+        tile_size=tile_size,
+        buffer_size=buffer_size,
+        copy=False,
+    )
+
+    return Tile(
+        channels=[channel],
+        coordinates=coordinates,
+        tile_size=tile_size,
+        copy=False,
+    )
+
+
 def vrt_fetcher(
     coordinates: Coordinates,
     path: Path,
@@ -423,68 +488,3 @@ def _request_wms(
                 raise AviaryUserError(message)
 
     return data
-
-
-def gpkg_fetcher(
-    coordinates: Coordinates,
-    path: Path,
-    epsg_code: EPSGCode,
-    channel_name: ChannelName | str | None,
-    tile_size: TileSize,
-    buffer_size: BufferSize = 0,
-) -> Tile:
-    """Fetches a tile from the geopackage.
-
-    Parameters:
-        coordinates: Coordinates (x_min, y_min) of the tile in meters
-        path: Path to the geopackage (.gpkg file)
-        epsg_code: EPSG code
-        channel_name: Channel name (if None, the channel is ignored)
-        tile_size: Tile size in meters
-        buffer_size: Buffer size in meters
-
-    Returns:
-        Tile
-    """
-    x_min, y_min = coordinates
-    x_max = x_min + tile_size
-    y_max = y_min + tile_size
-    bounding_box = BoundingBox(
-        x_min=x_min,
-        y_min=y_min,
-        x_max=x_max,
-        y_max=y_max,
-    )
-    bounding_box = bounding_box.buffer(
-        buffer_size=buffer_size,
-        inplace=False,
-    )
-
-    mask_data = bounding_box.to_gdf(epsg_code=epsg_code)
-
-    data = gpd.read_file(path)
-    epsg_code = f'EPSG:{epsg_code}'
-    data = data.set_crs(crs=epsg_code) if data.crs is None else data.to_crs(crs=epsg_code)
-
-    data = gpd.clip(
-        gdf=data,
-        mask=mask_data,
-        keep_geom_type=True,
-    )
-    data = data.reset_index(drop=True)
-
-    channel = VectorChannel.from_unnormalized_data(
-        data=data,
-        name=channel_name,
-        coordinates=coordinates,
-        tile_size=tile_size,
-        buffer_size=buffer_size,
-        copy=False,
-    )
-
-    return Tile(
-        channels=[channel],
-        coordinates=coordinates,
-        tile_size=tile_size,
-        copy=False,
-    )
