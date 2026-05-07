@@ -56,6 +56,7 @@ nav:
           - HillshadeProcessor: api_reference/tile/tiles_processor/hillshade_processor.md
           - NormalizeProcessor: api_reference/tile/tiles_processor/normalize_processor.md
           - ParallelCompositeProcessor: api_reference/tile/tiles_processor/parallel_composite_processor.md
+          - RasterizeProcessor: api_reference/tile/tiles_processor/rasterize_processor.md
           - RemoveBufferProcessor: api_reference/tile/tiles_processor/remove_buffer_processor.md
           - RemoveProcessor: api_reference/tile/tiles_processor/remove_processor.md
           - SelectProcessor: api_reference/tile/tiles_processor/select_processor.md
