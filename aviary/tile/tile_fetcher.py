@@ -32,9 +32,11 @@ if TYPE_CHECKING:
 
 from aviary._functional.tile.tile_fetcher import (
     composite_fetcher,
+    gpkg_fetcher,
     vrt_fetcher,
     wms_fetcher,
 )
+from aviary._utils.lifecycle import experimental
 from aviary.core.enums import (
     ChannelName,
     InterpolationMode,
@@ -64,6 +66,7 @@ class TileFetcher(Protocol):
 
     Implemented tile fetchers:
         - `CompositeFetcher`: Composes multiple tile fetchers
+        - `GPKGFetcher`: Fetches a tile from a geopackage
         - `VRTFetcher`: Fetches a tile from a virtual raster
         - `WMSFetcher`: Fetches a tile from a web map service
     """
@@ -625,5 +628,121 @@ class WMSFetcherConfig(pydantic.BaseModel):
 _TileFetcherFactory.register(
     tile_fetcher_class=WMSFetcher,
     config_class=WMSFetcherConfig,
+    package=_PACKAGE,
+)
+
+
+@experimental(
+    since='1.4.0',
+)
+class GPKGFetcher(IDMixin):
+    """Tile fetcher for geopackages
+
+    Experimental:
+        `GPKGFetcher` is experimental since `1.4.0` and may change without notice.
+
+    Implements the `TileFetcher` protocol.
+    """
+
+    def __init__(
+        self,
+        path: Path,
+        epsg_code: EPSGCode,
+        channel_name: ChannelName | str | None,
+        tile_size: TileSize,
+        buffer_size: BufferSize = 0,
+    ) -> None:
+        """
+        Parameters:
+            path: Path to the geopackage (.gpkg file)
+            epsg_code: EPSG code
+            channel_name: Channel name (if None, the channel is ignored)
+            tile_size: Tile size in meters
+            buffer_size: Buffer size in meters
+        """
+        self._path = path
+        self._epsg_code = epsg_code
+        self._channel_name = channel_name
+        self._tile_size = tile_size
+        self._buffer_size = buffer_size
+
+        super().__init__()
+
+    @classmethod
+    def from_config(
+        cls,
+        config: GPKGFetcherConfig,
+    ) -> GPKGFetcher:
+        """Creates a GPKG fetcher from the configuration.
+
+        Parameters:
+            config: Configuration
+
+        Returns:
+            GPKG fetcher
+        """
+        config = config.model_dump()
+        return cls(**config)
+
+    def __call__(
+        self,
+        coordinates: Coordinates,
+    ) -> Tile:
+        """Fetches a tile from the geopackage.
+
+        Parameters:
+            coordinates: Coordinates (x_min, y_min) of the tile in meters
+
+        Returns:
+            Tile
+        """
+        return gpkg_fetcher(
+            coordinates=coordinates,
+            path=self._path,
+            epsg_code=self._epsg_code,
+            channel_name=self._channel_name,
+            tile_size=self._tile_size,
+            buffer_size=self._buffer_size,
+        )
+
+
+class GPKGFetcherConfig(pydantic.BaseModel):
+    """Configuration for the `from_config` class method of `GPKGFetcher`
+
+    Create the configuration from a config file:
+        - Use null instead of None
+
+    Usage:
+        You can create the configuration from a config file.
+
+        ``` yaml title="config.yaml"
+        package: 'aviary'
+        name: 'GPKGFetcher'
+        config:
+          path: 'path/to/my_gpkg.gpkg'
+          epsg_code: 25832
+          channel_name: 'my_channel'
+          tile_size: 128
+          buffer_size: 0
+        ```
+
+    Attributes:
+        path: Path to the geopackage (.gpkg file)
+        epsg_code: EPSG code
+        channel_name: Channel name (if None, the channel is ignored)
+        tile_size: Tile size in meters
+        buffer_size: Buffer size in meters -
+            defaults to 0
+    """
+    path: Path
+    epsg_code: EPSGCode
+    channel_name: str
+    tile_size: TileSize
+    buffer_size: BufferSize = 0
+
+
+_TileFetcherFactory.register(
+    tile_fetcher_class=GPKGFetcher,
+    config_class=GPKGFetcherConfig,
     package=_PACKAGE,
 )

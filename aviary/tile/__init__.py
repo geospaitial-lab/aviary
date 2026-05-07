@@ -17,6 +17,8 @@
 from .tile_fetcher import (
     CompositeFetcher,
     CompositeFetcherConfig,
+    GPKGFetcher,
+    GPKGFetcherConfig,
     TileFetcher,
     TileFetcherConfig,
     VRTFetcher,
@@ -76,6 +78,8 @@ __all__ = [
     'CopyProcessorConfig',
     'ExpressionProcessor',
     'ExpressionProcessorConfig',
+    'GPKGFetcher',
+    'GPKGFetcherConfig',
     'GridExporter',
     'GridExporterConfig',
     'HillshadeProcessor',
