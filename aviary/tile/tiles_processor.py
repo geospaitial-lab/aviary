@@ -990,8 +990,7 @@ class RasterizeProcessorConfig(pydantic.BaseModel):
           channel_name: 'my_channel'
           field: 'my_field'
           mapping:
-            'class_a': 1
-            'class_b': 2
+            'value': 1
           background_value: null
           new_channel_name: null
           max_num_threads: null
