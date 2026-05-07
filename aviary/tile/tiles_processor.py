@@ -37,6 +37,7 @@ from aviary._functional.tile.tiles_processor import (
     hillshade_processor,
     normalize_processor,
     parallel_composite_processor,
+    rasterize_processor,
     remove_buffer_processor,
     remove_processor,
     select_processor,
@@ -79,6 +80,7 @@ class TilesProcessor(Protocol):
         - `SlopeProcessor`: Computes the slope from a channel
         - `StandardizeProcessor`: Standardizes a channel
         - `VectorizeProcessor`: Vectorizes a channel
+        - `RasterizeProcessor`: Rasterizes a channel
 
     Implemented exporters:
         - `GridExporter`: Exports the grid of the tiles
@@ -887,6 +889,137 @@ class ParallelCompositeProcessorConfig(pydantic.BaseModel):
 _TilesProcessorFactory.register(
     tiles_processor_class=ParallelCompositeProcessor,
     config_class=ParallelCompositeProcessorConfig,
+    package=_PACKAGE,
+)
+
+
+@experimental(
+    since='1.4.0',
+)
+class RasterizeProcessor(IDMixin):
+    """Tiles processor that rasterizes a channel
+
+    Experimental:
+        `RasterizeProcessor` is experimental since `1.4.0` and may change without notice.
+
+    Notes:
+        - Requires a vector channel
+
+    Implements the `TilesProcessor` protocol.
+    """
+
+    def __init__(
+        self,
+        channel_name: ChannelName | str,
+        field: str,
+        mapping: dict[object, int] | None = None,
+        background_value: int | None = None,
+        new_channel_name: ChannelName | str | None = None,
+        max_num_threads: int | None = None,
+    ) -> None:
+        """
+        Parameters:
+            channel_name: Channel name
+            field: Field
+            mapping: Mapping from field values (e.g., strings) to integer raster values
+            background_value: Background value
+            new_channel_name: New channel name
+            max_num_threads: Maximum number of threads
+        """
+        self._channel_name = channel_name
+        self._field = field
+        self._mapping = mapping
+        self._background_value = background_value
+        self._new_channel_name = new_channel_name
+        self._max_num_threads = max_num_threads
+
+        super().__init__()
+
+    @classmethod
+    def from_config(
+        cls,
+        config: RasterizeProcessorConfig,
+    ) -> RasterizeProcessor:
+        """Creates a rasterize processor from the configuration.
+
+        Parameters:
+            config: Configuration
+
+        Returns:
+            Rasterize processor
+        """
+        config = config.model_dump()
+        return cls(**config)
+
+    def __call__(
+        self,
+        tiles: Tiles,
+    ) -> Tiles:
+        """Rasterizes the channel.
+
+        Parameters:
+            tiles: Tiles
+
+        Returns:
+            Tiles
+        """
+        return rasterize_processor(
+            tiles=tiles,
+            channel_name=self._channel_name,
+            field=self._field,
+            mapping=self._mapping,
+            background_value=self._background_value,
+            new_channel_name=self._new_channel_name,
+            max_num_threads=self._max_num_threads,
+        )
+
+
+class RasterizeProcessorConfig(pydantic.BaseModel):
+    """Configuration for the `from_config` class method of `RasterizeProcessor`
+
+    Create the configuration from a config file:
+        - Use null instead of None
+
+    Usage:
+        You can create the configuration from a config file.
+
+        ``` yaml title="config.yaml"
+        package: 'aviary'
+        name: 'RasterizeProcessor'
+        config:
+          channel_name: 'my_channel'
+          field: 'my_field'
+          mapping:
+            'class_a': 1
+            'class_b': 2
+          background_value: null
+          new_channel_name: null
+          max_num_threads: null
+        ```
+
+    Attributes:
+        channel_name: Channel name
+        field: Field
+        mapping: Mapping from field values (e.g., strings) to integer raster values -
+            defaults to None
+        background_value: Background value -
+            defaults to None
+        new_channel_name: New channel name -
+            defaults to None
+        max_num_threads: Maximum number of threads -
+            defaults to None
+    """
+    channel_name: ChannelName | str
+    field: str
+    mapping: dict[object, int] | None = None
+    background_value: int | None = None
+    new_channel_name: ChannelName | str | None = None
+    max_num_threads: int | None = None
+
+
+_TilesProcessorFactory.register(
+    tiles_processor_class=RasterizeProcessor,
+    config_class=RasterizeProcessorConfig,
     package=_PACKAGE,
 )
 
