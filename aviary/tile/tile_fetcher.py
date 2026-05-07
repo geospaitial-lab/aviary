@@ -638,6 +638,9 @@ _TileFetcherFactory.register(
 class GPKGFetcher(IDMixin):
     """Tile fetcher for geopackages
 
+    Experimental:
+        `GPKGFetcher` is experimental since `1.4.0` and may change without notice.
+
     Implements the `TileFetcher` protocol.
     """
 
