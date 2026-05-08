@@ -639,6 +639,61 @@ def rasterize_processor(
     return tiles
 
 
+def _rasterize_data_item(
+    data_item: gpd.GeoDataFrame,
+    field: str,
+    tile_size_pixels: int,
+    mapping: dict[object, int] | None = None,
+    background_value: int = 0,
+) -> npt.NDArray:
+    """Rasterizes the data item.
+
+    Parameters:
+        data_item: Data item
+        field: Field
+        tile_size_pixels: Tile size in pixels
+        mapping: Mapping of the values
+        background_value: Background value
+
+    Returns:
+        Data item
+    """
+    x_min = 0.
+    y_min = 0.
+    x_max = 1.
+    y_max = 1.
+
+    transform = rio.transform.from_bounds(
+        west=x_min,
+        south=y_min,
+        east=x_max,
+        north=y_max,
+        width=tile_size_pixels,
+        height=tile_size_pixels,
+    )
+
+    if data_item.empty:
+        shapes = []
+    else:
+        geometries = data_item.geometry
+        values = data_item[field]
+
+        if mapping is not None:
+            values = values.map(mapping)
+
+        shapes = [
+            (geometry, int(values))
+            for geometry, values in zip(geometries, values, strict=False)
+        ]
+
+    return rasterio.features.rasterize(
+        shapes=shapes,
+        out_shape=(tile_size_pixels, tile_size_pixels),
+        fill=background_value,
+        transform=transform,
+    )
+
+
 def remove_buffer_processor(
     tiles: Tiles,
     channel_names:
