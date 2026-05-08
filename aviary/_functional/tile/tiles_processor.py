@@ -551,6 +551,94 @@ def parallel_composite_processor(
     )
 
 
+def rasterize_processor(
+    tiles: Tiles,
+    channel_name: ChannelName | str,
+    field: str,
+    ground_sampling_distance: GroundSamplingDistance,
+    mapping: dict[object, int] | None = None,
+    background_value: int = 0,
+    new_channel_name: ChannelName | str | None = None,
+    max_num_threads: int | None = None,
+) -> Tiles:
+    """Rasterizes the channel.
+
+    Parameters:
+        tiles: Tiles
+        channel_name: Channel name
+        field: Field
+        ground_sampling_distance: Ground sampling distance in meters per pixel
+        mapping: Mapping of the values
+        background_value: Background value
+        new_channel_name: New channel name
+        max_num_threads: Maximum number of threads
+
+    Returns:
+        Tiles
+    """
+    tile_size = tiles.tile_size
+    buffer_size = tiles[channel_name].buffer_size * tile_size
+
+    tile_size_pixels = (tile_size + 2 * buffer_size) / ground_sampling_distance
+
+    if not tile_size_pixels.is_integer():
+        message = (
+            'Invalid tile_size! '
+            'The tile size must match the spatial extent of the data, '
+            'resulting in a whole number of pixels.'
+        )
+        raise AviaryUserError(message)
+
+    tile_size_pixels = int(tile_size_pixels)
+
+    tiles = _process_data(
+        tiles=tiles,
+        channel_name=channel_name,
+        process_data_item=lambda data_item: _rasterize_data_item(
+            data_item=data_item,
+            field=field,
+            tile_size_pixels=tile_size_pixels,
+            mapping=mapping,
+            background_value=background_value,
+        ),
+        new_channel_name=new_channel_name,
+        max_num_threads=max_num_threads,
+    )
+
+    if new_channel_name is not None:  # noqa: SIM108
+        channel = tiles[new_channel_name]
+    else:
+        channel = tiles[channel_name]
+
+    channel = RasterChannel(
+        data=channel.data,
+        name=channel.name,
+        buffer_size=channel.buffer_size,
+        copy=False,
+    )
+
+    if new_channel_name is not None:
+        tiles = tiles.remove(
+            channel_names=new_channel_name,
+            inplace=True,
+        )
+        tiles = tiles.append(
+            channels=channel,
+            inplace=True,
+        )
+    else:
+        tiles = tiles.remove(
+            channel_names=channel_name,
+            inplace=True,
+        )
+        tiles = tiles.append(
+            channels=channel,
+            inplace=True,
+        )
+
+    return tiles
+
+
 def remove_buffer_processor(
     tiles: Tiles,
     channel_names:
