@@ -917,7 +917,7 @@ class RasterizeProcessor(IDMixin):
         field: str,
         ground_sampling_distance: GroundSamplingDistance,
         mapping: dict[object, int] | None = None,
-        background_value: int | None = None,
+        background_value: int = 0,
         new_channel_name: ChannelName | str | None = None,
         max_num_threads: int | None = None,
     ) -> None:
@@ -999,7 +999,7 @@ class RasterizeProcessorConfig(pydantic.BaseModel):
           ground_sampling_distance: .2
           mapping:
             'value': 1
-          background_value: null
+          background_value: 0
           new_channel_name: null
           max_num_threads: null
         ```
@@ -1011,7 +1011,7 @@ class RasterizeProcessorConfig(pydantic.BaseModel):
         mapping: Mapping of the values -
             defaults to None
         background_value: Background value -
-            defaults to None
+            defaults to 0
         new_channel_name: New channel name -
             defaults to None
         max_num_threads: Maximum number of threads -
@@ -1021,7 +1021,7 @@ class RasterizeProcessorConfig(pydantic.BaseModel):
     field: str
     ground_sampling_distance: GroundSamplingDistance
     mapping: dict[object, int] | None = None
-    background_value: int | None = None
+    background_value: int = 0
     new_channel_name: ChannelName | str | None = None
     max_num_threads: int | None = None
 
