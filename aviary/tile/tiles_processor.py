@@ -76,6 +76,7 @@ class TilesProcessor(Protocol):
         - `HillshadeProcessor`: Computes the hillshade from a channel or channels
         - `NormalizeProcessor`: Normalizes a channel
         - `ParallelCompositeProcessor`: Composes multiple tiles processors in parallel
+        - `RasterizeProcessor`: Rasterizes a channel
         - `RemoveBufferProcessor`: Removes the buffer of channels
         - `RemoveProcessor`: Removes channels
         - `SelectProcessor`: Selects channels
@@ -83,7 +84,6 @@ class TilesProcessor(Protocol):
         - `SlopeProcessor`: Computes the slope from a channel
         - `StandardizeProcessor`: Standardizes a channel
         - `VectorizeProcessor`: Vectorizes a channel
-        - `RasterizeProcessor`: Rasterizes a channel
 
     Implemented exporters:
         - `GridExporter`: Exports the grid of the tiles
