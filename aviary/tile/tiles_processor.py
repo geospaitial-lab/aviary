@@ -44,6 +44,7 @@ from aviary._functional.tile.tiles_processor import (
     sequential_composite_processor,
     slope_processor,
     standardize_processor,
+    stub_processor,
     vectorize_processor,
 )
 from aviary._utils.lifecycle import experimental
@@ -83,6 +84,7 @@ class TilesProcessor(Protocol):
         - `SequentialCompositeProcessor`: Composes multiple tiles processors in sequence
         - `SlopeProcessor`: Computes the slope from a channel
         - `StandardizeProcessor`: Standardizes a channel
+        - `StubProcessor`: Passes the tiles through
         - `VectorizeProcessor`: Vectorizes a channel
 
     Implemented exporters:
@@ -1622,6 +1624,99 @@ class StandardizeProcessorConfig(pydantic.BaseModel):
 _TilesProcessorFactory.register(
     tiles_processor_class=StandardizeProcessor,
     config_class=StandardizeProcessorConfig,
+    package=_PACKAGE,
+)
+
+
+@experimental(
+    since='1.4.0',
+)
+class StubProcessor(IDMixin):
+    """Tiles processor that passes the tiles through
+
+    Experimental:
+        `StubProcessor` is experimental since `1.4.0` and may change without notice.
+
+    Implements the `TilesProcessor` protocol.
+    """
+
+    def __init__(
+        self,
+        delay: float = 0.,
+        jitter: float = 0.,
+    ) -> None:
+        """
+        Parameters:
+            delay: Delay in seconds
+            jitter: Jitter in seconds
+        """
+        self._delay = delay
+        self._jitter = jitter
+
+        super().__init__()
+
+    @classmethod
+    def from_config(
+        cls,
+        config: StubProcessorConfig,
+    ) -> StubProcessor:
+        """Creates a stub processor from the configuration.
+
+        Parameters:
+            config: Configuration
+
+        Returns:
+            Stub processor
+        """
+        config = config.model_dump()
+        return cls(**config)
+
+    def __call__(
+        self,
+        tiles: Tiles,
+    ) -> Tiles:
+        """Passes through the tiles.
+
+        Parameters:
+            tiles: Tiles
+
+        Returns:
+            Tiles
+        """
+        return stub_processor(
+            tiles=tiles,
+            delay=self._delay,
+            jitter=self._jitter,
+        )
+
+
+class StubProcessorConfig(pydantic.BaseModel):
+    """Configuration for the `from_config` class method of `StubProcessor`
+
+    Usage:
+        You can create the configuration from a config file.
+
+        ``` yaml title="config.yaml"
+        package: 'aviary'
+        name: 'StubProcessor'
+        config:
+          delay: 0.
+          jitter: 0.
+        ```
+
+    Attributes:
+        delay: Delay in seconds -
+            defaults to 0.
+        jitter: Jitter in seconds -
+            defaults to 0.
+    """
+    delay: float = 0.
+    jitter: float = 0.
+
+
+_TilesProcessorFactory.register(
+    tiles_processor_class=StubProcessor,
+    config_class=StubProcessorConfig,
     package=_PACKAGE,
 )
 
