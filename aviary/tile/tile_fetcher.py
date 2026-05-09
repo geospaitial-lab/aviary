@@ -33,6 +33,7 @@ if TYPE_CHECKING:
 from aviary._functional.tile.tile_fetcher import (
     composite_fetcher,
     gpkg_fetcher,
+    stub_fetcher,
     vrt_fetcher,
     wms_fetcher,
 )
@@ -67,6 +68,7 @@ class TileFetcher(Protocol):
     Implemented tile fetchers:
         - `CompositeFetcher`: Composes multiple tile fetchers
         - `GPKGFetcher`: Fetches a tile from a geopackage
+        - `StubFetcher`: Fetches a tile with no channels
         - `VRTFetcher`: Fetches a tile from a virtual raster
         - `WMSFetcher`: Fetches a tile from a web map service
     """
@@ -447,6 +449,99 @@ class GPKGFetcherConfig(pydantic.BaseModel):
 _TileFetcherFactory.register(
     tile_fetcher_class=GPKGFetcher,
     config_class=GPKGFetcherConfig,
+    package=_PACKAGE,
+)
+
+
+@experimental(
+    since='1.4.0',
+)
+class StubFetcher(IDMixin):
+    """Tile fetcher for tiles with no channels
+
+    Experimental:
+        `StubFetcher` is experimental since `1.4.0` and may change without notice.
+
+    Implements the `TileFetcher` protocol.
+    """
+
+    def __init__(
+        self,
+        delay: float = 0.,
+        jitter: float = 0.,
+    ) -> None:
+        """
+        Parameters:
+            delay: Delay in seconds
+            jitter: Jitter in seconds
+        """
+        self._delay = delay
+        self._jitter = jitter
+
+        super().__init__()
+
+    @classmethod
+    def from_config(
+        cls,
+        config: StubFetcherConfig,
+    ) -> StubFetcher:
+        """Creates a stub fetcher from the configuration.
+
+        Parameters:
+            config: Configuration
+
+        Returns:
+            Stub fetcher
+        """
+        config = config.model_dump()
+        return cls(**config)
+
+    def __call__(
+        self,
+        coordinates: Coordinates,
+    ) -> Tile:
+        """Fetches a tile with no channels.
+
+        Parameters:
+            coordinates: Coordinates (x_min, y_min) of the tile in meters
+
+        Returns:
+            Tile
+        """
+        return stub_fetcher(
+            coordinates=coordinates,
+            delay=self._delay,
+            jitter=self._jitter,
+        )
+
+
+class StubFetcherConfig(pydantic.BaseModel):
+    """Configuration for the `from_config` class method of `StubFetcher`
+
+    Usage:
+        You can create the configuration from a config file.
+
+        ``` yaml title="config.yaml"
+        package: 'aviary'
+        name: 'StubFetcher'
+        config:
+          delay: 0.
+          jitter: 0.
+        ```
+
+    Attributes:
+        delay: Delay in seconds -
+            defaults to 0.
+        jitter: Jitter in seconds -
+            defaults to 0.
+    """
+    delay: float = 0.
+    jitter: float = 0.
+
+
+_TileFetcherFactory.register(
+    tile_fetcher_class=StubFetcher,
+    config_class=StubFetcherConfig,
     package=_PACKAGE,
 )
 
