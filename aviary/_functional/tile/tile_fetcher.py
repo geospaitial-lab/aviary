@@ -154,7 +154,7 @@ def gpkg_fetcher(
     )
 
 
-def stub_processor(
+def stub_fetcher(
     coordinates: Coordinates,
     delay: float = 0.,
     jitter: float = 0.,
