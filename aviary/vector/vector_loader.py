@@ -635,7 +635,7 @@ class StubLoader(IDMixin):
         return cls(**config)
 
     def __call__(self) -> Vector:
-        """Fetches a vector with no layers.
+        """Loads a vector with no layers.
 
         Returns:
             Vector
