@@ -37,6 +37,7 @@ from aviary._functional.tile.tiles_processor import (
     hillshade_processor,
     normalize_processor,
     parallel_composite_processor,
+    rasterize_processor,
     remove_buffer_processor,
     remove_processor,
     select_processor,
@@ -52,7 +53,10 @@ from aviary.core.enums import (
 )
 from aviary.core.exceptions import AviaryUserError
 from aviary.core.mixins import IDMixin
-from aviary.core.type_aliases import ChannelNameSet
+from aviary.core.type_aliases import (
+    ChannelNameSet,
+    GroundSamplingDistance,
+)
 
 if TYPE_CHECKING:
     from aviary.core.tiles import Tiles
@@ -72,6 +76,7 @@ class TilesProcessor(Protocol):
         - `HillshadeProcessor`: Computes the hillshade from a channel or channels
         - `NormalizeProcessor`: Normalizes a channel
         - `ParallelCompositeProcessor`: Composes multiple tiles processors in parallel
+        - `RasterizeProcessor`: Rasterizes a channel
         - `RemoveBufferProcessor`: Removes the buffer of channels
         - `RemoveProcessor`: Removes channels
         - `SelectProcessor`: Selects channels
@@ -891,6 +896,143 @@ _TilesProcessorFactory.register(
 )
 
 
+@experimental(
+    since='1.4.0',
+)
+class RasterizeProcessor(IDMixin):
+    """Tiles processor that rasterizes a channel
+
+    Experimental:
+        `RasterizeProcessor` is experimental since `1.4.0` and may change without notice.
+
+    Notes:
+        - Requires a vector channel
+
+    Implements the `TilesProcessor` protocol.
+    """
+
+    def __init__(
+        self,
+        channel_name: ChannelName | str,
+        field: str,
+        ground_sampling_distance: GroundSamplingDistance,
+        mapping: dict[object, int] | None = None,
+        background_value: int = 0,
+        new_channel_name: ChannelName | str | None = None,
+        max_num_threads: int | None = None,
+    ) -> None:
+        """
+        Parameters:
+            channel_name: Channel name
+            field: Field
+            ground_sampling_distance: Ground sampling distance in meters per pixel
+            mapping: Mapping of the values
+            background_value: Background value
+            new_channel_name: New channel name
+            max_num_threads: Maximum number of threads
+        """
+        self._channel_name = channel_name
+        self._field = field
+        self._ground_sampling_distance = ground_sampling_distance
+        self._mapping = mapping
+        self._background_value = background_value
+        self._new_channel_name = new_channel_name
+        self._max_num_threads = max_num_threads
+
+        super().__init__()
+
+    @classmethod
+    def from_config(
+        cls,
+        config: RasterizeProcessorConfig,
+    ) -> RasterizeProcessor:
+        """Creates a rasterize processor from the configuration.
+
+        Parameters:
+            config: Configuration
+
+        Returns:
+            Rasterize processor
+        """
+        config = config.model_dump()
+        return cls(**config)
+
+    def __call__(
+        self,
+        tiles: Tiles,
+    ) -> Tiles:
+        """Rasterizes the channel.
+
+        Parameters:
+            tiles: Tiles
+
+        Returns:
+            Tiles
+        """
+        return rasterize_processor(
+            tiles=tiles,
+            channel_name=self._channel_name,
+            field=self._field,
+            ground_sampling_distance=self._ground_sampling_distance,
+            mapping=self._mapping,
+            background_value=self._background_value,
+            new_channel_name=self._new_channel_name,
+            max_num_threads=self._max_num_threads,
+        )
+
+
+class RasterizeProcessorConfig(pydantic.BaseModel):
+    """Configuration for the `from_config` class method of `RasterizeProcessor`
+
+    Create the configuration from a config file:
+        - Use null instead of None
+
+    Usage:
+        You can create the configuration from a config file.
+
+        ``` yaml title="config.yaml"
+        package: 'aviary'
+        name: 'RasterizeProcessor'
+        config:
+          channel_name: 'my_channel'
+          field: 'my_field'
+          ground_sampling_distance: .2
+          mapping:
+            'value': 1
+          background_value: 0
+          new_channel_name: null
+          max_num_threads: null
+        ```
+
+    Attributes:
+        channel_name: Channel name
+        field: Field
+        ground_sampling_distance: Ground sampling distance in meters per pixel
+        mapping: Mapping of the values -
+            defaults to None
+        background_value: Background value -
+            defaults to 0
+        new_channel_name: New channel name -
+            defaults to None
+        max_num_threads: Maximum number of threads -
+            defaults to None
+    """
+    channel_name: ChannelName | str
+    field: str
+    ground_sampling_distance: GroundSamplingDistance
+    mapping: dict[object, int] | None = None
+    background_value: int = 0
+    new_channel_name: ChannelName | str | None = None
+    max_num_threads: int | None = None
+
+
+_TilesProcessorFactory.register(
+    tiles_processor_class=RasterizeProcessor,
+    config_class=RasterizeProcessorConfig,
+    package=_PACKAGE,
+)
+
+
 class RemoveBufferProcessor(IDMixin):
     """Tiles processor that removes the buffer of channels
 
@@ -1560,7 +1702,6 @@ class VectorizeProcessorConfig(pydantic.BaseModel):
 
     Create the configuration from a config file:
         - Use null instead of None
-        - Use false or true instead of False or True
 
     Usage:
         You can create the configuration from a config file.
