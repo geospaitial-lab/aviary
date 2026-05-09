@@ -15,6 +15,8 @@
 
 from __future__ import annotations
 
+import random
+import time
 import warnings
 from concurrent.futures import ThreadPoolExecutor
 from typing import TYPE_CHECKING
@@ -146,6 +148,33 @@ def gpkg_fetcher(
 
     return Tile(
         channels=[channel],
+        coordinates=coordinates,
+        tile_size=tile_size,
+        copy=False,
+    )
+
+
+def stub_fetcher(
+    coordinates: Coordinates,
+    tile_size: TileSize,
+    delay: float = 0.,
+    jitter: float = 0.,
+) -> Tile:
+    """Fetches a tile with no channels.
+
+    Parameters:
+        coordinates: Coordinates (x_min, y_min) of the tile in meters
+        tile_size: Tile size in meters
+        delay: Delay in seconds
+        jitter: Jitter in seconds
+
+    Returns:
+        Tile
+    """
+    sleep = max(0., delay + random.uniform(-jitter, jitter))  # noqa: S311
+    time.sleep(sleep)
+    return Tile(
+        channels=[],
         coordinates=coordinates,
         tile_size=tile_size,
         copy=False,
