@@ -63,6 +63,7 @@ nav:
           - SequentialCompositeProcessor: api_reference/tile/tiles_processor/sequential_composite_processor.md
           - SlopeProcessor: api_reference/tile/tiles_processor/slope_processor.md
           - StandardizeProcessor: api_reference/tile/tiles_processor/standardize_processor.md
+          - StubProcessor: api_reference/tile/tiles_processor/stub_processor.md
           - VectorizeProcessor: api_reference/tile/tiles_processor/vectorize_processor.md
     - aviary.pipeline:
       - Pipeline: api_reference/pipeline/pipeline.md
