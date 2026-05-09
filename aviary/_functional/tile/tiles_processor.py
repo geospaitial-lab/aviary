@@ -16,6 +16,8 @@
 
 from __future__ import annotations
 
+import random
+import time
 from concurrent.futures import ThreadPoolExecutor
 from itertools import repeat
 from typing import TYPE_CHECKING
@@ -904,6 +906,26 @@ def _standardize_data_item(
         data_item = data_item.astype(np.float32)
 
     return data_item
+
+
+def stub_processor(
+    tiles: Tiles,
+    delay: float = 0.,
+    jitter: float = 0.,
+) -> Tiles:
+    """Passes through the tiles.
+
+    Parameters:
+        tiles: Tiles
+        delay: Delay in seconds
+        jitter: Jitter in seconds
+
+    Returns:
+        Tiles
+    """
+    sleep = max(0., delay + random.uniform(-jitter, jitter))  # noqa: S311
+    time.sleep(sleep)
+    return tiles
 
 
 def vectorize_processor(
