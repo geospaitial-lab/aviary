@@ -1,4 +1,4 @@
-#  Copyright (C) 2024-2025 Marius Maryniak
+#  Copyright (C) 2024-2026 Marius Maryniak
 #
 #  This file is part of aviary.
 #
@@ -15,6 +15,8 @@
 
 from __future__ import annotations
 
+import random
+import time
 import uuid
 from typing import TYPE_CHECKING
 
@@ -713,3 +715,23 @@ def _simplify_data(
         tolerance=threshold,
     )
     return data
+
+
+def stub_processor(
+    vector: Vector,
+    delay: float = 0.,
+    jitter: float = 0.,
+) -> Vector:
+    """Passes through the vector.
+
+    Parameters:
+        vector: Vector
+        delay: Delay in seconds
+        jitter: Jitter in seconds
+
+    Returns:
+        Vector
+    """
+    sleep = max(0., delay + random.uniform(-jitter, jitter))  # noqa: S311
+    time.sleep(sleep)
+    return vector

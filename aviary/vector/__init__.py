@@ -1,4 +1,4 @@
-#  Copyright (C) 2024-2025 Marius Maryniak
+#  Copyright (C) 2024-2026 Marius Maryniak
 #
 #  This file is part of aviary.
 #
@@ -57,6 +57,8 @@ from .vector_processor import (
     SieveProcessorConfig,
     SimplifyProcessor,
     SimplifyProcessorConfig,
+    StubProcessor,
+    StubProcessorConfig,
     VectorProcessor,
     VectorProcessorConfig,
     register_vector_processor,
@@ -97,6 +99,8 @@ __all__ = [
     'SieveProcessorConfig',
     'SimplifyProcessor',
     'SimplifyProcessorConfig',
+    'StubProcessor',
+    'StubProcessorConfig',
     'VectorExporter',
     'VectorExporterConfig',
     'VectorLoader',

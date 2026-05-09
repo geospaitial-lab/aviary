@@ -43,7 +43,9 @@ from aviary._functional.vector.vector_processor import (
     sequential_composite_processor,
     sieve_processor,
     simplify_processor,
+    stub_processor,
 )
+from aviary._utils.lifecycle import experimental
 from aviary.core.exceptions import AviaryUserError
 from aviary.core.mixins import IDMixin
 
@@ -72,6 +74,7 @@ class VectorProcessor(Protocol):
         - `SequentialCompositeProcessor`: Composes multiple vector processors in sequence
         - `SieveProcessor`: Sieves a layer
         - `SimplifyProcessor`: Simplifies a layer
+        - `StubProcessor`: Passes the vector through
 
     Implemented exporters:
         - `VectorExporter`: Exports a layer
@@ -1490,5 +1493,98 @@ class SimplifyProcessorConfig(pydantic.BaseModel):
 _VectorProcessorFactory.register(
     vector_processor_class=SimplifyProcessor,
     config_class=SimplifyProcessorConfig,
+    package=_PACKAGE,
+)
+
+
+@experimental(
+    since='1.4.0',
+)
+class StubProcessor(IDMixin):
+    """Vector processor that passes the vector through
+
+    Experimental:
+        `StubProcessor` is experimental since `1.4.0` and may change without notice.
+
+    Implements the `VectorProcessor` protocol.
+    """
+
+    def __init__(
+        self,
+        delay: float = 0.,
+        jitter: float = 0.,
+    ) -> None:
+        """
+        Parameters:
+            delay: Delay in seconds
+            jitter: Jitter in seconds
+        """
+        self._delay = delay
+        self._jitter = jitter
+
+        super().__init__()
+
+    @classmethod
+    def from_config(
+        cls,
+        config: StubProcessorConfig,
+    ) -> StubProcessor:
+        """Creates a stub processor from the configuration.
+
+        Parameters:
+            config: Configuration
+
+        Returns:
+            Stub processor
+        """
+        config = config.model_dump()
+        return cls(**config)
+
+    def __call__(
+        self,
+        vector: Vector,
+    ) -> Vector:
+        """Passes through the vector.
+
+        Parameters:
+            vector: Vector
+
+        Returns:
+            Vector
+        """
+        return stub_processor(
+            vector=vector,
+            delay=self._delay,
+            jitter=self._jitter,
+        )
+
+
+class StubProcessorConfig(pydantic.BaseModel):
+    """Configuration for the `from_config` class method of `StubProcessor`
+
+    Usage:
+        You can create the configuration from a config file.
+
+        ``` yaml title="config.yaml"
+        package: 'aviary'
+        name: 'StubProcessor'
+        config:
+          delay: 0.
+          jitter: 0.
+        ```
+
+    Attributes:
+        delay: Delay in seconds -
+            defaults to 0.
+        jitter: Jitter in seconds -
+            defaults to 0.
+    """
+    delay: float = 0.
+    jitter: float = 0.
+
+
+_VectorProcessorFactory.register(
+    vector_processor_class=StubProcessor,
+    config_class=StubProcessorConfig,
     package=_PACKAGE,
 )
