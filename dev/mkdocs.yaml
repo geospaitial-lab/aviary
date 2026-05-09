@@ -87,6 +87,7 @@ nav:
           - CompositeLoader: api_reference/vector/vector_loader/composite_loader.md
           - GeoJSONLoader: api_reference/vector/vector_loader/geojson_loader.md
           - GPKGLoader: api_reference/vector/vector_loader/gpkg_loader.md
+          - StubLoader: api_reference/vector/vector_loader/stub_loader.md
       - VectorProcessor:
           - VectorProcessor: api_reference/vector/vector_processor/vector_processor.md
           - AggregateProcessor: api_reference/vector/vector_processor/aggregate_processor.md
