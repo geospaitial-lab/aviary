@@ -102,6 +102,7 @@ nav:
           - SequentialCompositeProcessor: api_reference/vector/vector_processor/sequential_composite_processor.md
           - SieveProcessor: api_reference/vector/vector_processor/sieve_processor.md
           - SimplifyProcessor: api_reference/vector/vector_processor/simplify_processor.md
+          - StubProcessor: api_reference/vector/vector_processor/stub_processor.md
   - CLI Reference:
     - CLI Reference: cli_reference/index.md
     - aviary: cli_reference/aviary.md
