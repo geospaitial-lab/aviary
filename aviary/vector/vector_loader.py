@@ -35,7 +35,9 @@ from aviary._functional.vector.vector_loader import (
     composite_loader,
     geojson_loader,
     gpkg_loader,
+    stub_loader,
 )
+from aviary._utils.lifecycle import experimental
 from aviary.core.bounding_box import BoundingBox
 from aviary.core.exceptions import AviaryUserError
 from aviary.core.mixins import IDMixin
@@ -585,5 +587,91 @@ class GPKGLoaderConfig(pydantic.BaseModel):
 _VectorLoaderFactory.register(
     vector_loader_class=GPKGLoader,
     config_class=GPKGLoaderConfig,
+    package=_PACKAGE,
+)
+
+
+@experimental(
+    since='1.4.0',
+)
+class StubLoader(IDMixin):
+    """Vector loader for vectors with no layers
+
+    Experimental:
+        `StubLoader` is experimental since `1.4.0` and may change without notice.
+
+    Implements the `VectorLoader` protocol.
+    """
+
+    def __init__(
+        self,
+        delay: float = 0.,
+        jitter: float = 0.,
+    ) -> None:
+        """
+        Parameters:
+            delay: Delay in seconds
+            jitter: Jitter in seconds
+        """
+        self._delay = delay
+        self._jitter = jitter
+
+        super().__init__()
+
+    @classmethod
+    def from_config(
+        cls,
+        config: StubLoaderConfig,
+    ) -> StubLoader:
+        """Creates a stub loader from the configuration.
+
+        Parameters:
+            config: Configuration
+
+        Returns:
+            Stub loader
+        """
+        config = config.model_dump()
+        return cls(**config)
+
+    def __call__(self) -> Vector:
+        """Loads a vector with no layers.
+
+        Returns:
+            Vector
+        """
+        return stub_loader(
+            delay=self._delay,
+            jitter=self._jitter,
+        )
+
+
+class StubLoaderConfig(pydantic.BaseModel):
+    """Configuration for the `from_config` class method of `StubLoader`
+
+    Usage:
+        You can create the configuration from a config file.
+
+        ``` yaml title="config.yaml"
+        package: 'aviary'
+        name: 'StubLoader'
+        config:
+          delay: 0.
+          jitter: 0.
+        ```
+
+    Attributes:
+        delay: Delay in seconds -
+            defaults to 0.
+        jitter: Jitter in seconds -
+            defaults to 0.
+    """
+    delay: float = 0.
+    jitter: float = 0.
+
+
+_VectorLoaderFactory.register(
+    vector_loader_class=StubLoader,
+    config_class=StubLoaderConfig,
     package=_PACKAGE,
 )

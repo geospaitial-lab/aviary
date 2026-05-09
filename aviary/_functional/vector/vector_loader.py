@@ -1,4 +1,4 @@
-#  Copyright (C) 2024-2025 Marius Maryniak
+#  Copyright (C) 2024-2026 Marius Maryniak
 #
 #  This file is part of aviary.
 #
@@ -15,6 +15,8 @@
 
 from __future__ import annotations
 
+import random
+import time
 from concurrent.futures import ThreadPoolExecutor
 from typing import TYPE_CHECKING
 
@@ -154,5 +156,26 @@ def gpkg_loader(
 
     return Vector(
         layers=[layer],
+        copy=False,
+    )
+
+
+def stub_loader(
+    delay: float = 0.,
+    jitter: float = 0.,
+) -> Vector:
+    """Loads a vector with no layers.
+
+    Parameters:
+        delay: Delay in seconds
+        jitter: Jitter in seconds
+
+    Returns:
+        Vector
+    """
+    sleep = max(0., delay + random.uniform(-jitter, jitter))  # noqa: S311
+    time.sleep(sleep)
+    return Vector(
+        layers=[],
         copy=False,
     )
