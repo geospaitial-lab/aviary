@@ -156,6 +156,7 @@ def gpkg_fetcher(
 
 def stub_fetcher(
     coordinates: Coordinates,
+    tile_size: TileSize,
     delay: float = 0.,
     jitter: float = 0.,
 ) -> Tile:
@@ -163,6 +164,7 @@ def stub_fetcher(
 
     Parameters:
         coordinates: Coordinates (x_min, y_min) of the tile in meters
+        tile_size: Tile size in meters
         delay: Delay in seconds
         jitter: Jitter in seconds
 
@@ -174,7 +176,7 @@ def stub_fetcher(
     return Tile(
         channels=[],
         coordinates=coordinates,
-        tile_size=0,
+        tile_size=tile_size,
         copy=False,
     )
 

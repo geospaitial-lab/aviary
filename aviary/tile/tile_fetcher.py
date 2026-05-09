@@ -467,14 +467,17 @@ class StubFetcher(IDMixin):
 
     def __init__(
         self,
+        tile_size: TileSize,
         delay: float = 0.,
         jitter: float = 0.,
     ) -> None:
         """
         Parameters:
+            tile_size: Tile size in meters
             delay: Delay in seconds
             jitter: Jitter in seconds
         """
+        self._tile_size = tile_size
         self._delay = delay
         self._jitter = jitter
 
@@ -510,6 +513,7 @@ class StubFetcher(IDMixin):
         """
         return stub_fetcher(
             coordinates=coordinates,
+            tile_size=self._tile_size,
             delay=self._delay,
             jitter=self._jitter,
         )
@@ -525,16 +529,19 @@ class StubFetcherConfig(pydantic.BaseModel):
         package: 'aviary'
         name: 'StubFetcher'
         config:
+          tile_size: 128
           delay: 0.
           jitter: 0.
         ```
 
     Attributes:
+        tile_size: Tile size in meters
         delay: Delay in seconds -
             defaults to 0.
         jitter: Jitter in seconds -
             defaults to 0.
     """
+    tile_size: TileSize
     delay: float = 0.
     jitter: float = 0.
 
