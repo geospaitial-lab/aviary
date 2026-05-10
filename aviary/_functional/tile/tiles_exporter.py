@@ -26,6 +26,7 @@ import numpy as np
 import pandas as pd
 import rasterio as rio
 
+from aviary.core.enums import _coerce_channel_name
 from aviary.core.grid import Grid
 
 if TYPE_CHECKING:
@@ -103,19 +104,26 @@ def raster_exporter(
         exist_ok=True,
     )
 
-    batch_size = tiles.batch_size
     tile_size = tiles.tile_size
+    batch_size = tiles.batch_size
     epsg_code = f'EPSG:{epsg_code}'
+
+    if not isinstance(channel_names, list):
+        channel_names = [channel_names]
+
+    first_channel = tiles[_coerce_channel_name(channel_name=channel_names[0])]
+    buffer_size = first_channel.buffer_size * tile_size
+    ground_sampling_distance = first_channel.ground_sampling_distance
 
     def _export_data_item(index: int) -> None:
         data_item = data[index]
 
         x_min, y_min = tiles.coordinates[index]
         tile_size_pixels = data_item.shape[0]
-        ground_sampling_distance = tile_size / tile_size_pixels
+
         transform = rio.transform.from_origin(
-            west=x_min,
-            north=y_min + tile_size,
+            west=x_min - buffer_size,
+            north=y_min + tile_size + buffer_size,
             xsize=ground_sampling_distance,
             ysize=ground_sampling_distance,
         )
