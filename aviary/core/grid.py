@@ -930,35 +930,35 @@ class Grid(
 
         if buffer_size > 0:
             for _ in range(iterations):
-                grown = {
+                coordinates_ = {
                     (int(x_min), int(y_min))
                     for x_min, y_min in coordinates
                 }
 
                 for x_min, y_min in coordinates:
                     for dx_min, dy_min in offsets:
-                        grown.add((x_min + dx_min, y_min + dy_min))
+                        coordinates_.add((int(x_min + dx_min), int(y_min + dy_min)))
 
-                if grown:  # noqa: SIM108
-                    coordinates = np.array(sorted(grown), dtype=np.int32)
+                if coordinates_:  # noqa: SIM108
+                    coordinates = np.array(sorted(coordinates_), dtype=np.int32)
                 else:
                     coordinates = coordinates[:0]
 
         else:
             for _ in range(iterations):
-                s = {
+                coordinates_ = {
                     (int(x_min), int(y_min))
                     for x_min, y_min in coordinates
                 }
 
-                kept: list[tuple[int, int]] = []
+                kept_coordinates: list[tuple[int, int]] = []
 
                 for x_min, y_min in coordinates:
-                    if all(((x_min + dx, y_min + dy) in s) for dx, dy in offsets):
-                        kept.append((int(x_min), int(y_min)))
+                    if all(((x_min + dx_min, y_min + dy_min) in coordinates_) for dx_min, dy_min in offsets):
+                        kept_coordinates.append((int(x_min), int(y_min)))
 
-                if kept:  # noqa: SIM108
-                    coordinates = np.array(kept, dtype=np.int32)
+                if kept_coordinates:  # noqa: SIM108
+                    coordinates = np.array(kept_coordinates, dtype=np.int32)
                 else:
                     coordinates = coordinates[:0]
 
