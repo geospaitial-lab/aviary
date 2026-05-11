@@ -394,7 +394,7 @@ class TilePipeline(IDMixin):
             tile_loader_batch_size: Batch size
             tile_loader_max_num_threads: Maximum number of threads
             tile_loader_num_prefetched_tiles: Number of prefetched tiles
-            show_progress: If True, show the progress in a progress bar
+            show_progress: If True, show the progress with a progress bar
         """
         self._grid = grid
         self._tile_fetcher = tile_fetcher
@@ -557,7 +557,7 @@ class TilePipelineConfig(pydantic.BaseModel):
     Attributes:
         plugins_dir_path: Path to the plugins directory -
             defaults to None
-        show_progress: If True, show the progress in a progress bar -
+        show_progress: If True, show the progress with a progress bar -
             defaults to True
         grid_config: Configuration for the grid
         tile_fetcher_config: Configuration for the tile fetcher
