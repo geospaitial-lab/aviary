@@ -641,6 +641,7 @@ class VectorPipelineConfig(pydantic.BaseModel):
 
     Create the configuration from a config file:
         - Use null instead of None
+        - Use false or true instead of False or True
 
     Usage:
         You can create the configuration from a config file.
