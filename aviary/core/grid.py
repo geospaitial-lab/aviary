@@ -1191,6 +1191,7 @@ class GridConfig(pydantic.BaseModel):
         tile_size: 128
         epsg_code: null
         snap: true
+        buffer_size: null
         num_chunks: null
         chunk: null
         ```
