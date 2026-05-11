@@ -491,7 +491,7 @@ class Grid(
         )
 
     @classmethod
-    def from_config(
+    def from_config(  # noqa: C901
         cls,
         config: GridConfig,
     ) -> Grid:
@@ -540,6 +540,12 @@ class Grid(
                 'gpkg_path, tile_size, epsg_code | json_path'
             )
             raise AviaryUserError(message)
+
+        if config.buffer_size is not None:
+            grid = grid.buffer(
+                buffer_size=config.buffer_size,
+                inplace=False,
+            )
 
         if config.ignore_coordinates is not None:
             ignore_grid = cls(
@@ -892,6 +898,89 @@ class Grid(
             tile_size=self._tile_size,
         )
 
+    def buffer(  # noqa: C901, PLR0912
+        self,
+        buffer_size: int,
+        inplace: bool = False,
+    ) -> Grid:
+        """Buffers the grid.
+
+        Notes:
+            - A positive buffer size expands the grid
+            - A negative buffer size shrinks the grid
+
+        Parameters:
+            buffer_size: Buffer size in tiles
+            inplace: If True, the grid is buffered inplace
+
+        Returns:
+            Grid
+        """
+        if buffer_size == 0 or len(self) == 0:
+            if inplace:
+                return self
+
+            return Grid(
+                coordinates=self._coordinates.copy(),
+                tile_size=self._tile_size,
+            )
+
+        step = self._tile_size
+        offsets = [
+            (+step, 0), (-step, 0), (0, +step), (0, -step),
+            (+step, +step), (+step, -step), (-step, +step), (-step, -step),
+        ]
+
+        iterations = abs(buffer_size)
+        coordinates = self._coordinates.copy()
+
+        if buffer_size > 0:
+            for _ in range(iterations):
+                coordinates_ = {
+                    (int(x_min), int(y_min))
+                    for x_min, y_min in coordinates
+                }
+
+                for x_min, y_min in coordinates:
+                    for dx_min, dy_min in offsets:
+                        coordinates_.add((int(x_min + dx_min), int(y_min + dy_min)))
+
+                if coordinates_:  # noqa: SIM108
+                    coordinates = np.array(coordinates_, dtype=np.int32)
+                else:
+                    coordinates = coordinates[:0]
+
+        else:
+            for _ in range(iterations):
+                coordinates_ = {
+                    (int(x_min), int(y_min))
+                    for x_min, y_min in coordinates
+                }
+
+                kept_coordinates: list[tuple[int, int]] = []
+
+                for x_min, y_min in coordinates:
+                    if all(((int(x_min + dx_min), int(y_min + dy_min)) in coordinates_) for dx_min, dy_min in offsets):
+                        kept_coordinates.append((int(x_min), int(y_min)))
+
+                if kept_coordinates:  # noqa: SIM108
+                    coordinates = np.array(kept_coordinates, dtype=np.int32)
+                else:
+                    coordinates = coordinates[:0]
+
+                if coordinates.size == 0:
+                    break
+
+        if inplace:
+            self._coordinates = coordinates
+            self._validate()
+            return self
+
+        return Grid(
+            coordinates=coordinates,
+            tile_size=self._tile_size,
+        )
+
     def chunk(
         self,
         num_chunks: int,
@@ -1102,6 +1191,7 @@ class GridConfig(pydantic.BaseModel):
         tile_size: 128
         epsg_code: null
         snap: true
+        buffer_size: null
         num_chunks: null
         chunk: null
         ```
@@ -1129,6 +1219,8 @@ class GridConfig(pydantic.BaseModel):
             defaults to None
         snap: If True, the bounding box is snapped to `tile_size` -
             defaults to True
+        buffer_size: Buffer size in tiles -
+            defaults to None
         num_chunks: Number of chunks -
             defaults to None
         chunk: Chunk -
@@ -1145,6 +1237,7 @@ class GridConfig(pydantic.BaseModel):
     tile_size: TileSize | None = None
     epsg_code: EPSGCode | None = None
     snap: bool = True
+    buffer_size: int | None = None
     num_chunks: int | None = None
     chunk: int | None = None
 
