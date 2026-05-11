@@ -892,6 +892,89 @@ class Grid(
             tile_size=self._tile_size,
         )
 
+    def buffer(
+        self,
+        buffer_size: int,
+        inplace: bool = False,
+    ) -> Grid:
+        """Buffers the grid.
+
+        Notes:
+            - A positive buffer size expands the grid
+            - A negative buffer size shrinks the grid
+
+        Parameters:
+            buffer_size: Buffer size in tiles
+            inplace: If True, the grid is buffered inplace
+
+        Returns:
+            Grid
+        """
+        if buffer_size == 0 | len(self) == 0:
+            if inplace:
+                return self
+
+            return Grid(
+                coordinates=self._coordinates.copy(),
+                tile_size=self._tile_size,
+            )
+
+        step = self._tile_size
+        offsets = [
+            (+step, 0), (-step, 0), (0, +step), (0, -step),
+            (+step, +step), (+step, -step), (-step, +step), (-step, -step),
+        ]
+
+        iterations = abs(buffer_size)
+        coordinates = self._coordinates.copy()
+
+        if buffer_size > 0:
+            for _ in range(iterations):
+                grown = {
+                    (int(x_min), int(y_min))
+                    for x_min, y_min in coordinates
+                }
+
+                for x_min, y_min in coordinates:
+                    for dx_min, dy_min in offsets:
+                        grown.add((x_min + dx_min, y_min + dy_min))
+
+                if grown:
+                    coordinates = np.array(sorted(grown), dtype=np.int32)
+                else:
+                    coordinates = coordinates[:0]
+
+        else:
+            for _ in range(iterations):
+                s = {
+                    (int(x_min), int(y_min))
+                    for x_min, y_min in coordinates
+                }
+
+                kept: list[tuple[int, int]] = []
+
+                for x_min, y_min in coordinates:
+                    if all(((x_min + dx, y_min + dy) in s) for dx, dy in offsets):
+                        kept.append((int(x_min), int(y_min)))
+
+                if kept:
+                    coordinates = np.array(kept, dtype=np.int32)
+                else:
+                    coordinates = coordinates[:0]
+
+                if coordinates.size == 0:
+                    break
+
+        if inplace:
+            self._coordinates = coordinates
+            self._validate()
+            return self
+
+        return Grid(
+            coordinates=coordinates,
+            tile_size=self._tile_size,
+        )
+
     def chunk(
         self,
         num_chunks: int,
