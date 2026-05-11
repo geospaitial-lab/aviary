@@ -892,7 +892,7 @@ class Grid(
             tile_size=self._tile_size,
         )
 
-    def buffer(
+    def buffer(  # noqa: C901, PLR0912
         self,
         buffer_size: int,
         inplace: bool = False,
@@ -910,7 +910,7 @@ class Grid(
         Returns:
             Grid
         """
-        if buffer_size == 0 | len(self) == 0:
+        if buffer_size == 0 or len(self) == 0:
             if inplace:
                 return self
 
@@ -939,7 +939,7 @@ class Grid(
                     for dx_min, dy_min in offsets:
                         grown.add((x_min + dx_min, y_min + dy_min))
 
-                if grown:
+                if grown:  # noqa: SIM108
                     coordinates = np.array(sorted(grown), dtype=np.int32)
                 else:
                     coordinates = coordinates[:0]
@@ -957,7 +957,7 @@ class Grid(
                     if all(((x_min + dx, y_min + dy) in s) for dx, dy in offsets):
                         kept.append((int(x_min), int(y_min)))
 
-                if kept:
+                if kept:  # noqa: SIM108
                     coordinates = np.array(kept, dtype=np.int32)
                 else:
                     coordinates = coordinates[:0]
