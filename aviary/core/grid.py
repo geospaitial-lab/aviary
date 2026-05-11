@@ -954,7 +954,7 @@ class Grid(
                 kept_coordinates: list[tuple[int, int]] = []
 
                 for x_min, y_min in coordinates:
-                    if all(((x_min + dx_min, y_min + dy_min) in coordinates_) for dx_min, dy_min in offsets):
+                    if all(((int(x_min + dx_min), int(y_min + dy_min)) in coordinates_) for dx_min, dy_min in offsets):
                         kept_coordinates.append((int(x_min), int(y_min)))
 
                 if kept_coordinates:  # noqa: SIM108
