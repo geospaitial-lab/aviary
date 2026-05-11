@@ -946,7 +946,7 @@ class Grid(
                         coordinates_.add((int(x_min + dx_min), int(y_min + dy_min)))
 
                 if coordinates_:  # noqa: SIM108
-                    coordinates = np.array(coordinates_, dtype=np.int32)
+                    coordinates = np.array(list(coordinates_), dtype=np.int32)
                 else:
                     coordinates = coordinates[:0]
 
