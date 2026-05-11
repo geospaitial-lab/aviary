@@ -590,14 +590,17 @@ class VectorPipeline(IDMixin):
         self,
         vector_loader: VectorLoader,
         vector_processor: VectorProcessor,
+        show_progress: bool = True,
     ) -> None:
         """
         Parameters:
             vector_loader: Vector loader
             vector_processor: Vector processor
+            show_progress: If True, show the progress with a spinner
         """
         self._vector_loader = vector_loader
         self._vector_processor = vector_processor
+        self._show_progress = show_progress
 
         super().__init__()
 
@@ -619,6 +622,7 @@ class VectorPipeline(IDMixin):
         return cls(
             vector_loader=vector_loader,
             vector_processor=vector_processor,
+            show_progress=config.show_progress,
         )
 
     def __call__(self) -> None:
@@ -626,8 +630,22 @@ class VectorPipeline(IDMixin):
         logger.info('Starting vector pipeline...')
         vector_pipeline_start_time = time.perf_counter()
 
-        vector = self._vector_loader()
-        _ = self._vector_processor(vector=vector)
+        console = get_console()
+        interactive = console.is_terminal or console.is_jupyter
+
+        with Progress(
+            SpinnerColumn(
+                spinner_name='dots3',
+                style='bold green',
+            ),
+            TextColumn('[progress.description]{task.description}'),
+            disable=(not self._show_progress) or (not interactive),
+            console=console,
+        ) as progress:
+            _ = progress.add_task('Processing vectors')
+
+            vector = self._vector_loader()
+            _ = self._vector_processor(vector=vector)
 
         vector_pipeline_elapsed_time = time.perf_counter() - vector_pipeline_start_time
         logger.success(
@@ -651,6 +669,7 @@ class VectorPipelineConfig(pydantic.BaseModel):
         name: 'VectorPipeline'
         config:
           plugins_dir_path: null
+          show_progress: true
 
           vector_loader_config:
             ...
@@ -662,10 +681,13 @@ class VectorPipelineConfig(pydantic.BaseModel):
     Attributes:
         plugins_dir_path: Path to the plugins directory -
             defaults to None
+        show_progress: If True, show the progress with a spinner -
+            defaults to True
         vector_loader_config: Configuration for the vector loader
         vector_processor_config: Configuration for the vector processor
     """
     plugins_dir_path: Path | None = None
+    show_progress: bool = True
     vector_loader_config: VectorLoaderConfig
     vector_processor_config: VectorProcessorConfig
 
