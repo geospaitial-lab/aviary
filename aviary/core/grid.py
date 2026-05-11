@@ -491,7 +491,7 @@ class Grid(
         )
 
     @classmethod
-    def from_config(
+    def from_config(  # noqa: C901
         cls,
         config: GridConfig,
     ) -> Grid:
@@ -540,6 +540,12 @@ class Grid(
                 'gpkg_path, tile_size, epsg_code | json_path'
             )
             raise AviaryUserError(message)
+
+        if config.buffer_size is not None:
+            grid = grid.buffer(
+                buffer_size=config.buffer_size,
+                inplace=False,
+            )
 
         if config.ignore_coordinates is not None:
             ignore_grid = cls(
@@ -1212,6 +1218,8 @@ class GridConfig(pydantic.BaseModel):
             defaults to None
         snap: If True, the bounding box is snapped to `tile_size` -
             defaults to True
+        buffer_size: Buffer size in tiles -
+            defaults to None
         num_chunks: Number of chunks -
             defaults to None
         chunk: Chunk -
@@ -1228,6 +1236,7 @@ class GridConfig(pydantic.BaseModel):
     tile_size: TileSize | None = None
     epsg_code: EPSGCode | None = None
     snap: bool = True
+    buffer_size: int | None = None
     num_chunks: int | None = None
     chunk: int | None = None
 
