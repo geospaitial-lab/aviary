@@ -27,8 +27,18 @@ if TYPE_CHECKING:
     from collections.abc import Callable
 
 import pydantic
+import rich
+import rich.theme
 from loguru import logger
-from rich.progress import track
+from rich.progress import (
+    BarColumn,
+    Progress,
+    SpinnerColumn,
+    TaskProgressColumn,
+    TextColumn,
+    TimeElapsedColumn,
+    TimeRemainingColumn,
+)
 
 if TYPE_CHECKING:
     from pydantic_core.core_schema import ValidationInfo
@@ -394,7 +404,7 @@ class TilePipeline(IDMixin):
             tile_loader_batch_size: Batch size
             tile_loader_max_num_threads: Maximum number of threads
             tile_loader_num_prefetched_tiles: Number of prefetched tiles
-            show_progress: If True, show the progress in a progress bar
+            show_progress: If True, show the progress with a progress bar
         """
         self._grid = grid
         self._tile_fetcher = tile_fetcher
@@ -450,41 +460,62 @@ class TilePipeline(IDMixin):
             'Starting tile pipeline with {} tiles...',
             num_tiles,
         )
-        num_tiles = len(tile_loader)
-        i_len = len(str(num_tiles))
+        num_batches = len(tile_loader)
+        i_len = len(str(num_batches))
         tile_pipeline_start_time = time.perf_counter()
 
-        progress_bar = track(
-            tile_loader,
-            description='Processing tiles',
-            disable=not self._show_progress,
-        )
+        console = rich.get_console()
+        interactive = console.is_terminal or console.is_jupyter
 
-        for i, tiles in enumerate(progress_bar, start=1):
-            batch_size = tiles.batch_size
-            logger.info(
-                'Processing {} tiles {:>{}} / {}...',
-                batch_size,
-                i,
-                i_len,
-                num_tiles,
-            )
-            start_time = time.perf_counter()
+        theme = rich.theme.Theme({
+            'bar.back': 'white',
+            'bar.complete': 'green',
+            'bar.finished': 'green',
+            'progress.percentage': 'white',
+            'progress.elapsed': 'dim white',
+            'progress.remaining': 'white',
+        })
 
-            _ = self._tiles_processor(tiles=tiles)
+        with console.use_theme(theme), Progress(
+            SpinnerColumn(
+                spinner_name='dots3',
+                style='bold green',
+            ),
+            TextColumn('[progress.description]{task.description}'),
+            BarColumn(),
+            TaskProgressColumn(),
+            TimeElapsedColumn(),
+            TimeRemainingColumn(),
+            disable=(not self._show_progress) or (not interactive),
+            console=console,
+        ) as progress:
+            task_id = progress.add_task('Processing tiles', total=num_batches)
 
-            elapsed_time = time.perf_counter() - start_time
-            logger.success(
-                'Processed  {} tiles {:>{}} / {} in {:.3f} s.',
-                batch_size,
-                i,
-                i_len,
-                num_tiles,
-                elapsed_time,
-            )
+            for i, tiles in enumerate(tile_loader, start=1):
+                batch_size = tiles.batch_size
+                logger.info(
+                    'Processing {} tiles {:>{}} / {}...',
+                    batch_size,
+                    i,
+                    i_len,
+                    num_batches,
+                )
+                start_time = time.perf_counter()
+
+                _ = self._tiles_processor(tiles=tiles)
+
+                elapsed_time = time.perf_counter() - start_time
+                logger.success(
+                    'Processed  {} tiles {:>{}} / {} in {:.3f} s.',
+                    batch_size,
+                    i,
+                    i_len,
+                    num_batches,
+                    elapsed_time,
+                )
+                progress.advance(task_id)
 
         tile_pipeline_elapsed_time = time.perf_counter() - tile_pipeline_start_time
-        num_tiles = len(tile_set)
         tile_pipeline_average_time = tile_pipeline_elapsed_time / num_tiles if num_tiles else 0.
         logger.success(
             'Done with {} tiles in {:.3f} s and {:.3f} s/tile.',
@@ -557,7 +588,7 @@ class TilePipelineConfig(pydantic.BaseModel):
     Attributes:
         plugins_dir_path: Path to the plugins directory -
             defaults to None
-        show_progress: If True, show the progress in a progress bar -
+        show_progress: If True, show the progress with a progress bar -
             defaults to True
         grid_config: Configuration for the grid
         tile_fetcher_config: Configuration for the tile fetcher
@@ -590,14 +621,17 @@ class VectorPipeline(IDMixin):
         self,
         vector_loader: VectorLoader,
         vector_processor: VectorProcessor,
+        show_progress: bool = True,
     ) -> None:
         """
         Parameters:
             vector_loader: Vector loader
             vector_processor: Vector processor
+            show_progress: If True, show the progress with a spinner
         """
         self._vector_loader = vector_loader
         self._vector_processor = vector_processor
+        self._show_progress = show_progress
 
         super().__init__()
 
@@ -619,6 +653,7 @@ class VectorPipeline(IDMixin):
         return cls(
             vector_loader=vector_loader,
             vector_processor=vector_processor,
+            show_progress=config.show_progress,
         )
 
     def __call__(self) -> None:
@@ -626,8 +661,22 @@ class VectorPipeline(IDMixin):
         logger.info('Starting vector pipeline...')
         vector_pipeline_start_time = time.perf_counter()
 
-        vector = self._vector_loader()
-        _ = self._vector_processor(vector=vector)
+        console = rich.get_console()
+        interactive = console.is_terminal or console.is_jupyter
+
+        with Progress(
+            SpinnerColumn(
+                spinner_name='dots3',
+                style='bold green',
+            ),
+            TextColumn('[progress.description]{task.description}'),
+            disable=(not self._show_progress) or (not interactive),
+            console=console,
+        ) as progress:
+            _ = progress.add_task('Processing vectors')
+
+            vector = self._vector_loader()
+            _ = self._vector_processor(vector=vector)
 
         vector_pipeline_elapsed_time = time.perf_counter() - vector_pipeline_start_time
         logger.success(
@@ -641,6 +690,7 @@ class VectorPipelineConfig(pydantic.BaseModel):
 
     Create the configuration from a config file:
         - Use null instead of None
+        - Use false or true instead of False or True
 
     Usage:
         You can create the configuration from a config file.
@@ -650,6 +700,7 @@ class VectorPipelineConfig(pydantic.BaseModel):
         name: 'VectorPipeline'
         config:
           plugins_dir_path: null
+          show_progress: true
 
           vector_loader_config:
             ...
@@ -661,10 +712,13 @@ class VectorPipelineConfig(pydantic.BaseModel):
     Attributes:
         plugins_dir_path: Path to the plugins directory -
             defaults to None
+        show_progress: If True, show the progress with a spinner -
+            defaults to True
         vector_loader_config: Configuration for the vector loader
         vector_processor_config: Configuration for the vector processor
     """
     plugins_dir_path: Path | None = None
+    show_progress: bool = True
     vector_loader_config: VectorLoaderConfig
     vector_processor_config: VectorProcessorConfig
 

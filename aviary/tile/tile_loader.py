@@ -125,10 +125,10 @@ class TileLoader(
         )
 
     def __len__(self) -> int:
-        """Computes the number of tiles.
+        """Computes the number of batches.
 
         Returns:
-            Number of tiles
+            Number of batches
         """
         return (len(self._tile_set) + self._batch_size - 1) // self._batch_size
 
