@@ -27,8 +27,18 @@ if TYPE_CHECKING:
     from collections.abc import Callable
 
 import pydantic
+import rich
+import rich.theme
 from loguru import logger
-from rich.progress import track
+from rich.progress import (
+    BarColumn,
+    Progress,
+    SpinnerColumn,
+    TaskProgressColumn,
+    TextColumn,
+    TimeElapsedColumn,
+    TimeRemainingColumn,
+)
 
 if TYPE_CHECKING:
     from pydantic_core.core_schema import ValidationInfo
@@ -450,41 +460,62 @@ class TilePipeline(IDMixin):
             'Starting tile pipeline with {} tiles...',
             num_tiles,
         )
-        num_tiles = len(tile_loader)
-        i_len = len(str(num_tiles))
+        num_batches = len(tile_loader)
+        i_len = len(str(num_batches))
         tile_pipeline_start_time = time.perf_counter()
 
-        progress_bar = track(
-            tile_loader,
-            description='Processing tiles',
-            disable=not self._show_progress,
-        )
+        console = rich.get_console()
+        interactive = console.is_terminal or console.is_jupyter
 
-        for i, tiles in enumerate(progress_bar, start=1):
-            batch_size = tiles.batch_size
-            logger.info(
-                'Processing {} tiles {:>{}} / {}...',
-                batch_size,
-                i,
-                i_len,
-                num_tiles,
-            )
-            start_time = time.perf_counter()
+        theme = rich.theme.Theme({
+            'bar.back': 'white',
+            'bar.complete': 'green',
+            'bar.finished': 'green',
+            'progress.percentage': 'white',
+            'progress.elapsed': 'dim white',
+            'progress.remaining': 'white',
+        })
 
-            _ = self._tiles_processor(tiles=tiles)
+        with console.use_theme(theme), Progress(
+            SpinnerColumn(
+                spinner_name='dots3',
+                style='bold green',
+            ),
+            TextColumn('[progress.description]{task.description}'),
+            BarColumn(),
+            TaskProgressColumn(),
+            TimeElapsedColumn(),
+            TimeRemainingColumn(),
+            disable=(not self._show_progress) or (not interactive),
+            console=console,
+        ) as progress:
+            task_id = progress.add_task('Processing tiles', total=num_batches)
 
-            elapsed_time = time.perf_counter() - start_time
-            logger.success(
-                'Processed  {} tiles {:>{}} / {} in {:.3f} s.',
-                batch_size,
-                i,
-                i_len,
-                num_tiles,
-                elapsed_time,
-            )
+            for i, tiles in enumerate(tile_loader, start=1):
+                batch_size = tiles.batch_size
+                logger.info(
+                    'Processing {} tiles {:>{}} / {}...',
+                    batch_size,
+                    i,
+                    i_len,
+                    num_batches,
+                )
+                start_time = time.perf_counter()
+
+                _ = self._tiles_processor(tiles=tiles)
+
+                elapsed_time = time.perf_counter() - start_time
+                logger.success(
+                    'Processed  {} tiles {:>{}} / {} in {:.3f} s.',
+                    batch_size,
+                    i,
+                    i_len,
+                    num_batches,
+                    elapsed_time,
+                )
+                progress.advance(task_id)
 
         tile_pipeline_elapsed_time = time.perf_counter() - tile_pipeline_start_time
-        num_tiles = len(tile_set)
         tile_pipeline_average_time = tile_pipeline_elapsed_time / num_tiles if num_tiles else 0.
         logger.success(
             'Done with {} tiles in {:.3f} s and {:.3f} s/tile.',
@@ -630,7 +661,7 @@ class VectorPipeline(IDMixin):
         logger.info('Starting vector pipeline...')
         vector_pipeline_start_time = time.perf_counter()
 
-        console = get_console()
+        console = rich.get_console()
         interactive = console.is_terminal or console.is_jupyter
 
         with Progress(
