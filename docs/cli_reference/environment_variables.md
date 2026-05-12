@@ -20,6 +20,12 @@ Path to the config file
 
 ---
 
+### `AVIARY_EXPERIMENTAL_WARNINGS`
+
+Show / suppress experimental warnings.
+
+---
+
 ### `AVIARY_LOG_PATH`
 
 Path to the log file
