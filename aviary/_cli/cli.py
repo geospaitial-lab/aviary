@@ -61,6 +61,7 @@ typer.rich_utils.REQUIRED_LONG_STRING = _('required')
 typer.rich_utils.RICH_HELP = _('Try [green]{command_path} {help_option}[/] for help.')
 typer.rich_utils.STYLE_COMMANDS_TABLE_FIRST_COLUMN = 'bold green'
 typer.rich_utils.STYLE_METAVAR = 'dim green'
+typer.rich_utils.STYLE_NEGATIVE_OPTION = 'bold red'
 typer.rich_utils.STYLE_OPTION = 'green'
 typer.rich_utils.STYLE_OPTION_ENVVAR = 'dim green'
 typer.rich_utils.STYLE_USAGE = 'bold green'
@@ -164,6 +165,12 @@ def main(
         envvar='AVIARY_VERBOSE',
         help='Enable verbose mode.',
     ),
+    experimental_warnings_option: bool = typer.Option(
+        True,  # noqa: FBT003
+        '--experimental-warnings/--no-experimental-warnings',
+        envvar='AVIARY_EXPERIMENTAL_WARNINGS',
+        help='Show / suppress experimental warnings.',
+    ),
     version_option: bool = typer.Option(  # noqa: ARG001
         None,
         '--version',
@@ -174,10 +181,18 @@ def main(
     context.obj = {
         'quiet': quiet_option,
         'verbose': verbose_option,
+        'experimental_warnings': experimental_warnings_option,
     }
 
     if quiet_option:
         console.quiet = True
+
+    if not experimental_warnings_option:
+        import warnings  # noqa: PLC0415
+
+        from aviary.core.warnings import AviaryExperimentalWarning  # noqa: PLC0415
+
+        warnings.filterwarnings('ignore', category=AviaryExperimentalWarning)
 
 
 def handle_exception(
