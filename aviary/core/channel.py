@@ -579,6 +579,7 @@ class RasterChannel(Channel, Iterable[npt.NDArray]):
         Raises:
             AviaryUserError: Invalid `data` (the data item is not in shape (n, n))
             AviaryUserError: Invalid `data` (the shapes of the data items are not equal)
+            AviaryUserError: Invalid `data` (the dtypes of the data items are not equal)
         """
         first_data_item = self[0]
 
@@ -600,6 +601,13 @@ class RasterChannel(Channel, Iterable[npt.NDArray]):
             message = (
                 'Invalid data! '
                 'The shapes of the data items must be equal.'
+            )
+            raise AviaryUserError(message)
+
+        if data_item.dtype != first_data_item.dtype:
+            message = (
+                'Invalid data! '
+                'The dtypes of the data items must be equal.'
             )
             raise AviaryUserError(message)
 
