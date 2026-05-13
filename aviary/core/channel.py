@@ -871,14 +871,21 @@ class RasterChannel(Channel, Iterable[npt.NDArray]):
         """
         if inplace:
             self._data = [data_item.astype(dtype.to_numpy()) for data_item in self]
+            self._validate()
             return self
 
-        channel = self.copy()
-        channel.cast(
-            dtype=dtype,
-            inplace=True,
+        data = [data_item.astype(dtype.to_numpy()) for data_item in self]
+        metadata = self._metadata.copy()
+
+        raster_channel = RasterChannel(
+            data=data,
+            name=self._name,
+            buffer_size=self._buffer_size,
+            metadata=metadata,
+            copy=False,
         )
-        return channel
+        raster_channel._mark_as_copied()
+        return raster_channel
 
     def remove_buffer(
         self,
