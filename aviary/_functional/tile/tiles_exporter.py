@@ -142,7 +142,7 @@ def raster_exporter(
             'blockxsize': block_size,
             'blockysize': block_size,
             'compress': 'deflate',
-            'BIGTIFF': 'IF_SAFER',
+            'bigtiff': 'IF_SAFER',
         }
 
         path_ = path / f'{x_min}_{y_min}.tiff'
