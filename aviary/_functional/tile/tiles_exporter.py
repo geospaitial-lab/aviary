@@ -128,6 +128,8 @@ def raster_exporter(
             ysize=ground_sampling_distance,
         )
 
+        block_size = min(tile_size_pixels, max(16, 2 ** int(np.log2(min(256, tile_size_pixels)))))
+
         profile = {
             'driver': 'GTiff',
             'height': tile_size_pixels,
@@ -137,8 +139,8 @@ def raster_exporter(
             'crs': epsg_code,
             'transform': transform,
             'tiled': True,
-            'blockxsize': 256,
-            'blockysize': 256,
+            'blockxsize': block_size,
+            'blockysize': block_size,
             'compress': 'deflate',
             'BIGTIFF': 'IF_SAFER',
         }
