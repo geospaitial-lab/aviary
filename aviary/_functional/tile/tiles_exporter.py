@@ -140,7 +140,6 @@ def raster_exporter(
             'blockxsize': 256,
             'blockysize': 256,
             'compress': 'deflate',
-            'bigtiff': 'IF_SAFER',
             'BIGTIFF': 'IF_SAFER',
         }
 
