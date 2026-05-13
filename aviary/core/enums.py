@@ -205,6 +205,9 @@ class DType(Enum):
         return mapping[self]
 
 
+_supported_dtypes = frozenset(dtype.value for dtype in DType)
+
+
 class GeospatialFilterMode(Enum):
     """
     Attributes:
