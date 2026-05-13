@@ -38,6 +38,7 @@ from aviary._functional.utils.coordinates_filter import duplicates_filter
 from aviary._utils.validators import validate_name
 from aviary.core.enums import (
     ChannelName,
+    DType,
     _coerce_channel_name,
 )
 from aviary.core.exceptions import AviaryUserError
@@ -643,6 +644,14 @@ class RasterChannel(Channel, Iterable[npt.NDArray]):
             Data
         """
         return self._data
+
+    @property
+    def dtype(self) -> DType:
+        """
+        Returns:
+            Data type
+        """
+        return DType(self[0].dtype.name)
 
     @property
     def ground_sampling_distance(self) -> GroundSamplingDistance | None:
