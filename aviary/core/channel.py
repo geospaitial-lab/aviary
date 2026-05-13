@@ -838,6 +838,31 @@ class RasterChannel(Channel, Iterable[npt.NDArray]):
             copy=True,
         )
 
+    def cast(
+        self,
+        dtype: DType,
+        inplace: bool = False,
+    ) -> RasterChannel:
+        """Casts the data.
+
+        Parameters:
+            dtype: Data type
+            inplace: If True, the data is cast inplace
+
+        Returns:
+            Raster channel
+        """
+        if inplace:
+            self._data = [data_item.astype(dtype.to_numpy()) for data_item in self]
+            return self
+
+        channel = self.copy()
+        channel.cast(
+            dtype=dtype,
+            inplace=True,
+        )
+        return channel
+
     def remove_buffer(
         self,
         inplace: bool = False,
