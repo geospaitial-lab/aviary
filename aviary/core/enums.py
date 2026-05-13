@@ -22,6 +22,7 @@ from typing import (
     overload,
 )
 
+import numpy as np
 import rasterio as rio
 
 if TYPE_CHECKING:
@@ -156,6 +157,55 @@ def _coerce_layer_names(
         return {layer_names}
 
     return layer_names
+
+
+class DType(Enum):
+    """
+    Attributes:
+        Bool: Boolean type
+        FLOAT16: Half-precision floating-point type
+        FLOAT32: Single-precision floating-point type
+        FLOAT64: Double-precision floating-point type
+        INT8: 8-bit signed integer type
+        INT16: 16-bit signed integer type
+        INT32: 32-bit signed integer type
+        UINT8: 8-bit unsigned integer type
+        UINT16: 16-bit unsigned integer type
+        UINT32: 32-bit unsigned integer type
+    """
+    Bool = 'bool'
+    FLOAT16 = 'float16'
+    FLOAT32 = 'float32'
+    FLOAT64 = 'float64'
+    INT8 = 'int8'
+    INT16 = 'int16'
+    INT32 = 'int32'
+    UINT8 = 'uint8'
+    UINT16 = 'uint16'
+    UINT32 = 'uint32'
+
+    def to_numpy(self) -> np.dtype:
+        """Converts the data type to the numpy data type.
+
+        Returns:
+            Numpy data type
+        """
+        mapping = {
+            DType.Bool: np.bool_,
+            DType.FLOAT16: np.float16,
+            DType.FLOAT32: np.float32,
+            DType.FLOAT64: np.float64,
+            DType.INT8: np.int8,
+            DType.INT16: np.int16,
+            DType.INT32: np.int32,
+            DType.UINT8: np.uint8,
+            DType.UINT16: np.uint16,
+            DType.UINT32: np.uint32,
+        }
+        return mapping[self]
+
+
+_supported_dtypes = frozenset(dtype.value for dtype in DType)
 
 
 class GeospatialFilterMode(Enum):

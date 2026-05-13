@@ -23,6 +23,7 @@ from .core.channel import (
 )
 from .core.enums import (
     ChannelName,
+    DType,
     GeospatialFilterMode,
     InterpolationMode,
     OSMType,
@@ -72,6 +73,7 @@ __all__ = [
     'Coordinate',
     'Coordinates',
     'CoordinatesSet',
+    'DType',
     'EPSGCode',
     'FractionalBufferSize',
     'GeospatialFilterMode',

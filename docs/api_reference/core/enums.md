@@ -10,6 +10,13 @@
 
 ---
 
+::: aviary.DType
+    options:
+      filters:
+      - "!to_numpy"
+
+---
+
 ::: aviary.GeospatialFilterMode
 
 ---
