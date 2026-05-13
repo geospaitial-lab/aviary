@@ -40,6 +40,7 @@ from aviary.core.enums import (
     ChannelName,
     DType,
     _coerce_channel_name,
+    _supported_dtypes,
 )
 from aviary.core.exceptions import AviaryUserError
 from aviary.core.mixins import IDMixin
@@ -580,6 +581,7 @@ class RasterChannel(Channel, Iterable[npt.NDArray]):
             AviaryUserError: Invalid `data` (the data item is not in shape (n, n))
             AviaryUserError: Invalid `data` (the shapes of the data items are not equal)
             AviaryUserError: Invalid `data` (the dtypes of the data items are not equal)
+            AviaryUserError: Invalid `data` (the dtype of the data item is not supported)
         """
         first_data_item = self[0]
 
@@ -608,6 +610,13 @@ class RasterChannel(Channel, Iterable[npt.NDArray]):
             message = (
                 'Invalid data! '
                 'The dtypes of the data items must be equal.'
+            )
+            raise AviaryUserError(message)
+
+        if data_item.dtype.name not in _supported_dtypes:
+            message = (
+                'Invalid data! '
+                'The dtype of the data item must be supported.'
             )
             raise AviaryUserError(message)
 
