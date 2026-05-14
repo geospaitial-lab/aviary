@@ -79,6 +79,7 @@ def raster_exporter(
         list[ChannelName | str],
     epsg_code: EPSGCode,
     path: Path,
+    mapping: dict[int, list[int]] | None = None,
     remove_channels: bool = True,
     max_num_threads: int | None = None,
 ) -> Tiles:
@@ -89,6 +90,7 @@ def raster_exporter(
         channel_names: Channel name or channel names
         epsg_code: EPSG code
         path: Path to the directory
+        mapping: Mapping of the values
         remove_channels: If True, the channels are removed
         max_num_threads: Maximum number of threads
 
@@ -155,6 +157,9 @@ def raster_exporter(
 
             for i, channel_name in enumerate(channel_names):
                 dst.set_band_description(i + 1, channel_name)
+
+            if mapping is not None:
+                dst.write_colormap(1, mapping)
 
     if batch_size == 1:
         max_num_threads = 1

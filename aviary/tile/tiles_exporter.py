@@ -142,6 +142,7 @@ class RasterExporter(IDMixin):
             list[ChannelName | str],
         epsg_code: EPSGCode,
         path: Path,
+        mapping: dict[int, list[int]] | None = None,
         remove_channels: bool = True,
         max_num_threads: int | None = None,
     ) -> None:
@@ -150,12 +151,14 @@ class RasterExporter(IDMixin):
             channel_names: Channel name or channel names
             epsg_code: EPSG code
             path: Path to the directory
+            mapping: Mapping of the values
             remove_channels: If True, the channels are removed
             max_num_threads: Maximum number of threads
         """
         self._channel_names = channel_names
         self._epsg_code = epsg_code
         self._path = path
+        self._mapping = mapping
         self._remove_channels = remove_channels
         self._max_num_threads = max_num_threads
 
@@ -194,6 +197,7 @@ class RasterExporter(IDMixin):
             channel_names=self._channel_names,
             epsg_code=self._epsg_code,
             path=self._path,
+            mapping=self._mapping,
             remove_channels=self._remove_channels,
             max_num_threads=self._max_num_threads,
         )
@@ -219,6 +223,7 @@ class RasterExporterConfig(pydantic.BaseModel):
             - 'b'
           epsg_code: 25832
           path: 'path/to/my_directory'
+          mapping: null
           remove_channels: true
           max_num_threads: null
         ```
@@ -227,6 +232,8 @@ class RasterExporterConfig(pydantic.BaseModel):
         channel_names: Channel name or channel names
         epsg_code: EPSG code
         path: Path to the directory
+        mapping: Mapping of the values -
+            defaults to None
         remove_channels: If True, the channels are removed -
             defaults to True
         max_num_threads: Maximum number of threads -
@@ -238,6 +245,7 @@ class RasterExporterConfig(pydantic.BaseModel):
     )
     epsg_code: EPSGCode
     path: Path
+    mapping: dict[int, list[int]] | None = None
     remove_channels: bool = True
     max_num_threads: int | None = None
 
