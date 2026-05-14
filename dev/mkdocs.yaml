@@ -52,6 +52,7 @@ nav:
       - TilesProcessor:
           - TilesProcessor: api_reference/tile/tiles_processor/tiles_processor.md
           - AspectProcessor: api_reference/tile/tiles_processor/aspect_processor.md
+          - CastProcessor: api_reference/tile/tiles_processor/cast_processor.md
           - CopyProcessor: api_reference/tile/tiles_processor/copy_processor.md
           - ExpressionProcessor: api_reference/tile/tiles_processor/expression_processor.md
           - HillshadeProcessor: api_reference/tile/tiles_processor/hillshade_processor.md

@@ -32,6 +32,7 @@ if TYPE_CHECKING:
 
 from aviary._functional.tile.tiles_processor import (
     aspect_processor,
+    cast_processor,
     copy_processor,
     expression_processor,
     hillshade_processor,
@@ -50,6 +51,7 @@ from aviary._functional.tile.tiles_processor import (
 from aviary._utils.lifecycle import experimental
 from aviary.core.enums import (
     ChannelName,
+    DType,
     SlopeUnit,
 )
 from aviary.core.exceptions import AviaryUserError
@@ -72,6 +74,7 @@ class TilesProcessor(Protocol):
 
     Implemented tiles processors:
         - `AspectProcessor`: Computes the aspect from a channel
+        - `CastProcessor`: Casts a channel
         - `CopyProcessor`: Copies a channel
         - `ExpressionProcessor`: Computes a new channel from an expression
         - `HillshadeProcessor`: Computes the hillshade from a channel or channels
@@ -357,6 +360,113 @@ class AspectProcessorConfig(pydantic.BaseModel):
 _TilesProcessorFactory.register(
     tiles_processor_class=AspectProcessor,
     config_class=AspectProcessorConfig,
+    package=_PACKAGE,
+)
+
+
+class CastProcessor(IDMixin):
+    """Tiles processor that casts a channel
+
+    Notes:
+        - Requires a raster channel
+
+    Implements the `TilesProcessor` protocol.
+    """
+
+    def __init__(
+        self,
+        channel_name: ChannelName | str,
+        dtype: DType,
+        new_channel_name: ChannelName | str | None = None,
+        max_num_threads: int | None = None,
+    ) -> None:
+        """
+        Parameters:
+            channel_name: Channel name
+            dtype: Data type
+            new_channel_name: New channel name
+            max_num_threads: Maximum number of threads
+        """
+        self._dtype = dtype
+        self._channel_name = channel_name
+        self._new_channel_name = new_channel_name
+        self._max_num_threads = max_num_threads
+
+        super().__init__()
+
+    @classmethod
+    def from_config(
+        cls,
+        config: CastProcessorConfig,
+    ) -> CastProcessor:
+        """Creates a cast processor from the configuration.
+
+        Parameters:
+            config: Configuration
+
+        Returns:
+            Cast processor
+        """
+        config = config.model_dump()
+        return cls(**config)
+
+    def __call__(
+        self,
+        tiles: Tiles,
+    ) -> Tiles:
+        """Casts the channel.
+
+        Parameters:
+            tiles: Tiles
+
+        Returns:
+            Tiles
+        """
+        return cast_processor(
+            tiles=tiles,
+            channel_name=self._channel_name,
+            dtype=self._dtype,
+            new_channel_name=self._new_channel_name,
+            max_num_threads=self._max_num_threads,
+        )
+
+
+class CastProcessorConfig(pydantic.BaseModel):
+    """Configuration for the `from_config` class method of `CastProcessor`
+
+    Create the configuration from a config file:
+        - Use null instead of None
+
+    Usage:
+        You can create the configuration from a config file.
+
+        ``` yaml title="config.yaml"
+        package: 'aviary'
+        name: 'CastProcessor'
+        config:
+          channel_name: 'my_channel'
+          dtype: 'float32'
+          new_channel_name: null
+          max_num_threads: null
+        ```
+
+    Attributes:
+        channel_name: Channel name
+        dtype: Data type
+        new_channel_name: New channel name -
+            defaults to None
+        max_num_threads: Maximum number of threads -
+            defaults to None
+    """
+    channel_name: ChannelName | str
+    dtype: DType
+    new_channel_name: ChannelName | str | None = None
+    max_num_threads: int | None = None
+
+
+_TilesProcessorFactory.register(
+    tiles_processor_class=CastProcessor,
+    config_class=CastProcessorConfig,
     package=_PACKAGE,
 )
 
