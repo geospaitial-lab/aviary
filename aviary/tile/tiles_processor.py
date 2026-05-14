@@ -585,16 +585,19 @@ class ExpressionProcessor(IDMixin):
         self,
         expression_string: str,
         new_channel_name: ChannelName | str,
+        dtype: DType | None = None,
         max_num_threads: int | None = None,
     ) -> None:
         """
         Parameters:
             expression_string: Expression string based on the numexpr expression syntax
             new_channel_name: New channel name
+            dtype: Data type
             max_num_threads: Maximum number of threads
         """
         self._expression_string = expression_string
         self._new_channel_name = new_channel_name
+        self._dtype = dtype
         self._max_num_threads = max_num_threads
 
         super().__init__()
@@ -631,6 +634,7 @@ class ExpressionProcessor(IDMixin):
             tiles=tiles,
             expression_string=self._expression_string,
             new_channel_name=self._new_channel_name,
+            dtype=self._dtype,
             max_num_threads=self._max_num_threads,
         )
 
@@ -650,17 +654,21 @@ class ExpressionProcessorConfig(pydantic.BaseModel):
         config:
           expression_string: '(nir - r) / (nir + r)'
           new_channel_name: 'ndvi'
+          dtype: null
           max_num_threads: null
         ```
 
     Attributes:
         expression_string: Expression string based on the numexpr expression syntax
         new_channel_name: New channel name
+        dtype: Data type -
+            defaults to None
         max_num_threads: Maximum number of threads -
             defaults to None
     """
     expression_string: str
     new_channel_name: ChannelName | str
+    dtype: DType | None = None
     max_num_threads: int | None = None
 
 

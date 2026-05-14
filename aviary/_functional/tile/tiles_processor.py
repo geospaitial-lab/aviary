@@ -279,6 +279,7 @@ def expression_processor(
     tiles: Tiles,
     expression_string: str,
     new_channel_name: ChannelName | str,
+    dtype: DType | None = None,
     max_num_threads: int | None = None,
 ) -> Tiles:
     """Computes the new channel from the expression.
@@ -287,6 +288,7 @@ def expression_processor(
         tiles: Tiles
         expression_string: Expression string based on the numexpr expression syntax
         new_channel_name: New channel name
+        dtype: Data type
         max_num_threads: Maximum number of threads
 
     Returns:
@@ -337,8 +339,8 @@ def expression_processor(
 
         data_item = compiled(*args)
 
-        if data_item.dtype != np.float32:
-            data_item = data_item.astype(np.float32)
+        if dtype is not None:
+            data_item = data_item.astype(dtype.to_numpy())
 
         return data_item
 
