@@ -151,6 +151,9 @@ def raster_exporter(
             data_item = np.transpose(data_item, (2, 0, 1))
             dst.write(data_item)
 
+            for i, channel_name in enumerate(channel_names):
+                dst.set_band_description(i + 1, channel_name)
+
     if batch_size == 1:
         max_num_threads = 1
 
