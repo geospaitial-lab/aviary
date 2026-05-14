@@ -1523,7 +1523,7 @@ class SieveProcessor(IDMixin):
     def __init__(
         self,
         channel_name: ChannelName | str,
-        threshold: float,
+        threshold: int,
         new_channel_name: ChannelName | str | None = None,
         max_num_threads: int | None = None,
     ) -> None:
@@ -1592,7 +1592,7 @@ class SieveProcessorConfig(pydantic.BaseModel):
         name: 'SieveProcessor'
         config:
           channel_name: 'my_channel'
-          threshold: 1.
+          threshold: 10
           new_channel_name: null
           max_num_threads: null
         ```
@@ -1606,7 +1606,7 @@ class SieveProcessorConfig(pydantic.BaseModel):
             defaults to None
     """
     channel_name: ChannelName | str
-    threshold: float
+    threshold: int
     new_channel_name: ChannelName | str | None = None
     max_num_threads: int | None = None
 
