@@ -52,6 +52,7 @@ from aviary._functional.tile.tiles_processor import (
 from aviary._utils.lifecycle import experimental
 from aviary.core.enums import (
     ChannelName,
+    Connectivity,
     DType,
     SlopeUnit,
 )
@@ -1524,6 +1525,7 @@ class SieveProcessor(IDMixin):
         self,
         channel_name: ChannelName | str,
         threshold: int,
+        connectivity: Connectivity = Connectivity.FOUR,
         new_channel_name: ChannelName | str | None = None,
         max_num_threads: int | None = None,
     ) -> None:
@@ -1531,11 +1533,13 @@ class SieveProcessor(IDMixin):
         Parameters:
             channel_name: Channel name
             threshold: Threshold (the minimum area of the polygon to retain) in pixels
+            connectivity: Connectivity (`FOUR` or `EIGHT`)
             new_channel_name: New channel name
             max_num_threads: Maximum number of threads
         """
         self._channel_name = channel_name
         self._threshold = threshold
+        self._connectivity = connectivity
         self._new_channel_name = new_channel_name
         self._max_num_threads = max_num_threads
 
@@ -1573,6 +1577,7 @@ class SieveProcessor(IDMixin):
             tiles=tiles,
             channel_name=self._channel_name,
             threshold=self._threshold,
+            connectivity=self._connectivity,
             new_channel_name=self._new_channel_name,
             max_num_threads=self._max_num_threads,
         )
@@ -1582,6 +1587,7 @@ class SieveProcessorConfig(pydantic.BaseModel):
     """Configuration for the `from_config` class method of `SieveProcessor`
 
     Create the configuration from a config file:
+        - Use 4 or 8 instead of `Connectivity.FOUR` or `Connectivity.EIGHT`
         - Use null instead of None
 
     Usage:
@@ -1593,6 +1599,7 @@ class SieveProcessorConfig(pydantic.BaseModel):
         config:
           channel_name: 'my_channel'
           threshold: 10
+          connectivity: 4
           new_channel_name: null
           max_num_threads: null
         ```
@@ -1600,6 +1607,8 @@ class SieveProcessorConfig(pydantic.BaseModel):
     Attributes:
         channel_name: Channel name
         threshold: Threshold (the minimum area of the polygon to retain) in pixels
+        connectivity: Connectivity (`FOUR` or `EIGHT`) -
+            defaults to `FOUR`
         new_channel_name: New channel name -
             defaults to None
         max_num_threads: Maximum number of threads -
@@ -1607,6 +1616,7 @@ class SieveProcessorConfig(pydantic.BaseModel):
     """
     channel_name: ChannelName | str
     threshold: int
+    connectivity: Connectivity = Connectivity.FOUR
     new_channel_name: ChannelName | str | None = None
     max_num_threads: int | None = None
 

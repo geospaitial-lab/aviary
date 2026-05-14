@@ -37,6 +37,7 @@ from aviary.core.channel import (
 )
 from aviary.core.enums import (
     ChannelName,
+    Connectivity,
     DType,
     SlopeUnit,
     _coerce_channel_name,
@@ -836,6 +837,7 @@ def sieve_processor(
     tiles: Tiles,
     channel_name: ChannelName | str,
     threshold: int,
+    connectivity: Connectivity = Connectivity.FOUR,
     new_channel_name: ChannelName | str | None = None,
     max_num_threads: int | None = None,
 ) -> Tiles:
@@ -845,6 +847,7 @@ def sieve_processor(
         tiles: Tiles
         channel_name: Channel name
         threshold: Threshold (the minimum area of the polygon to retain) in pixels
+        connectivity: Connectivity (`FOUR` or `EIGHT`)
         new_channel_name: New channel name
         max_num_threads: Maximum number of threads
 
@@ -857,6 +860,7 @@ def sieve_processor(
         process_data_item=lambda data_item: _sieve_data_item(
             data_item=data_item,
             threshold=threshold,
+            connectivity=connectivity,
         ),
         new_channel_name=new_channel_name,
         max_num_threads=max_num_threads,
@@ -866,12 +870,14 @@ def sieve_processor(
 def _sieve_data_item(
     data_item: npt.NDArray,
     threshold: int,
+    connectivity: Connectivity = Connectivity.FOUR,
 ) -> npt.NDArray:
     """Sieves the data item.
 
     Parameters:
         data_item: Data item
         threshold: Threshold (the minimum area of the polygon to retain) in pixels
+        connectivity: Connectivity (`FOUR` or `EIGHT`)
 
     Returns:
         Data item
@@ -879,6 +885,7 @@ def _sieve_data_item(
     return rio.features.sieve(
         source=data_item,
         size=threshold,
+        connectivity=connectivity.value,
     )
 
 
