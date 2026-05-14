@@ -616,6 +616,7 @@ def rasterize_processor(
     ground_sampling_distance: GroundSamplingDistance,
     mapping: dict[object, int] | None = None,
     background_value: int = 0,
+    dtype: DType | None = DType.UINT8,
     new_channel_name: ChannelName | str | None = None,
     max_num_threads: int | None = None,
 ) -> Tiles:
@@ -628,6 +629,7 @@ def rasterize_processor(
         ground_sampling_distance: Ground sampling distance in meters per pixel
         mapping: Mapping of the values
         background_value: Background value
+        dtype: Data type
         new_channel_name: New channel name
         max_num_threads: Maximum number of threads
 
@@ -658,6 +660,7 @@ def rasterize_processor(
             tile_size_pixels=tile_size_pixels,
             mapping=mapping,
             background_value=background_value,
+            dtype=dtype,
         ),
         new_channel_name=new_channel_name,
         max_num_threads=max_num_threads,
@@ -703,6 +706,7 @@ def _rasterize_data_item(
     tile_size_pixels: int,
     mapping: dict[object, int] | None = None,
     background_value: int = 0,
+    dtype: DType | None = DType.UINT8,
 ) -> npt.NDArray:
     """Rasterizes the data item.
 
@@ -712,6 +716,7 @@ def _rasterize_data_item(
         tile_size_pixels: Tile size in pixels
         mapping: Mapping of the values
         background_value: Background value
+        dtype: Data type
 
     Returns:
         Data item
@@ -744,12 +749,17 @@ def _rasterize_data_item(
             for geometry, values in zip(geometries, values, strict=False)
         ]
 
-    return rio.features.rasterize(
+    data_item = rio.features.rasterize(
         shapes=shapes,
         out_shape=(tile_size_pixels, tile_size_pixels),
         fill=background_value,
         transform=transform,
     )
+
+    if dtype is not None:
+        data_item = data_item.astype(dtype.to_numpy())
+
+    return data_item
 
 
 def remove_buffer_processor(
