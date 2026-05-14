@@ -37,6 +37,7 @@ from aviary.core.channel import (
 )
 from aviary.core.enums import (
     ChannelName,
+    DType,
     SlopeUnit,
     _coerce_channel_name,
 )
@@ -191,6 +192,53 @@ def _aspect_data_item(
     )
 
     return np.rad2deg(-(np.arctan2(dz_dy, dz_dx) + (np.pi / 2)) % (2 * np.pi))
+
+
+def cast_processor(
+    tiles: Tiles,
+    channel_name: ChannelName | str,
+    dtype: DType,
+    new_channel_name: ChannelName | str | None = None,
+    max_num_threads: int | None = None,
+) -> Tiles:
+    """Casts the channel.
+
+    Parameters:
+        tiles: Tiles
+        channel_name: Channel name
+        dtype: Data type
+        new_channel_name: New channel name
+        max_num_threads: Maximum number of threads
+
+    Returns:
+        Tiles
+    """
+    return _process_data(
+        tiles=tiles,
+        channel_name=channel_name,
+        process_data_item=lambda data_item: _cast_data_item(
+            data_item=data_item,
+            dtype=dtype,
+        ),
+        new_channel_name=new_channel_name,
+        max_num_threads=max_num_threads,
+    )
+
+
+def _cast_data_item(
+    data_item: npt.NDArray,
+    dtype: DType,
+) -> npt.NDArray:
+    """Casts the data item.
+
+    Parameters:
+        data_item: Data item
+        dtype: Data type
+
+    Returns:
+        Data item
+    """
+    return data_item.astype(dtype.to_numpy())
 
 
 def copy_processor(
