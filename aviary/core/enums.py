@@ -159,6 +159,16 @@ def _coerce_layer_names(
     return layer_names
 
 
+class Connectivity(Enum):
+    """
+    Attributes:
+        FOUR: 4-connectivity
+        EIGHT: 8-connectivity
+    """
+    FOUR = 4
+    EIGHT = 8
+
+
 class DType(Enum):
     """
     Attributes:

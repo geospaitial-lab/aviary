@@ -10,6 +10,10 @@
 
 ---
 
+::: aviary.Connectivity
+
+---
+
 ::: aviary.DType
     options:
       filters:

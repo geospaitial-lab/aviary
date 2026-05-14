@@ -23,6 +23,7 @@ from .core.channel import (
 )
 from .core.enums import (
     ChannelName,
+    Connectivity,
     DType,
     GeospatialFilterMode,
     InterpolationMode,
@@ -70,6 +71,7 @@ __all__ = [
     'Channel',
     'ChannelName',
     'ChannelNameSet',
+    'Connectivity',
     'Coordinate',
     'Coordinates',
     'CoordinatesSet',

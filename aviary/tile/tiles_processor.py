@@ -43,6 +43,7 @@ from aviary._functional.tile.tiles_processor import (
     remove_processor,
     select_processor,
     sequential_composite_processor,
+    sieve_processor,
     slope_processor,
     standardize_processor,
     stub_processor,
@@ -51,6 +52,7 @@ from aviary._functional.tile.tiles_processor import (
 from aviary._utils.lifecycle import experimental
 from aviary.core.enums import (
     ChannelName,
+    Connectivity,
     DType,
     SlopeUnit,
 )
@@ -85,6 +87,7 @@ class TilesProcessor(Protocol):
         - `RemoveProcessor`: Removes channels
         - `SelectProcessor`: Selects channels
         - `SequentialCompositeProcessor`: Composes multiple tiles processors in sequence
+        - `SieveProcessor`: Sieves a channel
         - `SlopeProcessor`: Computes the slope from a channel
         - `StandardizeProcessor`: Standardizes a channel
         - `StubProcessor`: Passes the tiles through
@@ -1505,6 +1508,122 @@ class SequentialCompositeProcessorConfig(pydantic.BaseModel):
 _TilesProcessorFactory.register(
     tiles_processor_class=SequentialCompositeProcessor,
     config_class=SequentialCompositeProcessorConfig,
+    package=_PACKAGE,
+)
+
+
+class SieveProcessor(IDMixin):
+    """Tiles processor that sieves a channel
+
+    Notes:
+        - Requires a raster channel
+
+    Implements the `TilesProcessor` protocol.
+    """
+
+    def __init__(
+        self,
+        channel_name: ChannelName | str,
+        threshold: int,
+        connectivity: Connectivity = Connectivity.FOUR,
+        new_channel_name: ChannelName | str | None = None,
+        max_num_threads: int | None = None,
+    ) -> None:
+        """
+        Parameters:
+            channel_name: Channel name
+            threshold: Threshold (the minimum area of the polygon to retain) in pixels
+            connectivity: Connectivity (`FOUR` or `EIGHT`)
+            new_channel_name: New channel name
+            max_num_threads: Maximum number of threads
+        """
+        self._channel_name = channel_name
+        self._threshold = threshold
+        self._connectivity = connectivity
+        self._new_channel_name = new_channel_name
+        self._max_num_threads = max_num_threads
+
+        super().__init__()
+
+    @classmethod
+    def from_config(
+        cls,
+        config: SieveProcessorConfig,
+    ) -> SieveProcessor:
+        """Creates a sieve processor from the configuration.
+
+        Parameters:
+            config: Configuration
+
+        Returns:
+            Sieve processor
+        """
+        config = config.model_dump()
+        return cls(**config)
+
+    def __call__(
+        self,
+        tiles: Tiles,
+    ) -> Tiles:
+        """Sieves the channel.
+
+        Parameters:
+            tiles: Tiles
+
+        Returns:
+            Tiles
+        """
+        return sieve_processor(
+            tiles=tiles,
+            channel_name=self._channel_name,
+            threshold=self._threshold,
+            connectivity=self._connectivity,
+            new_channel_name=self._new_channel_name,
+            max_num_threads=self._max_num_threads,
+        )
+
+
+class SieveProcessorConfig(pydantic.BaseModel):
+    """Configuration for the `from_config` class method of `SieveProcessor`
+
+    Create the configuration from a config file:
+        - Use 4 or 8 instead of `Connectivity.FOUR` or `Connectivity.EIGHT`
+        - Use null instead of None
+
+    Usage:
+        You can create the configuration from a config file.
+
+        ``` yaml title="config.yaml"
+        package: 'aviary'
+        name: 'SieveProcessor'
+        config:
+          channel_name: 'my_channel'
+          threshold: 10
+          connectivity: 4
+          new_channel_name: null
+          max_num_threads: null
+        ```
+
+    Attributes:
+        channel_name: Channel name
+        threshold: Threshold (the minimum area of the polygon to retain) in pixels
+        connectivity: Connectivity (`FOUR` or `EIGHT`) -
+            defaults to `FOUR`
+        new_channel_name: New channel name -
+            defaults to None
+        max_num_threads: Maximum number of threads -
+            defaults to None
+    """
+    channel_name: ChannelName | str
+    threshold: int
+    connectivity: Connectivity = Connectivity.FOUR
+    new_channel_name: ChannelName | str | None = None
+    max_num_threads: int | None = None
+
+
+_TilesProcessorFactory.register(
+    tiles_processor_class=SieveProcessor,
+    config_class=SieveProcessorConfig,
     package=_PACKAGE,
 )
 
