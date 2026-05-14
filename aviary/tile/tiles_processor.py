@@ -1049,6 +1049,7 @@ class RasterizeProcessor(IDMixin):
         ground_sampling_distance: GroundSamplingDistance,
         mapping: dict[object, int] | None = None,
         background_value: int = 0,
+        dtype: DType | None = DType.UINT8,
         new_channel_name: ChannelName | str | None = None,
         max_num_threads: int | None = None,
     ) -> None:
@@ -1059,6 +1060,7 @@ class RasterizeProcessor(IDMixin):
             ground_sampling_distance: Ground sampling distance in meters per pixel
             mapping: Mapping of the values
             background_value: Background value
+            dtype: Data type
             new_channel_name: New channel name
             max_num_threads: Maximum number of threads
         """
@@ -1067,6 +1069,7 @@ class RasterizeProcessor(IDMixin):
         self._ground_sampling_distance = ground_sampling_distance
         self._mapping = mapping
         self._background_value = background_value
+        self._dtype = dtype
         self._new_channel_name = new_channel_name
         self._max_num_threads = max_num_threads
 
@@ -1107,6 +1110,7 @@ class RasterizeProcessor(IDMixin):
             ground_sampling_distance=self._ground_sampling_distance,
             mapping=self._mapping,
             background_value=self._background_value,
+            dtype=self._dtype,
             new_channel_name=self._new_channel_name,
             max_num_threads=self._max_num_threads,
         )
@@ -1131,6 +1135,7 @@ class RasterizeProcessorConfig(pydantic.BaseModel):
           mapping:
             'value': 1
           background_value: 0
+          dtype: 'uint8'
           new_channel_name: null
           max_num_threads: null
         ```
@@ -1143,6 +1148,8 @@ class RasterizeProcessorConfig(pydantic.BaseModel):
             defaults to None
         background_value: Background value -
             defaults to 0
+        dtype: Data type -
+            defaults to `UINT8`
         new_channel_name: New channel name -
             defaults to None
         max_num_threads: Maximum number of threads -
@@ -1153,6 +1160,7 @@ class RasterizeProcessorConfig(pydantic.BaseModel):
     ground_sampling_distance: GroundSamplingDistance
     mapping: dict[object, int] | None = None
     background_value: int = 0
+    dtype: DType | None = DType.UINT8
     new_channel_name: ChannelName | str | None = None
     max_num_threads: int | None = None
 
