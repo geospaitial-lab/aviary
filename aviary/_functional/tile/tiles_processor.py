@@ -736,7 +736,7 @@ def _rasterize_data_item(
             for geometry, values in zip(geometries, values, strict=False)
         ]
 
-    return rasterio.features.rasterize(
+    return rio.features.rasterize(
         shapes=shapes,
         out_shape=(tile_size_pixels, tile_size_pixels),
         fill=background_value,
@@ -830,6 +830,56 @@ def sequential_composite_processor(
         tiles = tiles_processor(tiles=tiles)
 
     return tiles
+
+
+def sieve_processor(
+    tiles: Tiles,
+    channel_name: ChannelName | str,
+    threshold: int,
+    new_channel_name: ChannelName | str | None = None,
+    max_num_threads: int | None = None,
+) -> Tiles:
+    """Sieves the channel.
+
+    Parameters:
+        tiles: Tiles
+        channel_name: Channel name
+        threshold: Threshold (the minimum area of the polygon to retain) in pixels
+        new_channel_name: New channel name
+        max_num_threads: Maximum number of threads
+
+    Returns:
+        Tiles
+    """
+    return _process_data(
+        tiles=tiles,
+        channel_name=channel_name,
+        process_data_item=lambda data_item: _sieve_data_item(
+            data_item=data_item,
+            threshold=threshold,
+        ),
+        new_channel_name=new_channel_name,
+        max_num_threads=max_num_threads,
+    )
+
+
+def _sieve_data_item(
+    data_item: npt.NDArray,
+    threshold: int,
+) -> npt.NDArray:
+    """Sieves the data item.
+
+    Parameters:
+        data_item: Data item
+        threshold: Threshold (the minimum area of the polygon to retain) in pixels
+
+    Returns:
+        Data item
+    """
+    return rio.features.sieve(
+        source=data_item,
+        size=threshold,
+    )
 
 
 def slope_processor(
