@@ -829,6 +829,7 @@ class NormalizeProcessor(IDMixin):
         channel_name: ChannelName | str,
         min_value: float,
         max_value: float,
+        dtype: DType | None = DType.FLOAT32,
         new_channel_name: ChannelName | str | None = None,
         max_num_threads: int | None = None,
     ) -> None:
@@ -837,12 +838,14 @@ class NormalizeProcessor(IDMixin):
             channel_name: Channel name
             min_value: Minimum value
             max_value: Maximum value
+            dtype: Data type
             new_channel_name: New channel name
             max_num_threads: Maximum number of threads
         """
         self._channel_name = channel_name
         self._min_value = min_value
         self._max_value = max_value
+        self._dtype = dtype
         self._new_channel_name = new_channel_name
         self._max_num_threads = max_num_threads
 
@@ -881,6 +884,7 @@ class NormalizeProcessor(IDMixin):
             channel_name=self._channel_name,
             min_value=self._min_value,
             max_value=self._max_value,
+            dtype=self._dtype,
             new_channel_name=self._new_channel_name,
             max_num_threads=self._max_num_threads,
         )
@@ -902,6 +906,7 @@ class NormalizeProcessorConfig(pydantic.BaseModel):
           channel_name: 'my_channel'
           min_value: 0.
           max_value: 255.
+          dtype: 'float32'
           new_channel_name: null
           max_num_threads: null
         ```
@@ -910,6 +915,8 @@ class NormalizeProcessorConfig(pydantic.BaseModel):
         channel_name: Channel name
         min_value: Minimum value
         max_value: Maximum value
+        dtype: Data type -
+            defaults to `FLOAT32`
         new_channel_name: New channel name -
             defaults to None
         max_num_threads: Maximum number of threads -
@@ -918,6 +925,7 @@ class NormalizeProcessorConfig(pydantic.BaseModel):
     channel_name: ChannelName | str
     min_value: float
     max_value: float
+    dtype: DType | None = DType.FLOAT32
     new_channel_name: ChannelName | str | None = None
     max_num_threads: int | None = None
 

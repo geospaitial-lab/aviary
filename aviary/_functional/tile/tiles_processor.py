@@ -529,6 +529,7 @@ def normalize_processor(
     channel_name: ChannelName | str,
     min_value: float,
     max_value: float,
+    dtype: DType | None = DType.FLOAT32,
     new_channel_name: ChannelName | str | None = None,
     max_num_threads: int | None = None,
 ) -> Tiles:
@@ -539,6 +540,7 @@ def normalize_processor(
         channel_name: Channel name
         min_value: Minimum value
         max_value: Maximum value
+        dtype: Data type
         new_channel_name: New channel name
         max_num_threads: Maximum number of threads
 
@@ -552,6 +554,7 @@ def normalize_processor(
             data_item=data_item,
             min_value=min_value,
             max_value=max_value,
+            dtype=dtype,
         ),
         new_channel_name=new_channel_name,
         max_num_threads=max_num_threads,
@@ -562,6 +565,7 @@ def _normalize_data_item(
     data_item: npt.NDArray,
     min_value: float,
     max_value: float,
+    dtype: DType | None = DType.FLOAT32,
 ) -> npt.NDArray:
     """Normalizes the data item.
 
@@ -569,14 +573,15 @@ def _normalize_data_item(
         data_item: Data item
         min_value: Minimum value
         max_value: Maximum value
+        dtype: Data type
 
     Returns:
         Data item
     """
     data_item = (data_item - min_value) / (max_value - min_value)
 
-    if data_item.dtype != np.float32:
-        data_item = data_item.astype(np.float32)
+    if dtype is not None:
+        data_item = data_item.astype(dtype.to_numpy())
 
     return data_item
 
