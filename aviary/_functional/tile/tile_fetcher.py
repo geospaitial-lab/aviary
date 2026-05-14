@@ -282,6 +282,7 @@ def wms_fetcher(
         None,
     tile_size: TileSize,
     ground_sampling_distance: GroundSamplingDistance,
+    time: int | str | None = None,
     style: str | None = None,
     buffer_size: BufferSize = 0,
     fill_value: str = '0x000000',
@@ -298,6 +299,7 @@ def wms_fetcher(
         channel_names: Channel name or channel names (if None, the channel is ignored)
         tile_size: Tile size in meters
         ground_sampling_distance: Ground sampling distance in meters per pixel
+        time: Time
         style: Style
         buffer_size: Buffer size in meters
         fill_value: Fill value of no-data pixels
@@ -331,6 +333,7 @@ def wms_fetcher(
         response_format=response_format,
         tile_size_pixels=tile_size_pixels,
         bounding_box=bounding_box,
+        time=time,
         style=style,
         fill_value=fill_value,
     )
@@ -390,6 +393,7 @@ def _get_wms_params(
     response_format: str,
     tile_size_pixels: int,
     bounding_box: BoundingBox,
+    time: int | str | None = None,
     style: str | None = None,
     fill_value: str = '0x000000',
 ) -> dict[str, str]:
@@ -402,6 +406,7 @@ def _get_wms_params(
         response_format: Format of the response (MIME type, e.g., 'image/png')
         tile_size_pixels: Tile size in pixels
         bounding_box: Bounding box
+        time: Time
         style: Style
         fill_value: Fill value of no-data pixels
 
@@ -432,6 +437,9 @@ def _get_wms_params(
     else:
         message = 'Invalid version!'
         raise AviaryUserError(message)
+
+    if time is not None:
+        params['time'] = str(time)
 
     if style is not None:
         params['styles'] = style
