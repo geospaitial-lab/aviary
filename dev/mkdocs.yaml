@@ -63,6 +63,7 @@ nav:
           - RemoveProcessor: api_reference/tile/tiles_processor/remove_processor.md
           - SelectProcessor: api_reference/tile/tiles_processor/select_processor.md
           - SequentialCompositeProcessor: api_reference/tile/tiles_processor/sequential_composite_processor.md
+          - SieveProcessor: api_reference/tile/tiles_processor/sieve_processor.md
           - SlopeProcessor: api_reference/tile/tiles_processor/slope_processor.md
           - StandardizeProcessor: api_reference/tile/tiles_processor/standardize_processor.md
           - StubProcessor: api_reference/tile/tiles_processor/stub_processor.md
