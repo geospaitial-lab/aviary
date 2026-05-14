@@ -968,6 +968,7 @@ def standardize_processor(
     channel_name: ChannelName | str,
     mean_value: float,
     std_value: float,
+    dtype: DType | None = DType.FLOAT32,
     new_channel_name: ChannelName | str | None = None,
     max_num_threads: int | None = None,
 ) -> Tiles:
@@ -978,6 +979,7 @@ def standardize_processor(
         channel_name: Channel name
         mean_value: Mean value
         std_value: Standard deviation value
+        dtype: Data type
         new_channel_name: New channel name
         max_num_threads: Maximum number of threads
 
@@ -991,6 +993,7 @@ def standardize_processor(
             data_item=data_item,
             mean_value=mean_value,
             std_value=std_value,
+            dtype=dtype,
         ),
         new_channel_name=new_channel_name,
         max_num_threads=max_num_threads,
@@ -1001,6 +1004,7 @@ def _standardize_data_item(
     data_item: npt.NDArray,
     mean_value: float,
     std_value: float,
+    dtype: DType | None = DType.FLOAT32,
 ) -> npt.NDArray:
     """Standardizes the data item.
 
@@ -1008,14 +1012,15 @@ def _standardize_data_item(
         data_item: Data item
         mean_value: Mean value
         std_value: Standard deviation value
+        dtype: Data type
 
     Returns:
         Data item
     """
     data_item = (data_item - mean_value) / std_value
 
-    if data_item.dtype != np.float32:
-        data_item = data_item.astype(np.float32)
+    if dtype is not None:
+        data_item = data_item.astype(dtype.to_numpy())
 
     return data_item
 

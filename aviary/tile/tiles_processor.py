@@ -1773,6 +1773,7 @@ class StandardizeProcessor(IDMixin):
         channel_name: ChannelName | str,
         mean_value: float,
         std_value: float,
+        dtype: DType | None = DType.FLOAT32,
         new_channel_name: ChannelName | str | None = None,
         max_num_threads: int | None = None,
     ) -> None:
@@ -1781,12 +1782,14 @@ class StandardizeProcessor(IDMixin):
             channel_name: Channel name
             mean_value: Mean value
             std_value: Standard deviation value
+            dtype: Data type
             new_channel_name: New channel name
             max_num_threads: Maximum number of threads
         """
         self._channel_name = channel_name
         self._mean_value = mean_value
         self._std_value = std_value
+        self._dtype = dtype
         self._new_channel_name = new_channel_name
         self._max_num_threads = max_num_threads
 
@@ -1825,6 +1828,7 @@ class StandardizeProcessor(IDMixin):
             channel_name=self._channel_name,
             mean_value=self._mean_value,
             std_value=self._std_value,
+            dtype=self._dtype,
             new_channel_name=self._new_channel_name,
             max_num_threads=self._max_num_threads,
         )
@@ -1846,6 +1850,7 @@ class StandardizeProcessorConfig(pydantic.BaseModel):
           channel_name: 'my_channel'
           mean_value: .5
           std_value: .25
+          dtype: 'float32'
           new_channel_name: null
           max_num_threads: null
         ```
@@ -1854,6 +1859,8 @@ class StandardizeProcessorConfig(pydantic.BaseModel):
         channel_name: Channel name
         mean_value: Mean value
         std_value: Standard deviation value
+        dtype: Data type -
+            defaults to `FLOAT32`
         new_channel_name: New channel name -
             defaults to None
         max_num_threads: Maximum number of threads -
@@ -1862,6 +1869,7 @@ class StandardizeProcessorConfig(pydantic.BaseModel):
     channel_name: ChannelName | str
     mean_value: float
     std_value: float
+    dtype: DType | None = DType.FLOAT32
     new_channel_name: ChannelName | str | None = None
     max_num_threads: int | None = None
 
