@@ -711,6 +711,7 @@ class WMSFetcher(IDMixin):
             None,
         tile_size: TileSize,
         ground_sampling_distance: GroundSamplingDistance,
+        time: int | str | None = None,
         style: str | None = None,
         buffer_size: BufferSize = 0,
     ) -> None:
@@ -724,6 +725,7 @@ class WMSFetcher(IDMixin):
             channel_names: Channel name or channel names (if None, the channel is ignored)
             tile_size: Tile size in meters
             ground_sampling_distance: Ground sampling distance in meters per pixel
+            time: Time
             style: Style
             buffer_size: Buffer size in meters
         """
@@ -735,6 +737,7 @@ class WMSFetcher(IDMixin):
         self._channel_names = channel_names
         self._tile_size = tile_size
         self._ground_sampling_distance = ground_sampling_distance
+        self._time = time
         self._style = style
         self._buffer_size = buffer_size
 
@@ -778,6 +781,7 @@ class WMSFetcher(IDMixin):
             channel_names=self._channel_names,
             tile_size=self._tile_size,
             ground_sampling_distance=self._ground_sampling_distance,
+            time=self._time,
             style=self._style,
             buffer_size=self._buffer_size,
             fill_value=self._FILL_VALUE,
@@ -809,6 +813,7 @@ class WMSFetcherConfig(pydantic.BaseModel):
             - 'b'
           tile_size: 128
           ground_sampling_distance: .2
+          time: null
           style: null
           buffer_size: 0
         ```
@@ -822,6 +827,8 @@ class WMSFetcherConfig(pydantic.BaseModel):
         channel_names: Channel name or channel names (if None, the channel is ignored)
         tile_size: Tile size in meters
         ground_sampling_distance: Ground sampling distance in meters per pixel
+        time: Time -
+            defaults to None
         style: Style -
             defaults to None
         buffer_size: Buffer size in meters -
@@ -839,6 +846,7 @@ class WMSFetcherConfig(pydantic.BaseModel):
     )
     tile_size: TileSize
     ground_sampling_distance: GroundSamplingDistance
+    time: int | str | None = None
     style: str | None = None
     buffer_size: BufferSize = 0
 

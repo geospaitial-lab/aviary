@@ -1,4 +1,4 @@
-#  Copyright (C) 2024-2025 Marius Maryniak
+#  Copyright (C) 2024-2026 Marius Maryniak
 #
 #  This file is part of aviary.
 #
@@ -205,6 +205,7 @@ def test_wms_fetcher_init() -> None:
     ]
     tile_size = 128
     ground_sampling_distance = .2
+    time = None
     style = None
     buffer_size = 0
 
@@ -217,6 +218,7 @@ def test_wms_fetcher_init() -> None:
         channel_names=channel_names,
         tile_size=tile_size,
         ground_sampling_distance=ground_sampling_distance,
+        time=time,
         style=style,
         buffer_size=buffer_size,
     )
@@ -229,18 +231,22 @@ def test_wms_fetcher_init() -> None:
     assert wms_fetcher._channel_names == channel_names
     assert wms_fetcher._tile_size == tile_size
     assert wms_fetcher._ground_sampling_distance == ground_sampling_distance
+    assert wms_fetcher._time == time
     assert wms_fetcher._style == style
     assert wms_fetcher._buffer_size == buffer_size
 
 
 def test_wms_fetcher_init_defaults() -> None:
     signature = inspect.signature(WMSFetcher)
+    time = signature.parameters['time'].default
     style = signature.parameters['style'].default
     buffer_size = signature.parameters['buffer_size'].default
 
+    expected_time = None
     expected_style = None
     expected_buffer_size = 0
 
+    assert time is expected_time
     assert style is expected_style
     assert buffer_size == expected_buffer_size
 
@@ -258,6 +264,7 @@ def test_wms_fetcher_from_config() -> None:
     ]
     tile_size = 128
     ground_sampling_distance = .2
+    time = None
     style = None
     buffer_size = 0
     wms_fetcher_config = WMSFetcherConfig(
@@ -269,6 +276,7 @@ def test_wms_fetcher_from_config() -> None:
         channel_names=channel_names,
         tile_size=tile_size,
         ground_sampling_distance=ground_sampling_distance,
+        time=time,
         style=style,
         buffer_size=buffer_size,
     )
@@ -283,6 +291,7 @@ def test_wms_fetcher_from_config() -> None:
     assert wms_fetcher._channel_names == channel_names
     assert wms_fetcher._tile_size == tile_size
     assert wms_fetcher._ground_sampling_distance == ground_sampling_distance
+    assert wms_fetcher._time == time
     assert wms_fetcher._style == style
     assert wms_fetcher._buffer_size == buffer_size
 
@@ -310,6 +319,7 @@ def test_wms_fetcher_call(
         channel_names=wms_fetcher._channel_names,
         tile_size=wms_fetcher._tile_size,
         ground_sampling_distance=wms_fetcher._ground_sampling_distance,
+        time=wms_fetcher._time,
         style=wms_fetcher._style,
         buffer_size=wms_fetcher._buffer_size,
         fill_value=wms_fetcher._FILL_VALUE,

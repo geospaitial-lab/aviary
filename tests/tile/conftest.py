@@ -1,4 +1,4 @@
-#  Copyright (C) 2024-2025 Marius Maryniak
+#  Copyright (C) 2024-2026 Marius Maryniak
 #
 #  This file is part of aviary.
 #
@@ -85,6 +85,7 @@ def wms_fetcher() -> WMSFetcher:
     ]
     tile_size = 128
     ground_sampling_distance = .2
+    time = None
     style = None
     buffer_size = 0
     return WMSFetcher(
@@ -96,6 +97,7 @@ def wms_fetcher() -> WMSFetcher:
         channel_names=channel_names,
         tile_size=tile_size,
         ground_sampling_distance=ground_sampling_distance,
+        time=time,
         style=style,
         buffer_size=buffer_size,
     )
