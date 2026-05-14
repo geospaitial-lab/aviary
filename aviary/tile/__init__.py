@@ -42,6 +42,8 @@ from .tiles_exporter import (
 from .tiles_processor import (
     AspectProcessor,
     AspectProcessorConfig,
+    CastProcessor,
+    CastProcessorConfig,
     CopyProcessor,
     CopyProcessorConfig,
     ExpressionProcessor,
@@ -78,6 +80,8 @@ from .tiles_processor import (
 __all__ = [
     'AspectProcessor',
     'AspectProcessorConfig',
+    'CastProcessor',
+    'CastProcessorConfig',
     'CompositeFetcher',
     'CompositeFetcherConfig',
     'CopyProcessor',
