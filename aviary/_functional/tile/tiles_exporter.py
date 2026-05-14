@@ -129,6 +129,7 @@ def raster_exporter(
         )
 
         block_size = min(tile_size_pixels, max(16, 2 ** int(np.log2(min(256, tile_size_pixels)))))
+        predictor = 3 if np.issubdtype(data_item.dtype, np.floating) else 2
 
         profile = {
             'driver': 'GTiff',
@@ -142,7 +143,8 @@ def raster_exporter(
             'blockxsize': block_size,
             'blockysize': block_size,
             'compress': 'deflate',
-            'bigtiff': 'IF_SAFER',
+            'predictor': predictor,
+            'bigtiff': 'if_safer',
         }
 
         path_ = path / f'{x_min}_{y_min}.tiff'
