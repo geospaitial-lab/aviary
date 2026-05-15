@@ -269,6 +269,14 @@ class LogLevel(Enum):
     ERROR = 'error'
     CRITICAL = 'critical'
 
+    def to_loguru(self) -> str:
+        """Converts the log level to the loguru level.
+
+        Returns:
+            Loguru level
+        """
+        return self.value.upper()
+
 
 class OSMType(Enum):
     """
