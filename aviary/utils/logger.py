@@ -47,7 +47,7 @@ class Logger(IDMixin):
         if self._sink is not None:
             self._logger.add(
                 sink=self._sink,
-                level=self._level,
+                level=self._level.to_loguru(),
                 format=self._format,
             )
 
@@ -70,7 +70,7 @@ class Logger(IDMixin):
         """
         self._logger.add(
             sink=sink,
-            level=level,
+            level=level.to_loguru(),
             format=format,
         )
 
