@@ -42,6 +42,7 @@ from aviary._utils.plugins import (
     discover_local_plugins,
     discover_packaged_plugins,
 )
+from aviary.core.enums import LogLevel
 from aviary.pipeline.pipeline import (
     PipelineConfig,
     _PipelineFactory,
@@ -562,10 +563,17 @@ def pipeline_run(
         envvar='AVIARY_LOG_PATH',
         help='Path to the log file',
     ),
+    log_level_option: str | None = typer.Option(
+        None,
+        '--log-level',
+        envvar='AVIARY_LOG_LEVEL',
+        help='Log level',
+    ),
 ) -> None:
     """Run the pipeline."""
     logger = Logger(
         sink=log_path_option,
+        level=LogLevel(log_level_option),
     )
 
     with logger._logger.catch(level='CRITICAL', message='An error occurred:', reraise=True):  # noqa: SLF001
