@@ -33,6 +33,9 @@
 ---
 
 ::: aviary.LogLevel
+    options:
+      filters:
+      - "!to_loguru"
 
 ---
 
