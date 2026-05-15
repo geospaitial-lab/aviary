@@ -32,6 +32,12 @@ Path to the log file
 
 ---
 
+### `AVIARY_LOG_LEVEL`
+
+Log level
+
+---
+
 ### `AVIARY_PLUGINS_DIR_PATH`
 
 Path to the plugins directory
