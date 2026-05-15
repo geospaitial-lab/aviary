@@ -13,8 +13,6 @@
 #  You should have received a copy of the GNU General Public License along with aviary.
 #  If not, see <https://www.gnu.org/licenses/>.
 
-from __future__ import annotations
-
 from typing import Any
 
 from loguru import logger
