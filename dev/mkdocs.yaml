@@ -35,6 +35,11 @@ nav:
       - Vector: api_reference/core/vector.md
       - VectorLayer: api_reference/core/vector_layer.md
       - Warnings: api_reference/core/warnings.md
+    - aviary.pipeline:
+      - Pipeline: api_reference/pipeline/pipeline.md
+      - CompositePipeline: api_reference/pipeline/composite_pipeline.md
+      - TilePipeline: api_reference/pipeline/tile_pipeline.md
+      - VectorPipeline: api_reference/pipeline/vector_pipeline.md
     - aviary.tile:
       - TileFetcher:
           - TileFetcher: api_reference/tile/tile_fetcher/tile_fetcher.md
@@ -68,11 +73,6 @@ nav:
           - StandardizeProcessor: api_reference/tile/tiles_processor/standardize_processor.md
           - StubProcessor: api_reference/tile/tiles_processor/stub_processor.md
           - VectorizeProcessor: api_reference/tile/tiles_processor/vectorize_processor.md
-    - aviary.pipeline:
-      - Pipeline: api_reference/pipeline/pipeline.md
-      - CompositePipeline: api_reference/pipeline/composite_pipeline.md
-      - TilePipeline: api_reference/pipeline/tile_pipeline.md
-      - VectorPipeline: api_reference/pipeline/vector_pipeline.md
     - aviary.utils:
         - CoordinatesFilter:
             - CoordinatesFilter: api_reference/utils/coordinates_filter/coordinates_filter.md
