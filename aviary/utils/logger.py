@@ -40,17 +40,20 @@ class Logger(IDMixin):
         self._level = level
         self._format = format
 
-        logger.remove()
-        logger.add(
+        self._logger = logger
+
+        self._logger.remove()
+        self._logger.add(
             sink=self._sink,
             level=self._level,
             format=self._format,
         )
+        self._logger.enable(name='aviary')
 
         super().__init__()
 
-    @staticmethod
     def add_handler(
+        self,
         sink: Any,  # noqa: ANN401
         level: LogLevel = LogLevel.INFO,
         format: str = '{time:YYYY-MM-DD HH:mm:ss.SSS} | {level:<8} | {message}',  # noqa: A002
@@ -62,18 +65,16 @@ class Logger(IDMixin):
             level: Log level
             format: Format
         """
-        logger.add(
+        self._logger.add(
             sink=sink,
             level=level,
             format=format,
         )
 
-    @staticmethod
-    def disable() -> None:
+    def disable(self) -> None:
         """Disables the logger."""
-        logger.disable(name='aviary')
+        self._logger.disable(name='aviary')
 
-    @staticmethod
-    def enable() -> None:
+    def enable(self) -> None:
         """Enables the logger."""
-        logger.enable(name='aviary')
+        self._logger.enable(name='aviary')
