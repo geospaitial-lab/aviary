@@ -1,4 +1,4 @@
-#  Copyright (C) 2024-2025 Marius Maryniak
+#  Copyright (C) 2024-2026 Marius Maryniak
 #
 #  This file is part of aviary.
 #
@@ -21,12 +21,14 @@ from .coordinates_filter import (
     MaskFilter,
     SetFilter,
 )
+from .logger import Logger
 
 __all__ = [
     'CompositeFilter',
     'CoordinatesFilter',
     'DuplicatesFilter',
     'GeospatialFilter',
+    'Logger',
     'MaskFilter',
     'SetFilter',
 ]
