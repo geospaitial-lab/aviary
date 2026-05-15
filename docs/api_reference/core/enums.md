@@ -32,6 +32,10 @@
 
 ---
 
+::: aviary.LogLevel
+
+---
+
 ::: aviary.OSMType
 
 ---
