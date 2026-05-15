@@ -32,6 +32,13 @@
 
 ---
 
+::: aviary.LogLevel
+    options:
+      filters:
+      - "!to_loguru"
+
+---
+
 ::: aviary.OSMType
 
 ---

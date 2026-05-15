@@ -250,6 +250,34 @@ class InterpolationMode(Enum):
         return mapping[self]
 
 
+class LogLevel(Enum):
+    """
+    Attributes:
+        TRACE: Trace level
+        DEBUG: Debug level
+        INFO: Info level
+        SUCCESS: Success level
+        WARNING: Warning level
+        ERROR: Error level
+        CRITICAL: Critical level
+    """
+    TRACE = 'trace'
+    DEBUG = 'debug'
+    INFO = 'info'
+    SUCCESS = 'success'
+    WARNING = 'warning'
+    ERROR = 'error'
+    CRITICAL = 'critical'
+
+    def to_loguru(self) -> str:
+        """Converts the log level to the loguru level.
+
+        Returns:
+            Loguru level
+        """
+        return self.value.upper()
+
+
 class OSMType(Enum):
     """
     Attributes:
