@@ -43,11 +43,14 @@ class Logger(IDMixin):
         self._logger = logger
 
         self._logger.remove()
-        self._logger.add(
-            sink=self._sink,
-            level=self._level,
-            format=self._format,
-        )
+
+        if self._sink is not None:
+            self._logger.add(
+                sink=self._sink,
+                level=self._level,
+                format=self._format,
+            )
+
         self._logger.enable(name='aviary')
 
         super().__init__()

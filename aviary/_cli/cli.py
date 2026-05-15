@@ -21,8 +21,6 @@ from itertools import groupby
 from pathlib import Path
 from typing import Any
 
-from loguru import logger
-
 try:
     import click
     import pyperclip
@@ -50,6 +48,7 @@ from aviary.pipeline.pipeline import (
 )
 from aviary.tile.tile_fetcher import _TileFetcherFactory
 from aviary.tile.tiles_processor import _TilesProcessorFactory
+from aviary.utils.logger import Logger
 from aviary.vector.vector_loader import _VectorLoaderFactory
 from aviary.vector.vector_processor import _VectorProcessorFactory
 
@@ -565,16 +564,11 @@ def pipeline_run(
     ),
 ) -> None:
     """Run the pipeline."""
-    logger.remove()
+    logger = Logger(
+        sink=log_path_option,
+    )
 
-    if log_path_option is not None:
-        logger.add(
-            sink=log_path_option,
-            format='{time:YYYY-MM-DD HH:mm:ss.SSS} | {level:<8} | {message}',
-        )
-        logger.enable(name='aviary')
-
-    with logger.catch(level='CRITICAL', message='An error occurred:', reraise=True):
+    with logger._logger.catch(level='CRITICAL', message='An error occurred:', reraise=True):  # noqa: SLF001
         config = parse_config(
             config_path=config_path,
             set_options=set_options,
