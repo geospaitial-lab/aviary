@@ -66,7 +66,7 @@ def _wrap_with_logging(
         logger.debug(
             'Initialized {}[{}]...',
             name,
-            self.id,
+            str(self.id)[:8],
         )
 
     cls.__init__ = new_init
@@ -83,7 +83,7 @@ def _wrap_with_logging(
             logger.trace(
                 'Calling {}[{}]...',
                 name,
-                self.id,
+                str(self.id)[:8],
             )
 
             start_time = time.perf_counter()
@@ -93,7 +93,7 @@ def _wrap_with_logging(
             logger.trace(
                 'Done with {}[{}] in {:.3f} s: {}',
                 name,
-                self.id,
+                str(self.id)[:8],
                 elapsed_time,
                 _get_log(result),
             )
