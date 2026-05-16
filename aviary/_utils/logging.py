@@ -39,6 +39,12 @@ def _get_name(
     return qualname
 
 
+def _get_log(
+    obj: object,
+) -> str:
+    return obj._log()  # noqa: SLF001
+
+
 def _wrap_with_logging(
     cls: T,
     *,
@@ -82,10 +88,11 @@ def _wrap_with_logging(
             elapsed_time = time.perf_counter() - start_time
 
             logger.trace(
-                'Finished {}[{}] in {:.3f} s',
+                'Done with {}[{}] in {:.3f} s: {}',
                 name,
                 self.id,
                 elapsed_time,
+                _get_log(result),
             )
 
             return result
