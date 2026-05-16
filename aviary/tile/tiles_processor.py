@@ -51,6 +51,7 @@ from aviary._functional.tile.tiles_processor import (
     vectorize_processor,
 )
 from aviary._utils.lifecycle import experimental
+from aviary._utils.logging import log
 from aviary.core.enums import (
     ChannelName,
     Connectivity,
@@ -267,6 +268,7 @@ def register_tiles_processor(
 @experimental(
     since='1.3.0',
 )
+@log
 class AspectProcessor(IDMixin):
     """Tiles processor that computes the aspect from a channel
 
@@ -371,6 +373,7 @@ _TilesProcessorFactory.register(
 )
 
 
+@log
 class CastProcessor(IDMixin):
     """Tiles processor that casts a channel
 
@@ -478,6 +481,7 @@ _TilesProcessorFactory.register(
 )
 
 
+@log
 class CopyProcessor(IDMixin):
     """Tiles processor that copies a channel
 
@@ -570,6 +574,7 @@ _TilesProcessorFactory.register(
 @experimental(
     since='1.3.0',
 )
+@log
 class ExpressionProcessor(IDMixin):
     """Tiles processor that computes a new channel from an expression
 
@@ -686,6 +691,7 @@ _TilesProcessorFactory.register(
 @experimental(
     since='1.3.0',
 )
+@log
 class HillshadeProcessor(IDMixin):
     """Tiles processor that computes the hillshade from a channel or channels
 
@@ -819,6 +825,7 @@ _TilesProcessorFactory.register(
 )
 
 
+@log
 class NormalizeProcessor(IDMixin):
     """Tiles processor that normalizes a channel
 
@@ -941,6 +948,7 @@ _TilesProcessorFactory.register(
 )
 
 
+@log
 class ParallelCompositeProcessor(IDMixin):
     """Tiles processor that composes multiple tiles processors in parallel
 
@@ -1034,6 +1042,7 @@ _TilesProcessorFactory.register(
 @experimental(
     since='1.4.0',
 )
+@log
 class RasterizeProcessor(IDMixin):
     """Tiles processor that rasterizes a channel
 
@@ -1176,6 +1185,7 @@ _TilesProcessorFactory.register(
 )
 
 
+@log
 class RemoveBufferProcessor(IDMixin):
     """Tiles processor that removes the buffer of channels
 
@@ -1268,6 +1278,7 @@ _TilesProcessorFactory.register(
 )
 
 
+@log
 class RemoveProcessor(IDMixin):
     """Tiles processor that removes channels
 
@@ -1360,6 +1371,7 @@ _TilesProcessorFactory.register(
 )
 
 
+@log
 class SelectProcessor(IDMixin):
     """Tiles processor that selects channels
 
@@ -1452,6 +1464,7 @@ _TilesProcessorFactory.register(
 )
 
 
+@log
 class SequentialCompositeProcessor(IDMixin):
     """Tiles processor that composes multiple tiles processors in sequence
 
@@ -1540,6 +1553,7 @@ _TilesProcessorFactory.register(
 )
 
 
+@log
 class SieveProcessor(IDMixin):
     """Tiles processor that sieves a channel
 
@@ -1659,6 +1673,7 @@ _TilesProcessorFactory.register(
 @experimental(
     since='1.3.0',
 )
+@log
 class SlopeProcessor(IDMixin):
     """Tiles processor that computes the slope from a channel
 
@@ -1771,6 +1786,7 @@ _TilesProcessorFactory.register(
 )
 
 
+@log
 class StandardizeProcessor(IDMixin):
     """Tiles processor that standardizes a channel
 
@@ -1896,6 +1912,7 @@ _TilesProcessorFactory.register(
 @experimental(
     since='1.4.0',
 )
+@log
 class StubProcessor(IDMixin):
     """Tiles processor that passes the tiles through
 
@@ -1986,6 +2003,7 @@ _TilesProcessorFactory.register(
 )
 
 
+@log
 class VectorizeProcessor(IDMixin):
     """Tiles processor that vectorizes a channel
 
