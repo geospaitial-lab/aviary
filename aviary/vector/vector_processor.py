@@ -47,6 +47,7 @@ from aviary._functional.vector.vector_processor import (
     stub_processor,
 )
 from aviary._utils.lifecycle import experimental
+from aviary._utils.logging import log
 from aviary.core.exceptions import AviaryUserError
 from aviary.core.mixins import IDMixin
 
@@ -245,6 +246,7 @@ def register_vector_processor(
     return decorator
 
 
+@log
 class AggregateProcessor(IDMixin):
     """Vector processor that aggregates a layer
 
@@ -383,6 +385,7 @@ _VectorProcessorFactory.register(
 )
 
 
+@log
 class ClipProcessor(IDMixin):
     """Vector processor that clips a layer
 
@@ -479,6 +482,7 @@ _VectorProcessorFactory.register(
 )
 
 
+@log
 class CopyProcessor(IDMixin):
     """Vector processor that copies a layer
 
@@ -568,6 +572,7 @@ _VectorProcessorFactory.register(
 )
 
 
+@log
 class FillProcessor(IDMixin):
     """Vector processor that fills a layer
 
@@ -664,6 +669,7 @@ _VectorProcessorFactory.register(
 )
 
 
+@log
 class MapFieldProcessor(IDMixin):
     """Vector processor that maps a field of a layer
 
@@ -768,6 +774,7 @@ _VectorProcessorFactory.register(
 )
 
 
+@log
 class ParallelCompositeProcessor(IDMixin):
     """Vector processor that composes multiple vector processors in parallel
 
@@ -858,6 +865,7 @@ _VectorProcessorFactory.register(
 )
 
 
+@log
 class QueryProcessor(IDMixin):
     """Vector processor that queries a layer
 
@@ -954,6 +962,7 @@ _VectorProcessorFactory.register(
 )
 
 
+@log
 class RemoveProcessor(IDMixin):
     """Vector processor that removes layers
 
@@ -1037,6 +1046,7 @@ _VectorProcessorFactory.register(
 )
 
 
+@log
 class RenameFieldsProcessor(IDMixin):
     """Vector processor that renames fields of a layer
 
@@ -1134,6 +1144,7 @@ _VectorProcessorFactory.register(
 )
 
 
+@log
 class SelectProcessor(IDMixin):
     """Vector processor that selects layers
 
@@ -1217,6 +1228,7 @@ _VectorProcessorFactory.register(
 )
 
 
+@log
 class SequentialCompositeProcessor(IDMixin):
     """Vector processor that composes multiple vector processors in sequence
 
@@ -1305,6 +1317,7 @@ _VectorProcessorFactory.register(
 )
 
 
+@log
 class SieveProcessor(IDMixin):
     """Vector processor that sieves a layer
 
@@ -1401,6 +1414,7 @@ _VectorProcessorFactory.register(
 )
 
 
+@log
 class SimplifyProcessor(IDMixin):
     """Vector processor that simplifies a layer
 
@@ -1504,6 +1518,7 @@ _VectorProcessorFactory.register(
 @experimental(
     since='1.4.0',
 )
+@log
 class StubProcessor(IDMixin):
     """Vector processor that passes the vector through
 
