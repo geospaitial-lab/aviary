@@ -21,6 +21,7 @@ from functools import wraps
 from typing import (
     TYPE_CHECKING,
     Any,
+    TypeVar,
 )
 
 if TYPE_CHECKING:
@@ -30,6 +31,8 @@ from aviary.core.warnings import (
     AviaryDeprecationWarning,
     AviaryExperimentalWarning,
 )
+
+T = TypeVar('T')
 
 
 def _get_message(
@@ -64,12 +67,12 @@ def _get_message(
 
 
 def _wrap_with_warning(
-    obj: object,
+    obj: T,
     *,
     message: str,
     category: Warning,
     set_flag: str | None = None,
-) -> object:
+) -> T:
     if inspect.isclass(obj):
         if set_flag:
             setattr(obj, set_flag, True)
@@ -116,8 +119,8 @@ def deprecated(
         Decorator
     """
     def decorator(
-        obj: object,
-    ) -> object:
+        obj: T,
+    ) -> T:
         message = _get_message(
             obj,
             message_type='deprecated',
@@ -151,8 +154,8 @@ def experimental(
         Decorator
     """
     def decorator(
-        obj: object,
-    ) -> object:
+        obj: T,
+    ) -> T:
         message = _get_message(
             obj,
             message_type='experimental',

@@ -21,6 +21,7 @@ from typing import TYPE_CHECKING
 import pydantic
 
 from aviary._functional.vector.vector_exporter import vector_exporter
+from aviary._utils.logging import log
 from aviary.core.mixins import IDMixin
 from aviary.core.type_aliases import EPSGCode
 from aviary.vector.vector_processor import _VectorProcessorFactory
@@ -31,6 +32,7 @@ if TYPE_CHECKING:
 _PACKAGE = 'aviary'
 
 
+@log
 class VectorExporter(IDMixin):
     """Vector processor that exports a layer
 

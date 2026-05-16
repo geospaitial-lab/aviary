@@ -21,11 +21,13 @@ from concurrent.futures import ThreadPoolExecutor
 from queue import Queue
 from threading import Thread
 
+from aviary._utils.logging import log
 from aviary.core.mixins import IDMixin
 from aviary.core.tiles import Tiles
 from aviary.tile.tile_set import TileSet
 
 
+@log
 class TileLoader(
     Iterable[Tiles],
     IDMixin,

@@ -20,6 +20,7 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Protocol,
+    TypeVar,
 )
 
 if TYPE_CHECKING:
@@ -38,6 +39,7 @@ from aviary._functional.tile.tile_fetcher import (
     wms_fetcher,
 )
 from aviary._utils.lifecycle import experimental
+from aviary._utils.logging import log
 from aviary.core.enums import (
     ChannelName,
     InterpolationMode,
@@ -199,6 +201,9 @@ class _TileFetcherFactory:
         _TileFetcherFactory.registry[key] = (tile_fetcher_class, config_class)
 
 
+T = TypeVar('T', bound=type[TileFetcher])
+
+
 def register_tile_fetcher(
     config_class: type[pydantic.BaseModel],
 ) -> Callable:
@@ -214,8 +219,8 @@ def register_tile_fetcher(
         AviaryUserError: Invalid registration (the package is equal to aviary)
     """
     def decorator(
-        cls: type[TileFetcher],
-    ) -> type[TileFetcher]:
+        cls: T,
+    ) -> T:
         package = cls.__module__.split('.')[0]
 
         if package == _PACKAGE:
@@ -234,6 +239,7 @@ def register_tile_fetcher(
     return decorator
 
 
+@log
 class CompositeFetcher(IDMixin):
     """Tile fetcher that composes multiple tile fetchers
 
@@ -340,6 +346,7 @@ _TileFetcherFactory.register(
 @experimental(
     since='1.4.0',
 )
+@log
 class GPKGFetcher(IDMixin):
     """Tile fetcher for geopackages
 
@@ -456,6 +463,7 @@ _TileFetcherFactory.register(
 @experimental(
     since='1.4.0',
 )
+@log
 class StubFetcher(IDMixin):
     """Tile fetcher for tiles with no channels
 
@@ -553,6 +561,7 @@ _TileFetcherFactory.register(
 )
 
 
+@log
 class VRTFetcher(IDMixin):
     """Tile fetcher for virtual rasters
 
@@ -691,6 +700,7 @@ _TileFetcherFactory.register(
 )
 
 
+@log
 class WMSFetcher(IDMixin):
     """Tile fetcher for web map services
 

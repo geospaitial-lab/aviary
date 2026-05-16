@@ -15,6 +15,7 @@
 
 from loguru import logger
 
+from ._utils.logging import log
 from .core.bounding_box import BoundingBox
 from .core.channel import (
     Channel,
@@ -98,6 +99,7 @@ __all__ = [
     'VectorLayer',
     'WMSVersion',
     '__version__',
+    'log',
 ]
 
 __version__ = '1.6.0'

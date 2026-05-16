@@ -34,12 +34,14 @@ A tiles processor is a callable that takes a [`Tiles`][Tiles] object, processes 
 
 So, we need to implement the `__call__` method in our class.
 We can also implement the `__init__` method to initialize our tiles processor.
-This is useful if you need to pass any parameters to the tiles processor.
+This is useful if you need to pass any parameters to the tiles processor.<br>
+To log initialization and call information, we use the `log` decorator.
 
 ``` python title="my_tiles_processor.py"
 import aviary
 
 
+@aviary.log
 class MyTilesProcessor:
 
     def __init__(
