@@ -21,6 +21,7 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Protocol,
+    TypeVar,
 )
 
 if TYPE_CHECKING:
@@ -203,6 +204,9 @@ class _PipelineFactory:
         _PipelineFactory.registry[key] = (pipeline_class, config_class)
 
 
+T = TypeVar('T', bound=type[Pipeline])
+
+
 def register_pipeline(
     config_class: type[pydantic.BaseModel],
 ) -> Callable:
@@ -218,8 +222,8 @@ def register_pipeline(
         AviaryUserError: Invalid registration (the package name is equal to aviary)
     """
     def decorator(
-        cls: type[Pipeline],
-    ) -> type[Pipeline]:
+        cls: T,
+    ) -> T:
         package = cls.__module__.split('.')[0]
 
         if package == _PACKAGE:

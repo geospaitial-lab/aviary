@@ -20,6 +20,7 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Protocol,
+    TypeVar,
 )
 
 if TYPE_CHECKING:
@@ -184,6 +185,9 @@ class _VectorLoaderFactory:
         _VectorLoaderFactory.registry[key] = (vector_loader_class, config_class)
 
 
+T = TypeVar('T', bound=type[VectorLoader])
+
+
 def register_vector_loader(
     config_class: type[pydantic.BaseModel],
 ) -> Callable:
@@ -199,8 +203,8 @@ def register_vector_loader(
         AviaryUserError: Invalid registration (the package is equal to aviary)
     """
     def decorator(
-        cls: type[VectorLoader],
-    ) -> type[VectorLoader]:
+        cls: T,
+    ) -> T:
         package = cls.__module__.split('.')[0]
 
         if package == _PACKAGE:

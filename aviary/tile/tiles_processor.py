@@ -20,6 +20,7 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Protocol,
+    TypeVar,
 )
 
 if TYPE_CHECKING:
@@ -225,6 +226,9 @@ class _TilesProcessorFactory:
         _TilesProcessorFactory.registry[key] = (tiles_processor_class, config_class)
 
 
+T = TypeVar('T', bound=type[TilesProcessor])
+
+
 def register_tiles_processor(
     config_class: type[pydantic.BaseModel],
 ) -> Callable:
@@ -240,8 +244,8 @@ def register_tiles_processor(
         AviaryUserError: Invalid registration (the package name is equal to aviary)
     """
     def decorator(
-        cls: type[TilesProcessor],
-    ) -> type[TilesProcessor]:
+        cls: T,
+    ) -> T:
         package = cls.__module__.split('.')[0]
 
         if package == _PACKAGE:

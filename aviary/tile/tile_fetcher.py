@@ -20,6 +20,7 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Protocol,
+    TypeVar,
 )
 
 if TYPE_CHECKING:
@@ -199,6 +200,9 @@ class _TileFetcherFactory:
         _TileFetcherFactory.registry[key] = (tile_fetcher_class, config_class)
 
 
+T = TypeVar('T', bound=type[TileFetcher])
+
+
 def register_tile_fetcher(
     config_class: type[pydantic.BaseModel],
 ) -> Callable:
@@ -214,8 +218,8 @@ def register_tile_fetcher(
         AviaryUserError: Invalid registration (the package is equal to aviary)
     """
     def decorator(
-        cls: type[TileFetcher],
-    ) -> type[TileFetcher]:
+        cls: T,
+    ) -> T:
         package = cls.__module__.split('.')[0]
 
         if package == _PACKAGE:

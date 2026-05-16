@@ -19,6 +19,7 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Protocol,
+    TypeVar,
 )
 
 if TYPE_CHECKING:
@@ -206,6 +207,9 @@ class _VectorProcessorFactory:
         _VectorProcessorFactory.registry[key] = (vector_processor_class, config_class)
 
 
+T = TypeVar('T', bound=type[VectorProcessor])
+
+
 def register_vector_processor(
     config_class: type[pydantic.BaseModel],
 ) -> Callable:
@@ -221,8 +225,8 @@ def register_vector_processor(
         AviaryUserError: Invalid registration (the package name is equal to aviary)
     """
     def decorator(
-        cls: type[VectorProcessor],
-    ) -> type[VectorProcessor]:
+        cls: T,
+    ) -> T:
         package = cls.__module__.split('.')[0]
 
         if package == _PACKAGE:
