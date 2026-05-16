@@ -15,10 +15,9 @@
 
 from __future__ import annotations
 
-import inspect
+import time
 from functools import wraps
 from typing import (
-    TYPE_CHECKING,
     Any,
     TypeVar,
 )
@@ -45,37 +44,36 @@ def _wrap_with_logging(
     *,
     name: str,
 ) -> T:
-    orig_init = cls.__init__
+    init = cls.__init__
 
-    @wraps(orig_init)
+    @wraps(init)
     def new_init(
-        self: Any,  # noqa: ANN401
+        self: object,
         *args: Any,  # noqa: ANN401
         **kwargs: Any,  # noqa: ANN401
     ) -> None:
-        orig_init(self, *args, **kwargs)
+        init(self, *args, **kwargs)
 
-        params = inspect.signature(orig_init).bind_partial(self, *args, **kwargs).arguments
-        params.pop('self', None)
-
-        if params:
-            logger.debug(f'Initializing {name}[{self.id}] with {params}...')
-        else:
-            logger.debug(f'Initializing {name}[{self.id}]...')
+        logger.debug(f'Initializing {name}[{self.id}]...')
 
     cls.__init__ = new_init
 
-    if hasattr(cls, '__call__'):
-        orig_call = cls.__call__
+    if callable(cls):
+        call = cls.__call__
 
-        @wraps(orig_call)
+        @wraps(call)
         def new_call(
-            self: Any,  # noqa: ANN401
+            self: object,
             *args: Any,  # noqa: ANN401
             **kwargs: Any,  # noqa: ANN401
         ) -> Any:  # noqa: ANN401
             logger.trace(f'Calling {name}[{self.id}]...')
-            return orig_call(self, *args, **kwargs)
+            start_time = time.perf_counter()
+            result = call(self, *args, **kwargs)
+            elapsed_time = time.perf_counter() - start_time
+            logger.trace(f'Finished {name}[{self.id}] in {elapsed_time:.3f} s')
+
+            return result
 
         cls.__call__ = new_call
 
