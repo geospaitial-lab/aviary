@@ -218,10 +218,11 @@ class Vector(
             f'{layer.name}: {type(layer).__name__}'
             for layer in self
         ]
+        layers_str = f"[{', '.join(layers)}]"
 
         return (
             'Vector('
-            f'layers={layers}'
+            f'layers={layers_str}'
             ')'
         )
 

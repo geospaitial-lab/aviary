@@ -550,10 +550,11 @@ class Tiles(
             f'{channel.name}: {type(channel).__name__}'
             for channel in self
         ]
+        channels_str = f"[{', '.join(channels)}]"
 
         return (
             'Tiles('
-            f'channels={channels}, '
+            f'channels={channels_str}, '
             f'batch_size={self.batch_size}, '
             f'tile_size={self.tile_size}'
             ')'
