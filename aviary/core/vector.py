@@ -208,6 +208,24 @@ class Vector(
             ')'
         )
 
+    def _log(self) -> str:
+        """Returns the string representation for logging.
+
+        Returns:
+            String representation for logging
+        """
+        layers = [
+            f'{layer.name}: {type(layer).__name__}'
+            for layer in self
+        ]
+        layers_str = f"[{', '.join(layers)}]"
+
+        return (
+            'Vector('
+            f'layers={layers_str}'
+            ')'
+        )
+
     def __getstate__(self) -> dict:
         """Gets the state for pickling.
 

@@ -540,6 +540,26 @@ class Tiles(
             ')'
         )
 
+    def _log(self) -> str:
+        """Returns the string representation for logging.
+
+        Returns:
+            String representation for logging
+        """
+        channels = [
+            f'{channel.name}: {type(channel).__name__}'
+            for channel in self
+        ]
+        channels_str = f"[{', '.join(channels)}]"
+
+        return (
+            'Tiles('
+            f'channels={channels_str}, '
+            f'batch_size={self.batch_size}, '
+            f'tile_size={self.tile_size}'
+            ')'
+        )
+
     def __getstate__(self) -> dict:
         """Gets the state for pickling.
 
