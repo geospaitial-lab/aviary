@@ -39,6 +39,7 @@ from aviary._functional.vector.vector_loader import (
     stub_loader,
 )
 from aviary._utils.lifecycle import experimental
+from aviary._utils.logging import log
 from aviary.core.bounding_box import BoundingBox
 from aviary.core.exceptions import AviaryUserError
 from aviary.core.mixins import IDMixin
@@ -63,6 +64,7 @@ class VectorLoader(Protocol):
         - `CompositeLoader`: Composes multiple vector loaders
         - `GeoJSONLoader`: Loads a vector from a GeoJSON file
         - `GPKGLoader`: Loads a vector from a geopackage
+        - `StubLoader`: Loads a vector with no layers
     """
 
     def __call__(self) -> Vector:
@@ -223,6 +225,7 @@ def register_vector_loader(
     return decorator
 
 
+@log
 class BoundingBoxLoader(IDMixin):
     """Vector loader for bounding boxes
 
@@ -329,6 +332,7 @@ _VectorLoaderFactory.register(
 )
 
 
+@log
 class CompositeLoader(IDMixin):
     """Vector loader that composes multiple vector loaders
 
@@ -425,6 +429,7 @@ _VectorLoaderFactory.register(
 )
 
 
+@log
 class GeoJSONLoader(IDMixin):
     """Vector loader for GeoJSON files
 
@@ -510,6 +515,7 @@ _VectorLoaderFactory.register(
 )
 
 
+@log
 class GPKGLoader(IDMixin):
     """Vector loader for geopackages
 
@@ -598,6 +604,7 @@ _VectorLoaderFactory.register(
 @experimental(
     since='1.4.0',
 )
+@log
 class StubLoader(IDMixin):
     """Vector loader for vectors with no layers
 
