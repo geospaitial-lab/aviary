@@ -563,8 +563,8 @@ def pipeline_run(
         envvar='AVIARY_LOG_PATH',
         help='Path to the log file',
     ),
-    log_level_option: str | None = typer.Option(
-        None,
+    log_level_option: str = typer.Option(
+        'info',
         '--log-level',
         envvar='AVIARY_LOG_LEVEL',
         help='Log level',
