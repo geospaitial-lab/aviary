@@ -26,6 +26,7 @@ from aviary._functional.tile.tiles_exporter import (
     vector_exporter,
 )
 from aviary._utils.lifecycle import experimental
+from aviary._utils.logging import log
 from aviary.core.enums import ChannelName
 from aviary.core.mixins import IDMixin
 from aviary.core.type_aliases import EPSGCode
@@ -37,6 +38,7 @@ if TYPE_CHECKING:
 _PACKAGE = 'aviary'
 
 
+@log
 class GridExporter(IDMixin):
     """Tiles processor that exports the grid of the tiles
 
@@ -121,6 +123,7 @@ _TilesProcessorFactory.register(
 @experimental(
     since='1.3.0',
 )
+@log
 class RasterExporter(IDMixin):
     """Tiles processor that exports raster channels
 
@@ -257,6 +260,7 @@ _TilesProcessorFactory.register(
 )
 
 
+@log
 class VectorExporter(IDMixin):
     """Tiles processor that exports a vector channel
 
