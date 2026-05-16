@@ -18,12 +18,14 @@ from collections.abc import (
     Iterator,
 )
 
+from aviary._utils.logging import log
 from aviary.core.grid import Grid
 from aviary.core.mixins import IDMixin
 from aviary.core.tiles import Tile
 from aviary.tile.tile_fetcher import TileFetcher
 
 
+@log
 class TileSet(
     Iterable[Tile],
     IDMixin,
