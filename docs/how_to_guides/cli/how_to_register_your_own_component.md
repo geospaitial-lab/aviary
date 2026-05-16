@@ -28,7 +28,7 @@ The config class is a Pydantic model that defines the configuration for our tile
 In most cases it simply mimics the parameters of the `__init__` method.
 When we pass the configuration to the `from_config` class method, it should return an instance of our tiles processor.
 
-``` python title="my_tiles_processor.py" hl_lines="1 4 7-9 21-27"
+``` python title="my_tiles_processor.py" hl_lines="1 4 7-9 23-29"
 from __future__ import annotations # (1)!
 
 import aviary
@@ -39,6 +39,8 @@ class MyTilesProcessorConfig(pydantic.BaseModel):
     param_1: int
     param_2: str
 
+
+@aviary.log
 class MyTilesProcessor:
 
     def __init__(
@@ -76,7 +78,7 @@ Now you can create an instance of `MyTilesProcessor` from a configuration.
 All we need to do is to register our own tiles processor as a plugin using the
 [`register_tiles_processor`][register_tiles_processor] decorator.
 
-``` python title="my_tiles_processor.py" hl_lines="5 12"
+``` python title="my_tiles_processor.py" hl_lines="5 13"
 from __future__ import annotations  # (1)!
 
 import aviary
@@ -88,7 +90,9 @@ class MyTilesProcessorConfig(pydantic.BaseModel):
     param_1: int
     param_2: str
 
+
 @register_tiles_processor(config_class=MyTilesProcessorConfig)
+@aviary.log
 class MyTilesProcessor:
 
     def __init__(
