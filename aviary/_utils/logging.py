@@ -42,7 +42,10 @@ def _get_name(
 def _get_log(
     obj: object,
 ) -> str:
-    return obj._log()  # noqa: SLF001
+    if hasattr(obj, '_log'):
+        return obj._log()  # noqa: SLF001
+
+    return str(obj)
 
 
 def _wrap_with_logging(
