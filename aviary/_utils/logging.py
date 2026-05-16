@@ -54,7 +54,11 @@ def _wrap_with_logging(
     ) -> None:
         init(self, *args, **kwargs)
 
-        logger.debug(f'Initializing {name}[{self.id}]...')
+        logger.debug(
+            'Initialized {}[{}]...',
+            name,
+            self.id,
+        )
 
     cls.__init__ = new_init
 
@@ -67,11 +71,22 @@ def _wrap_with_logging(
             *args: Any,  # noqa: ANN401
             **kwargs: Any,  # noqa: ANN401
         ) -> Any:  # noqa: ANN401
-            logger.trace(f'Calling {name}[{self.id}]...')
+            logger.trace(
+                'Calling {}[{}]...',
+                name,
+                self.id,
+            )
+
             start_time = time.perf_counter()
             result = call(self, *args, **kwargs)
             elapsed_time = time.perf_counter() - start_time
-            logger.trace(f'Finished {name}[{self.id}] in {elapsed_time:.3f} s')
+
+            logger.trace(
+                'Finished {}[{}] in {:.3f} s',
+                name,
+                self.id,
+                elapsed_time,
+            )
 
             return result
 
