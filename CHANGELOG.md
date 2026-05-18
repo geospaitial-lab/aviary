@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### New Features
+
+- feat: add tiles / vector logs on call ([#896](https://github.com/geospaitial-lab/aviary/pull/896))
+
 ---
 
 ## 1.7.0 (2026-05-16)
