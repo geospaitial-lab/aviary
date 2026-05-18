@@ -12,6 +12,21 @@
 
 ## 1.6.0 (2026-05-15)
 
+### New Features
+
+- feat(`RasterExporter`): add dynamic block size ([#877](https://github.com/geospaitial-lab/aviary/pull/877))
+- feat(`RasterChannel`): add dtype and cast ([#878](https://github.com/geospaitial-lab/aviary/pull/878))
+- feat(`TilesProcessor`): add `CastProcessor` ([#879](https://github.com/geospaitial-lab/aviary/pull/879))
+- feat(`TilesProcessor`): add `SieveProcessor` ([#880](https://github.com/geospaitial-lab/aviary/pull/880))
+- feat(`ExpressionProcessor`): add dtype ([#881](https://github.com/geospaitial-lab/aviary/pull/881))
+- feat(`NormalizeProcessor`): add dtype ([#882](https://github.com/geospaitial-lab/aviary/pull/882))
+- feat(`StandardizeProcessor`): add dtype ([#883](https://github.com/geospaitial-lab/aviary/pull/883))
+- feat(`RasterizeProcessor`): add dtype ([#884](https://github.com/geospaitial-lab/aviary/pull/884))
+- feat(`WMSFetcher`): add time ([#885](https://github.com/geospaitial-lab/aviary/pull/885))
+- feat(`RasterExporter`): add channel descriptions ([#886](https://github.com/geospaitial-lab/aviary/pull/886))
+- feat(`RasterExporter`): add dynamic predictor ([#887](https://github.com/geospaitial-lab/aviary/pull/887))
+- feat(`RasterExporter`): add mapping ([#888](https://github.com/geospaitial-lab/aviary/pull/888))
+
 [Full Changelog](https://github.com/geospaitial-lab/aviary/releases/tag/1.6.0)
 
 ---
