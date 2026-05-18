@@ -6,6 +6,16 @@
 
 ## 1.7.0 (2026-05-16)
 
+### New Features
+
+- feat(utils): add `Logger` ([#891](https://github.com/geospaitial-lab/aviary/pull/891))
+- feat(cli): add log-level option ([#892](https://github.com/geospaitial-lab/aviary/pull/892))
+- feat: add log util ([#893](https://github.com/geospaitial-lab/aviary/pull/893))
+
+### Bug Fixes
+
+- fix(cli): add default value to log-level option ([#894](https://github.com/geospaitial-lab/aviary/pull/894))
+
 [Full Changelog](https://github.com/geospaitial-lab/aviary/releases/tag/1.7.0)
 
 ---
