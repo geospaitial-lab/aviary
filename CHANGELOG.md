@@ -18,6 +18,16 @@
 
 ## 1.5.0 (2026-05-12)
 
+### New Features
+
+- feat(`Grid`): add buffer ([#871](https://github.com/geospaitial-lab/aviary/pull/871))
+- feat(`Pipeline`): add spinner ([#873](https://github.com/geospaitial-lab/aviary/pull/873))
+- feat(cli): add experimental-warnings option ([#874](https://github.com/geospaitial-lab/aviary/pull/874))
+
+### Bug Fixes
+
+- fix(`Grid`): cast coordinates ([#872](https://github.com/geospaitial-lab/aviary/pull/872))
+
 [Full Changelog](https://github.com/geospaitial-lab/aviary/releases/tag/1.5.0)
 
 ---
