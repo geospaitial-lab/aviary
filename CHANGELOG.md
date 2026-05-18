@@ -24,6 +24,19 @@
 
 ## 1.4.0 (2026-05-10)
 
+### New Features
+
+- feat(`TileFetcher`): add `GPKGFetcher` (experimental) ([#862](https://github.com/geospaitial-lab/aviary/pull/862))
+- feat(`TilesProcessor`): add `RasterizeProcessor` (experimental) ([#863](https://github.com/geospaitial-lab/aviary/pull/863))
+- feat(`TilesProcessor`): add `StubProcessor` (experimental) ([#864](https://github.com/geospaitial-lab/aviary/pull/864))
+- feat(`TileFetcher`): add `StubFetcher` (experimental) ([#865](https://github.com/geospaitial-lab/aviary/pull/865))
+- feat(`VectorProcessor`): add `StubProcessor` (experimental) ([#866](https://github.com/geospaitial-lab/aviary/pull/866))
+- feat(`VectorLoader`): add `StubLoader` (experimental) ([#867](https://github.com/geospaitial-lab/aviary/pull/867))
+
+### Bug Fixes
+
+- fix(`RasterExporter`): include buffer ([#868](https://github.com/geospaitial-lab/aviary/pull/868))
+
 [Full Changelog](https://github.com/geospaitial-lab/aviary/releases/tag/1.4.0)
 
 ---
