@@ -1,4 +1,4 @@
-#  Copyright (C) 2024-2025 Marius Maryniak
+#  Copyright (C) 2024-2026 Marius Maryniak
 #
 #  This file is part of aviary.
 #
@@ -38,3 +38,9 @@ __all__ = [
     'VectorPipelineConfig',
     'register_pipeline',
 ]
+
+for name in __all__:
+    obj = globals().get(name)
+
+    if obj and hasattr(obj, '__module__'):
+        obj.__module__ = __name__

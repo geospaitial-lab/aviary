@@ -114,3 +114,9 @@ __all__ = [
     'register_vector_loader',
     'register_vector_processor',
 ]
+
+for name in __all__:
+    obj = globals().get(name)
+
+    if obj and hasattr(obj, '__module__'):
+        obj.__module__ = __name__
