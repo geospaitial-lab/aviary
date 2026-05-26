@@ -69,8 +69,11 @@ def _get_message(
 def _wrap_with_warning(
     obj: T,
     *,
-    message: str,
+    message_type: str,
     category: Warning,
+    since: str | None = None,
+    removal: str | None = None,
+    description: str | None = None,
     set_flag: str | None = None,
 ) -> T:
     if inspect.isclass(obj):
@@ -85,6 +88,13 @@ def _wrap_with_warning(
             *args: Any,  # noqa: ANN401
             **kwargs: Any,  # noqa: ANN401
         ) -> Callable:
+            message = _get_message(
+                obj=obj,
+                message_type=message_type,
+                since=since,
+                removal=removal,
+                description=description,
+            )
             warnings.warn(message, category=category, stacklevel=2)
             return init(self, *args, **kwargs)
 
@@ -96,6 +106,13 @@ def _wrap_with_warning(
         *args: Any,  # noqa: ANN401
         **kwargs: Any,  # noqa: ANN401
     ) -> Callable:
+        message = _get_message(
+            obj=obj,
+            message_type=message_type,
+            since=since,
+            removal=removal,
+            description=description,
+        )
         warnings.warn(message, category=category, stacklevel=2)
         return obj(*args, **kwargs)
 
@@ -121,21 +138,15 @@ def deprecated(
     def decorator(
         obj: T,
     ) -> T:
-        message = _get_message(
-            obj,
+        return _wrap_with_warning(
+            obj=obj,
             message_type='deprecated',
+            category=AviaryDeprecationWarning,
             since=since,
             removal=removal,
             description=description,
-        )
-
-        return _wrap_with_warning(
-            obj,
-            message=message,
-            category=AviaryDeprecationWarning,
             set_flag='_deprecated',
         )
-
     return decorator
 
 
@@ -156,19 +167,13 @@ def experimental(
     def decorator(
         obj: T,
     ) -> T:
-        message = _get_message(
-            obj,
+        return _wrap_with_warning(
+            obj=obj,
             message_type='experimental',
+            category=AviaryExperimentalWarning,
             since=since,
             removal=None,
             description=description,
-        )
-
-        return _wrap_with_warning(
-            obj,
-            message=message,
-            category=AviaryExperimentalWarning,
             set_flag='_experimental',
         )
-
     return decorator

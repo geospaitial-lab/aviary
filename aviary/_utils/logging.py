@@ -31,7 +31,8 @@ def _get_name(
     obj: object,
 ) -> str:
     module = obj.__module__
-    qualname = obj.__qualname__
+    cls = obj if isinstance(obj, type) else obj.__class__
+    qualname = cls.__qualname__
 
     if module is not None and module != '__main__':
         return f'{module}.{qualname}'
@@ -50,8 +51,6 @@ def _get_log(
 
 def _wrap_with_logging(
     cls: T,
-    *,
-    name: str,
 ) -> T:
     init = cls.__init__
 
@@ -63,7 +62,12 @@ def _wrap_with_logging(
     ) -> None:
         init(self, *args, **kwargs)
 
-        logger.debug(
+        name = _get_name(self)
+
+        logger.bind(
+            component=name,
+            id=str(self.id),
+        ).debug(
             'Initialized {}[{}]...',
             name,
             str(self.id)[:8],
@@ -80,25 +84,48 @@ def _wrap_with_logging(
             *args: Any,  # noqa: ANN401
             **kwargs: Any,  # noqa: ANN401
         ) -> Any:  # noqa: ANN401
-            logger.trace(
-                'Calling {}[{}]...',
+            name = _get_name(self)
+
+            if args:
+                input_ = args[0]
+            elif kwargs:
+                input_ = next(iter(kwargs.values()))
+            else:
+                input_ = None
+
+            input_log = _get_log(input_)
+
+            logger.bind(
+                component=name,
+                id=str(self.id),
+                input=input_log,
+            ).trace(
+                'Calling {}[{}] with {}...',
                 name,
                 str(self.id)[:8],
+                input_log,
             )
 
             start_time = time.perf_counter()
-            result = call(self, *args, **kwargs)
-            elapsed_time = time.perf_counter() - start_time
+            output = call(self, *args, **kwargs)
+            duration = time.perf_counter() - start_time
 
-            logger.trace(
-                'Done with {}[{}] in {:.3f} s: {}',
+            output_log = _get_log(output)
+
+            logger.bind(
+                component=name,
+                id=str(self.id),
+                duration=duration,
+                output=output_log,
+            ).trace(
+                'Done with {}[{}] in {:.3f} s: {}.',
                 name,
                 str(self.id)[:8],
-                elapsed_time,
-                _get_log(result),
+                duration,
+                output_log,
             )
 
-            return result
+            return output
 
         cls.__call__ = new_call
 
@@ -116,9 +143,4 @@ def log(
     Returns:
         Decorator
     """
-    name = _get_name(cls)
-
-    return _wrap_with_logging(
-        cls,
-        name=name,
-    )
+    return _wrap_with_logging(cls)

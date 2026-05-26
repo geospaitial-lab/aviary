@@ -569,11 +569,18 @@ def pipeline_run(
         envvar='AVIARY_LOG_LEVEL',
         help='Log level',
     ),
+    log_serialize_option: bool = typer.Option(
+        False,  # noqa: FBT003
+        '--log-serialize',
+        envvar='AVIARY_LOG_SERIALIZE',
+        help='Output logs in structured JSON format.',
+    ),
 ) -> None:
     """Run the pipeline."""
     logger = Logger(
         sink=log_path_option,
         level=LogLevel(log_level_option),
+        serialize=log_serialize_option,
     )
 
     with logger._logger.catch(level='CRITICAL', message='An error occurred:', reraise=True):  # noqa: SLF001
