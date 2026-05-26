@@ -29,20 +29,20 @@ class Logger(IDMixin):
         self,
         sink: Any,  # noqa: ANN401
         level: LogLevel = LogLevel.INFO,
-        serialize: bool = False,
         format: str = '{time:YYYY-MM-DD HH:mm:ss.SSS} | {level:<8} | {message}',  # noqa: A002
+        serialize: bool = False,
     ) -> None:
         """
         Parameters:
             sink: Sink
             level: Log level
-            serialize: If True, output logs in structured JSON format
             format: Format
+            serialize: If True, output logs in structured JSON format
         """
         self._sink = sink
         self._level = level
-        self._serialize = serialize
         self._format = format
+        self._serialize = serialize
 
         self._logger = logger
 
