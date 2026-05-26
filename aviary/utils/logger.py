@@ -36,7 +36,7 @@ class Logger(IDMixin):
         Parameters:
             sink: Sink
             level: Log level
-            serialize: If True, the logs are serialized to JSON format
+            serialize: If True, output logs in structured JSON format
             format: Format
         """
         self._sink = sink
