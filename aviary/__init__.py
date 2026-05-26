@@ -13,6 +13,8 @@
 #  You should have received a copy of the GNU General Public License along with aviary.
 #  If not, see <https://www.gnu.org/licenses/>.
 
+import contextlib
+
 from loguru import logger
 
 from ._utils.logging import log
@@ -101,6 +103,13 @@ __all__ = [
     '__version__',
     'log',
 ]
+
+for name in __all__:
+    obj = globals().get(name)
+
+    if obj and hasattr(obj, '__module__') and obj.__module__ != 'builtins':
+        with contextlib.suppress(AttributeError, TypeError):
+            obj.__module__ = __name__
 
 __version__ = '1.7.0'
 
