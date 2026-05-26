@@ -5,6 +5,7 @@
 ### New Features
 
 - feat: add tiles / vector logs on call ([#896](https://github.com/geospaitial-lab/aviary/pull/896))
+- feat(`Logger`): add serialize ([#910](https://github.com/geospaitial-lab/aviary/pull/910))
 
 ---
 
