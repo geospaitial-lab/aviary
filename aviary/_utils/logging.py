@@ -118,7 +118,7 @@ def _wrap_with_logging(
                 duration=duration,
                 output=output_log,
             ).trace(
-                'Done with {}[{}] in {:.3f} s: {}',
+                'Done with {}[{}] in {:.3f} s: {}.',
                 name,
                 str(self.id)[:8],
                 duration,
