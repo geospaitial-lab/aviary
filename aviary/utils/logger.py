@@ -13,6 +13,7 @@
 #  You should have received a copy of the GNU General Public License along with aviary.
 #  If not, see <https://www.gnu.org/licenses/>.
 
+import json
 from typing import Any
 
 from loguru import logger
@@ -28,16 +29,19 @@ class Logger(IDMixin):
         self,
         sink: Any,  # noqa: ANN401
         level: LogLevel = LogLevel.INFO,
+        serialize: bool = False,
         format: str = '{time:YYYY-MM-DD HH:mm:ss.SSS} | {level:<8} | {message}',  # noqa: A002
     ) -> None:
         """
         Parameters:
             sink: Sink
             level: Log level
+            serialize: If True, the logs are serialized to JSON format
             format: Format
         """
         self._sink = sink
         self._level = level
+        self._serialize = serialize
         self._format = format
 
         self._logger = logger
@@ -45,11 +49,28 @@ class Logger(IDMixin):
         self._logger.remove()
 
         if self._sink is not None:
-            self._logger.add(
-                sink=self._sink,
-                level=self._level.to_loguru(),
-                format=self._format,
-            )
+            if self._serialize:
+                def serializer(record: dict[str, object]) -> str:
+                    subset = {
+                        'timestamp': record['time'].isoformat(),
+                        'level': record['level'].name,
+                        'message': record['message'],
+                    }
+                    if record['extra']:
+                        subset.update(record['extra'])
+                    return json.dumps(subset).replace('{', '{{').replace('}', '}}') + '\n'
+
+                self._logger.add(
+                    sink=self._sink,
+                    level=self._level.to_loguru(),
+                    format=serializer,
+                )
+            else:
+                self._logger.add(
+                    sink=self._sink,
+                    level=self._level.to_loguru(),
+                    format=self._format,
+                )
 
         self._logger.enable(name='aviary')
 
