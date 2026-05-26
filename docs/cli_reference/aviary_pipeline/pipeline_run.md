@@ -23,7 +23,9 @@ aviary pipeline run [OPTIONS] CONFIG_PATH
 - `-s, --set [TEXT]`: Configuration fields using key=value format
 - `--log-path PATH`: Path to the log file (env var: [`AVIARY_LOG_PATH`][AVIARY_LOG_PATH])
 - `--log-level TEXT`: Log level (env var: [`AVIARY_LOG_LEVEL`][AVIARY_LOG_LEVEL]) - defaults to info
+- `--log-serialize`: Output logs in structured JSON format. (env var: [`AVIARY_LOG_SERIALIZE`][AVIARY_LOG_SERIALIZE])
 - `--help`: Show this message and exit.
 
   [AVIARY_LOG_PATH]: ../environment_variables.md#aviary_log_path
   [AVIARY_LOG_LEVEL]: ../environment_variables.md#aviary_log_level
+  [AVIARY_LOG_SERIALIZE]: ../environment_variables.md#aviary_log_serialize

@@ -38,6 +38,12 @@ Log level
 
 ---
 
+### `AVIARY_LOG_SERIALIZE`
+
+Output logs in structured JSON format.
+
+---
+
 ### `AVIARY_PLUGINS_DIR_PATH`
 
 Path to the plugins directory
