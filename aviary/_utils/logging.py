@@ -93,32 +93,36 @@ def _wrap_with_logging(
             else:
                 input_ = None
 
+            input_log = _get_log(input_)
+
             logger.bind(
                 component=name,
                 id=str(self.id),
-                input=_get_log(input_),
+                input=input_log,
             ).trace(
                 'Calling {}[{}] with {}...',
                 name,
                 str(self.id)[:8],
-                _get_log(input_),
+                input_log,
             )
 
             start_time = time.perf_counter()
             output = call(self, *args, **kwargs)
             duration = time.perf_counter() - start_time
 
+            output_log = _get_log(output)
+
             logger.bind(
                 component=name,
                 id=str(self.id),
                 duration=duration,
-                output=_get_log(output),
+                output=output_log,
             ).trace(
                 'Done with {}[{}] in {:.3f} s: {}',
                 name,
                 str(self.id)[:8],
                 duration,
-                _get_log(output),
+                output_log,
             )
 
             return output
