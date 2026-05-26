@@ -319,12 +319,12 @@ class CompositePipeline(IDMixin):
             )
             pipeline()
 
-        composite_pipeline_elapsed_time = time.perf_counter() - composite_pipeline_start_time
-        composite_pipeline_average_time = composite_pipeline_elapsed_time / num_pipelines if num_pipelines else 0.
+        composite_pipeline_duration = time.perf_counter() - composite_pipeline_start_time
+        composite_pipeline_average_time = composite_pipeline_duration / num_pipelines if num_pipelines else 0.
         logger.success(
             'Done with {} pipelines in {:.3f} s and {:.3f} s/pipeline.',
             num_pipelines,
-            composite_pipeline_elapsed_time,
+            composite_pipeline_duration,
             composite_pipeline_average_time,
         )
 
@@ -508,23 +508,23 @@ class TilePipeline(IDMixin):
 
                 _ = self._tiles_processor(tiles=tiles)
 
-                elapsed_time = time.perf_counter() - start_time
+                duration = time.perf_counter() - start_time
                 logger.success(
                     'Processed  {} tiles {:>{}} / {} in {:.3f} s.',
                     batch_size,
                     i,
                     i_len,
                     num_batches,
-                    elapsed_time,
+                    duration,
                 )
                 progress.advance(task_id)
 
-        tile_pipeline_elapsed_time = time.perf_counter() - tile_pipeline_start_time
-        tile_pipeline_average_time = tile_pipeline_elapsed_time / num_tiles if num_tiles else 0.
+        tile_pipeline_duration = time.perf_counter() - tile_pipeline_start_time
+        tile_pipeline_average_time = tile_pipeline_duration / num_tiles if num_tiles else 0.
         logger.success(
             'Done with {} tiles in {:.3f} s and {:.3f} s/tile.',
             num_tiles,
-            tile_pipeline_elapsed_time,
+            tile_pipeline_duration,
             tile_pipeline_average_time,
         )
 
@@ -682,10 +682,10 @@ class VectorPipeline(IDMixin):
             vector = self._vector_loader()
             _ = self._vector_processor(vector=vector)
 
-        vector_pipeline_elapsed_time = time.perf_counter() - vector_pipeline_start_time
+        vector_pipeline_duration = time.perf_counter() - vector_pipeline_start_time
         logger.success(
             'Done in {:.3f} s.',
-            vector_pipeline_elapsed_time,
+            vector_pipeline_duration,
         )
 
 
