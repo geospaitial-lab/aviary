@@ -1,4 +1,12 @@
-# Changelog
+## 1.8.1 (2026-05-27)
+
+### Bug Fixes
+
+- fix(`Logger`): add serialize to add_handler ([#912](https://github.com/geospaitial-lab/aviary/pull/912))
+
+[Full Changelog](https://github.com/geospaitial-lab/aviary/releases/tag/1.8.1)
+
+---
 
 ## 1.8.0 (2026-05-26)
 
@@ -6,6 +14,8 @@
 
 - feat: add tiles / vector logs on call ([#896](https://github.com/geospaitial-lab/aviary/pull/896))
 - feat(`Logger`): add serialize ([#910](https://github.com/geospaitial-lab/aviary/pull/910))
+
+[Full Changelog](https://github.com/geospaitial-lab/aviary/releases/tag/1.8.0)
 
 ---
 
