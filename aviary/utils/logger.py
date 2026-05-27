@@ -49,38 +49,34 @@ class Logger(IDMixin):
         self._logger.remove()
 
         if self._sink is not None:
-            if self._serialize:
-                def serializer(record: dict[str, object]) -> str:
-                    subset = {
-                        'timestamp': record['time'].isoformat(),
-                        'level': record['level'].name,
-                        'message': record['message'],
-                    }
-                    if record['extra']:
-                        subset.update(record['extra'])
-                    return json.dumps(subset).replace('{', '{{').replace('}', '}}') + '\n'
-
-                self._logger.add(
-                    sink=self._sink,
-                    level=self._level.to_loguru(),
-                    format=serializer,
-                )
-            else:
-                self._logger.add(
-                    sink=self._sink,
-                    level=self._level.to_loguru(),
-                    format=self._format,
-                )
+            self.add_handler(
+                sink=self._sink,
+                level=self._level,
+                format=self._format,
+                serialize=self._serialize,
+            )
 
         self._logger.enable(name='aviary')
 
         super().__init__()
+
+    @staticmethod
+    def _serialize_record(record: dict[str, object]) -> str:
+        subset = {
+            'timestamp': record['time'].isoformat(),
+            'level': record['level'].name,
+            'message': record['message'],
+        }
+        if record['extra']:
+            subset.update(record['extra'])
+        return json.dumps(subset).replace('{', '{{').replace('}', '}}') + '\n'
 
     def add_handler(
         self,
         sink: Any,  # noqa: ANN401
         level: LogLevel = LogLevel.INFO,
         format: str = '{time:YYYY-MM-DD HH:mm:ss.SSS} | {level:<8} | {message}',  # noqa: A002
+        serialize: bool = False,
     ) -> None:
         """Adds a handler to the logger.
 
@@ -88,12 +84,20 @@ class Logger(IDMixin):
             sink: Sink
             level: Log level
             format: Format
+            serialize: If True, output logs in structured JSON format
         """
-        self._logger.add(
-            sink=sink,
-            level=level.to_loguru(),
-            format=format,
-        )
+        if serialize:
+            self._logger.add(
+                sink=sink,
+                level=level.to_loguru(),
+                format=self._serialize_record,
+            )
+        else:
+            self._logger.add(
+                sink=sink,
+                level=level.to_loguru(),
+                format=format,
+            )
 
     def disable(self) -> None:
         """Disables the logger."""
