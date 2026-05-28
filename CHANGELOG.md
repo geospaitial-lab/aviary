@@ -1,3 +1,13 @@
+## 1.8.2 (2026-05-28)
+
+### Bug Fixes
+
+- fix: set upper bound for typer ([#914](https://github.com/geospaitial-lab/aviary/pull/914))
+
+[Full Changelog](https://github.com/geospaitial-lab/aviary/releases/tag/1.8.2)
+
+---
+
 ## 1.8.1 (2026-05-28)
 
 ### Bug Fixes
