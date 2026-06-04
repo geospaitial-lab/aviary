@@ -56,6 +56,7 @@ from .core.type_aliases import (
     EPSGCode,
     FractionalBufferSize,
     GroundSamplingDistance,
+    Objects,
     TileSize,
 )
 from .core.vector import Vector
@@ -92,6 +93,7 @@ __all__ = [
     'LogLevel',
     'OSMType',
     'Object',
+    'Objects',
     'RasterChannel',
     'SetFilterMode',
     'SlopeUnit',
