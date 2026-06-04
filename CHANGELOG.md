@@ -1,3 +1,11 @@
+## Unreleased
+
+### New Features
+
+- feat(`core`): add `Object` (experimental) ([#918](https://github.com/geospaitial-lab/aviary/pull/918))
+
+---
+
 ## 1.8.2 (2026-05-28)
 
 ### Bug Fixes
