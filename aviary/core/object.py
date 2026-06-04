@@ -29,41 +29,41 @@ class Object(IDMixin):
 
     def __init__(
         self,
-        label: int | str,
+        value: int | str,
         x_center: float,
         y_center: float,
         width: float,
         height: float,
         rotation: float | None = None,
-        confidence: float | None = None,
+        score: float | None = None,
     ) -> None:
         """
         Parameters:
-            label: Label
+            value: Value
             x_center: Center x coordinate in meters
             y_center: Center y coordinate in meters
             width: Width in meters
             height: Height in meters
             rotation: Rotation in radians
-            confidence: Confidence
+            score: Score
         """
-        self._label = label
+        self._value = value
         self._x_center = x_center
         self._y_center = y_center
         self._width = width
         self._height = height
         self._rotation = rotation
-        self._confidence = confidence
+        self._score = score
 
         super().__init__()
 
     @property
-    def label(self) -> int | str:
+    def value(self) -> int | str:
         """
         Returns:
-            Label
+            Value
         """
-        return self._label
+        return self._value
 
     @property
     def x_center(self) -> float:
@@ -106,12 +106,12 @@ class Object(IDMixin):
         return self._rotation
 
     @property
-    def confidence(self) -> float | None:
+    def score(self) -> float | None:
         """
         Returns:
-            Confidence
+            Score
         """
-        return self._confidence
+        return self._score
 
     @property
     def area(self) -> float:
@@ -129,13 +129,13 @@ class Object(IDMixin):
         """
         return (
             'Object(\n'
-            f'    label={self._label},\n'
+            f'    value={self._value},\n'
             f'    x_center={self._x_center},\n'
             f'    y_center={self._y_center},\n'
             f'    width={self._width},\n'
             f'    height={self._height},\n'
             f'    rotation={self._rotation},\n'
-            f'    confidence={self._confidence},\n'
+            f'    score={self._score},\n'
             ')'
         )
 
@@ -155,12 +155,12 @@ class Object(IDMixin):
             return False
 
         conditions = [
-            self._label == other.label,
+            self._value == other.value,
             self._x_center == other.x_center,
             self._y_center == other.y_center,
             self._width == other.width,
             self._height == other.height,
             self._rotation == other.rotation,
-            self._confidence == other.confidence,
+            self._score == other.score,
         ]
         return all(conditions)
