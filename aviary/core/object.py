@@ -34,7 +34,7 @@ class Object(IDMixin):
         y_center: float,
         width: float,
         height: float,
-        rotation: float = 0.,
+        rotation: float | None = None,
         confidence: float | None = None,
     ) -> None:
         """
@@ -45,7 +45,7 @@ class Object(IDMixin):
             width: Width in meters
             height: Height in meters
             rotation: Rotation in radians
-            confidence: Confidence in percent
+            confidence: Confidence
         """
         self._label = label
         self._x_center = x_center
@@ -109,7 +109,7 @@ class Object(IDMixin):
     def confidence(self) -> float | None:
         """
         Returns:
-            Confidence in percent
+            Confidence
         """
         return self._confidence
 
@@ -129,10 +129,12 @@ class Object(IDMixin):
         """
         return (
             'Object(\n'
+            f'    label={self._label},\n'
             f'    x_center={self._x_center},\n'
             f'    y_center={self._y_center},\n'
             f'    width={self._width},\n'
             f'    height={self._height},\n'
             f'    rotation={self._rotation},\n'
+            f'    confidence={self._confidence},\n'
             ')'
         )
