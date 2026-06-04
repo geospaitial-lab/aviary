@@ -54,6 +54,12 @@
 
 ---
 
+::: aviary.Objects
+    options:
+      show_labels: false
+
+---
+
 ::: aviary.TileSize
     options:
       show_labels: false
