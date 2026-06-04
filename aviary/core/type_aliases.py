@@ -46,7 +46,7 @@ GroundSamplingDistance: TypeAlias = float
 """Ground sampling distance in meters per pixel"""
 
 Objects: TypeAlias = list[Object]
-"""Objects."""
+"""Objects"""
 
 TileSize: TypeAlias = int
 """Tile size in meters"""
