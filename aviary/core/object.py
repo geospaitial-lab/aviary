@@ -40,10 +40,10 @@ class Object(IDMixin):
         """
         Parameters:
             value: Value
-            x_center: Center x coordinate in meters
-            y_center: Center y coordinate in meters
-            width: Width in meters
-            height: Height in meters
+            x_center: Center x coordinate
+            y_center: Center y coordinate
+            width: Width
+            height: Height
             rotation: Rotation in radians
             score: Score
         """
@@ -69,7 +69,7 @@ class Object(IDMixin):
     def x_center(self) -> float:
         """
         Returns:
-            Center x coordinate in meters
+            Center x coordinate
         """
         return self._x_center
 
@@ -77,7 +77,7 @@ class Object(IDMixin):
     def y_center(self) -> float:
         """
         Returns:
-            Center y coordinate in meters
+            Center y coordinate
         """
         return self._y_center
 
@@ -85,7 +85,7 @@ class Object(IDMixin):
     def width(self) -> float:
         """
         Returns:
-            Width in meters
+            Width
         """
         return self._width
 
@@ -93,7 +93,7 @@ class Object(IDMixin):
     def height(self) -> float:
         """
         Returns:
-            Height in meters
+            Height
         """
         return self._height
 
@@ -117,7 +117,7 @@ class Object(IDMixin):
     def area(self) -> float:
         """
         Returns:
-            Area in square meters
+            Area
         """
         return self._width * self._height
 
