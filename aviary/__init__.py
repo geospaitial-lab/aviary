@@ -42,6 +42,7 @@ from .core.grid import (
     GridConfig,
 )
 from .core.mixins import IDMixin
+from .core.object import Object
 from .core.tiles import (
     Tile,
     Tiles,
@@ -90,6 +91,7 @@ __all__ = [
     'InterpolationMode',
     'LogLevel',
     'OSMType',
+    'Object',
     'RasterChannel',
     'SetFilterMode',
     'SlopeUnit',
