@@ -138,3 +138,29 @@ class Object(IDMixin):
             f'    confidence={self._confidence},\n'
             ')'
         )
+
+    def __eq__(
+        self,
+        other: object,
+    ) -> bool:
+        """Compares the objects.
+
+        Parameters:
+            other: Other object
+
+        Returns:
+            True if the objects are equal, False otherwise
+        """
+        if not isinstance(other, Object):
+            return False
+
+        conditions = [
+            self._label == other.label,
+            self._x_center == other.x_center,
+            self._y_center == other.y_center,
+            self._width == other.width,
+            self._height == other.height,
+            self._rotation == other.rotation,
+            self._confidence == other.confidence,
+        ]
+        return all(conditions)
