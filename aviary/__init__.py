@@ -21,6 +21,7 @@ from ._utils.logging import log
 from .core.bounding_box import BoundingBox
 from .core.channel import (
     Channel,
+    ObjectChannel,
     RasterChannel,
     VectorChannel,
 )
@@ -93,6 +94,7 @@ __all__ = [
     'LogLevel',
     'OSMType',
     'Object',
+    'ObjectChannel',
     'Objects',
     'RasterChannel',
     'SetFilterMode',
