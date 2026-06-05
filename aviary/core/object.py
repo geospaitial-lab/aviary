@@ -16,6 +16,7 @@
 from __future__ import annotations
 
 from aviary._utils.lifecycle import experimental
+from aviary.core.exceptions import AviaryUserError
 from aviary.core.mixins import IDMixin
 
 
@@ -55,7 +56,27 @@ class Object(IDMixin):
         self._rotation = rotation
         self._score = score
 
+        self._validate()
+
         super().__init__()
+
+    def _validate(self) -> None:
+        """Validates the object.
+
+        Raises:
+            AviaryUserError: Invalid `object` (`width` is negative or zero, or `height` is negative or zero)
+        """
+        conditions = [
+            self._width <= 0.,
+            self._height <= 0.,
+        ]
+
+        if any(conditions):
+            message = (
+                'Invalid object! '
+                'width must be positive and height must be positive.'
+            )
+            raise AviaryUserError(message)
 
     @property
     def value(self) -> int | str:
