@@ -743,6 +743,164 @@ class ObjectChannel(
             ')'
         )
 
+    @classmethod
+    def from_unnormalized_data(  # noqa: C901
+        cls,
+        data: Objects | list[Objects],
+        name: ChannelName | str,
+        coordinates: Coordinates | CoordinatesSet,
+        tile_size: TileSize,
+        buffer_size: BufferSize = 0,
+        metadata: dict[str, object] | None = None,
+        copy: bool = False,
+    ) -> ObjectChannel:
+        """Creates an object channel from unnormalized data.
+
+        Parameters:
+            data: Data
+            name: Name
+            coordinates: Coordinates (x_min, y_min) of the tile or of each tile in meters
+            tile_size: Tile size in meters
+            buffer_size: Buffer size in meters
+            metadata: Metadata
+            copy: If True, the data and metadata are copied during initialization
+
+        Raises:
+            AviaryUserError: Invalid `data` (the data contains no data items)
+            AviaryUserError: Invalid `coordinates` (the coordinates are not in shape (n, 2) and data type int32)
+            AviaryUserError: Invalid `coordinates` (the coordinates contain duplicate coordinates)
+            AviaryUserError: Invalid `coordinates` (the number of coordinates is not equal to the number of data items)
+            AviaryUserError: Invalid `tile_size` (the tile size is negative or zero)
+            AviaryUserError: Invalid `buffer_size` (the buffer size is negative)
+        """
+        if not isinstance(data, list):
+            data = [data]
+
+        if not data:
+            message = (
+                'Invalid data! '
+                'The data must contain at least one data item.'
+            )
+            raise AviaryUserError(message)
+
+        if not isinstance(coordinates, np.ndarray):
+            coordinates = np.array([coordinates], dtype=np.int32)
+
+        if coordinates.ndim != 2:  # noqa: PLR2004
+            message = (
+                'Invalid coordinates! '
+                'The coordinates must be in shape (n, 2) and data type int32.'
+            )
+            raise AviaryUserError(message)
+
+        conditions = [
+            coordinates.shape[1] != 2,  # noqa: PLR2004
+            coordinates.dtype != np.int32,
+        ]
+
+        if any(conditions):
+            message = (
+                'Invalid coordinates! '
+                'The coordinates must be in shape (n, 2) and data type int32.'
+            )
+            raise AviaryUserError(message)
+
+        unique_coordinates = duplicates_filter(coordinates=coordinates)
+
+        if len(coordinates) != len(unique_coordinates):
+            message = (
+                'Invalid coordinates! '
+                'The coordinates must contain unique coordinates.'
+            )
+            raise AviaryUserError(message)
+
+        if len(coordinates) != len(data):
+            message = (
+                'Invalid coordinates! '
+                'The number of coordinates must be equal to the number of data items.'
+            )
+            raise AviaryUserError(message)
+
+        if tile_size <= 0:
+            message = (
+                'Invalid tile_size! '
+                'The tile size must be positive.'
+            )
+            raise AviaryUserError(message)
+
+        if buffer_size < 0:
+            message = (
+                'Invalid buffer_size! '
+                'The buffer size must be positive or zero.'
+            )
+            raise AviaryUserError(message)
+
+        if copy:
+            data = [data_item.copy() for data_item in data]
+
+        coordinates = [
+            (int(x_min), int(y_min))
+            for x_min, y_min in coordinates
+        ]
+        data = [
+            cls._from_unnormalized_data_item(
+                data_item=data_item,
+                coordinates=coordinates_item,
+                tile_size=tile_size,
+                buffer_size=buffer_size,
+            )
+            for data_item, coordinates_item in zip(data, coordinates, strict=True)
+        ]
+        buffer_size = buffer_size / tile_size
+        object_channel = cls(
+            data=data,
+            name=name,
+            buffer_size=buffer_size,
+            metadata=metadata,
+            copy=False,
+        )
+
+        if copy:
+            object_channel._copy_metadata()
+            object_channel._mark_as_copied()
+
+        return object_channel
+
+    @classmethod
+    def _from_unnormalized_data_item(
+        cls,
+        data_item: Objects,
+        coordinates: Coordinates,
+        tile_size: TileSize,
+        buffer_size: BufferSize = 0,
+    ) -> Objects:
+        """Creates a data item from an unnormalized data item.
+
+        Parameters:
+            data_item: Data item
+            coordinates: Coordinates (x_min, y_min) of the tile in meters
+            tile_size: Tile size in meters
+            buffer_size: Buffer size in meters
+
+        Returns:
+            Data item
+        """
+        if not data_item:
+            return []
+
+        bounding_box = (
+            float(coordinates[0] - buffer_size),
+            float(coordinates[1] - buffer_size),
+            float(coordinates[0] + tile_size + buffer_size),
+            float(coordinates[1] + tile_size + buffer_size),
+        )
+        new_bounding_box = (0., 0., 1., 1.)
+        return cls._scale_data_item(
+            data_item=data_item,
+            bounding_box=bounding_box,
+            new_bounding_box=new_bounding_box,
+        )
+
     def __getstate__(self) -> dict:
         """Gets the state for pickling.
 
