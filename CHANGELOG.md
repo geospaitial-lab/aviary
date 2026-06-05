@@ -4,6 +4,7 @@
 
 - feat(`core`): add `Object` (experimental) ([#918](https://github.com/geospaitial-lab/aviary/pull/918))
 - feat(`Channel`): add `ObjectChannel` (experimental) ([#919](https://github.com/geospaitial-lab/aviary/pull/919))
+- feat(`TilesProcessor`): add `ObjectExporter` (experimental) ([#920](https://github.com/geospaitial-lab/aviary/pull/920))
 
 ---
 
