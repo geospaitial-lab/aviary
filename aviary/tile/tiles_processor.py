@@ -97,6 +97,7 @@ class TilesProcessor(Protocol):
 
     Implemented exporters:
         - `GridExporter`: Exports the grid of the tiles
+        - `ObjectExporter`: Exports an object channel
         - `RasterExporter`: Exports raster channels
         - `VectorExporter`: Exports a vector channel
     """

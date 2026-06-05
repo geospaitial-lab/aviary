@@ -22,12 +22,16 @@ import pydantic
 
 from aviary._functional.tile.tiles_exporter import (
     grid_exporter,
+    object_exporter,
     raster_exporter,
     vector_exporter,
 )
 from aviary._utils.lifecycle import experimental
 from aviary._utils.logging import log
-from aviary.core.enums import ChannelName
+from aviary.core.enums import (
+    ChannelName,
+    ObjectExporterMode,
+)
 from aviary.core.mixins import IDMixin
 from aviary.core.type_aliases import EPSGCode
 from aviary.tile.tiles_processor import _TilesProcessorFactory
@@ -116,6 +120,130 @@ class GridExporterConfig(pydantic.BaseModel):
 _TilesProcessorFactory.register(
     tiles_processor_class=GridExporter,
     config_class=GridExporterConfig,
+    package=_PACKAGE,
+)
+
+
+@experimental(
+    since='1.9.0',
+)
+@log
+class ObjectExporter(IDMixin):
+    """Tiles processor that exports an object channel
+
+    The object data is exported to a geopackage.
+
+    Experimental:
+        `ObjectExporter` is experimental since `1.9.0` and may change without notice.
+
+    Notes:
+        - Requires an object channel
+
+    Implements the `TilesProcessor` protocol.
+    """
+
+    def __init__(
+        self,
+        channel_name: ChannelName | str,
+        epsg_code: EPSGCode,
+        path: Path,
+        mode: ObjectExporterMode = ObjectExporterMode.BOX,
+        remove_channel: bool = True,
+    ) -> None:
+        """
+        Parameters:
+            channel_name: Channel name
+            epsg_code: EPSG code
+            path: Path to the geopackage (.gpkg file)
+            mode: Object exporter mode (`BOX` or `POINT`)
+            remove_channel: If True, the channel is removed
+        """
+        self._channel_name = channel_name
+        self._epsg_code = epsg_code
+        self._path = path
+        self._mode = mode
+        self._remove_channel = remove_channel
+
+        super().__init__()
+
+    @classmethod
+    def from_config(
+        cls,
+        config: ObjectExporterConfig,
+    ) -> ObjectExporter:
+        """Creates an object exporter from the configuration.
+
+        Parameters:
+            config: Configuration
+
+        Returns:
+            Object exporter
+        """
+        config = config.model_dump()
+        return cls(**config)
+
+    def __call__(
+        self,
+        tiles: Tiles,
+    ) -> Tiles:
+        """Exports the object channel.
+
+        Parameters:
+            tiles: Tiles
+
+        Returns:
+            Tiles
+        """
+        return object_exporter(
+            tiles=tiles,
+            channel_name=self._channel_name,
+            epsg_code=self._epsg_code,
+            path=self._path,
+            mode=self._mode,
+            remove_channel=self._remove_channel,
+        )
+
+
+class ObjectExporterConfig(pydantic.BaseModel):
+    """Configuration for the `from_config` class method of `ObjectExporter`
+
+    Create the configuration from a config file:
+        - Use 'box' or 'point' instead of `ObjectExporterMode.BOX` or `ObjectExporterMode.POINT`
+        - Use false or true instead of False or True
+
+    Usage:
+        You can create the configuration from a config file.
+
+        ``` yaml title="config.yaml"
+        package: 'aviary'
+        name: 'ObjectExporter'
+        config:
+          channel_name: 'my_channel'
+          epsg_code: 25832
+          path: 'path/to/my_channel.gpkg'
+          mode: 'box'
+          remove_channel: true
+        ```
+
+    Attributes:
+        channel_name: Channel name
+        epsg_code: EPSG code
+        path: Path to the geopackage (.gpkg file)
+        mode: Object exporter mode (`BOX` or `POINT`) -
+            defaults to `BOX`
+        remove_channel: If True, the channel is removed -
+            defaults to True
+    """
+    channel_name: ChannelName | str
+    epsg_code: EPSGCode
+    path: Path
+    mode: ObjectExporterMode = ObjectExporterMode.BOX
+    remove_channel: bool = True
+
+
+_TilesProcessorFactory.register(
+    tiles_processor_class=ObjectExporter,
+    config_class=ObjectExporterConfig,
     package=_PACKAGE,
 )
 
