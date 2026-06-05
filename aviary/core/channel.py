@@ -44,6 +44,8 @@ from aviary.core.enums import (
 )
 from aviary.core.exceptions import AviaryUserError
 from aviary.core.mixins import IDMixin
+from aviary.core.object import Object
+from aviary.core.type_aliases import Objects
 
 if TYPE_CHECKING:
     from aviary.core.tiles import Tiles
@@ -70,6 +72,7 @@ class Channel(
         - The dunder methods `__getitem__` and `__iter__` return or yield a reference to a data item
 
     Implemented channels:
+        - `ObjectChannel`: Contains batched object data
         - `RasterChannel`: Contains batched raster data
         - `VectorChannel`: Contains batched vector data
     """
@@ -512,7 +515,122 @@ class Channel(
         """
 
 
-class RasterChannel(Channel, Iterable[npt.NDArray]):
+class ObjectChannel(
+    Channel,
+    Iterable[Objects],
+):
+    """Channel that contains batched object data
+
+    Notes:
+        - The data items are assumed to be normalized to the spatial extent [0, 1] in x and y direction
+        - The `data` property returns a reference to the data
+        - The `metadata` property returns a reference to the metadata
+        - The dunder methods `__getitem__` and `__iter__` return or yield a reference to a data item
+    """
+    _data: list[Objects]
+
+    __hash__ = None
+
+    def __init__(
+        self,
+        data: Objects | list[Objects],
+        name: ChannelName | str,
+        buffer_size: FractionalBufferSize = 0.,
+        metadata: dict[str, object] | None = None,
+        copy: bool = False,
+    ) -> None:
+        """
+        Parameters:
+            data: Data
+            name: Name
+            buffer_size: Buffer size as a fraction of the spatial extent of the data
+            metadata: Metadata
+            copy: If True, the data and metadata are copied during initialization
+        """
+        super().__init__(
+            data=data,
+            name=name,
+            buffer_size=buffer_size,
+            metadata=metadata,
+            copy=copy,
+        )
+
+        self._buffer_size_coordinate_units = self._compute_buffer_size_coordinate_units()
+        self._unbuffered_bounding_box = self._compute_unbuffered_bounding_box()
+
+    def _validate_data(self) -> None:
+        """Validates `data`.
+
+        Raises:
+            AviaryUserError: Invalid `data` (the data contains no data items)
+        """
+        if not self._data:
+            message = (
+                'Invalid data! '
+                'The data must contain at least one data item.'
+            )
+            raise AviaryUserError(message)
+
+        for data_item in self:
+            self._validate_data_item(data_item=data_item)
+
+    @staticmethod
+    def _validate_data_item(
+        data_item: Objects,
+    ) -> None:
+        """Validates the data item.
+
+        Parameters:
+            data_item: Data item
+
+        Raises:
+            AviaryUserError: Invalid `data` (the data item is not normalized to the spatial extent [0, 1]
+                in x and y direction)
+        """
+
+    def _copy_data(self) -> None:
+        """Copies `data`."""
+        self._data = [
+            [
+                Object(
+                    value=object_.value,
+                    x_center=object_.x_center,
+                    y_center=object_.y_center,
+                    width=object_.width,
+                    height=object_.height,
+                    rotation=object_.rotation,
+                    score=object_.score,
+                )
+                for object_ in data_item
+            ]
+            for data_item in self
+        ]
+
+    def _compute_buffer_size_coordinate_units(self) -> BufferSize:
+        """Computes the buffer size in coordinate units.
+
+        Returns:
+            Buffer size in coordinate units
+        """
+        return self._buffer_size / (1. + 2. * self._buffer_size)
+
+    def _compute_unbuffered_bounding_box(self) -> tuple[float, float, float, float]:
+        """Computes the unbuffered bounding box.
+
+        Returns:
+            Bounding box
+        """
+        x_min = 0. + self._buffer_size_coordinate_units
+        y_min = 0. + self._buffer_size_coordinate_units
+        x_max = 1. - self._buffer_size_coordinate_units
+        y_max = 1. - self._buffer_size_coordinate_units
+        return x_min, y_min, x_max, y_max
+
+
+class RasterChannel(
+    Channel,
+    Iterable[npt.NDArray],
+):
     """Channel that contains batched raster data
 
     Notes:
@@ -947,7 +1065,10 @@ class RasterChannel(Channel, Iterable[npt.NDArray]):
         ]
 
 
-class VectorChannel(Channel, Iterable[gpd.GeoDataFrame]):
+class VectorChannel(
+    Channel,
+    Iterable[gpd.GeoDataFrame],
+):
     """Channel that contains batched vector data
 
     Notes:
