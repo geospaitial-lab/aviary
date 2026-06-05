@@ -654,6 +654,50 @@ class ObjectChannel(
         y_max = 1. - self._buffer_size_coordinate_units
         return x_min, y_min, x_max, y_max
 
+    @staticmethod
+    def _scale_data_item(
+        data_item: Objects,
+        bounding_box: tuple[float, float, float, float],
+        new_bounding_box: tuple[float, float, float, float],
+    ) -> Objects:
+        """Scales the data item to the spatial extent [0, 1] in x and y direction.
+
+        Parameters:
+            data_item: Data item
+            bounding_box: Bounding box
+            new_bounding_box: New bounding box
+
+        Returns:
+            Data item
+        """
+        if not data_item:
+            return []
+
+        source_size_x = bounding_box[2] - bounding_box[0]
+        source_size_y = bounding_box[3] - bounding_box[1]
+
+        target_size_x = new_bounding_box[2] - new_bounding_box[0]
+        target_size_y = new_bounding_box[3] - new_bounding_box[1]
+
+        scale_x = target_size_x / source_size_x
+        scale_y = target_size_y / source_size_y
+
+        translate_x = new_bounding_box[0] - bounding_box[0] * scale_x
+        translate_y = new_bounding_box[1] - bounding_box[1] * scale_y
+
+        return [
+            Object(
+                value=object_.value,
+                x_center=object_.x_center * scale_x + translate_x,
+                y_center=object_.y_center * scale_y + translate_y,
+                width=object_.width * scale_x,
+                height=object_.height * scale_y,
+                rotation=object_.rotation,
+                score=object_.score,
+            )
+            for object_ in data_item
+        ]
+
     @property
     def data(self) -> list[Objects]:
         """
