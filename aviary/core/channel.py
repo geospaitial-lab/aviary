@@ -726,23 +726,6 @@ class ObjectChannel(
             copy=copy,
         )
 
-    def __repr__(self) -> str:
-        """Returns the string representation.
-
-        Returns:
-            String representation
-        """
-        data_repr = len(self)
-        return (
-            'ObjectChannel(\n'
-            f'    data={data_repr},\n'
-            f'    name={self._name},\n'
-            f'    buffer_size={self._buffer_size},\n'
-            f'    metadata={self._metadata},\n'
-            f'    copy={self._copy},\n'
-            ')'
-        )
-
     @classmethod
     def from_unnormalized_data(  # noqa: C901
         cls,
@@ -899,6 +882,23 @@ class ObjectChannel(
             data_item=data_item,
             bounding_box=bounding_box,
             new_bounding_box=new_bounding_box,
+        )
+
+    def __repr__(self) -> str:
+        """Returns the string representation.
+
+        Returns:
+            String representation
+        """
+        data_repr = len(self)
+        return (
+            'ObjectChannel(\n'
+            f'    data={data_repr},\n'
+            f'    name={self._name},\n'
+            f'    buffer_size={self._buffer_size},\n'
+            f'    metadata={self._metadata},\n'
+            f'    copy={self._copy},\n'
+            ')'
         )
 
     def __getstate__(self) -> dict:
