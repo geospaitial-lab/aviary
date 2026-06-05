@@ -35,6 +35,7 @@ import numpy as np
 import numpy.typing as npt
 
 from aviary._functional.utils.coordinates_filter import duplicates_filter
+from aviary._utils.lifecycle import experimental
 from aviary._utils.validators import validate_name
 from aviary.core.enums import (
     ChannelName,
@@ -515,6 +516,9 @@ class Channel(
         """
 
 
+@experimental(
+    since='1.9.0',
+)
 class ObjectChannel(
     Channel,
     Iterable[Objects],
