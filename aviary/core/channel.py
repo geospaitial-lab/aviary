@@ -630,6 +630,34 @@ class ObjectChannel(
         y_max = 1. - self._buffer_size_coordinate_units
         return x_min, y_min, x_max, y_max
 
+    @property
+    def data(self) -> list[Objects]:
+        """
+        Returns:
+            Data
+        """
+        return self._data
+
+    @classmethod
+    def from_channels(
+        cls,
+        channels: list[ObjectChannel],
+        copy: bool = False,
+    ) -> ObjectChannel:
+        """Creates an object channel from object channels.
+
+        Parameters:
+            channels: Object channels
+            copy: If True, the data and metadata are copied during initialization
+
+        Returns:
+            Object channel
+        """
+        return super().from_channels(
+            channels=channels,
+            copy=copy,
+        )
+
 
 class RasterChannel(
     Channel,
