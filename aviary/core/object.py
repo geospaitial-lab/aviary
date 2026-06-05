@@ -45,7 +45,7 @@ class Object(IDMixin):
             y_center: Center y coordinate
             width: Width
             height: Height
-            rotation: Rotation in radians
+            rotation: Rotation (counterclockwise) in radians
             score: Score
         """
         self._value = value
@@ -122,7 +122,7 @@ class Object(IDMixin):
     def rotation(self) -> float:
         """
         Returns:
-            Rotation in radians
+            Rotation (counterclockwise) in radians
         """
         return self._rotation
 
