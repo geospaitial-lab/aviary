@@ -762,6 +762,37 @@ class ObjectChannel(
         """
         super().__setstate__(state=state)
 
+    def __eq__(
+        self,
+        other: object,
+    ) -> bool:
+        """Compares the object channels.
+
+        Parameters:
+            other: Other object channel
+
+        Returns:
+            True if the object channels are equal, False otherwise
+        """
+        if not isinstance(other, ObjectChannel):
+            return False
+
+        conditions = [
+            len(self) == len(other),
+            all(
+                (len(data_item) == len(other_data_item))
+                and all(
+                    object_ == other_object
+                    for object_, other_object in zip(data_item, other_data_item, strict=False)
+                )
+                for data_item, other_data_item in zip(self, other, strict=False)
+            ),
+            self._name == other.name,
+            self._buffer_size == other.buffer_size,
+            self._metadata == other.metadata,
+        ]
+        return all(conditions)
+
     @overload
     def __getitem__(
         self,
