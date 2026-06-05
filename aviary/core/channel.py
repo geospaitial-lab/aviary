@@ -1034,6 +1034,198 @@ class ObjectChannel(
             copy=True,
         )
 
+    def remove_buffer(
+        self,
+        inplace: bool = False,
+    ) -> ObjectChannel:
+        """Removes the buffer.
+
+        Parameters:
+            inplace: If True, the buffer is removed inplace
+
+        Returns:
+            Object channel
+        """
+        if self._buffer_size == 0.:
+            if inplace:
+                return self
+
+            return self.copy()
+
+        if inplace:
+            self._data = [
+                self._remove_buffer_item(data_item=data_item)
+                for data_item in self
+            ]
+            self._buffer_size = 0.
+            self._validate()
+            self._buffer_size_coordinate_units = self._compute_buffer_size_coordinate_units()
+            self._unbuffered_bounding_box = self._compute_unbuffered_bounding_box()
+            return self
+
+        data = [
+            self._remove_buffer_item(data_item=data_item)
+            for data_item in self
+        ]
+        buffer_size = 0.
+        metadata = self._metadata.copy()
+        object_channel = ObjectChannel(
+            data=data,
+            name=self._name,
+            buffer_size=buffer_size,
+            metadata=metadata,
+            copy=False,
+        )
+        object_channel._mark_as_copied()
+        return object_channel
+
+    def _remove_buffer_item(
+        self,
+        data_item: Objects,
+    ) -> Objects:
+        """Removes the buffer from the data item.
+
+        Parameters:
+            data_item: Data item
+
+        Returns:
+            Data item
+        """
+        if not data_item:
+            return []
+
+        x_min, y_min, x_max, y_max = self._unbuffered_bounding_box
+
+        data_item = [
+            object_
+            for object_ in data_item
+            if (
+                (x_min <= object_.x_center <= x_max)
+                and (y_min <= object_.y_center <= y_max)
+            )
+        ]
+
+        bounding_box = self._unbuffered_bounding_box
+        new_bounding_box = (0., 0., 1., 1.)
+        return self._scale_data_item(
+            data_item=data_item,
+            bounding_box=bounding_box,
+            new_bounding_box=new_bounding_box,
+        )
+
+    def to_denormalized_data(
+        self,
+        coordinates: CoordinatesSet,
+        tile_size: TileSize,
+    ) -> list[Objects]:
+        """Converts the data to denormalized data.
+
+        Parameters:
+            coordinates: Coordinates (x_min, y_min) of each tile in meters
+            tile_size: Tile size in meters
+
+        Returns:
+            Data
+
+        Raises:
+            AviaryUserError: Invalid `coordinates` (the coordinates are not in shape (n, 2) and data type int32)
+            AviaryUserError: Invalid `coordinates` (the coordinates contain duplicate coordinates)
+            AviaryUserError: Invalid `coordinates` (the number of coordinates is not equal to the number of data items)
+            AviaryUserError: Invalid `tile_size` (the tile size is negative or zero)
+        """
+        if coordinates.ndim != 2:  # noqa: PLR2004
+            message = (
+                'Invalid coordinates! '
+                'The coordinates must be in shape (n, 2) and data type int32.'
+            )
+            raise AviaryUserError(message)
+
+        conditions = [
+            coordinates.shape[1] != 2,  # noqa: PLR2004
+            coordinates.dtype != np.int32,
+        ]
+
+        if any(conditions):
+            message = (
+                'Invalid coordinates! '
+                'The coordinates must be in shape (n, 2) and data type int32.'
+            )
+            raise AviaryUserError(message)
+
+        unique_coordinates = duplicates_filter(coordinates=coordinates)
+
+        if len(coordinates) != len(unique_coordinates):
+            message = (
+                'Invalid coordinates! '
+                'The coordinates must contain unique coordinates.'
+            )
+            raise AviaryUserError(message)
+
+        if len(coordinates) != len(self):
+            message = (
+                'Invalid coordinates! '
+                'The number of coordinates must be equal to the number of data items.'
+            )
+            raise AviaryUserError(message)
+
+        if tile_size <= 0:
+            message = (
+                'Invalid tile_size! '
+                'The tile size must be positive.'
+            )
+            raise AviaryUserError(message)
+
+        data = [data_item.copy() for data_item in self]
+
+        coordinates = [
+            (int(x_min), int(y_min))
+            for x_min, y_min in coordinates
+        ]
+        buffer_size = self._buffer_size * tile_size
+        return [
+            self._to_denormalized_data_item(
+                data_item=data_item,
+                coordinates=coordinates_item,
+                tile_size=tile_size,
+                buffer_size=buffer_size,
+            )
+            for data_item, coordinates_item in zip(data, coordinates, strict=True)
+        ]
+
+    def _to_denormalized_data_item(
+        self,
+        data_item: Objects,
+        coordinates: Coordinates,
+        tile_size: TileSize,
+        buffer_size: BufferSize = 0,
+    ) -> Objects:
+        """Converts the data item to a denormalized data item.
+
+        Parameters:
+            data_item: Data item
+            coordinates: Coordinates (x_min, y_min) of the tile in meters
+            tile_size: Tile size in meters
+            buffer_size: Buffer size in meters
+
+        Returns:
+            Data item
+        """
+        if not data_item:
+            return []
+
+        bounding_box = (0., 0., 1., 1.)
+        new_bounding_box = (
+            float(coordinates[0] - buffer_size),
+            float(coordinates[1] - buffer_size),
+            float(coordinates[0] + tile_size + buffer_size),
+            float(coordinates[1] + tile_size + buffer_size),
+        )
+        return self._scale_data_item(
+            data_item=data_item,
+            bounding_box=bounding_box,
+            new_bounding_box=new_bounding_box,
+        )
+
 
 class RasterChannel(
     Channel,
