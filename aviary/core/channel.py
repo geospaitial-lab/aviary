@@ -682,6 +682,106 @@ class ObjectChannel(
             copy=copy,
         )
 
+    def __repr__(self) -> str:
+        """Returns the string representation.
+
+        Returns:
+            String representation
+        """
+        data_repr = len(self)
+        return (
+            'ObjectChannel(\n'
+            f'    data={data_repr},\n'
+            f'    name={self._name},\n'
+            f'    buffer_size={self._buffer_size},\n'
+            f'    metadata={self._metadata},\n'
+            f'    copy={self._copy},\n'
+            ')'
+        )
+
+    def __getstate__(self) -> dict:
+        """Gets the state for pickling.
+
+        Returns:
+            State
+        """
+        return super().__getstate__()
+
+    def __setstate__(
+        self,
+        state: dict,
+    ) -> None:
+        """Sets the state for unpickling.
+
+        Parameters:
+            state: State
+        """
+        super().__setstate__(state=state)
+
+    @overload
+    def __getitem__(
+        self,
+        index: int,
+    ) -> Objects:
+        ...
+
+    @overload
+    def __getitem__(
+        self,
+        index: slice,
+    ) -> list[Objects]:
+        ...
+
+    def __getitem__(
+        self,
+        index: int | slice,
+    ) -> Objects | list[Objects]:
+        """Returns the data item.
+
+        Parameters:
+            index: Index or slice of the data item
+
+        Returns:
+            Data item or sliced data
+        """
+        return super().__getitem__(index=index)
+
+    def __iter__(self) -> Iterator[Objects]:
+        """Iterates over the data.
+
+        Yields:
+            Data item
+        """
+        return super().__iter__()
+
+    def __add__(
+        self,
+        other: ObjectChannel,
+    ) -> ObjectChannel:
+        """Adds the object channels.
+
+        Parameters:
+            other: Other object channel
+
+        Returns:
+            Object channel
+        """
+        return super().__add__(other=other)
+
+    def copy(self) -> ObjectChannel:
+        """Copies the channel.
+
+        Returns:
+            Object channel
+        """
+        return ObjectChannel(
+            data=self._data,
+            name=self._name,
+            buffer_size=self._buffer_size,
+            metadata=self._metadata,
+            copy=True,
+        )
+
 
 class RasterChannel(
     Channel,
