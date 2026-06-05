@@ -768,6 +768,25 @@ class ObjectChannel(
         """
         return super().__add__(other=other)
 
+    def append(
+        self,
+        data: Objects | list[Objects],
+        inplace: bool = False,
+    ) -> ObjectChannel:
+        """Appends the data.
+
+        Parameters:
+            data: Data
+            inplace: If True, the data is appended inplace
+
+        Returns:
+            Object channel
+        """
+        return super().append(
+            data=data,
+            inplace=inplace,
+        )
+
     def copy(self) -> ObjectChannel:
         """Copies the channel.
 
