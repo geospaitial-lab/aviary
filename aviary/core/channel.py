@@ -591,6 +591,30 @@ class ObjectChannel(
             AviaryUserError: Invalid `data` (the data item is not normalized to the spatial extent [0, 1]
                 in x and y direction)
         """
+        if not data_item:
+            return
+
+        for object_ in data_item:
+            x_center = object_.x_center
+            y_center = object_.y_center
+            width = object_.width
+            height = object_.height
+
+            conditions = [
+                x_center < 0.,
+                x_center > 1.,
+                y_center < 0.,
+                y_center > 1.,
+                width > 1.,
+                height > 1.,
+            ]
+
+            if any(conditions):
+                message = (
+                    'Invalid data! '
+                    'The data item must be normalized to the spatial extent [0, 1] in x and y direction.'
+                )
+                raise AviaryUserError(message)
 
     def _copy_data(self) -> None:
         """Copies `data`."""
