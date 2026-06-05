@@ -35,6 +35,7 @@ import numpy as np
 import numpy.typing as npt
 
 from aviary._functional.utils.coordinates_filter import duplicates_filter
+from aviary._utils.lifecycle import experimental
 from aviary._utils.validators import validate_name
 from aviary.core.enums import (
     ChannelName,
@@ -44,6 +45,8 @@ from aviary.core.enums import (
 )
 from aviary.core.exceptions import AviaryUserError
 from aviary.core.mixins import IDMixin
+from aviary.core.object import Object
+from aviary.core.type_aliases import Objects
 
 if TYPE_CHECKING:
     from aviary.core.tiles import Tiles
@@ -70,6 +73,7 @@ class Channel(
         - The dunder methods `__getitem__` and `__iter__` return or yield a reference to a data item
 
     Implemented channels:
+        - `ObjectChannel`: Contains batched object data
         - `RasterChannel`: Contains batched raster data
         - `VectorChannel`: Contains batched vector data
     """
@@ -512,7 +516,721 @@ class Channel(
         """
 
 
-class RasterChannel(Channel, Iterable[npt.NDArray]):
+@experimental(
+    since='1.9.0',
+)
+class ObjectChannel(
+    Channel,
+    Iterable[Objects],
+):
+    """Channel that contains batched object data
+
+    Notes:
+        - The data items are assumed to be normalized to the spatial extent [0, 1] in x and y direction
+        - The `data` property returns a reference to the data
+        - The `metadata` property returns a reference to the metadata
+        - The dunder methods `__getitem__` and `__iter__` return or yield a reference to a data item
+    """
+    _data: list[Objects]
+
+    __hash__ = None
+
+    def __init__(
+        self,
+        data: Objects | list[Objects],
+        name: ChannelName | str,
+        buffer_size: FractionalBufferSize = 0.,
+        metadata: dict[str, object] | None = None,
+        copy: bool = False,
+    ) -> None:
+        """
+        Parameters:
+            data: Data
+            name: Name
+            buffer_size: Buffer size as a fraction of the spatial extent of the data
+            metadata: Metadata
+            copy: If True, the data and metadata are copied during initialization
+        """
+        super().__init__(
+            data=data,
+            name=name,
+            buffer_size=buffer_size,
+            metadata=metadata,
+            copy=copy,
+        )
+
+        self._buffer_size_coordinate_units = self._compute_buffer_size_coordinate_units()
+        self._unbuffered_bounding_box = self._compute_unbuffered_bounding_box()
+
+    def _validate_data(self) -> None:
+        """Validates `data`.
+
+        Raises:
+            AviaryUserError: Invalid `data` (the data contains no data items)
+        """
+        if not self._data:
+            message = (
+                'Invalid data! '
+                'The data must contain at least one data item.'
+            )
+            raise AviaryUserError(message)
+
+        for data_item in self:
+            self._validate_data_item(data_item=data_item)
+
+    @staticmethod
+    def _validate_data_item(
+        data_item: Objects,
+    ) -> None:
+        """Validates the data item.
+
+        Parameters:
+            data_item: Data item
+
+        Raises:
+            AviaryUserError: Invalid `data` (the data item is not normalized to the spatial extent [0, 1]
+                in x and y direction)
+        """
+        if not data_item:
+            return
+
+        for object_ in data_item:
+            x_center = object_.x_center
+            y_center = object_.y_center
+            width = object_.width
+            height = object_.height
+
+            conditions = [
+                x_center < 0.,
+                x_center > 1.,
+                y_center < 0.,
+                y_center > 1.,
+                width > 1.,
+                height > 1.,
+            ]
+
+            if any(conditions):
+                message = (
+                    'Invalid data! '
+                    'The data item must be normalized to the spatial extent [0, 1] in x and y direction.'
+                )
+                raise AviaryUserError(message)
+
+    def _copy_data(self) -> None:
+        """Copies `data`."""
+        self._data = [
+            [
+                Object(
+                    value=object_.value,
+                    x_center=object_.x_center,
+                    y_center=object_.y_center,
+                    width=object_.width,
+                    height=object_.height,
+                    rotation=object_.rotation,
+                    score=object_.score,
+                )
+                for object_ in data_item
+            ]
+            for data_item in self
+        ]
+
+    def _compute_buffer_size_coordinate_units(self) -> BufferSize:
+        """Computes the buffer size in coordinate units.
+
+        Returns:
+            Buffer size in coordinate units
+        """
+        return self._buffer_size / (1. + 2. * self._buffer_size)
+
+    def _compute_unbuffered_bounding_box(self) -> tuple[float, float, float, float]:
+        """Computes the unbuffered bounding box.
+
+        Returns:
+            Bounding box
+        """
+        x_min = 0. + self._buffer_size_coordinate_units
+        y_min = 0. + self._buffer_size_coordinate_units
+        x_max = 1. - self._buffer_size_coordinate_units
+        y_max = 1. - self._buffer_size_coordinate_units
+        return x_min, y_min, x_max, y_max
+
+    @staticmethod
+    def _scale_data_item(
+        data_item: Objects,
+        bounding_box: tuple[float, float, float, float],
+        new_bounding_box: tuple[float, float, float, float],
+    ) -> Objects:
+        """Scales the data item to the spatial extent [0, 1] in x and y direction.
+
+        Parameters:
+            data_item: Data item
+            bounding_box: Bounding box
+            new_bounding_box: New bounding box
+
+        Returns:
+            Data item
+        """
+        if not data_item:
+            return []
+
+        source_size_x = bounding_box[2] - bounding_box[0]
+        source_size_y = bounding_box[3] - bounding_box[1]
+
+        target_size_x = new_bounding_box[2] - new_bounding_box[0]
+        target_size_y = new_bounding_box[3] - new_bounding_box[1]
+
+        scale_x = target_size_x / source_size_x
+        scale_y = target_size_y / source_size_y
+
+        translate_x = new_bounding_box[0] - bounding_box[0] * scale_x
+        translate_y = new_bounding_box[1] - bounding_box[1] * scale_y
+
+        return [
+            Object(
+                value=object_.value,
+                x_center=object_.x_center * scale_x + translate_x,
+                y_center=object_.y_center * scale_y + translate_y,
+                width=object_.width * scale_x,
+                height=object_.height * scale_y,
+                rotation=object_.rotation,
+                score=object_.score,
+            )
+            for object_ in data_item
+        ]
+
+    @property
+    def data(self) -> list[Objects]:
+        """
+        Returns:
+            Data
+        """
+        return self._data
+
+    @classmethod
+    def from_channels(
+        cls,
+        channels: list[ObjectChannel],
+        copy: bool = False,
+    ) -> ObjectChannel:
+        """Creates an object channel from object channels.
+
+        Parameters:
+            channels: Object channels
+            copy: If True, the data and metadata are copied during initialization
+
+        Returns:
+            Object channel
+        """
+        return super().from_channels(
+            channels=channels,
+            copy=copy,
+        )
+
+    @classmethod
+    def from_unnormalized_data(  # noqa: C901
+        cls,
+        data: Objects | list[Objects],
+        name: ChannelName | str,
+        coordinates: Coordinates | CoordinatesSet,
+        tile_size: TileSize,
+        buffer_size: BufferSize = 0,
+        metadata: dict[str, object] | None = None,
+        copy: bool = False,
+    ) -> ObjectChannel:
+        """Creates an object channel from unnormalized data.
+
+        Parameters:
+            data: Data
+            name: Name
+            coordinates: Coordinates (x_min, y_min) of the tile or of each tile in meters
+            tile_size: Tile size in meters
+            buffer_size: Buffer size in meters
+            metadata: Metadata
+            copy: If True, the data and metadata are copied during initialization
+
+        Raises:
+            AviaryUserError: Invalid `data` (the data contains no data items)
+            AviaryUserError: Invalid `coordinates` (the coordinates are not in shape (n, 2) and data type int32)
+            AviaryUserError: Invalid `coordinates` (the coordinates contain duplicate coordinates)
+            AviaryUserError: Invalid `coordinates` (the number of coordinates is not equal to the number of data items)
+            AviaryUserError: Invalid `tile_size` (the tile size is negative or zero)
+            AviaryUserError: Invalid `buffer_size` (the buffer size is negative)
+        """
+        if not isinstance(data, list):
+            data = [data]
+
+        if not data:
+            message = (
+                'Invalid data! '
+                'The data must contain at least one data item.'
+            )
+            raise AviaryUserError(message)
+
+        if not isinstance(coordinates, np.ndarray):
+            coordinates = np.array([coordinates], dtype=np.int32)
+
+        if coordinates.ndim != 2:  # noqa: PLR2004
+            message = (
+                'Invalid coordinates! '
+                'The coordinates must be in shape (n, 2) and data type int32.'
+            )
+            raise AviaryUserError(message)
+
+        conditions = [
+            coordinates.shape[1] != 2,  # noqa: PLR2004
+            coordinates.dtype != np.int32,
+        ]
+
+        if any(conditions):
+            message = (
+                'Invalid coordinates! '
+                'The coordinates must be in shape (n, 2) and data type int32.'
+            )
+            raise AviaryUserError(message)
+
+        unique_coordinates = duplicates_filter(coordinates=coordinates)
+
+        if len(coordinates) != len(unique_coordinates):
+            message = (
+                'Invalid coordinates! '
+                'The coordinates must contain unique coordinates.'
+            )
+            raise AviaryUserError(message)
+
+        if len(coordinates) != len(data):
+            message = (
+                'Invalid coordinates! '
+                'The number of coordinates must be equal to the number of data items.'
+            )
+            raise AviaryUserError(message)
+
+        if tile_size <= 0:
+            message = (
+                'Invalid tile_size! '
+                'The tile size must be positive.'
+            )
+            raise AviaryUserError(message)
+
+        if buffer_size < 0:
+            message = (
+                'Invalid buffer_size! '
+                'The buffer size must be positive or zero.'
+            )
+            raise AviaryUserError(message)
+
+        if copy:
+            data = [data_item.copy() for data_item in data]
+
+        coordinates = [
+            (int(x_min), int(y_min))
+            for x_min, y_min in coordinates
+        ]
+        data = [
+            cls._from_unnormalized_data_item(
+                data_item=data_item,
+                coordinates=coordinates_item,
+                tile_size=tile_size,
+                buffer_size=buffer_size,
+            )
+            for data_item, coordinates_item in zip(data, coordinates, strict=True)
+        ]
+        buffer_size = buffer_size / tile_size
+        object_channel = cls(
+            data=data,
+            name=name,
+            buffer_size=buffer_size,
+            metadata=metadata,
+            copy=False,
+        )
+
+        if copy:
+            object_channel._copy_metadata()
+            object_channel._mark_as_copied()
+
+        return object_channel
+
+    @classmethod
+    def _from_unnormalized_data_item(
+        cls,
+        data_item: Objects,
+        coordinates: Coordinates,
+        tile_size: TileSize,
+        buffer_size: BufferSize = 0,
+    ) -> Objects:
+        """Creates a data item from an unnormalized data item.
+
+        Parameters:
+            data_item: Data item
+            coordinates: Coordinates (x_min, y_min) of the tile in meters
+            tile_size: Tile size in meters
+            buffer_size: Buffer size in meters
+
+        Returns:
+            Data item
+        """
+        if not data_item:
+            return []
+
+        bounding_box = (
+            float(coordinates[0] - buffer_size),
+            float(coordinates[1] - buffer_size),
+            float(coordinates[0] + tile_size + buffer_size),
+            float(coordinates[1] + tile_size + buffer_size),
+        )
+        new_bounding_box = (0., 0., 1., 1.)
+        return cls._scale_data_item(
+            data_item=data_item,
+            bounding_box=bounding_box,
+            new_bounding_box=new_bounding_box,
+        )
+
+    def __repr__(self) -> str:
+        """Returns the string representation.
+
+        Returns:
+            String representation
+        """
+        data_repr = len(self)
+        return (
+            'ObjectChannel(\n'
+            f'    data={data_repr},\n'
+            f'    name={self._name},\n'
+            f'    buffer_size={self._buffer_size},\n'
+            f'    metadata={self._metadata},\n'
+            f'    copy={self._copy},\n'
+            ')'
+        )
+
+    def __getstate__(self) -> dict:
+        """Gets the state for pickling.
+
+        Returns:
+            State
+        """
+        return super().__getstate__()
+
+    def __setstate__(
+        self,
+        state: dict,
+    ) -> None:
+        """Sets the state for unpickling.
+
+        Parameters:
+            state: State
+        """
+        super().__setstate__(state=state)
+
+    def __eq__(
+        self,
+        other: object,
+    ) -> bool:
+        """Compares the object channels.
+
+        Parameters:
+            other: Other object channel
+
+        Returns:
+            True if the object channels are equal, False otherwise
+        """
+        if not isinstance(other, ObjectChannel):
+            return False
+
+        conditions = [
+            len(self) == len(other),
+            all(
+                (len(data_item) == len(other_data_item))
+                and all(
+                    object_ == other_object
+                    for object_, other_object in zip(data_item, other_data_item, strict=False)
+                )
+                for data_item, other_data_item in zip(self, other, strict=False)
+            ),
+            self._name == other.name,
+            self._buffer_size == other.buffer_size,
+            self._metadata == other.metadata,
+        ]
+        return all(conditions)
+
+    @overload
+    def __getitem__(
+        self,
+        index: int,
+    ) -> Objects:
+        ...
+
+    @overload
+    def __getitem__(
+        self,
+        index: slice,
+    ) -> list[Objects]:
+        ...
+
+    def __getitem__(
+        self,
+        index: int | slice,
+    ) -> Objects | list[Objects]:
+        """Returns the data item.
+
+        Parameters:
+            index: Index or slice of the data item
+
+        Returns:
+            Data item or sliced data
+        """
+        return super().__getitem__(index=index)
+
+    def __iter__(self) -> Iterator[Objects]:
+        """Iterates over the data.
+
+        Yields:
+            Data item
+        """
+        return super().__iter__()
+
+    def __add__(
+        self,
+        other: ObjectChannel,
+    ) -> ObjectChannel:
+        """Adds the object channels.
+
+        Parameters:
+            other: Other object channel
+
+        Returns:
+            Object channel
+        """
+        return super().__add__(other=other)
+
+    def append(
+        self,
+        data: Objects | list[Objects],
+        inplace: bool = False,
+    ) -> ObjectChannel:
+        """Appends the data.
+
+        Parameters:
+            data: Data
+            inplace: If True, the data is appended inplace
+
+        Returns:
+            Object channel
+        """
+        return super().append(
+            data=data,
+            inplace=inplace,
+        )
+
+    def copy(self) -> ObjectChannel:
+        """Copies the channel.
+
+        Returns:
+            Object channel
+        """
+        return ObjectChannel(
+            data=self._data,
+            name=self._name,
+            buffer_size=self._buffer_size,
+            metadata=self._metadata,
+            copy=True,
+        )
+
+    def remove_buffer(
+        self,
+        inplace: bool = False,
+    ) -> ObjectChannel:
+        """Removes the buffer.
+
+        Parameters:
+            inplace: If True, the buffer is removed inplace
+
+        Returns:
+            Object channel
+        """
+        if self._buffer_size == 0.:
+            if inplace:
+                return self
+
+            return self.copy()
+
+        if inplace:
+            self._data = [
+                self._remove_buffer_item(data_item=data_item)
+                for data_item in self
+            ]
+            self._buffer_size = 0.
+            self._validate()
+            self._buffer_size_coordinate_units = self._compute_buffer_size_coordinate_units()
+            self._unbuffered_bounding_box = self._compute_unbuffered_bounding_box()
+            return self
+
+        data = [
+            self._remove_buffer_item(data_item=data_item)
+            for data_item in self
+        ]
+        buffer_size = 0.
+        metadata = self._metadata.copy()
+        object_channel = ObjectChannel(
+            data=data,
+            name=self._name,
+            buffer_size=buffer_size,
+            metadata=metadata,
+            copy=False,
+        )
+        object_channel._mark_as_copied()
+        return object_channel
+
+    def _remove_buffer_item(
+        self,
+        data_item: Objects,
+    ) -> Objects:
+        """Removes the buffer from the data item.
+
+        Parameters:
+            data_item: Data item
+
+        Returns:
+            Data item
+        """
+        if not data_item:
+            return []
+
+        x_min, y_min, x_max, y_max = self._unbuffered_bounding_box
+
+        data_item = [
+            object_
+            for object_ in data_item
+            if (
+                (x_min <= object_.x_center <= x_max)
+                and (y_min <= object_.y_center <= y_max)
+            )
+        ]
+
+        bounding_box = self._unbuffered_bounding_box
+        new_bounding_box = (0., 0., 1., 1.)
+        return self._scale_data_item(
+            data_item=data_item,
+            bounding_box=bounding_box,
+            new_bounding_box=new_bounding_box,
+        )
+
+    def to_denormalized_data(
+        self,
+        coordinates: CoordinatesSet,
+        tile_size: TileSize,
+    ) -> list[Objects]:
+        """Converts the data to denormalized data.
+
+        Parameters:
+            coordinates: Coordinates (x_min, y_min) of each tile in meters
+            tile_size: Tile size in meters
+
+        Returns:
+            Data
+
+        Raises:
+            AviaryUserError: Invalid `coordinates` (the coordinates are not in shape (n, 2) and data type int32)
+            AviaryUserError: Invalid `coordinates` (the coordinates contain duplicate coordinates)
+            AviaryUserError: Invalid `coordinates` (the number of coordinates is not equal to the number of data items)
+            AviaryUserError: Invalid `tile_size` (the tile size is negative or zero)
+        """
+        if coordinates.ndim != 2:  # noqa: PLR2004
+            message = (
+                'Invalid coordinates! '
+                'The coordinates must be in shape (n, 2) and data type int32.'
+            )
+            raise AviaryUserError(message)
+
+        conditions = [
+            coordinates.shape[1] != 2,  # noqa: PLR2004
+            coordinates.dtype != np.int32,
+        ]
+
+        if any(conditions):
+            message = (
+                'Invalid coordinates! '
+                'The coordinates must be in shape (n, 2) and data type int32.'
+            )
+            raise AviaryUserError(message)
+
+        unique_coordinates = duplicates_filter(coordinates=coordinates)
+
+        if len(coordinates) != len(unique_coordinates):
+            message = (
+                'Invalid coordinates! '
+                'The coordinates must contain unique coordinates.'
+            )
+            raise AviaryUserError(message)
+
+        if len(coordinates) != len(self):
+            message = (
+                'Invalid coordinates! '
+                'The number of coordinates must be equal to the number of data items.'
+            )
+            raise AviaryUserError(message)
+
+        if tile_size <= 0:
+            message = (
+                'Invalid tile_size! '
+                'The tile size must be positive.'
+            )
+            raise AviaryUserError(message)
+
+        data = [data_item.copy() for data_item in self]
+
+        coordinates = [
+            (int(x_min), int(y_min))
+            for x_min, y_min in coordinates
+        ]
+        buffer_size = self._buffer_size * tile_size
+        return [
+            self._to_denormalized_data_item(
+                data_item=data_item,
+                coordinates=coordinates_item,
+                tile_size=tile_size,
+                buffer_size=buffer_size,
+            )
+            for data_item, coordinates_item in zip(data, coordinates, strict=True)
+        ]
+
+    def _to_denormalized_data_item(
+        self,
+        data_item: Objects,
+        coordinates: Coordinates,
+        tile_size: TileSize,
+        buffer_size: BufferSize = 0,
+    ) -> Objects:
+        """Converts the data item to a denormalized data item.
+
+        Parameters:
+            data_item: Data item
+            coordinates: Coordinates (x_min, y_min) of the tile in meters
+            tile_size: Tile size in meters
+            buffer_size: Buffer size in meters
+
+        Returns:
+            Data item
+        """
+        if not data_item:
+            return []
+
+        bounding_box = (0., 0., 1., 1.)
+        new_bounding_box = (
+            float(coordinates[0] - buffer_size),
+            float(coordinates[1] - buffer_size),
+            float(coordinates[0] + tile_size + buffer_size),
+            float(coordinates[1] + tile_size + buffer_size),
+        )
+        return self._scale_data_item(
+            data_item=data_item,
+            bounding_box=bounding_box,
+            new_bounding_box=new_bounding_box,
+        )
+
+
+class RasterChannel(
+    Channel,
+    Iterable[npt.NDArray],
+):
     """Channel that contains batched raster data
 
     Notes:
@@ -947,7 +1665,10 @@ class RasterChannel(Channel, Iterable[npt.NDArray]):
         ]
 
 
-class VectorChannel(Channel, Iterable[gpd.GeoDataFrame]):
+class VectorChannel(
+    Channel,
+    Iterable[gpd.GeoDataFrame],
+):
     """Channel that contains batched vector data
 
     Notes:

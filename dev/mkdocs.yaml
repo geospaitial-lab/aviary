@@ -24,6 +24,7 @@ nav:
       - BoundingBox: api_reference/core/bounding_box.md
       - Channel:
         - Channel: api_reference/core/channel/channel.md
+        - ObjectChannel: api_reference/core/channel/object_channel.md
         - RasterChannel: api_reference/core/channel/raster_channel.md
         - VectorChannel: api_reference/core/channel/vector_channel.md
       - Enums: api_reference/core/enums.md

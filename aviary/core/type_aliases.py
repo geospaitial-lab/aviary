@@ -1,4 +1,4 @@
-#  Copyright (C) 2024-2025 Marius Maryniak
+#  Copyright (C) 2024-2026 Marius Maryniak
 #
 #  This file is part of aviary.
 #
@@ -19,6 +19,7 @@ import numpy as np
 import numpy.typing as npt
 
 from aviary.core.enums import ChannelName
+from aviary.core.object import Object
 
 BufferSize: TypeAlias = int
 """Buffer size in meters"""
@@ -43,6 +44,9 @@ FractionalBufferSize: TypeAlias = float
 
 GroundSamplingDistance: TypeAlias = float
 """Ground sampling distance in meters per pixel"""
+
+Objects: TypeAlias = list[Object]
+"""Objects"""
 
 TileSize: TypeAlias = int
 """Tile size in meters"""
