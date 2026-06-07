@@ -24,7 +24,11 @@ from aviary.core.mixins import IDMixin
     since='1.9.0',
 )
 class Object(IDMixin):
-    """An object specifies its value, spatial extent, and score."""
+    """An object specifies its value, spatial extent, and score.
+
+    Experimental:
+        `Object` is experimental since `1.9.0` and may change without notice.
+    """
 
     __hash__ = None
 

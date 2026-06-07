@@ -34,6 +34,8 @@ from .tile_set import TileSet
 from .tiles_exporter import (
     GridExporter,
     GridExporterConfig,
+    ObjectExporter,
+    ObjectExporterConfig,
     RasterExporter,
     RasterExporterConfig,
     VectorExporter,
@@ -98,6 +100,8 @@ __all__ = [
     'HillshadeProcessorConfig',
     'NormalizeProcessor',
     'NormalizeProcessorConfig',
+    'ObjectExporter',
+    'ObjectExporterConfig',
     'ParallelCompositeProcessor',
     'ParallelCompositeProcessorConfig',
     'RasterExporter',

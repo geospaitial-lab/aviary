@@ -39,6 +39,10 @@
 
 ---
 
+::: aviary.ObjectExporterMode
+
+---
+
 ::: aviary.OSMType
 
 ---

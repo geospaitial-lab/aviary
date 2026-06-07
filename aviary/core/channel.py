@@ -525,6 +525,9 @@ class ObjectChannel(
 ):
     """Channel that contains batched object data
 
+    Experimental:
+        `ObjectChannel` is experimental since `1.9.0` and may change without notice.
+
     Notes:
         - The data items are assumed to be normalized to the spatial extent [0, 1] in x and y direction
         - The `data` property returns a reference to the data

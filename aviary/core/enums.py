@@ -278,6 +278,16 @@ class LogLevel(Enum):
         return self.value.upper()
 
 
+class ObjectExporterMode(Enum):
+    """
+    Attributes:
+        BOX: Box mode
+        POINT: Point mode
+    """
+    BOX = 'box'
+    POINT = 'point'
+
+
 class OSMType(Enum):
     """
     Attributes:
