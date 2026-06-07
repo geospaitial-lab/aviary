@@ -148,7 +148,7 @@ def object_exporter(
                     'geometry': geometry,
                 })
 
-            if mode == ObjectExporterMode.POINT:
+            elif mode == ObjectExporterMode.POINT:
                 geometry = Point(
                     x_center,
                     y_center,
@@ -163,8 +163,9 @@ def object_exporter(
                     'geometry': geometry,
                 })
 
-            message = 'Invalid mode!'
-            raise AviaryUserError(message)
+            else:
+                message = 'Invalid mode!'
+                raise AviaryUserError(message)
 
     if objects:
         data = pd.DataFrame.from_records(objects)
