@@ -34,6 +34,7 @@ if TYPE_CHECKING:
 from aviary._functional.tile.tile_fetcher import (
     composite_fetcher,
     gpkg_fetcher,
+    ogc_api_features_fetcher,
     stub_fetcher,
     vrt_fetcher,
     wms_fetcher,
@@ -70,6 +71,7 @@ class TileFetcher(Protocol):
     Implemented tile fetchers:
         - `CompositeFetcher`: Composes multiple tile fetchers
         - `GPKGFetcher`: Fetches a tile from a geopackage
+        - `OGCAPIFeaturesFetcher`: Fetches a tile from an OGC API Features endpoint
         - `StubFetcher`: Fetches a tile with no channels
         - `VRTFetcher`: Fetches a tile from a virtual raster
         - `WMSFetcher`: Fetches a tile from a web map service
@@ -456,6 +458,130 @@ class GPKGFetcherConfig(pydantic.BaseModel):
 _TileFetcherFactory.register(
     tile_fetcher_class=GPKGFetcher,
     config_class=GPKGFetcherConfig,
+    package=_PACKAGE,
+)
+
+
+@experimental(
+    since='1.9.0',
+)
+@log
+class OGCAPIFeaturesFetcher(IDMixin):
+    """Tile fetcher for OGC API Features endpoints
+
+    Experimental:
+        `OGCAPIFeaturesFetcher` is experimental since `1.9.0` and may change without notice.
+
+    Implements the `TileFetcher` protocol.
+    """
+
+    def __init__(
+        self,
+        url: str,
+        collection: str,
+        epsg_code: EPSGCode,
+        channel_name: ChannelName | str | None,
+        tile_size: TileSize,
+        buffer_size: BufferSize = 0,
+    ) -> None:
+        """
+        Parameters:
+            url: URL of the OGC API Features endpoint
+            collection: Collection
+            epsg_code: EPSG code
+            channel_name: Channel name (if None, the channel is ignored)
+            tile_size: Tile size in meters
+            buffer_size: Buffer size in meters
+        """
+        self._url = url
+        self._collection = collection
+        self._epsg_code = epsg_code
+        self._channel_name = channel_name
+        self._tile_size = tile_size
+        self._buffer_size = buffer_size
+
+        super().__init__()
+
+    @classmethod
+    def from_config(
+        cls,
+        config: OGCAPIFeaturesFetcherConfig,
+    ) -> OGCAPIFeaturesFetcher:
+        """Creates an OGC API Features fetcher from the configuration.
+
+        Parameters:
+            config: Configuration
+
+        Returns:
+            OGC API Features fetcher
+        """
+        config = config.model_dump()
+        return cls(**config)
+
+    def __call__(
+        self,
+        coordinates: Coordinates,
+    ) -> Tile:
+        """Fetches a tile from the OGC API Features endpoint.
+
+        Parameters:
+            coordinates: Coordinates (x_min, y_min) of the tile in meters
+
+        Returns:
+            Tile
+        """
+        return ogc_api_features_fetcher(
+            coordinates=coordinates,
+            url=self._url,
+            collection=self._collection,
+            epsg_code=self._epsg_code,
+            channel_name=self._channel_name,
+            tile_size=self._tile_size,
+            buffer_size=self._buffer_size,
+        )
+
+
+class OGCAPIFeaturesFetcherConfig(pydantic.BaseModel):
+    """Configuration for the `from_config` class method of `OGCAPIFeaturesFetcher`
+
+    Create the configuration from a config file:
+        - Use null instead of None
+
+    Usage:
+        You can create the configuration from a config file.
+
+        ``` yaml title="config.yaml"
+        package: 'aviary'
+        name: 'OGCAPIFeaturesFetcher'
+        config:
+          url: 'https://www.my-ogc-api.com'
+          collection: 'my_collection'
+          epsg_code: 25832
+          channel_name: 'my_channel'
+          tile_size: 128
+          buffer_size: 0
+        ```
+
+    Attributes:
+        url: URL of the OGC API Features endpoint
+        collection: Collection
+        epsg_code: EPSG code
+        channel_name: Channel name (if None, the channel is ignored)
+        tile_size: Tile size in meters
+        buffer_size: Buffer size in meters -
+            defaults to 0
+    """
+    url: str
+    collection: str
+    epsg_code: EPSGCode
+    channel_name: ChannelName | str | None
+    tile_size: TileSize
+    buffer_size: BufferSize = 0
+
+
+_TileFetcherFactory.register(
+    tile_fetcher_class=OGCAPIFeaturesFetcher,
+    config_class=OGCAPIFeaturesFetcherConfig,
     package=_PACKAGE,
 )
 
