@@ -281,8 +281,8 @@ class LogLevel(Enum):
 class ObjectExporterMode(Enum):
     """
     Attributes:
-        BOX: Oriented box mode
-        POINT: Center point mode
+        BOX: Box mode
+        POINT: Point mode
     """
     BOX = 'box'
     POINT = 'point'
