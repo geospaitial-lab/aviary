@@ -25,12 +25,24 @@ import geopandas as gpd
 import numpy as np
 import pandas as pd
 import rasterio as rio
+import shapely
+from shapely.geometry import (
+    Point,
+    box,
+)
 
-from aviary.core.enums import _coerce_channel_name
+from aviary.core.enums import (
+    ObjectExporterMode,
+    _coerce_channel_name,
+)
+from aviary.core.exceptions import AviaryUserError
 from aviary.core.grid import Grid
 
 if TYPE_CHECKING:
-    from aviary.core.channel import VectorChannel
+    from aviary.core.channel import (
+        ObjectChannel,
+        VectorChannel,
+    )
     from aviary.core.enums import ChannelName
     from aviary.core.tiles import Tiles
     from aviary.core.type_aliases import EPSGCode
@@ -68,6 +80,112 @@ def grid_exporter(
 
     with path.open('w') as file:
         file.write(json_string)
+
+    return tiles
+
+
+def object_exporter(
+    tiles: Tiles,
+    channel_name: ChannelName | str,
+    epsg_code: EPSGCode,
+    path: Path,
+    mode: ObjectExporterMode = ObjectExporterMode.BOX,
+    remove_channel: bool = True,
+) -> Tiles:
+    """Exports the object channel.
+
+    Parameters:
+        tiles: Tiles
+        channel_name: Channel name
+        epsg_code: EPSG code
+        path: Path to the geopackage (.gpkg file)
+        mode: Object exporter mode (`BOX` or `POINT`)
+        remove_channel: If True, the channel is removed
+
+    Returns:
+        Tiles
+    """
+    channel: ObjectChannel = tiles[channel_name]
+    coordinates = tiles.coordinates
+    tile_size = tiles.tile_size
+    data = channel.to_denormalized_data(
+        coordinates=coordinates,
+        tile_size=tile_size,
+    )
+
+    objects: list[dict[str, object]] = []
+
+    for data_item in data:
+        if not data_item:
+            continue
+
+        for object_ in data_item:
+            x_center = object_.x_center
+            y_center = object_.y_center
+            width = object_.width
+            height = object_.height
+            rotation = object_.rotation
+
+            if mode == ObjectExporterMode.BOX:
+                geometry = box(
+                    x_center - .5 * width,
+                    y_center - .5 * height,
+                    x_center + .5 * width,
+                    y_center + .5 * height,
+                )
+
+                if rotation is not None and rotation != 0.:
+                    geometry = shapely.affinity.rotate(
+                        geom=geometry,
+                        angle=rotation,
+                        origin=(x_center, y_center),
+                        use_radians=True,
+                    )
+
+                objects.append({
+                    'value': object_.value,
+                    'score': object_.score,
+                    'geometry': geometry,
+                })
+
+            if mode == ObjectExporterMode.POINT:
+                geometry = Point(
+                    x_center,
+                    y_center,
+                )
+
+                objects.append({
+                    'value': object_.value,
+                    'score': object_.score,
+                    'width': width,
+                    'height': height,
+                    'rotation': None if rotation is None else rotation,
+                    'geometry': geometry,
+                })
+
+            message = 'Invalid mode!'
+            raise AviaryUserError(message)
+
+    if objects:
+        data = pd.DataFrame.from_records(objects)
+        epsg_code = f'EPSG:{epsg_code}'
+        gdf = gpd.GeoDataFrame(data=data)
+        gdf = gdf.set_crs(
+            crs=epsg_code,
+            inplace=True,
+        )
+
+        gdf.to_file(
+            path,
+            driver='GPKG',
+            mode='a',
+        )
+
+    if remove_channel:
+        tiles = tiles.remove(
+            channel_names=channel_name,
+            inplace=True,
+        )
 
     return tiles
 
