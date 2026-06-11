@@ -47,6 +47,7 @@ nav:
           - TileFetcher: api_reference/tile/tile_fetcher/tile_fetcher.md
           - CompositeFetcher: api_reference/tile/tile_fetcher/composite_fetcher.md
           - GPKGFetcher: api_reference/tile/tile_fetcher/gpkg_fetcher.md
+          - OGCAPIFeaturesFetcher: api_reference/tile/tile_fetcher/ogc_api_features_fetcher.md
           - StubFetcher: api_reference/tile/tile_fetcher/stub_fetcher.md
           - VRTFetcher: api_reference/tile/tile_fetcher/vrt_fetcher.md
           - WMSFetcher: api_reference/tile/tile_fetcher/wms_fetcher.md
