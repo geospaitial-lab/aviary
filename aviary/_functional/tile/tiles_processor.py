@@ -612,9 +612,10 @@ def parallel_composite_processor(
 def rasterize_processor(
     tiles: Tiles,
     channel_name: ChannelName | str,
-    field: str,
     ground_sampling_distance: GroundSamplingDistance,
+    field: str | None = None,
     mapping: dict[object, int] | None = None,
+    foreground_value: int = 1,
     background_value: int = 0,
     dtype: DType | None = DType.UINT8,
     new_channel_name: ChannelName | str | None = None,
@@ -625,9 +626,10 @@ def rasterize_processor(
     Parameters:
         tiles: Tiles
         channel_name: Channel name
-        field: Field
         ground_sampling_distance: Ground sampling distance in meters per pixel
+        field: Field
         mapping: Mapping of the values
+        foreground_value: Foreground value
         background_value: Background value
         dtype: Data type
         new_channel_name: New channel name
@@ -635,6 +637,10 @@ def rasterize_processor(
 
     Returns:
         Tiles
+
+    Raises:
+        AviaryUserError: Invalid `tile_size` (the tile size does not match the spatial extent of the data,
+            resulting in a fractional number of pixels)
     """
     tile_size = tiles.tile_size
     buffer_size = tiles[channel_name].buffer_size * tile_size
@@ -656,9 +662,10 @@ def rasterize_processor(
         channel_name=channel_name,
         process_data_item=lambda data_item: _rasterize_data_item(
             data_item=data_item,
-            field=field,
             tile_size_pixels=tile_size_pixels,
+            field=field,
             mapping=mapping,
+            foreground_value=foreground_value,
             background_value=background_value,
             dtype=dtype,
         ),
@@ -702,9 +709,10 @@ def rasterize_processor(
 
 def _rasterize_data_item(
     data_item: gpd.GeoDataFrame,
-    field: str,
     tile_size_pixels: int,
+    field: str | None = None,
     mapping: dict[object, int] | None = None,
+    foreground_value: int = 1,
     background_value: int = 0,
     dtype: DType | None = DType.UINT8,
 ) -> npt.NDArray:
@@ -712,9 +720,10 @@ def _rasterize_data_item(
 
     Parameters:
         data_item: Data item
-        field: Field
         tile_size_pixels: Tile size in pixels
+        field: Field
         mapping: Mapping of the values
+        foreground_value: Foreground value
         background_value: Background value
         dtype: Data type
 
@@ -737,6 +746,13 @@ def _rasterize_data_item(
 
     if data_item.empty:
         shapes = []
+    elif field is None:
+        geometries = data_item.geometry
+
+        shapes = [
+            (geometry, foreground_value)
+            for geometry in geometries
+        ]
     else:
         geometries = data_item.geometry
         values = data_item[field]

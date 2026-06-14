@@ -1059,9 +1059,10 @@ class RasterizeProcessor(IDMixin):
     def __init__(
         self,
         channel_name: ChannelName | str,
-        field: str,
         ground_sampling_distance: GroundSamplingDistance,
+        field: str | None = None,
         mapping: dict[object, int] | None = None,
+        foreground_value: int = 1,
         background_value: int = 0,
         dtype: DType | None = DType.UINT8,
         new_channel_name: ChannelName | str | None = None,
@@ -1070,18 +1071,20 @@ class RasterizeProcessor(IDMixin):
         """
         Parameters:
             channel_name: Channel name
-            field: Field
             ground_sampling_distance: Ground sampling distance in meters per pixel
+            field: Field
             mapping: Mapping of the values
+            foreground_value: Foreground value
             background_value: Background value
             dtype: Data type
             new_channel_name: New channel name
             max_num_threads: Maximum number of threads
         """
         self._channel_name = channel_name
-        self._field = field
         self._ground_sampling_distance = ground_sampling_distance
+        self._field = field
         self._mapping = mapping
+        self._foreground_value = foreground_value
         self._background_value = background_value
         self._dtype = dtype
         self._new_channel_name = new_channel_name
@@ -1120,9 +1123,10 @@ class RasterizeProcessor(IDMixin):
         return rasterize_processor(
             tiles=tiles,
             channel_name=self._channel_name,
-            field=self._field,
             ground_sampling_distance=self._ground_sampling_distance,
+            field=self._field,
             mapping=self._mapping,
+            foreground_value=self._foreground_value,
             background_value=self._background_value,
             dtype=self._dtype,
             new_channel_name=self._new_channel_name,
@@ -1144,10 +1148,11 @@ class RasterizeProcessorConfig(pydantic.BaseModel):
         name: 'RasterizeProcessor'
         config:
           channel_name: 'my_channel'
-          field: 'my_field'
           ground_sampling_distance: .2
+          field: 'my_field'
           mapping:
             'value': 1
+          foreground_value: 1
           background_value: 0
           dtype: 'uint8'
           new_channel_name: null
@@ -1156,10 +1161,13 @@ class RasterizeProcessorConfig(pydantic.BaseModel):
 
     Attributes:
         channel_name: Channel name
-        field: Field
         ground_sampling_distance: Ground sampling distance in meters per pixel
+        field: Field -
+            defaults to None
         mapping: Mapping of the values -
             defaults to None
+        foreground_value: Foreground value -
+            defaults to 1
         background_value: Background value -
             defaults to 0
         dtype: Data type -
@@ -1170,9 +1178,10 @@ class RasterizeProcessorConfig(pydantic.BaseModel):
             defaults to None
     """
     channel_name: ChannelName | str
-    field: str
     ground_sampling_distance: GroundSamplingDistance
+    field: str | None = None
     mapping: dict[object, int] | None = None
+    foreground_value: int = 1
     background_value: int = 0
     dtype: DType | None = DType.UINT8
     new_channel_name: ChannelName | str | None = None
