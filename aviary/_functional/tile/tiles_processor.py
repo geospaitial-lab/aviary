@@ -745,8 +745,8 @@ def _rasterize_data_item(
             values = values.map(mapping)
 
         shapes = [
-            (geometry, int(values))
-            for geometry, values in zip(geometries, values, strict=False)
+            (geometry, int(value))
+            for geometry, value in zip(geometries, values, strict=False)
         ]
 
     data_item = rio.features.rasterize(
