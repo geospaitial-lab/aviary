@@ -25,6 +25,7 @@ from collections.abc import (
     Iterable,
     Iterator,
 )
+from math import isclose
 from typing import (
     TYPE_CHECKING,
     overload,
@@ -1357,7 +1358,7 @@ class RasterChannel(
         """
         buffer_size_pixels = self._buffer_size * (self[0].shape[0] / (1. + 2. * self._buffer_size))
 
-        if not buffer_size_pixels.is_integer():
+        if not isclose(buffer_size_pixels, round(buffer_size_pixels), rel_tol=1e-9):
             message = (
                 'Invalid buffer_size! '
                 'The buffer size must must match the spatial extent of the data, '
