@@ -20,6 +20,7 @@ import random
 import time
 from concurrent.futures import ThreadPoolExecutor
 from itertools import repeat
+from math import isclose
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -647,7 +648,7 @@ def rasterize_processor(
 
     tile_size_pixels = (tile_size + 2 * buffer_size) / ground_sampling_distance
 
-    if not tile_size_pixels.is_integer():
+    if not isclose(tile_size_pixels, round(tile_size_pixels), rel_tol=1e-9):
         message = (
             'Invalid tile_size! '
             'The tile size must match the spatial extent of the data, '

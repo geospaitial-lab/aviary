@@ -1,4 +1,4 @@
-## Unreleased
+## 1.9.0 (2026-06-17)
 
 ### New Features
 
@@ -6,6 +6,12 @@
 - feat(`Channel`): add `ObjectChannel` (experimental) ([#919](https://github.com/geospaitial-lab/aviary/pull/919))
 - feat(`TilesProcessor`): add `ObjectExporter` (experimental) ([#920](https://github.com/geospaitial-lab/aviary/pull/920))
 - feat(`RasterizeProcessor`): add foreground_value ([#928](https://github.com/geospaitial-lab/aviary/pull/928))
+
+### Bug Fixes
+
+- fix: set floating point precision ([#932](https://github.com/geospaitial-lab/aviary/pull/932))
+
+[Full Changelog](https://github.com/geospaitial-lab/aviary/releases/tag/1.9.0)
 
 ---
 
