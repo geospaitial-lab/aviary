@@ -119,6 +119,6 @@ for name in __all__:
         with contextlib.suppress(AttributeError, TypeError):
             obj.__module__ = __name__
 
-__version__ = '1.8.2'
+__version__ = '1.9.0'
 
 logger.disable(name='aviary')
