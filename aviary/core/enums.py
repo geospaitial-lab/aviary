@@ -172,7 +172,7 @@ class Connectivity(Enum):
 class DType(Enum):
     """
     Attributes:
-        Bool: Boolean type
+        BOOL: Boolean type
         FLOAT16: Half-precision floating-point type
         FLOAT32: Single-precision floating-point type
         FLOAT64: Double-precision floating-point type
@@ -183,7 +183,7 @@ class DType(Enum):
         UINT16: 16-bit unsigned integer type
         UINT32: 32-bit unsigned integer type
     """
-    Bool = 'bool'
+    BOOL = 'bool'
     FLOAT16 = 'float16'
     FLOAT32 = 'float32'
     FLOAT64 = 'float64'
@@ -201,7 +201,7 @@ class DType(Enum):
             Numpy data type
         """
         mapping = {
-            DType.Bool: np.bool_,
+            DType.BOOL: np.bool_,
             DType.FLOAT16: np.float16,
             DType.FLOAT32: np.float32,
             DType.FLOAT64: np.float64,
