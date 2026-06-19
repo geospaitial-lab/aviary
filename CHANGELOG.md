@@ -1,3 +1,13 @@
+## 1.9.1 (2026-06-20)
+
+### Bug Fixes
+
+- fix(`core`): uppercase bool enum ([#934](https://github.com/geospaitial-lab/aviary/pull/934))
+
+[Full Changelog](https://github.com/geospaitial-lab/aviary/releases/tag/1.9.1)
+
+---
+
 ## 1.9.0 (2026-06-17)
 
 ### New Features
