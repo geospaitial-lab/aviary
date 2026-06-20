@@ -1,3 +1,13 @@
+## 1.9.2 (2026-06-20)
+
+### Bug Fixes
+
+- fix(cli): find plugins_dir_path key ([#936](https://github.com/geospaitial-lab/aviary/pull/936))
+
+[Full Changelog](https://github.com/geospaitial-lab/aviary/releases/tag/1.9.2)
+
+---
+
 ## 1.9.1 (2026-06-20)
 
 ### Bug Fixes
