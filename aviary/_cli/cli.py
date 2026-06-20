@@ -597,7 +597,10 @@ def pipeline_run(
 
         discover_packaged_plugins()
 
-        plugins_dir_path = config.get('plugins_dir_path')
+        plugins_dir_path = find_key(
+            config=config,
+            target_key='plugins_dir_path',
+        )
 
         if plugins_dir_path is not None:
             plugins_dir_path = Path(plugins_dir_path)
@@ -633,7 +636,10 @@ def pipeline_validate(
 
     discover_packaged_plugins()
 
-    plugins_dir_path = config.get('plugins_dir_path')
+    plugins_dir_path = find_key(
+        config=config,
+        target_key='plugins_dir_path',
+    )
 
     if plugins_dir_path is not None:
         plugins_dir_path = Path(plugins_dir_path)
@@ -700,6 +706,30 @@ def plugins(
         filter_packages=filter_packages,
         filter_types=filter_types,
     )
+
+
+def find_key(
+    config: dict | list,
+    target_key: str,
+) -> object:
+    if isinstance(config, dict):
+        if target_key in config:
+            return config[target_key]
+
+        for value in config.values():
+            result = find_key(value, target_key)
+
+            if result is not None:
+                return result
+
+    elif isinstance(config, list):
+        for item in config:
+            result = find_key(item, target_key)
+
+            if result is not None:
+                return result
+
+    return None
 
 
 def parse_config(  # noqa: C901, PLR0912
