@@ -165,6 +165,9 @@ runtime-evaluated-base-classes = [
     "ARG005",
     "E731",
 ]
+"docs/scripts/*" = [
+    "CPY001",
+]
 "tests/*" = [
     "D103",
     "PLR2004",

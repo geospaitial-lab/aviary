@@ -492,7 +492,7 @@ def get_geojson_layer(
     gdf = gdf.to_crs(epsg=4326)
     return folium.GeoJson(
         data=gdf,
-        style_function=lambda feature: style,  # noqa: ARG005
+        style_function=lambda feature: style,  # ruff: ignore[ARG005]
         control=False,
     )
 
