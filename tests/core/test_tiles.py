@@ -206,7 +206,7 @@ def test_tiles_serializability(
     tiles: Tiles,
 ) -> None:
     serialized_tiles = pickle.dumps(tiles)
-    deserialized_tiles = pickle.loads(serialized_tiles)  # noqa: S301
+    deserialized_tiles = pickle.loads(serialized_tiles)  # ruff: ignore[S301]
 
     assert tiles == deserialized_tiles
     assert tiles.id == deserialized_tiles.id

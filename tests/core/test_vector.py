@@ -150,7 +150,7 @@ def test_vector_serializability(
     vector: Vector,
 ) -> None:
     serialized_vector = pickle.dumps(vector)
-    deserialized_vector = pickle.loads(serialized_vector)  # noqa: S301
+    deserialized_vector = pickle.loads(serialized_vector)  # ruff: ignore[S301]
 
     assert vector == deserialized_vector
     assert vector.id == deserialized_vector.id

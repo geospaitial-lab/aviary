@@ -111,7 +111,7 @@ def test_bounding_box_serializability(
     bounding_box: BoundingBox,
 ) -> None:
     serialized_bounding_box = pickle.dumps(bounding_box)
-    deserialized_bounding_box = pickle.loads(serialized_bounding_box)  # noqa: S301
+    deserialized_bounding_box = pickle.loads(serialized_bounding_box)  # ruff: ignore[S301]
 
     assert bounding_box == deserialized_bounding_box
     assert bounding_box.id == deserialized_bounding_box.id

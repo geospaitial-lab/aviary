@@ -147,7 +147,7 @@ def test_grid_serializability(
     grid: Grid,
 ) -> None:
     serialized_grid = pickle.dumps(grid)
-    deserialized_grid = pickle.loads(serialized_grid)  # noqa: S301
+    deserialized_grid = pickle.loads(serialized_grid)  # ruff: ignore[S301]
 
     assert grid == deserialized_grid
     assert grid.id == deserialized_grid.id
