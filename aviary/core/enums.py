@@ -29,7 +29,7 @@ if TYPE_CHECKING:
     from aviary.core.type_aliases import ChannelNameSet
 
 
-class Enum(BaseEnum):  # noqa: D101
+class Enum(BaseEnum):  # ruff: ignore[D101]
 
     def __str__(self) -> str:
         """Returns the string representation.

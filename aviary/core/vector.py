@@ -65,7 +65,7 @@ class Vector(
             self._copy_metadata()
 
         for layer in self:
-            layer._register_observer_vector(observer_vector=self)  # noqa: SLF001
+            layer._register_observer_vector(observer_vector=self)  # ruff: ignore[SLF001]
 
         super().__init__()
 
@@ -246,7 +246,7 @@ class Vector(
         self.__dict__ = state
 
         for layer in self:
-            layer._register_observer_vector(observer_vector=self)  # noqa: SLF001
+            layer._register_observer_vector(observer_vector=self)  # ruff: ignore[SLF001]
 
     def __eq__(
         self,
@@ -385,7 +385,7 @@ class Vector(
             self._validate()
 
             for layer in layers:
-                layer._register_observer_vector(observer_vector=self)  # noqa: SLF001
+                layer._register_observer_vector(observer_vector=self)  # ruff: ignore[SLF001]
 
             return self
 
@@ -459,7 +459,7 @@ class Vector(
             self._validate()
 
             for layer in removed_layers:
-                layer._unregister_observer_vector()  # noqa: SLF001
+                layer._unregister_observer_vector()  # ruff: ignore[SLF001]
 
             return self
 

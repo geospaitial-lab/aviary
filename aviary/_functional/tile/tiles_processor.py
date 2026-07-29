@@ -94,7 +94,7 @@ def _process_data(
         with ThreadPoolExecutor(max_workers=max_num_threads) as executor:
             data = list(executor.map(process_data_item, data))
 
-    channel._data = data  # noqa: SLF001
+    channel._data = data  # ruff: ignore[SLF001]
 
     if new_channel_name is not None:
         channel.name = new_channel_name
@@ -299,7 +299,7 @@ def expression_processor(
         AviaryUserError: Invalid `expression_string` (the expression string contains no channel names)
     """
     try:
-        import numexpr as ne  # noqa: PLC0415
+        import numexpr as ne  # ruff: ignore[PLC0415]
     except ImportError as error:
         message = (
             'Missing dependencies! '
@@ -449,7 +449,7 @@ def hillshade_processor(
                     repeat(altitude),
                 ))
 
-        channel._data = data  # noqa: SLF001
+        channel._data = data  # ruff: ignore[SLF001]
         channel.name = new_channel_name
 
         return tiles.append(
@@ -674,7 +674,7 @@ def rasterize_processor(
         max_num_threads=max_num_threads,
     )
 
-    if new_channel_name is not None:  # noqa: SIM108
+    if new_channel_name is not None:  # ruff: ignore[SIM108]
         channel = tiles[new_channel_name]
     else:
         channel = tiles[channel_name]
@@ -1067,7 +1067,7 @@ def stub_processor(
     Returns:
         Tiles
     """
-    sleep = max(0., delay + random.uniform(-jitter, jitter))  # noqa: S311
+    sleep = max(0., delay + random.uniform(-jitter, jitter))  # ruff: ignore[S311]
     time.sleep(sleep)
     return tiles
 
@@ -1105,7 +1105,7 @@ def vectorize_processor(
         max_num_threads=max_num_threads,
     )
 
-    if new_channel_name is not None:  # noqa: SIM108
+    if new_channel_name is not None:  # ruff: ignore[SIM108]
         channel = tiles[new_channel_name]
     else:
         channel = tiles[channel_name]

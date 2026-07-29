@@ -141,7 +141,7 @@ class VectorLayer(IDMixin):
         if observer_vector is None:
             return
 
-        observer_vector._validate()  # noqa: SLF001
+        observer_vector._validate()  # ruff: ignore[SLF001]
 
     @property
     def metadata(self) -> dict[str, object]:

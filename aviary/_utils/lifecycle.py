@@ -46,7 +46,7 @@ def _get_message(
     module = obj.__module__
     qualname = obj.__qualname__
 
-    if module is not None and module != '__main__':  # noqa: SIM108
+    if module is not None and module != '__main__':  # ruff: ignore[SIM108]
         name = f'{module}.{qualname}'
     else:
         name = qualname
@@ -85,8 +85,8 @@ def _wrap_with_warning(
         @wraps(init)
         def new_init(
             self: object,
-            *args: Any,  # noqa: ANN401
-            **kwargs: Any,  # noqa: ANN401
+            *args: Any,  # ruff: ignore[ANN401]
+            **kwargs: Any,  # ruff: ignore[ANN401]
         ) -> Callable:
             message = _get_message(
                 obj=obj,
@@ -103,8 +103,8 @@ def _wrap_with_warning(
 
     @wraps(obj)
     def wrapper(
-        *args: Any,  # noqa: ANN401
-        **kwargs: Any,  # noqa: ANN401
+        *args: Any,  # ruff: ignore[ANN401]
+        **kwargs: Any,  # ruff: ignore[ANN401]
     ) -> Callable:
         message = _get_message(
             obj=obj,

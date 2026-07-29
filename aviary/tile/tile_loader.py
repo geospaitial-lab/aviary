@@ -160,7 +160,7 @@ class TileLoader(
         if self._index >= len(self._tile_set):
             raise StopIteration
 
-        if self._prefetch_queue is not None:  # noqa: SIM108
+        if self._prefetch_queue is not None:  # ruff: ignore[SIM108]
             tiles = self._prefetch_queue.get()
         else:
             tiles = self._fetch_tiles(index=self._index)

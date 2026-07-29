@@ -22,8 +22,8 @@ class IDMixin:
 
     def __init__(
         self,
-        *args: Any,  # noqa: ANN401
-        **kwargs: Any,  # noqa: ANN401
+        *args: Any,  # ruff: ignore[ANN401]
+        **kwargs: Any,  # ruff: ignore[ANN401]
     ) -> None:
         """
         Parameters:

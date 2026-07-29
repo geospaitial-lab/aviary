@@ -44,7 +44,7 @@ def _get_log(
     obj: object,
 ) -> str:
     if hasattr(obj, '_log'):
-        return obj._log()  # noqa: SLF001
+        return obj._log()  # ruff: ignore[SLF001]
 
     return str(obj)
 
@@ -57,8 +57,8 @@ def _wrap_with_logging(
     @wraps(init)
     def new_init(
         self: object,
-        *args: Any,  # noqa: ANN401
-        **kwargs: Any,  # noqa: ANN401
+        *args: Any,  # ruff: ignore[ANN401]
+        **kwargs: Any,  # ruff: ignore[ANN401]
     ) -> None:
         init(self, *args, **kwargs)
 
@@ -81,9 +81,9 @@ def _wrap_with_logging(
         @wraps(call)
         def new_call(
             self: object,
-            *args: Any,  # noqa: ANN401
-            **kwargs: Any,  # noqa: ANN401
-        ) -> Any:  # noqa: ANN401
+            *args: Any,  # ruff: ignore[ANN401]
+            **kwargs: Any,  # ruff: ignore[ANN401]
+        ) -> Any:  # ruff: ignore[ANN401]
             name = _get_name(self)
 
             if args:

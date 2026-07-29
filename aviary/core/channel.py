@@ -153,7 +153,7 @@ class Channel(
         Raises:
             AviaryUserError: Invalid `buffer_size` (the buffer size is not in the range [0, 0.5))
         """
-        if self._buffer_size < 0 or self._buffer_size >= .5:  # noqa: PLR2004
+        if self._buffer_size < 0 or self._buffer_size >= .5:  # ruff: ignore[PLR2004]
             message = (
                 'Invalid buffer_size! '
                 'The buffer size must be in the range [0, 0.5).'
@@ -215,7 +215,7 @@ class Channel(
         if observer_tiles is None:
             return
 
-        observer_tiles._validate()  # noqa: SLF001
+        observer_tiles._validate()  # ruff: ignore[SLF001]
 
     @property
     def buffer_size(self) -> FractionalBufferSize:
@@ -731,7 +731,7 @@ class ObjectChannel(
         )
 
     @classmethod
-    def from_unnormalized_data(  # noqa: C901
+    def from_unnormalized_data(  # ruff: ignore[C901]
         cls,
         data: Objects | list[Objects],
         name: ChannelName | str,
@@ -773,7 +773,7 @@ class ObjectChannel(
         if not isinstance(coordinates, np.ndarray):
             coordinates = np.array([coordinates], dtype=np.int32)
 
-        if coordinates.ndim != 2:  # noqa: PLR2004
+        if coordinates.ndim != 2:  # ruff: ignore[PLR2004]
             message = (
                 'Invalid coordinates! '
                 'The coordinates must be in shape (n, 2) and data type int32.'
@@ -781,7 +781,7 @@ class ObjectChannel(
             raise AviaryUserError(message)
 
         conditions = [
-            coordinates.shape[1] != 2,  # noqa: PLR2004
+            coordinates.shape[1] != 2,  # ruff: ignore[PLR2004]
             coordinates.dtype != np.int32,
         ]
 
@@ -1137,7 +1137,7 @@ class ObjectChannel(
             AviaryUserError: Invalid `coordinates` (the number of coordinates is not equal to the number of data items)
             AviaryUserError: Invalid `tile_size` (the tile size is negative or zero)
         """
-        if coordinates.ndim != 2:  # noqa: PLR2004
+        if coordinates.ndim != 2:  # ruff: ignore[PLR2004]
             message = (
                 'Invalid coordinates! '
                 'The coordinates must be in shape (n, 2) and data type int32.'
@@ -1145,7 +1145,7 @@ class ObjectChannel(
             raise AviaryUserError(message)
 
         conditions = [
-            coordinates.shape[1] != 2,  # noqa: PLR2004
+            coordinates.shape[1] != 2,  # ruff: ignore[PLR2004]
             coordinates.dtype != np.int32,
         ]
 
@@ -1307,7 +1307,7 @@ class RasterChannel(
         """
         first_data_item = self[0]
 
-        if data_item.ndim != 2:  # noqa: PLR2004
+        if data_item.ndim != 2:  # ruff: ignore[PLR2004]
             message = (
                 'Invalid data! '
                 'The data item must be in shape (n, n).'
@@ -1849,7 +1849,7 @@ class VectorChannel(
         )
 
     @classmethod
-    def from_unnormalized_data(  # noqa: C901
+    def from_unnormalized_data(  # ruff: ignore[C901]
         cls,
         data: gpd.GeoDataFrame | list[gpd.GeoDataFrame],
         name: ChannelName | str,
@@ -1891,7 +1891,7 @@ class VectorChannel(
         if not isinstance(coordinates, np.ndarray):
             coordinates = np.array([coordinates], dtype=np.int32)
 
-        if coordinates.ndim != 2:  # noqa: PLR2004
+        if coordinates.ndim != 2:  # ruff: ignore[PLR2004]
             message = (
                 'Invalid coordinates! '
                 'The coordinates must be in shape (n, 2) and data type int32.'
@@ -1899,7 +1899,7 @@ class VectorChannel(
             raise AviaryUserError(message)
 
         conditions = [
-            coordinates.shape[1] != 2,  # noqa: PLR2004
+            coordinates.shape[1] != 2,  # ruff: ignore[PLR2004]
             coordinates.dtype != np.int32,
         ]
 
@@ -2251,7 +2251,7 @@ class VectorChannel(
             AviaryUserError: Invalid `coordinates` (the number of coordinates is not equal to the number of data items)
             AviaryUserError: Invalid `tile_size` (the tile size is negative or zero)
         """
-        if coordinates.ndim != 2:  # noqa: PLR2004
+        if coordinates.ndim != 2:  # ruff: ignore[PLR2004]
             message = (
                 'Invalid coordinates! '
                 'The coordinates must be in shape (n, 2) and data type int32.'
@@ -2259,7 +2259,7 @@ class VectorChannel(
             raise AviaryUserError(message)
 
         conditions = [
-            coordinates.shape[1] != 2,  # noqa: PLR2004
+            coordinates.shape[1] != 2,  # ruff: ignore[PLR2004]
             coordinates.dtype != np.int32,
         ]
 
