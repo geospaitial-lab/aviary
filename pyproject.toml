@@ -148,9 +148,11 @@ runtime-evaluated-base-classes = [
     "D101",
 ]
 "dev/scripts/*" = [
+    "CPY001",
     "T201",
 ]
 "docs/*.ipynb" = [
+    "CPY001",
     "D103",
     "T201",
 ]
