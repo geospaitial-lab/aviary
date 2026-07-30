@@ -173,7 +173,7 @@ def stub_loader(
     Returns:
         Vector
     """
-    sleep = max(0., delay + random.uniform(-jitter, jitter))  # noqa: S311
+    sleep = max(0., delay + random.uniform(-jitter, jitter))  # ruff: ignore[S311]
     time.sleep(sleep)
     return Vector(
         layers=[],

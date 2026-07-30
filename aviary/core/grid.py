@@ -111,7 +111,7 @@ class Grid(
             AviaryUserError: Invalid `coordinates` (the coordinates are not in shape (n, 2) and data type int32)
             AviaryUserError: Invalid `coordinates` (the coordinates are not evenly distributed)
         """
-        if self._coordinates.ndim != 2:  # noqa: PLR2004
+        if self._coordinates.ndim != 2:  # ruff: ignore[PLR2004]
             message = (
                 'Invalid coordinates! '
                 'The coordinates must be in shape (n, 2) and data type int32.'
@@ -119,7 +119,7 @@ class Grid(
             raise AviaryUserError(message)
 
         conditions = [
-            self._coordinates.shape[1] != 2,  # noqa: PLR2004
+            self._coordinates.shape[1] != 2,  # ruff: ignore[PLR2004]
             self._coordinates.dtype != np.int32,
         ]
 
@@ -405,9 +405,9 @@ class Grid(
             Grid
         """
         try:
-            import osm2geojson  # noqa: PLC0415
+            import osm2geojson  # ruff: ignore[PLC0415]
 
-            from aviary import __version__  # noqa: PLC0415
+            from aviary import __version__  # ruff: ignore[PLC0415]
         except ImportError as error:
             message = (
                 'Missing dependencies! '
@@ -491,7 +491,7 @@ class Grid(
         )
 
     @classmethod
-    def from_config(  # noqa: C901
+    def from_config(  # ruff: ignore[C901]
         cls,
         config: GridConfig,
     ) -> Grid:
@@ -647,7 +647,7 @@ class Grid(
         if not isinstance(coordinates, np.ndarray):
             coordinates = np.array([coordinates], dtype=np.int32)
 
-        if coordinates.ndim != 2:  # noqa: PLR2004
+        if coordinates.ndim != 2:  # ruff: ignore[PLR2004]
             message = (
                 'Invalid coordinates! '
                 'The coordinates must be in shape (n, 2) and data type int32.'
@@ -655,7 +655,7 @@ class Grid(
             raise AviaryUserError(message)
 
         conditions = [
-            coordinates.shape[1] != 2,  # noqa: PLR2004
+            coordinates.shape[1] != 2,  # ruff: ignore[PLR2004]
             coordinates.dtype != np.int32,
         ]
 
@@ -863,7 +863,7 @@ class Grid(
         if not isinstance(coordinates, np.ndarray):
             coordinates = np.array([coordinates], dtype=np.int32)
 
-        if coordinates.ndim != 2:  # noqa: PLR2004
+        if coordinates.ndim != 2:  # ruff: ignore[PLR2004]
             message = (
                 'Invalid coordinates! '
                 'The coordinates must be in shape (n, 2) and data type int32.'
@@ -871,7 +871,7 @@ class Grid(
             raise AviaryUserError(message)
 
         conditions = [
-            coordinates.shape[1] != 2,  # noqa: PLR2004
+            coordinates.shape[1] != 2,  # ruff: ignore[PLR2004]
             coordinates.dtype != np.int32,
         ]
 
@@ -898,7 +898,7 @@ class Grid(
             tile_size=self._tile_size,
         )
 
-    def buffer(  # noqa: C901, PLR0912
+    def buffer(  # ruff: ignore[C901, PLR0912]
         self,
         buffer_size: int,
         inplace: bool = False,
@@ -945,7 +945,7 @@ class Grid(
                     for dx_min, dy_min in offsets:
                         coordinates_.add((int(x_min + dx_min), int(y_min + dy_min)))
 
-                if coordinates_:  # noqa: SIM108
+                if coordinates_:  # ruff: ignore[SIM108]
                     coordinates = np.array(list(coordinates_), dtype=np.int32)
                 else:
                     coordinates = coordinates[:0]
@@ -963,7 +963,7 @@ class Grid(
                     if all(((int(x_min + dx_min), int(y_min + dy_min)) in coordinates_) for dx_min, dy_min in offsets):
                         kept_coordinates.append((int(x_min), int(y_min)))
 
-                if kept_coordinates:  # noqa: SIM108
+                if kept_coordinates:  # ruff: ignore[SIM108]
                     coordinates = np.array(kept_coordinates, dtype=np.int32)
                 else:
                     coordinates = coordinates[:0]
@@ -1058,7 +1058,7 @@ class Grid(
         if not isinstance(coordinates, np.ndarray):
             coordinates = np.array([coordinates], dtype=np.int32)
 
-        if coordinates.ndim != 2:  # noqa: PLR2004
+        if coordinates.ndim != 2:  # ruff: ignore[PLR2004]
             message = (
                 'Invalid coordinates! '
                 'The coordinates must be in shape (n, 2) and data type int32.'
@@ -1066,7 +1066,7 @@ class Grid(
             raise AviaryUserError(message)
 
         conditions = [
-            coordinates.shape[1] != 2,  # noqa: PLR2004
+            coordinates.shape[1] != 2,  # ruff: ignore[PLR2004]
             coordinates.dtype != np.int32,
         ]
 

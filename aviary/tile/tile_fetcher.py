@@ -125,7 +125,7 @@ class TileFetcherConfig(pydantic.BaseModel):
     @classmethod
     def _validate_config(
         cls,
-        value: Any,  # noqa: ANN401
+        value: Any,  # ruff: ignore[ANN401]
         info: ValidationInfo,
     ) -> pydantic.BaseModel:
         package = info.data['package']
@@ -153,7 +153,7 @@ class TileFetcherConfig(pydantic.BaseModel):
 
 class _TileFetcherFactory:
     """Factory for tile fetchers"""
-    registry: dict[tuple[str, str], tuple[type[TileFetcher], type[pydantic.BaseModel]]] = {}  # noqa: RUF012
+    registry: dict[tuple[str, str], tuple[type[TileFetcher], type[pydantic.BaseModel]]] = {}  # ruff: ignore[RUF012]
 
     @staticmethod
     def create(

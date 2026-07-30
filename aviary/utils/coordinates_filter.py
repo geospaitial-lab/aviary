@@ -110,7 +110,7 @@ class DuplicatesFilter(IDMixin):
     Implements the `CoordinatesFilter` protocol.
     """
 
-    def __init__(self) -> None:  # noqa: D107
+    def __init__(self) -> None:  # ruff: ignore[D107]
         super().__init__()
 
     def __call__(

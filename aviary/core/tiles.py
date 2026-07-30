@@ -100,7 +100,7 @@ class Tiles(
             self._copy_metadata()
 
         for channel in self:
-            channel._register_observer_tiles(observer_tiles=self)  # noqa: SLF001
+            channel._register_observer_tiles(observer_tiles=self)  # ruff: ignore[SLF001]
 
         super().__init__()
 
@@ -168,7 +168,7 @@ class Tiles(
                 of the channels)
             AviaryUserError: Invalid `coordinates` (the coordinates contain no coordinates)
         """
-        if self._coordinates.ndim != 2:  # noqa: PLR2004
+        if self._coordinates.ndim != 2:  # ruff: ignore[PLR2004]
             message = (
                 'Invalid coordinates! '
                 'The coordinates must be in shape (n, 2) and data type int32.'
@@ -176,7 +176,7 @@ class Tiles(
             raise AviaryUserError(message)
 
         conditions = [
-            self._coordinates.shape[1] != 2,  # noqa: PLR2004
+            self._coordinates.shape[1] != 2,  # ruff: ignore[PLR2004]
             self._coordinates.dtype != np.int32,
         ]
 
@@ -205,7 +205,7 @@ class Tiles(
                     'The number of coordinates must be equal to the batch size of the channels.'
                 )
                 raise AviaryUserError(message)
-        else:  # noqa: PLR5501
+        else:  # ruff: ignore[PLR5501]
             if len(self._coordinates) == 0:
                 message = (
                     'Invalid coordinates! '
@@ -351,10 +351,10 @@ class Tiles(
             AviaryUserError: Invalid `channel_names` (the number of channel names is not equal to
                 the number of channels)
         """
-        if data.ndim == 2:  # noqa: PLR2004
+        if data.ndim == 2:  # ruff: ignore[PLR2004]
             data = data[..., np.newaxis]
 
-        if data.ndim != 3:  # noqa: PLR2004
+        if data.ndim != 3:  # ruff: ignore[PLR2004]
             message = (
                 'Invalid data! '
                 'The data must be in shape (n, n, c).'
@@ -449,13 +449,13 @@ class Tiles(
         first_tile = tiles[0]
 
         coordinates_equal = all(
-            np.array_equal(tile._coordinates, first_tile._coordinates)  # noqa: SLF001
+            np.array_equal(tile._coordinates, first_tile._coordinates)  # ruff: ignore[SLF001]
             for tile in tiles
         )
 
         if coordinates_equal:
             channels = [channel for tile in tiles for channel in tile]
-            coordinates = first_tile._coordinates  # noqa: SLF001
+            coordinates = first_tile._coordinates  # ruff: ignore[SLF001]
             tile_size = first_tile.tile_size
             metadata: dict[str, object] = {}
 
@@ -470,7 +470,7 @@ class Tiles(
                 copy=copy,
             )
 
-        coordinates = np.concatenate([tile._coordinates for tile in tiles], axis=0)  # noqa: SLF001
+        coordinates = np.concatenate([tile._coordinates for tile in tiles], axis=0)  # ruff: ignore[SLF001]
         unique_coordinates = duplicates_filter(coordinates=coordinates)
         coordinates_unique = len(coordinates) == len(unique_coordinates)
 
@@ -580,7 +580,7 @@ class Tiles(
         self.__dict__ = state
 
         for channel in self:
-            channel._register_observer_tiles(observer_tiles=self)  # noqa: SLF001
+            channel._register_observer_tiles(observer_tiles=self)  # ruff: ignore[SLF001]
 
     def __eq__(
         self,
@@ -776,7 +776,7 @@ class Tiles(
             self._validate()
 
             for channel in channels:
-                channel._register_observer_tiles(observer_tiles=self)  # noqa: SLF001
+                channel._register_observer_tiles(observer_tiles=self)  # ruff: ignore[SLF001]
 
             return self
 
@@ -869,7 +869,7 @@ class Tiles(
             if channel.name in channel_names:
                 channel.remove_buffer(inplace=True)
 
-        tiles._validate()  # noqa: SLF001
+        tiles._validate()  # ruff: ignore[SLF001]
         return tiles
 
     def select(
@@ -902,7 +902,7 @@ class Tiles(
             self._validate()
 
             for channel in removed_channels:
-                channel._unregister_observer_tiles()  # noqa: SLF001
+                channel._unregister_observer_tiles()  # ruff: ignore[SLF001]
 
             return self
 

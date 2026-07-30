@@ -87,7 +87,7 @@ error_console = rich.console.Console(
 )
 
 
-class _QuotedStr(str):  # noqa: SLOT000
+class _QuotedStr(str):  # ruff: ignore[SLOT000]
     pass
 
 
@@ -152,26 +152,26 @@ def version_callback(
 def main(
     context: typer.Context,
     quiet_option: bool = typer.Option(
-        False,  # noqa: FBT003
+        False,  # ruff: ignore[FBT003]
         '--quiet',
         '-q',
         envvar='AVIARY_QUIET',
         help='Enable quiet mode.',
     ),
     verbose_option: bool = typer.Option(
-        False,  # noqa: FBT003
+        False,  # ruff: ignore[FBT003]
         '--verbose',
         '-v',
         envvar='AVIARY_VERBOSE',
         help='Enable verbose mode.',
     ),
     experimental_warnings_option: bool = typer.Option(
-        True,  # noqa: FBT003
+        True,  # ruff: ignore[FBT003]
         '--experimental-warnings/--no-experimental-warnings',
         envvar='AVIARY_EXPERIMENTAL_WARNINGS',
         help='Show / suppress experimental warnings.',
     ),
-    version_option: bool = typer.Option(  # noqa: ARG001
+    version_option: bool = typer.Option(  # ruff: ignore[ARG001]
         None,
         '--version',
         callback=version_callback,
@@ -188,9 +188,9 @@ def main(
         console.quiet = True
 
     if not experimental_warnings_option:
-        import warnings  # noqa: PLC0415
+        import warnings  # ruff: ignore[PLC0415]
 
-        from aviary.core.warnings import AviaryExperimentalWarning  # noqa: PLC0415
+        from aviary.core.warnings import AviaryExperimentalWarning  # ruff: ignore[PLC0415]
 
         warnings.filterwarnings('ignore', category=AviaryExperimentalWarning)
 
@@ -200,9 +200,9 @@ def handle_exception(
 ) -> Callable:
     @wraps(func)
     def wrapper(
-        *args: Any,  # noqa: ANN401
-        **kwargs: Any,  # noqa: ANN401
-    ) -> Any:  # noqa: ANN401
+        *args: Any,  # ruff: ignore[ANN401]
+        **kwargs: Any,  # ruff: ignore[ANN401]
+    ) -> Any:  # ruff: ignore[ANN401]
         try:
             return func(
                 *args,
@@ -250,7 +250,7 @@ def components(
         None,
         '--type',
         '-t',
-        click_type=click.Choice(  # noqa: B008
+        click_type=click.Choice(  # ruff: ignore[B008]
             choices=[
                 'tile_fetcher',
                 'tiles_processor',
@@ -286,13 +286,13 @@ def components(
     rich_help_panel='General commands',
 )
 @handle_exception
-def config(  # noqa: C901, PLR0912, PLR0915
+def config(  # ruff: ignore[C901, PLR0912, PLR0915]
     component: str = typer.Argument(
         ...,
         help='Component',
     ),
     copy_option: bool = typer.Option(
-        False,  # noqa: FBT003
+        False,  # ruff: ignore[FBT003]
         '--copy',
         '-c',
         help='Copy the configuration to the clipboard.',
@@ -492,7 +492,7 @@ def pipeline_init(
         help='Path to the config file',
     ),
     force_option: bool = typer.Option(
-        False,  # noqa: FBT003
+        False,  # ruff: ignore[FBT003]
         '--force',
         '-f',
         help='Force overwrite the config file if it already exists.',
@@ -570,7 +570,7 @@ def pipeline_run(
         help='Log level',
     ),
     log_serialize_option: bool = typer.Option(
-        False,  # noqa: FBT003
+        False,  # ruff: ignore[FBT003]
         '--log-serialize',
         envvar='AVIARY_LOG_SERIALIZE',
         help='Output logs in structured JSON format.',
@@ -583,7 +583,7 @@ def pipeline_run(
         serialize=log_serialize_option,
     )
 
-    with logger._logger.catch(level='CRITICAL', message='An error occurred:', reraise=True):  # noqa: SLF001
+    with logger._logger.catch(level='CRITICAL', message='An error occurred:', reraise=True):  # ruff: ignore[SLF001]
         config = parse_config(
             config_path=config_path,
             set_options=set_options,
@@ -675,7 +675,7 @@ def plugins(
         None,
         '--type',
         '-t',
-        click_type=click.Choice(  # noqa: B008
+        click_type=click.Choice(  # ruff: ignore[B008]
             choices=[
                 'tile_fetcher',
                 'tiles_processor',
@@ -732,7 +732,7 @@ def find_key(
     return None
 
 
-def parse_config(  # noqa: C901, PLR0912
+def parse_config(  # ruff: ignore[C901, PLR0912]
     config_path: Path,
     set_options: list[str] | None = None,
 ) -> dict:
@@ -818,7 +818,7 @@ def parse_config(  # noqa: C901, PLR0912
     return config
 
 
-def show_components(  # noqa: C901, PLR0912, PLR0915
+def show_components(  # ruff: ignore[C901, PLR0912, PLR0915]
     title: str,
     plugins_dir_path: Path | None = None,
     filter_packages: Callable[[str], bool] | None = None,

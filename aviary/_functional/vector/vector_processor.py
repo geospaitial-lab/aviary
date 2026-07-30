@@ -58,7 +58,7 @@ def _process_data(
 
     data = process_data(data=data)
 
-    layer._data = data  # noqa: SLF001
+    layer._data = data  # ruff: ignore[SLF001]
 
     if new_layer_name is not None:
         layer.name = new_layer_name
@@ -70,7 +70,7 @@ def _process_data(
     return vector
 
 
-def aggregate_processor(  # noqa: C901, PLR0912
+def aggregate_processor(  # ruff: ignore[C901, PLR0912]
     vector: Vector,
     layer_name: str,
     aggregation_layer_name: str,
@@ -200,7 +200,7 @@ def aggregate_processor(  # noqa: C901, PLR0912
         inplace=True,
     )
 
-    aggregation_layer._data = aggregation_data  # noqa: SLF001
+    aggregation_layer._data = aggregation_data  # ruff: ignore[SLF001]
 
     if new_aggregation_layer_name is not None:
         aggregation_layer.name = new_aggregation_layer_name
@@ -732,6 +732,6 @@ def stub_processor(
     Returns:
         Vector
     """
-    sleep = max(0., delay + random.uniform(-jitter, jitter))  # noqa: S311
+    sleep = max(0., delay + random.uniform(-jitter, jitter))  # ruff: ignore[S311]
     time.sleep(sleep)
     return vector

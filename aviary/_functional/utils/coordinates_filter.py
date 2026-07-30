@@ -1,4 +1,4 @@
-#  Copyright (C) 2024-2025 Marius Maryniak
+#  Copyright (C) 2024-2026 Marius Maryniak
 #
 #  This file is part of aviary.
 #
@@ -93,7 +93,7 @@ def geospatial_filter(
     Raises:
         AviaryUserError: Invalid `mode`
     """
-    from aviary.core.grid import Grid  # noqa: PLC0415
+    from aviary.core.grid import Grid  # ruff: ignore[PLC0415]
 
     grid = Grid(
         coordinates=coordinates,

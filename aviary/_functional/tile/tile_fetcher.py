@@ -172,7 +172,7 @@ def stub_fetcher(
     Returns:
         Tile
     """
-    sleep = max(0., delay + random.uniform(-jitter, jitter))  # noqa: S311
+    sleep = max(0., delay + random.uniform(-jitter, jitter))  # ruff: ignore[S311]
     time.sleep(sleep)
     return Tile(
         channels=[],
@@ -479,7 +479,7 @@ def _request_wms(
         AviaryUserError: Invalid request (the response is not an image)
         AviaryUserError: Invalid request (the response is not in shape (n, n, 3) and data type uint8)
     """
-    from aviary import __version__  # noqa: PLC0415
+    from aviary import __version__  # ruff: ignore[PLC0415]
 
     headers = {
         'User-Agent': f'aviary/{__version__} (https://github.com/geospaitial-lab/aviary)',
@@ -506,7 +506,7 @@ def _request_wms(
         with file.open() as src:
             data = src.read()
 
-            if data.ndim != 3:  # noqa: PLR2004
+            if data.ndim != 3:  # ruff: ignore[PLR2004]
                 message = (
                     'Invalid request! '
                     'The response must be in shape (n, n, 3) and data type uint8.'
@@ -514,7 +514,7 @@ def _request_wms(
                 raise AviaryUserError(message)
 
             conditions = [
-                data.shape[0] != 3,  # noqa: PLR2004
+                data.shape[0] != 3,  # ruff: ignore[PLR2004]
                 data.dtype != np.uint8,
             ]
 

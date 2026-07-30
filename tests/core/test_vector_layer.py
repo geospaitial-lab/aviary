@@ -131,7 +131,7 @@ def test_vector_layer_serializability(
     vector_layer: VectorLayer,
 ) -> None:
     serialized_vector_layer = pickle.dumps(vector_layer)
-    deserialized_vector_layer = pickle.loads(serialized_vector_layer)  # noqa: S301
+    deserialized_vector_layer = pickle.loads(serialized_vector_layer)  # ruff: ignore[S301]
 
     assert vector_layer == deserialized_vector_layer
     assert vector_layer.id == deserialized_vector_layer.id

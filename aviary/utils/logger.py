@@ -27,9 +27,9 @@ class Logger(IDMixin):
 
     def __init__(
         self,
-        sink: Any,  # noqa: ANN401
+        sink: Any,  # ruff: ignore[ANN401]
         level: LogLevel = LogLevel.INFO,
-        format: str = '{time:YYYY-MM-DD HH:mm:ss.SSS} | {level:<8} | {message}',  # noqa: A002
+        format: str = '{time:YYYY-MM-DD HH:mm:ss.SSS} | {level:<8} | {message}',  # ruff: ignore[A002]
         serialize: bool = False,
     ) -> None:
         """
@@ -73,9 +73,9 @@ class Logger(IDMixin):
 
     def add_handler(
         self,
-        sink: Any,  # noqa: ANN401
+        sink: Any,  # ruff: ignore[ANN401]
         level: LogLevel = LogLevel.INFO,
-        format: str = '{time:YYYY-MM-DD HH:mm:ss.SSS} | {level:<8} | {message}',  # noqa: A002
+        format: str = '{time:YYYY-MM-DD HH:mm:ss.SSS} | {level:<8} | {message}',  # ruff: ignore[A002]
         serialize: bool = False,
     ) -> None:
         """Adds a handler to the logger.

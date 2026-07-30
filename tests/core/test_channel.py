@@ -222,7 +222,7 @@ def test_raster_channel_serializability(
     raster_channel: RasterChannel,
 ) -> None:
     serialized_raster_channel = pickle.dumps(raster_channel)
-    deserialized_raster_channel = pickle.loads(serialized_raster_channel)  # noqa: S301
+    deserialized_raster_channel = pickle.loads(serialized_raster_channel)  # ruff: ignore[S301]
 
     assert raster_channel == deserialized_raster_channel
     assert raster_channel.id == deserialized_raster_channel.id
@@ -656,7 +656,7 @@ def test_vector_channel_serializability(
     vector_channel: VectorChannel,
 ) -> None:
     serialized_vector_channel = pickle.dumps(vector_channel)
-    deserialized_vector_channel = pickle.loads(serialized_vector_channel)  # noqa: S301
+    deserialized_vector_channel = pickle.loads(serialized_vector_channel)  # ruff: ignore[S301]
 
     assert vector_channel == deserialized_vector_channel
     assert vector_channel.id == deserialized_vector_channel.id
